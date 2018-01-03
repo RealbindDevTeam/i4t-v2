@@ -358,7 +358,8 @@ export class RestaurantRegisterComponent implements OnInit, OnDestroy {
                         queue: this._queues,
                         isActive: true,
                         firstPay: true,
-                        freeDays: true
+                        freeDays: true,
+                        is_beta_tester: false
                     });
                 } else {
                     _lNewRestaurant = Restaurants.collection.insert({
@@ -383,7 +384,8 @@ export class RestaurantRegisterComponent implements OnInit, OnDestroy {
                         queue: this._queues,
                         isActive: true,
                         firstPay: true,
-                        freeDays: true
+                        freeDays: true,
+                        is_beta_tester: false
                     });
                 }
 
