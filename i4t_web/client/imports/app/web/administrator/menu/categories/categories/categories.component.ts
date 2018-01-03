@@ -8,6 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { MatSnackBar } from '@angular/material';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
+import { Items } from '../../../../../../../../both/collections/menu/item.collection';
+import { Subcategories } from '../../../../../../../../both/collections/menu/subcategory.collection';
 import { Categories } from '../../../../../../../../both/collections/menu/category.collection';
 import { Category } from '../../../../../../../../both/models/menu/category.model';
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
@@ -38,9 +40,12 @@ export class CategoryComponent implements OnInit, OnDestroy {
     private _sectionsSub: Subscription;
     private _restaurantSub: Subscription;
     private _userDetailsSub: Subscription;
+    private _itemsSubscription: Subscription;
+    private _subCategoriesSubscription: Subscription;
 
     private _selectedValue: string;
     private titleMsg: string;
+    private btnCancelLbl: string;
     private btnAcceptLbl: string;
     public _dialogRef: MatDialogRef<any>;
     private _thereAreRestaurants: boolean = true;
@@ -70,6 +75,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
         _translate.setDefaultLang('en');
         this._selectedValue = "";
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
+        this.btnCancelLbl = 'CANCEL';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
     }
 
@@ -107,6 +113,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
                 this._categories = Categories.find({}).zone();
             });
         });
+
+        this._subCategoriesSubscription = MeteorObservable.subscribe('subcategories', this._user).subscribe();
+        this._itemsSubscription = MeteorObservable.subscribe('items', this._user).subscribe();
     }
 
     /**
@@ -140,6 +149,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
         if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
         if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
         if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
+        if (this._subCategoriesSubscription) { this._subCategoriesSubscription.unsubscribe(); }
     }
 
     /**
@@ -173,6 +184,83 @@ export class CategoryComponent implements OnInit, OnDestroy {
             this._categoryForm.reset();
             this._selectedValue = "";
         }
+    }
+
+    /**
+     * Show confirm dialog to remove the category
+     * @param _pCategory 
+     */
+    confirmRemove(_pCategory: Category) {
+        let dialogTitle = "CATEGORIES.REMOVE_TITLE";
+        let dialogContent = "CATEGORIES.REMOVE_MSG";
+        let error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
+
+        if (!Meteor.userId()) {
+            this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+            return;
+        }
+        this._mdDialogRef = this._dialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: dialogTitle,
+                subtitle: '',
+                content: dialogContent,
+                buttonCancel: this.btnCancelLbl,
+                buttonAccept: this.btnAcceptLbl,
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                this.removeCategory(_pCategory);
+            }
+        });
+    }
+
+    /**
+     * Function to allow remove category
+     * @param {Category} _pCategory
+     */
+    removeCategory(_pCategory: Category): void {
+        let _lMessage: string;
+        if (!this.searchSubcategoriesByCategory(_pCategory._id) && !this.searchItemsByCategory(_pCategory._id)) {
+            Categories.remove(_pCategory._id);
+            _lMessage = this.itemNameTraduction('CATEGORIES.CATEGORY_REMOVED');
+            this.snackBar.open(_lMessage, '', {
+                duration: 2500
+            });
+        } else {
+            _lMessage = this.itemNameTraduction('CATEGORIES.CATEGORY_NOT_REMOVED');
+            this.snackBar.open(_lMessage, '', {
+                duration: 2500
+            });
+            return;
+        }
+    }
+
+    /**
+     * Search categories by category
+     * @param {string} _pCategoryId 
+     */
+    searchSubcategoriesByCategory(_pCategoryId: string): boolean {
+        let lSubCategories = Subcategories.collection.find({ category: _pCategoryId }).count();
+        if (lSubCategories > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Search items by category
+     * @param {string} _pCategoryId 
+     */
+    searchItemsByCategory(_pCategoryId: string): boolean {
+        let lItems = Items.collection.find({ categoryId: _pCategoryId }).count();
+        if (lItems > 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
