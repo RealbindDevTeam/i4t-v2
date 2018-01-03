@@ -1,0 +1,5 @@
+<mat-form-field class="input">
+    <input matInput type="number" placeholder="{{label | translate}}" min="0" max="{{maxValue}}" [(ngModel)]="percentageValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onPercentageChange($event)">
+    <span matSuffix>%</span>
+</mat-form-field>
+<mat-slider class="slider" [min]="minValue" [max]="maxValue" [step]="stepValue" thumb-label="true" tick-interval="true" (input)="onPercentageChange($event.value)" [value]="percentageValue"></mat-slider>

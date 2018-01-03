@@ -1,0 +1,48 @@
+<div>
+    <mat-card-title>{{'SETTINGS.CHANGE_EMAIL' | translate}}</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="_emailEditForm"  novalidate>
+            <div>
+                <mat-form-field style="width: 100%">
+                    <input matInput required formControlName="email" placeholder="{{'EMAIL' | translate}}" #inputEmail/>
+                    <mat-hint align="end">{{inputEmail.value.length}} / 40</mat-hint>
+                </mat-form-field>
+                <div *ngIf="_emailEditForm.controls['email'].hasError('invalidEmailAddress') && _emailEditForm.controls['email'].touched" class="error-message">{{'SIGNUP.REQUIRED_EMAIL' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['email'].hasError('minlength') && _emailEditForm.controls['email'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_EMAIL' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['email'].hasError('maxlength') && _emailEditForm.controls['email'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_EMAIL' | translate}}</div>
+            </div>
+            <div>
+                <mat-form-field style="width: 100%">
+                    <input matInput required formControlName="password" placeholder="{{'PASSWORD' | translate}}" #inputPassword type="password"/>
+                    <mat-hint align="end">{{inputPassword.value.length}} / 20</mat-hint>
+                </mat-form-field>
+                <div *ngIf="_emailEditForm.controls['password'].hasError('required') && _emailEditForm.controls['password'].touched" class="error-message">{{'SIGNUP.REQUIRED_PASSWORD' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['password'].hasError('minlength') && _emailEditForm.controls['password'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_PASSWORD' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['password'].hasError('maxlength') && _emailEditForm.controls['password'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</div>
+            </div>
+            <div>
+                <mat-form-field style="width: 100%">
+                    <input matInput required formControlName="new_email" placeholder="{{'SETTINGS.NEW_EMAIL' | translate}}" #inputNewEmail/>
+                    <mat-hint align="end">{{inputNewEmail.value.length}} / 40</mat-hint>
+                </mat-form-field>
+                <div *ngIf="_emailEditForm.controls['new_email'].hasError('invalidEmailAddress') && _emailEditForm.controls['new_email'].touched" class="error-message">{{'SIGNUP.REQUIRED_EMAIL' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['new_email'].hasError('minlength') && _emailEditForm.controls['new_email'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_EMAIL' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['new_email'].hasError('maxlength') && _emailEditForm.controls['new_email'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_EMAIL' | translate}}</div>
+            </div>
+            <div>
+                <mat-form-field style="width: 100%">
+                    <input matInput required formControlName="confirm_new_email" placeholder="{{'SETTINGS.CONFIRM_NEW_EMAIL' | translate}}" #inputConfirmNewEmail/>
+                    <mat-hint align="end">{{inputConfirmNewEmail.value.length}} / 40</mat-hint>
+                </mat-form-field>
+                <div *ngIf="_emailEditForm.controls['confirm_new_email'].hasError('invalidEmailAddress') && _emailEditForm.controls['confirm_new_email'].touched" class="error-message">{{'SIGNUP.REQUIRED_EMAIL' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['confirm_new_email'].hasError('minlength') && _emailEditForm.controls['confirm_new_email'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_EMAIL' | translate}}</div>
+                <div *ngIf="_emailEditForm.controls['confirm_new_email'].hasError('maxlength') && _emailEditForm.controls['confirm_new_email'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_EMAIL' | translate}}</div>
+            </div>
+        </form>
+
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="secondary-button" (click)="cancel()">{{'CANCEL' | translate}}</button>
+        <button mat-raised-button class="primary-button" type="submit" (click)="changeEmail()">{{'MODIFY' | translate}}</button>
+    </mat-card-actions>
+</div>

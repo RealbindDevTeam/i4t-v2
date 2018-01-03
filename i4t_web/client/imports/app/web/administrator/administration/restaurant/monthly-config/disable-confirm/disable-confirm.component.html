@@ -1,0 +1,10 @@
+<mat-card style="box-shadow: none">
+    <mat-card-title>{{ data | translate }}</mat-card-title>
+    <mat-card-content>
+        {{'MONTHLY_CONFIG.DIALOG_SURE_ACTION' | translate}}
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="secondary-button" (click)="cancel()">{{ 'RESTAURANT_REGISTER.CANCEL_CREATION' | translate }}</button>
+        <button mat-raised-button class="primary-button" (click)="closeConfirm()" type="submit">{{ 'RESTAURANT_REGISTER.ACCEPT_CREATION' | translate }}</button>
+    </mat-card-actions>
+</mat-card>

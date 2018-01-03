@@ -1,0 +1,83 @@
+<div class="global-div" *ngIf="_thereArePaymentsHistory">
+    <div class="div-whitout-overflow">
+        <div class="cards-div">
+            <mat-card style="margin: 24px">
+                <mat-card-title>{{'RES_PAYMENT_HISTORY.TITLE' | translate }}</mat-card-title>
+                <mat-card-subtitle>{{'RES_PAYMENT_HISTORY.SUBTITLE' | translate}}</mat-card-subtitle>
+                <mat-card-content style="background: #FFF">
+                    <mat-form-field  style="width: 25%;">
+                        <mat-select [(ngModel)]="_selectedYear" placeholder="{{'RES_PAYMENT_HISTORY.YEAR_FILTER' | translate}}">
+                            <mat-option *ngFor="let year of _yearsArray" value="{{year.value}}" (click)="changeHistoryPaymentYear()">{{year.viewValue}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field  style="width: 25%; margin-left: 2%;">
+                        <mat-select [(ngModel)]="_selectedMonth" placeholder="{{'RES_PAYMENT_HISTORY.MONTH_FILTER' | translate}}" [disabled]="_activateMonth">
+                            <mat-option value="0" (click)="changeHistoryPaymentMonth()">{{'RES_PAYMENT_HISTORY.ALL_FILTER' | translate}}</mat-option>
+                            <mat-option *ngFor="let month of _monthsArray" value="{{month.value}}" (click)="changeHistoryPaymentMonth()">{{month.viewValue}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <table class="striped" width="100%" style="border:0.5px solid; border-color: lightgrey; margin-top: 15px">
+                        <thead>
+                            <tr>
+                                <th data-field="date" style="width: 9%">{{'RES_PAYMENT_HISTORY.DATE' | translate}}</th>
+                                <th data-field="amount" style="width: 10%">{{'RES_PAYMENT_HISTORY.AMOUNT' | translate}}</th>
+                                <th data-field="items" style="width: 53%">{{'RES_PAYMENT_HISTORY.ITEMS' | translate}}</th>
+                                <th data-field="status" style="width: 16%">{{'RES_PAYMENT_HISTORY.STATUS' | translate}}</th>
+                                <th data-field="invoice" style="width: 12%">{{'RES_PAYMENT_HISTORY.INVOICE' | translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let historyPayment of _historyPayments | async">
+                                <td>{{historyPayment.creation_date | date: 'd/M/y'}}</td>
+                                <td>{{historyPayment.paymentValue}} {{historyPayment.currency}}</td>
+                                <td>
+                                    <tr *ngFor="let restaurantId of historyPayment.restaurantIds">- {{getRestaurantName(restaurantId)}}</tr>
+                                </td>
+                                <td class="cust-center-align">
+                                    <div>
+                                        <div style="display: inline-block; vertical-align: middle">
+                                            <img mat-list-avatar style="height: 30px; width: 30px;" src="{{getImageName(historyPayment.status)}}">
+                                        </div>
+                                        <div style="display: inline-block; vertical-align: middle">
+                                            <button mat-button disabled *ngIf="historyPayment.status != 'TRANSACTION_STATUS.PENDING'">{{historyPayment.status | translate}}</button>
+                                        </div>
+                                        <div style="display: inline-block; vertical-align: middle">
+                                            <button mat-button [ngClass]="{'link-color': historyPayment.status == 'TRANSACTION_STATUS.PENDING'}" *ngIf="historyPayment.status == 'TRANSACTION_STATUS.PENDING'"
+                                                (click)="getPayInfo(historyPayment.paymentTransactionId)">{{historyPayment.status | translate}}</button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cust-center-align">
+                                        <button mat-raised-button *ngIf="historyPayment.status == 'TRANSACTION_STATUS.APPROVED'" (click)="generateInvoice(historyPayment)">{{'RES_PAYMENT_HISTORY.GENERATE_INVOICE' | translate}}</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>
+
+<mat-card *ngIf="!_thereArePaymentsHistory" mat-cell="12" class="demo-card demo-basic" style="width: 90%; margin: 0 auto">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/payment-history.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{ 'RES_PAYMENT_HISTORY.MSG_INITIAL' | translate }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

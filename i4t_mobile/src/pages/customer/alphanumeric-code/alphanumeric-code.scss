@@ -1,0 +1,172 @@
+page-alphanumeric-code{
+    .img{
+        margin: auto;
+    }
+
+    .content {
+        margin-top: inherit;
+    }
+
+    @media screen and (orientation: portrait){
+        #buttons {
+            position: absolute;
+            bottom: 10px;
+            width: 90%;
+        }
+    }
+
+    @media screen and (orientation: landscape){
+        #buttons {
+            width: 100%;
+        }
+    }
+
+    //Portrait: 320x480px 
+    @media screen and (max-width: 320px) and (orientation:portrait) {
+        .img{
+            width: 65%;
+        }
+        .content {
+            margin-top: inherit;
+            p {
+                font-size: 1.5rem;
+            }
+        }
+    }
+
+    //Landscape: 480x320px
+    @media screen and (max-width: 480px) and (orientation:landscape) {
+        .img{
+            width: 20%;
+        }
+
+        .content {
+            margin-top: auto;
+        }
+    }
+
+    //Portrait: 480x800px 
+    @media screen and (min-width: 321px) and (orientation:portrait) {
+        .img{
+            width: 90%;
+        }
+
+        .content {
+            margin-top: auto;
+            p {
+                font-size: 1.9rem;
+            }
+        }
+    }
+
+    //Landscape: 800x480px 
+    @media screen and (min-width: 481px) and (max-width: 800px) and (orientation:landscape) {
+        .img{
+            width: 15%;
+        }
+
+        .content {
+            margin-top: auto;
+            p {
+                font-size: 1.9rem;
+            }
+        }
+    }
+
+    //Portrait: 720px1280px 
+    @media screen and (min-width: 481px) and (max-width: 720px) and (orientation:portrait) {
+        .img{
+            width: 90%;
+        }
+
+        .content {
+            margin-top: inherit;
+        }
+    }
+    //Landscape: 1280x720px
+    @media screen and (min-width: 801px) and (max-width: 1280px) and (orientation:landscape) {
+        .img{
+            width: 35%;
+        }
+
+        .content {
+            margin-top: auto;
+            p {
+                font-size: 3.2rem;
+            }
+        }
+
+        #buttons{
+            width: 97%;
+            position: absolute;
+            bottom: 10px;
+        }
+    }
+
+    //Portrait: 960px1600px 
+    @media screen and (min-width: 721px) and (max-width: 960px) and (orientation:portrait) {
+        .img{
+            width: 90%;
+        }
+
+        .content {
+            margin-top: auto;
+            p {
+                font-size: 3.2rem;
+            }
+        }
+
+        #buttons{
+            width: 95%;
+        }
+    }
+    //Landscape: 1600x960px 
+    @media screen and (min-width: 1281px) and (max-width: 1600px) and (orientation:landscape) {
+        .img{
+            width: 90%;
+        }
+
+        .content {
+            margin-top: auto;
+            p {
+                font-size: 4.2rem;
+            }
+        }
+
+        #buttons{
+            width: 100%;
+        }
+    }
+    //Portrait: 1280px1920px 
+    @media screen and (min-width: 961px) and (orientation:portrait) {
+        .img{
+            width: 100%;
+        }
+
+        .content {
+            margin-top: auto;
+            p {
+                font-size: 4.2rem;
+            }
+        }
+
+        #buttons{
+            width: 97%;
+        }
+    }
+    //Landscape: 1920x1280px 
+    @media screen and (min-width: 1601px) and (orientation:landscape) {
+        .img{
+            width: 100%;
+        }
+
+        .content {
+            margin-top: auto;
+        }
+
+        #buttons{
+            width: 100%;
+        }
+    }
+}
+

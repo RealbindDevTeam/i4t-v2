@@ -1,0 +1,72 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle icon-only>
+            <ion-icon name='menu'></ion-icon>
+        </button>
+        <ion-title>{{'MOBILE.SETTINGS.TITTLE' | translate}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div id="img-profile">
+        <img src="{{ getUsetImage() }}">
+    </div>
+    
+    <ion-card>
+        <ion-card-content *ngIf="_user">
+            <h2 style="font-weight: bold;">{{'MOBILE.SETTINGS.LOGIN' | translate}}</h2>
+            <ion-list no-lines>
+                
+                <ion-item>
+                    <ion-label stacked>{{'MOBILE.EMAIL' | translate}}</ion-label>
+                    <ion-input *ngIf="_user.emails" type="text" value="{{_user.emails[0].address}}" disabled></ion-input>
+                    <ion-input *ngIf="_user.services && _user.services.facebook" type="text" value="{{_user.services.facebook.email}}" disabled></ion-input>
+                    <button ion-button icon-only small item-right class="button-secundary" [disabled]="_validateChangeEmail" (click)="openEmail()">
+                        <ion-icon name="create"> </ion-icon>
+                    </button>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label stacked>{{'MOBILE.PASSWORD' | translate}}</ion-label>
+                    <ion-input type="password" value="********" [disabled]="true"></ion-input>
+                    <button ion-button icon-only small item-right class="button-secundary" [disabled]="_validateChangePass" (click)="openPassword()">
+                        <ion-icon name="create"></ion-icon>
+                    </button>
+                </ion-item>
+            </ion-list>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="_user">
+        <ion-card-content>
+            <form [formGroup]="_userForm" (ngSubmit)="editUserDetail()">
+                <h2 style="font-weight: bold;">{{'MOBILE.SETTINGS.MY_DATA' | translate}}</h2>
+                <ion-list no-lines>
+                    <ion-item *ngIf="_userForm.controls['username']">
+                        <ion-label floating>{{'MOBILE.USERNAME' | translate}}</ion-label>
+                        <ion-input formControlName="username" type="text"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="_userForm.controls['first_name']">
+                        <ion-label floating>{{'MOBILE.SETTINGS.FIRST_NAME' | translate}}</ion-label>
+                        <ion-input formControlName="first_name" type="text"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="_userForm.controls['last_name']">
+                        <ion-label floating>{{'MOBILE.SETTINGS.LAST_NAME' | translate}}</ion-label>
+                        <ion-input formControlName="last_name" type="text"></ion-input>
+                    </ion-item>
+                </ion-list>
+                
+                <div *ngIf="this._user.username">
+                    <ion-item *ngIf="_userForm.controls['language_code']">
+                        <ion-label>{{'MOBILE.SETTINGS.LANGUAGE' | translate}}</ion-label>
+                        <ion-select formControlName="language_code">
+                            <ion-option *ngFor="let lang of _languages | async" value="{{lang.language_code}}">{{'MOBILE.LANGUAGE.' + lang.language_code | translate}}</ion-option>
+                        </ion-select>
+                    </ion-item>
+                    
+                    <button ion-button block outline type="submit" [disabled]="!_userForm.valid">{{'MOBILE.UPDATE' | translate}}</button>
+                </div>
+            </form>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

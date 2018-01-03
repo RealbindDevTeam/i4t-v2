@@ -1,0 +1,9 @@
+<button ion-item>
+    <ion-thumbnail item-left>
+    <img src="{{getItemThumb(itemIdIn._id)}}">
+    </ion-thumbnail>
+    <h2 style="white-space: normal">{{itemIdIn.name}}</h2>
+    <p class="custom-paragraph">{{itemIdIn.description}}</p>
+    <p>{{ getItemPrice( itemIdIn ) }} {{_currencyCode}}</p>
+    <p *ngIf="!getItemAvailability()" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
+</button>

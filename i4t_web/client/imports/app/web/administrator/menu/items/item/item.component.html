@@ -1,0 +1,86 @@
+<div class="item-co-1">
+    <mat-card *ngIf="_thereAreUsers">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>{{'ITEMS.WARNING' | translate}} {{_usersCount}} {{'ITEMS.WARNING_2' | translate}}</mat-card-title>
+            <mat-card-subtitle style="margin-bottom: 0px">{{'ITEMS.WARNING_3' | translate}}</mat-card-subtitle>
+        </mat-card-header>
+    </mat-card>
+
+    <mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+        <mat-card-content>
+            <div class="card_initial">
+                <div class="card_initial has-image">
+                    <div class="card_initial-image-container">
+                        <img class="card_initial-image" src="/images/item.png" />
+                    </div>
+                    <div class="card_initial-copy">
+                        <div class="card_initial-tagline">
+                            {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+                        </div>
+                        <div class="card_initial-additional-links">
+                            {{'SECTIONS.MESSAGE' | translate}}
+                        </div>
+                    </div>
+                    <div class="card_initial-button">
+                        <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    
+    <mat-card *ngIf="_thereAreRestaurants && !_thereAreItems" mat-cell="12" class="demo-card demo-basic" style="width: 90%; margin: 0 auto">
+        <mat-card-content>
+            <div class="card_initial">
+                <div class="card_initial has-image">
+                    <div class="card_initial-image-container">
+                        <img class="card_initial-image" src="/images/items.png" />
+                    </div>
+                    <div class="card_initial-copy">
+                        <div class="card_initial-tagline">
+                            {{ 'ITEMS.MSG_INITIAL' | translate }}
+                        </div>
+                        <div class="card_initial-additional-links">
+    
+                        </div>
+                    </div>
+                    <div class="card_initial-button">
+                        <button mat-raised-button (click)="openItemCreation()">{{'ITEMS.CREATE_NEW_ITEM' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <div *ngIf="_thereAreRestaurants && _thereAreItems">
+        <mat-card id="card-main" class="custom-cards" *ngFor="let item of _items | async">
+            <div class="header-card">
+                <img *ngIf="item.image" src="{{ item.image.url }}">
+                <img *ngIf="!item.image" src="/images/default-plate.png">
+                <span class="mat-card-title">{{item.name}}</span>
+                <button matTooltip="{{'ITEMS.EDIT_ITEM' | translate}}" mat-fab class="btn-position-edition" (click)="open(item)">
+                        <mat-icon style="color: white;" class="mat-24">create</mat-icon>
+                    </button>
+            </div>
+            <mat-card-content>
+                <p *ngIf="item.description.length > 50">{{item.description.substring(0, 50)}}...</p>
+                <p *ngIf="item.description.length <= 50">{{item.description}}</p>
+                <div class="card-item-price">{{showItemPrices(item.prices)}}</div>
+                <div class="card-item-tax">{{showItemTaxes(item.prices)}}</div>
+            </mat-card-content>
+            <mat-card-actions class="card-actions">
+                <button mat-raised-button *ngIf="item.is_active" class="inactive-button" style="width: 100%" (click)="updateStatus(item)">{{'ITEMS.INACTIVATE' | translate}}</button>
+                <button mat-raised-button *ngIf="!item.is_active" class="active-button" style="width: 100%" (click)="updateStatus(item)">{{'ITEMS.ACTIVATE' | translate}}</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+            
+    <div *ngIf="_thereAreRestaurants && _thereAreItems" class="fixed-action-btn">
+        <button matTooltip="{{'ITEMS.CREATE_NEW_ITEM' | translate}}" mdTooltipPosition="above" class="fixed-action-btn" mat-fab (click)="openItemCreation()">
+            <mat-icon style="color: white;">
+                add
+            </mat-icon>
+        </button>
+    </div>
+</div>

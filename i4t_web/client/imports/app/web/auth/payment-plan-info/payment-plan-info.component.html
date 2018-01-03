@@ -1,0 +1,86 @@
+<div class="dpr">
+    <div class="dp">
+        <mat-card-content>
+            <mat-vertical-stepper>
+                <mat-step>
+                    <ng-template matStepLabel>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.HOW_ITS_WORKS' | translate}}
+                    </ng-template>
+                    <p>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.FIRST_DAYS_CONTENT' | translate}}
+                    </p>
+                    <div class="inf">
+                        <div class="infb infbp">
+                            <mat-icon class="md-24 info" aria-label="">info</mat-icon>
+                            <span>
+                                {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.FIRST_DAYS_SUGGEST' | translate}}
+                            </span>
+                        </div>
+                    </div>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.ABOUT_MONTHLY_PAYMENT' | translate}}
+                    </ng-template>
+                    <p>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.ABOUT_MONTHLY_PAYMENT_TEXT_1' | translate}}
+                    </p>
+                    <p>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.ABOUT_MONTHLY_PAYMENT_TEXT_2' | translate}}
+                    </p>
+                    <p>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.ABOUT_MONTHLY_PAYMENT_TEXT_3' | translate}} 
+                    </p>
+        
+                    <ul>
+                        <li>
+                            {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.ABOUT_MONTHLY_PAYMENT_TEXT_4' | translate}}
+                        </li>
+                        <li>
+                            {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.ABOUT_MONTHLY_PAYMENT_TEXT_5' | translate}}
+                        </li>
+                    </ul>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.REACTIVATE_IUREST_SERVICE' | translate}}
+                    </ng-template>
+                    <p>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.REACTIVATE_IUREST_SERVICE_CONTENT' | translate}}
+                    </p>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>
+                        {{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.CALCULATOR' | translate}}
+                    </ng-template>
+                    
+                    <mat-card class="cust">
+                        <mat-form-field>
+                            <mat-select [(ngModel)]="_countryId" placeholder="{{'ADMIN_SIGNUP.COUNTRY' | translate}}">
+                                <mat-option *ngFor="let country of _countries | async" value="{{country._id}}" (click)="calculate($event)">{{country.name | translate}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        
+                        <mat-form-field>
+                            <input type="number" min="0" matInput placeholder="Cantidad de restaurantes" [(ngModel)]="_restaurantsUnits" (ngModelChange)="calculate($event)">
+                        </mat-form-field>
+                        
+                        <mat-form-field>
+                            <input type="number" min="0" matInput placeholder="Cantidad de mesas" [(ngModel)]="_tablesUnits" (ngModelChange)="calculate($event)">
+                        </mat-form-field>
+                    </mat-card>
+
+                    <div class="tp">
+                        <span>{{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.RESTAURANT_PRICE' | translate}}: {{_country?.restaurantPrice}} {{_currency?.code}}</span>
+                        <span>{{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.TABLE_PRICE' | translate}}: {{_country?.tablePrice}} {{_currency?.code}}</span>
+                        <span>{{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.TOTAL' | translate}}: {{_total}} {{_currency?.code}}</span>
+                    </div>
+                
+                </mat-step>
+            </mat-vertical-stepper>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-raised-button class="secondary-button" (click)="cancel()">{{'CLOSE' | translate}}</button>
+        </mat-card-actions>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+.subtitle{
+    margin-bottom: 3%;
+}
+
+.name{
+    width: 55%
+}
+
+.description{
+    width: 55%;
+}
+
+.toogle{
+    width: 35%;
+    display: inline-block;
+    margin-left: 5%;
+}
+
+.image{
+    width: 35%;
+    display: inline-block;
+    margin-left: 5%;
+}
+
+.checkbox{
+    padding-right: 15px;
+}
+
+.currencies{
+    width:40%;
+    display: inline-block;
+
+    .currency{
+        width: 80%;
+    }
+}
+
+.taxes{
+    width:45%;
+    display: inline-block;
+    vertical-align:top;
+
+    .tax{
+        width: 65%;
+    }
+}
+
+.restaurants{
+    margin-top: 2%;
+}
+
+.label{
+    display: inline-block;
+}
+
+.garnishQuantityMsg{
+    font-weight: bold;
+    color: red;
+}

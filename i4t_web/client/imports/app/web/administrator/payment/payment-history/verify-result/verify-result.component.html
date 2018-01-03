@@ -1,0 +1,15 @@
+<mat-card style="box-shadow: none">
+    <mat-card-title>{{'RES_PAYMENT_HISTORY.TRANSACTION_STATUS' | translate}}</mat-card-title>
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item>
+                <img mat-list-avatar class="image" src="/images/{{data.responseImage}}">
+                <h1 mat-line class="card-title">{{data.responseStatus | translate}}</h1>
+                <p *ngIf="data.responseStatus == 'RES_PAYMENT_HISTORY.VERIFY_PENDING'" mat-line>{{'RES_PAYMENT_HISTORY.VERIFY_MSG' | translate}}</p>
+            </mat-list-item>
+        </mat-list>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="primary-button" (click)="closeConfirm()">{{ 'RES_PAYMENT_HISTORY.VERIFY_ACCEPT' | translate }}</button>
+    </mat-card-actions>
+</mat-card>

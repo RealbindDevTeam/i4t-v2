@@ -1,0 +1,26 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle icon-only>
+            <ion-icon name='menu'></ion-icon>
+        </button>
+        <ion-title class="logo">
+            <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div *ngIf="_showPaymentInfo" [ngSwitch]="_currentRestaurant.countryId">
+        <component-colombia-payments *ngSwitchCase="'1900'" [restId]="_currentRestaurant._id" [currId]="_currentRestaurant.currencyId" [tabId]="_currentTable"></component-colombia-payments>
+    </div>
+
+    <div *ngIf="!_showPaymentInfo">
+        <div class="img">
+            <img src="assets/img/payments.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{'MOBILE.PAYMENTS.TITTLE_CONTENT' | translate}}</h1>
+            <p>{{'MOBILE.PAYMENTS.CONTENT' | translate}}</p>
+        </div>
+    </div>
+</ion-content>

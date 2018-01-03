@@ -1,0 +1,18 @@
+{
+    "extensions": [
+        "ttf",
+        "woff",
+        "woff2"
+    ],
+    "map": {
+        "node_modules/ionic-angular/fonts/roboto-bold.ttf": "fonts/roboto-bold.ttf",
+        "node_modules/ionic-angular/fonts/roboto-medium.ttf": "fonts/roboto-medium.ttf",
+        "node_modules/ionic-angular/fonts/roboto-regular.ttf": "fonts/roboto-regular.ttf",
+        "node_modules/ionic-angular/fonts/roboto-bold.woff": "fonts/roboto-bold.woff",
+        "node_modules/ionic-angular/fonts/roboto-medium.woff": "fonts/roboto-medium.woff",
+        "node_modules/ionic-angular/fonts/roboto-regular.woff": "fonts/roboto-regular.woff",
+        "node_modules/ionicons/dist/fonts/ionicons.ttf": "fonts/ionicons.ttf",
+        "node_modules/ionicons/dist/fonts/ionicons.woff": "fonts/ionicons.woff",
+        "node_modules/ionicons/dist/fonts/ionicons.woff2": "fonts/ionicons.woff2"
+    }
+}

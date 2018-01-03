@@ -1,0 +1,33 @@
+#loading {
+    position:absolute;
+    left:calc(50% - 60px);
+    top:calc(50% - 25px);
+    //z-index:9999
+}
+
+.uil-ripple {
+    position:absolute;
+    left:calc(50% - 90px);
+    top:calc(50% - 90px);
+    opacity:.5;
+    z-index:999
+}
+
+.ld-i {opacity:0;animation: ld-in 3s 0.0s ease infinite;}
+.ld-u {opacity:0;animation: ld-in 3s 0.1s ease infinite;}
+.ld-r {opacity:0;animation: ld-in 3s 0.2s ease infinite;}
+.ld-e {opacity:0;animation: ld-in 3s 0.3s ease infinite;}
+.ld-s {opacity:0;animation: ld-in 3s 0.4s ease infinite;}
+.ld-t {opacity:0;animation: ld-in 3s 0.5s ease infinite;}
+
+@keyframes ld-in {
+    0% {opacity:0;transform:scale(0);}
+    30% {opacity:1;transform:scale(1);}
+    100% {opacity:1;transform:scale(1);}
+}
+
+.card_image {
+    background-image: url(/images/background_waiter.png); 
+    background-repeat: no-repeat; 
+    background-size: 100% 100%;
+}

@@ -1,0 +1,117 @@
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" 
+                        src="/images/employees.png"/>
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+                    </div>
+                    <div class="card_initial-additional-links">
+                        {{'SECTIONS.MESSAGE' | translate}}
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+    
+<div *ngIf="_thereAreRestaurants" class="global-div">
+    <div class="div-whitout-overflow">
+        <div class="cards-div">
+            <mat-card style="margin: 24px;">
+                <mat-card-title>{{'COLLABORATORS.COLLABORATORS_SEARCH' | translate}}</mat-card-title>
+                <mat-card-subtitle>{{'COLLABORATORS.COLLABORATORS_TEXT' | translate}}</mat-card-subtitle>
+                <mat-card-content>
+                    <mat-form-field  style="width: 100%;">
+                        <mat-select placeholder="{{'TABLES.SELECT_RESTAURANT' | translate}}">
+                            <mat-option *ngFor="let rest of _restaurants | async" (click)="collaboratorsSearch(rest._id);" value="{{rest._id}}">{{rest.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-card-content>
+            </mat-card>
+            
+            <mat-card *ngIf="_thereAreRestaurants && (_userDetails | async)?.length <= 0" mat-cell="12" class="demo-card demo-basic" style="margin: 24px;">
+                <mat-card-content>
+                    <div class="card_initial">
+                        <div class="card_initial has-image">
+                            <div class="card_initial-image-container">
+                                <img class="card_initial-image" 
+                                    src="/images/employees.png"/>
+                            </div>
+                            <div class="card_initial-copy">
+                                <div class="card_initial-tagline">
+                                    {{'COLLABORATORS.MSG_INITIAL' | translate}}
+                                </div>
+                                <div class="card_initial-additional-links">
+                                    
+                                </div>
+                            </div>
+                            <div class="card_initial-button">
+                                <button mat-raised-button (click)="openCollaboratorstRegister()">{{'COLLABORATORS.BTN' | translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            
+            <mat-card *ngFor="let userdetail of _userDetails | async" class="cards">
+                <div *ngFor="let user of _users | async">
+                    <div *ngIf="userdetail.user_id == user._id">
+                        <mat-card-header style="height: 80px; background: #eee;">
+                            <img class="img" mat-list-avatar src="/images/user_default_image.png">
+                            <mat-list>
+                                <mat-list-item>
+                                    <h3 mat-line> {{user.profile.first_name}} {{user.profile.last_name}} </h3>
+                                    <p mat-line>
+                                        <span> {{user.username}} </span>
+                                    </p>
+                                </mat-list-item>
+                            </mat-list>
+                        </mat-card-header>
+            
+                        <mat-card-content>
+                            <button mat-mini-fab class="btn_edit" (click)="editCollaborator(userdetail, user)"> 
+                                <mat-icon style="color: white;">edit</mat-icon>
+                            </button>
+                            <ul class="list">
+                                <li *ngFor="let role of _roles | async">
+                                    <ng-template [ngIf]="role._id == userdetail.role_id">
+                                        <mat-icon matTooltip="{{'JOB' | translate}}" style="vertical-align: middle">assignment ind</mat-icon>
+                                        <label> {{ role.name | translate }} </label>
+                                    </ng-template>
+                                </li>
+                                <li *ngIf="user.emails">
+                                    <mat-icon style="vertical-align: middle" matTooltip="{{'EMAIL' | translate}}">mail outline</mat-icon>
+                                    <span> {{user.emails[0].address}} </span>
+                                </li>
+                                <li *ngIf="userdetail.phone">
+                                    <mat-icon style="vertical-align: middle" matTooltip="{{ 'PHONE' | translate }}">phone</mat-icon>
+                                    <span> {{userdetail.phone}} </span>
+                                </li>
+                                <li *ngIf="userdetail.birthdate">
+                                    <mat-icon style="vertical-align: middle" matTooltip="{{ 'BIRTHDATE' | translate }}">event</mat-icon>
+                                    <span> {{userdetail.birthdate | date: 'dd/MM/yyyy'}} </span>
+                                </li>
+                                <li>
+                                    <mat-slide-toggle [(checked)]="userdetail.is_active" (change)="changeUserState(userdetail)">
+                                        {{ 'STATE' | translate }}
+                                    </mat-slide-toggle>
+                                </li>
+                            </ul>
+                        </mat-card-content>
+                    </div>
+                </div>
+            </mat-card>
+            <button *ngIf="(_userDetails | async)?.length > 0" class="fixed-action-btn" mat-fab (click)="openCollaboratorstRegister()">
+                <mat-icon style="color: white;">add</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

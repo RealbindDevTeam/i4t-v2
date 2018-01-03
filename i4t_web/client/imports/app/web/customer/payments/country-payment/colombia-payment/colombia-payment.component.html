@@ -1,0 +1,88 @@
+<div class="dpa">
+    <div class="dcf">
+        <div class="dc">
+            <div class="dmpc">
+                <mat-card *ngIf="_paymentCreated">
+                    <mat-list>
+                        <mat-list-item>
+                            <img mat-list-avatar class="custom" src="/images/waiter.png">
+                            <h2 mat-line class="card-title">{{'PAYMENTS.COLOMBIA.PENDING_PAYMENT_TITLE' | translate}}</h2>
+                            <p mat-line class="card-waiter-msg">{{'PAYMENTS.COLOMBIA.PENDING_PAYMENT_MSG' | translate}}</p>
+                            <button mat-raised-button class="primary-button card-button show-btn" (click)="viewPaymentDetail()">{{'PAYMENTS.COLOMBIA.VIEW_DETAIL' | translate}}</button>
+                            <button md-icon-button class="show-fab" (click)="viewPaymentDetail()">
+                                <mat-icon class="md-24" aria-label="">keyboard_arrow_right</mat-icon>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </mat-card>
+                <mat-card>
+                    <mat-list>
+                        <mat-list-item>
+                            <img mat-list-avatar class="custom" src="/images/orders-detail.png">
+                            <h2 mat-line class="card-title">{{'PAYMENTS.COLOMBIA.ORDER_DETAILS' | translate}}</h2>
+                            <p mat-line class="card-subtitle">{{'PAYMENTS.COLOMBIA.VIEW_ORDERS_DETAIL' | translate}}</p>
+                            <button mat-raised-button class="primary-button card-button show-btn" (click)="viewOrderDetail()">{{'PAYMENTS.COLOMBIA.VIEW_DETAIL' | translate}}</button>
+                            <button md-icon-button class="show-fab" (click)="viewOrderDetail()">
+                                <mat-icon class="md-24" aria-label="">keyboard_arrow_right</mat-icon>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </mat-card>
+                <mat-card>
+                    <mat-list>
+                        <mat-list-item>
+                            <img mat-list-avatar class="custom" src="/images/orders-transfer.png">
+                            <h2 mat-line class="card-title">{{'PAYMENTS.COLOMBIA.ADD_ORDER' | translate}}</h2>
+                            <p mat-line class="card-subtitle">{{'PAYMENTS.COLOMBIA.ADD_ORDER_MSG' | translate}}</p>
+                            <button mat-raised-button class="primary-button card-button show-btn" (click)="viewOrderTranslate()">{{'PAYMENTS.COLOMBIA.VIEW_DETAIL' | translate}}</button>
+                            <button md-icon-button class="show-fab" (click)="viewOrderTranslate()">
+                                <mat-icon class="md-24" aria-label="">keyboard_arrow_right</mat-icon>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                    <div *ngIf="_showAlertToConfirm" class="show-alert">
+                        <mat-icon class="confirm">info</mat-icon>
+                    </div>
+                    <div *ngIf="_showAlertWithPendingConf" class="show-alert">
+                        <mat-icon class="pending-confirm">info</mat-icon>
+                    </div>
+                </mat-card>
+
+                <mat-card>
+                    <mat-card-title>{{'PAYMENTS.COLOMBIA.PAYMENT_OPTIONS' | translate}}</mat-card-title>
+                    <mat-card-content>
+                        <div class="tip">
+                            <mat-checkbox (change)="allowTip($event)" [(ngModel)]="_isCheckedTip">{{'PAYMENTS.COLOMBIA.TIPS' | translate}} ({{_tipValue}}%)</mat-checkbox>
+                            <span>{{_tipTotalString}} {{_currencyCode}}</span>
+                        </div>
+
+                        <div class="tip">
+                            <mat-checkbox (change)="allowOtherTip($event)" [(ngModel)]="_isCheckedOtherTip">{{'PAYMENTS.COLOMBIA.OTHER_VALUE' | translate}}:</mat-checkbox>
+                            <div class="otherTip-content">
+                                <mat-form-field class="otherTip">
+                                    <input matInput type="number" min="0" [(disabled)]="_otherTipAllowed" [(ngModel)]="_otherTip" (input)="sumOtherTip($event.target.value)">
+                                </mat-form-field>{{_currencyCode}}
+                            </div>
+                        </div>
+
+                        <mat-form-field class="payment-methods">
+                            <mat-select placeholder="{{'PAYMENTS.COLOMBIA.SELECT_PAYMENT_METHOD' | translate}}" [(ngModel)]="_paymentMethodId">
+                                <mat-option *ngFor="let paymentMethod of _paymentMethods | async" (click)="setPaymentMethod(paymentMethod._id);" value="{{paymentMethod._id}}">{{paymentMethod.name | translate}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <div class="tip">
+                            <h2>{{'PAYMENTS.COLOMBIA.TOTAL_TO_PAY' | translate}}</h2>
+                            <h2>{{_totalToPayment}} {{_currencyCode}}</h2>
+                        </div>
+
+                        <button mat-raised-button class="primary-button" [disabled]="_OutstandingBalance" (click)="pay()">{{'PAYMENTS.COLOMBIA.PAY' | translate}}</button>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>

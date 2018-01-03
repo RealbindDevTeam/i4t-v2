@@ -1,0 +1,90 @@
+.dpr {
+    position: relative;
+}
+
+.dp {
+    padding: 24px 0 0;
+}
+
+div.inf {
+    padding: 0 0 0 24px;
+    background-color: #eceff1;
+    color: #546e7a;
+}
+
+div.infb{
+    margin-right: 24px;
+    position: relative;
+    padding: 12px 0;
+    line-height: 20px;
+    font-size: 14px;
+}
+
+div.infbp{
+    padding-left: 36px;
+}
+
+mat-card-actions {
+    margin-top: 1em;
+    width: 100%;
+    display: block;
+}
+
+mat-card-title.margin-top {
+    margin-top: 16px;
+}
+
+ul {
+    color: rgba(0, 0, 0, 0.71);
+    padding-left: 16px;
+}
+
+mat-card.cust {
+    margin-top: 24px;
+    padding: 12px 12px 0px 12px;
+}
+
+div.calc {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+mat-icon {
+    color: rgba(0,0,0,0.54);
+}
+
+mat-icon.info {
+    color: #78909c;
+    position: absolute;
+    left: 0;
+}
+
+div.tp {
+    text-align: right;
+}
+
+div.tp span {
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
+
+@media only screen and (max-width: 360px) {
+    mat-vertical-stepper {
+        margin: 0 -24px !important;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+
+    div.inf {
+        padding: 0 0 0 12px;
+    }
+
+    mat-form-field{
+        width: 100%;
+    }
+}

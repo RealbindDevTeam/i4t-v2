@@ -1,0 +1,33 @@
+.fixed-action-btn {		
+    position: relative;
+
+    button {
+        position: absolute;
+        bottom: 30px;
+        right: 35px;
+        width: 56px;
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+    }
+ }
+
+.img{
+    margin: auto;
+    width: 200px;
+    height: 200px;
+
+    img {
+        width: 100%
+    }
+}
+
+.code {
+    font-size: 1.8rem; 
+    font-weight: 500; 
+    text-align: center
+}
+
+.error {
+    text-align: center;
+}

@@ -1,0 +1,33 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>{{'MOBILE.SECTIONS.ADDITION' | translate}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <ion-card-content>
+            <p>
+                {{'MOBILE.ORDERS.ADD_ADDITIONS' | translate}}
+            </p>
+
+            <div *ngFor="let add of _additionDetails | async">
+                <form [formGroup]="_additionsDetailFormGroup">
+                    <ion-item>
+                        <ion-label floating>{{ getAdditionInformation(add) }} {{_currencyCode}}</ion-label>
+                        <ion-input type="number" formControlName="control" min="0" max="99"></ion-input>
+                    </ion-item>
+                </form>
+            </div>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
+
+<ion-footer padding *ngIf="_isUserAndCorrect">
+    <button ion-button block outline (click)="showComfirmClose()" style="width: 48%; display: inline-block">
+        {{'MOBILE.ORDERS.DELETE_ADDITION_ORDER' | translate}}
+    </button>
+    <button ion-button block outline (click)="editOrderAddition()" style="width: 48%; display: inline-block">
+        {{'MOBILE.ORDERS.MODIFY_ADDITION_ORDER' | translate}}
+    </button>
+</ion-footer>

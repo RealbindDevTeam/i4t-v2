@@ -1,0 +1,22 @@
+<mat-card>
+    <mat-card-title>{{'CATEGORIES.CATEGORY_EDIT' | translate}}</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="_editForm" (ngSubmit)="editCategory();">
+            <mat-form-field class="name">
+                <input matInput required formControlName="editName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="50" #editInputName>
+                <mat-hint align="end">{{editInputName.value.length}} / 50</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="select">
+                <mat-select formControlName="editSection" placeholder="{{'CATEGORIES.SECCION_SELECTION' | translate}}">
+                    <mat-option *ngFor="let section of _sections | async" value="{{section._id}}" (click)="changeSectionEdit(section._id);" ng-selected="_categorySection === section._id">{{section.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-slide-toggle formControlName="editIsActive">{{'STATE' | translate}}</mat-slide-toggle>
+            <br/>
+            <div>
+                <button mat-raised-button class="secondary-button" type="button" (click)="_dialogRef.close()">{{'CANCEL' | translate}}</button>
+                <button mat-raised-button class="primary-button" [disabled]="!_editForm.valid" type="submit">{{'UPDATE' | translate}}</button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

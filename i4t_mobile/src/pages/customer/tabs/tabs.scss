@@ -1,0 +1,37 @@
+//$primary-color: #EF5350 !important;
+$primary-color: #1e222a !important;
+$white_color-text: White;
+
+.toolbar-background-md {
+    background: $primary-color;
+}
+
+.toolbar-background-ios {
+    background: $primary-color;
+}
+
+.toolbar-title-md {
+    color: $white_color-text;
+}
+
+.toolbar-title-ios {
+    color: $white_color-text;
+}
+
+.tabs-md .tabbar {
+    background: #fff;
+}
+
+.tabs-ios .tabbar {
+    background: #fff;
+}
+
+.button-effect {
+    background-color: $primary-color;
+}
+
+.nav-logo{
+    width: 14rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

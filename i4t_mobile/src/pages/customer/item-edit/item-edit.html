@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{getItemName(_item_code)}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div *ngFor="let item of _items | async">
+    <div class="crop">
+      <img *ngIf="item.image" src="{{item.image.url}}" style="display:inline-block">
+      <img *ngIf="!item.image" src="assets/img/default-plate.png" style="display:inline-block">
+    </div>
+    <ion-card class="ion-card-custom" style="margin: 0px !important">
+      <ion-card-content>
+        <ion-card-title>{{item.name}}</ion-card-title>
+        <p class="item-paragraph-custom" style="margin-bottom: 10px">
+          {{item.description}}
+        </p>
+        <div>{{setMaxGarnishFoodElements(item.garnishFoodQuantity)}}</div>
+        <div *ngFor="let order of _orders | async">
+          <div *ngFor="let itemId of order?.items">
+            <div *ngIf="itemId.itemId == item._id && itemId.index == _item_order_index">
+              <ion-list>
+                <ion-item style="padding-left: 0px">
+                  <ion-label>
+                    {{'MOBILE.SECTIONS.UNIT_PRICE' | translate}} <span style="color: #666"> {{_unitPrice}} {{_currencyCode}}</span>
+                  </ion-label>
+                </ion-item>
+                <ion-item style="padding-left: 0px">
+                  <ion-label>
+                    {{'MOBILE.SECTIONS.TIME' | translate}} <span style="color: #666"> {{ item.time }} </span>
+                  </ion-label>
+                </ion-item>
+                <ion-item *ngIf="getItemAvailability()" style="padding-left: 0px">
+                  {{'MOBILE.SECTIONS.QUANTITY' | translate}} <span style="color: #666; font-size: initial"> {{_quantityCount}}</span>
+                  <button *ngIf="showActionsFooter()" ion-button item-right icon-left outline (click)="removeCount()" [disabled]="_disabledMinusBtn">
+                    <ion-icon style="padding-right: 0px" name="remove"></ion-icon>
+                  </button>
+                  <button *ngIf="showActionsFooter()" ion-button item-right icon-left outline style="margin-right: 0px;" (click)="addCount()">
+                    <ion-icon style="padding-right: 0px" name="add"></ion-icon> 
+                  </button>
+                </ion-item>
+              </ion-list>
+              <p *ngIf="!getItemAvailability()" class="item-paragraph-custom" style="margin-top: 15px;  color: #000">
+                {{'MOBILE.SECTIONS.ITEM_UNAVAILABLE' | translate}}
+              </p>
+              <button [disabled]="!showActionsFooter()" ion-button clear block icon-left class="button-secundary btn-size-custom" *ngIf="item.observations && getItemAvailability() && (itemId.observations == '')"
+                (click)="presentModal()" style="text-transform: inherit; margin-bottom: 15px">
+                <ion-icon name="chatboxes" *ngIf="_observations != null"></ion-icon>
+                {{_observations != null ? _observations.substring(0, 20)+ '...': 'MOBILE.SECTIONS.OBSERVATIONS' | translate}}
+              </button>
+
+              <button [disabled]="!showActionsFooter()" ion-button clear block icon-left class="button-secundary btn-size-custom" *ngIf="item.observations && getItemAvailability() && (itemId.observations != '')"
+                (click)="presentModal(itemId.observations)" style="text-transform: inherit; margin-bottom: 15px">
+                <ion-icon name="chatboxes" *ngIf="_observations != null || (itemId.observations && _auxCounter == 0)"></ion-icon>
+                {{_observations != null ? _observations.substring(0, 20)+ '...': 
+                (_auxCounter == 0 ? ( itemId.observations ? itemId.observations.substring(0, 20) + '...' : 'MOBILE.SECTIONS.OBSERVATIONS' | translate )
+                : 'MOBILE.SECTIONS.OBSERVATIONS' | translate)}}
+              </button>
+
+              <form [formGroup]="_newOrderForm">
+                <div *ngIf="item.garnishFood.length > 0 && getItemAvailability()">
+                  <h3 class="custom-padding">{{'MOBILE.SECTIONS.GARNISHES' | translate}}</h3>
+                  <p>{{'MOBILE.SECTIONS.MAX_GARNISH' | translate}} {{item.garnishFoodQuantity}}</p>
+                  <div formGroupName="garnishFood">
+                    <div *ngFor="let itemGarnish of item.garnishFood">
+                      <div *ngFor="let garnish of _garnishes | async">
+                        <ion-item *ngIf="itemGarnish == garnish._id" class="ion-item-cust" style="padding-left: 0px">
+                          <ion-label style="white-space: normal">{{garnish.name}} - <span style="color: #666">{{ getGarnishFoodPrice( garnish ) }} {{_currencyCode}} x {{_quantityCount}}</span></ion-label>
+                          <ion-checkbox [formControlName]="garnish.name" (ionChange)="calculateFinalPriceGarnishFood($event, getGarnishFoodPrice( garnish ))"
+                            color="primary" [class.invalid]="!_newOrderForm.controls.garnishFood.valid"></ion-checkbox>
+                        </ion-item>
+                      </div>
+                    </div>
+                  </div>
+                  <p *ngIf="_showGarnishFoodError" style="color: #ef5350; margin-bottom: 5px">{{'MOBILE.SECTIONS.SELECT_MAX_VALID' | translate}} {{item.garnishFoodQuantity}} {{'MOBILE.SECTIONS.GARNISHES'
+                    | translate}}</p>
+                </div>
+                <br/>
+                <div *ngIf="item.additions.length > 0 && getItemAvailability()">
+                  <h3 class="custom-padding">{{'MOBILE.SECTIONS.ADDITIONS' | translate}}</h3>
+                  <div formGroupName="additions">
+                    <div *ngFor="let itemAddition of item.additions">
+                      <div *ngFor="let addition of _additions | async">
+                        <ion-item class="ion-item-cust" style="padding-left: 0px" *ngIf="itemAddition ==  addition._id">
+                          <ion-label style="white-space: normal">{{addition.name}} - <span style="color: #666">{{ getAdditionsPrice( addition ) }} {{_currencyCode}} x {{_quantityCount}}</span></ion-label>
+                          <ion-checkbox [formControlName]="addition.name" (ionChange)="calculateFinalPriceAddition($event, getAdditionsPrice( addition ))"
+                            color="primary" [class.invalid]="!_newOrderForm.controls.additions.valid"></ion-checkbox>
+                        </ion-item>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+<ion-footer *ngIf="showActionsFooter()" class="ion-footer-custom" padding>
+  <div style="position: relative; width: 100%; text-align: right;">
+    <ion-label style="font-size: large; margin-top: 0px; font-weight: bold;">{{'MOBILE.SECTIONS.TOTAL' | translate}}{{_finalPrice}} {{_currencyCode}} </ion-label>
+  </div>
+  <div>
+    <button style="float:left; width: 45%" ion-button outline (click)="deleteOrderItem()">{{'MOBILE.ITEM_EDIT.REMOVE' | translate}}</button>
+    <button [disabled]="_disabledAddBtn" style="float: right; width: 45%" ion-button outline (click)="editOrderItem()">{{'MOBILE.ITEM_EDIT.MODIFY' | translate}}</button>
+  </div>
+</ion-footer>
+
+<ion-footer *ngIf="!showActionsFooter()" padding>
+  <div style="position: relative; width: 100%; text-align: right;">
+    <ion-label style="font-size: large; margin-top: 0px; font-weight: bold;">{{'MOBILE.SECTIONS.TOTAL' | translate}}{{_finalPrice}} {{_currencyCode}} </ion-label>
+  </div>
+</ion-footer>

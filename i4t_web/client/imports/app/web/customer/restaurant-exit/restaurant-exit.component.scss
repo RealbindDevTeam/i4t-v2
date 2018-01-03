@@ -1,0 +1,32 @@
+.card-title{
+    font-size: 1.5rem;
+    color: #114b5f;
+    font-weight: 500;
+}
+
+.card-waiter-msg{
+    font-size: 1rem;
+    margin-bottom: 4%;
+}
+
+.primary-button, .fab-button {
+    display: none;
+}
+
+@media only screen and (max-width: 600px) {
+    .fab-button {
+        display: block;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .primary-button{
+        display: block;
+        min-width: auto;
+    }
+
+    .image{
+        width: 100px !important; 
+        height: 100px !important;
+    }
+}

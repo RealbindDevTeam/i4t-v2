@@ -1,0 +1,53 @@
+.title{
+    color: black;
+    font-weight: bold;
+}
+
+.regime-si-total{
+    margin: 0 auto;
+    text-align: center;
+}
+
+.info{
+    display: inline-block;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.di {
+    display: flex;
+    margin: 24px 16px 0;
+}
+
+.dic {
+    display: block;
+    margin-left: 16px;
+}
+
+.dic h2{
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+}
+
+.did p{
+    margin-right: 16px;
+}
+
+@media only screen and (min-width: 600px) {
+    .did p{
+        display: -webkit-inline-box;
+    }
+}
+
+img.custom {
+    width: 80px !important; 
+    height: 80px !important;
+}
+
+.divider{
+    margin-left: 122px;
+}
+
+.nws {
+    white-space: unset !important;
+}

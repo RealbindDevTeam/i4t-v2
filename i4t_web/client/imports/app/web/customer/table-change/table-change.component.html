@@ -1,0 +1,61 @@
+<div *ngFor="let userDetail of _userDetails | async">
+    <div *ngIf=" userDetail.current_restaurant !== '' && userDetail.current_table !== '' ">
+        <div *ngFor="let table of _tables | async">
+            <div *ngIf="table._id === userDetail.current_table">
+                <restaurant-info [restaurantId]="userDetail.current_restaurant" [tableQRCode]="table.QR_code"></restaurant-info>
+                <mat-card mat-cell="12">
+                    <mat-card-content>
+                        <div class="card_initial">
+                            <div class="card_initial has-image">
+                                <form [formGroup]="_changeTableForm" (ngSubmit)="changeUserTable(userDetail.current_restaurant,table.QR_code);">
+                                    <div class="card_initial-image-container">
+                                        <img class="card_initial-image" 
+                                            src="/images/delivery-of-item.png"/>
+                                    </div>
+                                    <div class="card_initial-copy">
+                                        <div class="card_initial-tagline">
+                                            {{'CHANGE_TABLE.MSG_INITIAL' | translate}}
+                                        </div>
+                                        <div class="card_initial-additional-links">
+                                            <mat-form-field style="width: 60%;">
+                                                <input matInput required formControlName="qrCodeDestiny" minlength="6" class="code" #input [value]="input.value.toUpperCase()">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="card_initial-button">
+                                        <button mat-raised-button (click)="cancel()">{{'CHANGE_TABLE.CANCEL' | translate}}</button>
+                                        <button mat-raised-button [disabled]="!_changeTableForm.valid" type="submit">{{'CHANGE_TABLE.ENTER' | translate}}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div *ngIf=" userDetail.current_restaurant === '' && userDetail.current_table === '' ">
+        <mat-card mat-cell="12">
+            <mat-card-content>
+                <div class="card_initial">
+                    <div class="card_initial has-image">
+                        <div class="card_initial-image-container">
+                        <img class="card_initial-image" src="/images/items.png"/>
+                        </div>
+                        <div class="card_initial-copy">
+                        <div class="card_initial-tagline">
+                            {{'CHANGE_TABLE.THERE_IS_NOT_REST' | translate}}
+                        </div>
+                        <div class="card_initial-additional-links">
+                            {{'CHANGE_TABLE.THERE_IS_NOT_REST_MSG' | translate}}
+                        </div>
+                        </div>
+                        <div class="card_initial-button">
+                        <button mat-raised-button (click)="goToOrders()">{{'CHANGE_TABLE.GO_TO_ORDERS' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

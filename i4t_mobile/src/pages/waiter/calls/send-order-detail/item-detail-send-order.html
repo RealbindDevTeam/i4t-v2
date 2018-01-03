@@ -1,0 +1,15 @@
+<ion-item-group *ngFor="let it of _items | async">
+    <ion-item-divider style="padding-left: 0; background: white; font-weight: bold;">{{item.quantity}} • {{it.name}}</ion-item-divider>
+
+    <p *ngIf="(item.garnishFood.length <= 0)" style="color: green;">{{ 'MOBILE.SEND_ORDER.NO_GARNISH_FOOD' | translate }}</p>
+    <div *ngIf="(item.garnishFood.length > 0)">
+        <p style="color: green;">{{ 'MOBILE.SEND_ORDER.GARNISH_FOOD' | translate }}:</p>
+        <garnish-food-send-order-component *ngFor="let gar of item.garnishFood" [garnish]="gar"></garnish-food-send-order-component>
+    </div>
+    
+    <p *ngIf="(item.additions.length <= 0)" style="color: darkgoldenrod;">{{ 'MOBILE.SEND_ORDER.NO_ADDITIONS' | translate }}</p>
+    <div *ngIf="(item.additions.length > 0)">
+        <p style="color: darkgoldenrod;">{{ 'MOBILE.SEND_ORDER.ADDITIONS' | translate }}:</p>
+        <additions-send-order-component *ngFor="let add of item.additions" [addition]="add" [quantity]="item.quantity"></additions-send-order-component>
+    </div>
+</ion-item-group>

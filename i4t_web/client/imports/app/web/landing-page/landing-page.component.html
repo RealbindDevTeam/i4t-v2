@@ -1,0 +1,316 @@
+<div id="sidenav-bg" class="sidenav-bg"></div>
+
+<mat-toolbar class="home-mat-toolbar opacity animated fadeInDown" data-animation="fadeInDown" data-timeout="1000">
+    <div class="nav-wrapper container">
+        <a id="logo-container" routerLink="/" class="brand-logo">
+            <img src="/images/logo_iurest_white.png" alt="iurest">
+        </a>
+        <span class="app-flex-filler"></span>
+
+        <ul style="padding-left: 15px" class="right hide-on-med-and-down">
+            <button mat-raised-button class="primary-button" style="font-size: .9rem" [routerLink]="['/signup']">{{'LANDING.SIGNUP' | translate}}</button>
+        </ul>
+        <ul style="padding-left: 15px" class="right hide-on-med-and-down">
+            <button mat-raised-button class="secondary-button" style="font-size: .9rem" [routerLink]="['/signin']">{{'LANDING.SIGNIN' | translate}}</button>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <a [mat-menu-trigger-for]="menu" id="user-dropdown-toggler">{{'LANDING.LANGUAGE' | translate}}
+                    <mat-icon style="vertical-align: middle">keyboard_arrow_down</mat-icon>
+                </a>
+            </li>
+
+            <div style="padding-top: 70px; position: fixed">
+                <mat-menu #menu="matMenu" id="mat-overlay-pane">
+                    <button mat-menu-item disabled>{{'LANDING.LANGUAGE_SELECT' | translate}}</button>
+                    <button mat-menu-item *ngFor="let lang of _languages | async" (click)="langChange(lang.language_code)" value="{{lang.language_code}}">{{lang.name}}</button>
+                </mat-menu>
+            </div>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <a (click)="goToSection('owner', false)" data-target="#contact">{{'LANDING.OWNER' | translate}}</a>
+            </li>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <a (click)="goToSection('home', false)" data-target="#home" class="active">{{'LANDING.HOME' | translate}}</a>
+            </li>
+        </ul>
+
+        <a href="javascript:void(0)" class="button-collapse" (click)="openNav()">
+            <i *ngIf="_showIconMenu" class="material-icons">menu</i>
+            <i *ngIf="!_showIconMenu" class="material-icons">arrow_back</i>
+        </a>
+    </div>
+</mat-toolbar>
+
+<div id="sidenav-dev" class="sidenav">
+    <div class="sidenav-item">
+        <ul>
+            <li>
+                <a (click)="goToSection('home', true)">{{'LANDING.HOME' | translate}}</a>
+            </li>
+            <li>
+                <a (click)="goToSection('owner', true)">{{'LANDING.OWNER' | translate}}</a>
+            </li>
+            <li>
+                <a [mat-menu-trigger-for]="menu" id="user-dropdown-toggler">
+                    {{'LANDING.LANGUAGE' | translate}}
+                    <mat-icon style="float:right; line-height: inherit">keyboard_arrow_down</mat-icon>
+                </a>
+                <div style="padding-top: 70px; position: fixed">
+                    <mat-menu #menu="matMenu" id="mat-overlay-pane">
+                        <button mat-menu-item disabled>{{'LANDING.LANGUAGE_SELECT' | translate}}</button>
+                        <button mat-menu-item *ngFor="let lang of _languages | async" (click)="langChange(lang.language_code)" value="{{lang.language_code}}">{{lang.name}}</button>
+                    </mat-menu>
+                </div>
+            </li>
+            <li>
+                <a [routerLink]="['/signup']">{{'LANDING.SIGNUP' | translate}}</a>
+            </li>
+            <li>
+                <a [routerLink]="['/signin']">{{'LANDING.SIGNIN' | translate}}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="home">
+    <div class="parallax img-1 parallax-container">
+        <div class="container dwp">
+            <div class="dw">
+                <div class="dwt">
+                    <div class="dwt-1 opacity animated fadeInDown" data-animation="fadeInUp" data-timeout="300">
+                        {{'LANDING.HOME_CONTENT.TITLE' | translate}}
+                    </div>
+                    <div class="dwt-2 opacity animated fadeInDown" data-animation="fadeInUp" data-timeout="600">
+                        {{'LANDING.HOME_CONTENT.TEXT1' | translate}}
+                    </div>
+                    <div class="box-sizing">
+                        <div class="dwt-3 opacity animated fadeInDown" data-animation="fadeInUp" data-timeout="800">
+                            {{'LANDING.HOME_CONTENT.TEXT2' | translate}}
+                        </div>
+                        <div class="dwtl opacity animated fadeInDown" data-animation="fadeInUp" data-timeout="1000">
+                            <a href="">
+                                <img *ngIf="_userLang === 'en'" alt="" src="/images/asd-en.png"/>
+                                <img *ngIf="_userLang === 'es'" alt="" src="/images/asd-es.png"/>
+                            </a>
+                            <a href="">
+                                <img *ngIf="_userLang === 'en'" alt="" src="/images/psd-en.png"/>
+                                <img *ngIf="_userLang === 'es'" alt="" src="/images/psd-es.png"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="dwi">
+                    <div class="dwimg opacity animated fadeInDown" data-animation="fadeIn" data-timeout="300">
+                        <img src="/images/iphone.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<mat-toolbar class="menu menu_bar-hide">
+    <div class="nav-wrapper container">
+        <a id="logo-container" routerLink="/" class="brand-logo">
+            <img src="/images/logo_iurest_white.png" alt="iurest">
+        </a>
+        <span class="app-flex-filler"></span>
+
+        <ul style="padding-left: 15px" class="right hide-on-med-and-down">
+            <button mat-raised-button class="primary-button" style="font-size: .9rem" [routerLink]="['/signup']">{{'LANDING.SIGNUP' | translate}}</button>
+        </ul>
+        <ul style="padding-left: 15px" class="right hide-on-med-and-down">
+            <button mat-raised-button class="secondary-button" style="font-size: .9rem" [routerLink]="['/signin']">{{'LANDING.SIGNIN' | translate}}</button>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <a [mat-menu-trigger-for]="menu" id="user-dropdown-toggler">{{'LANDING.LANGUAGE' | translate}}
+                    <mat-icon style="vertical-align: middle">keyboard_arrow_down</mat-icon>
+                </a>
+            </li>
+
+            <div style="padding-top: 70px; position: fixed">
+                <mat-menu #menu="matMenu" id="mat-overlay-pane">
+                    <button mat-menu-item disabled>{{'LANDING.LANGUAGE_SELECT' | translate}}</button>
+                    <button mat-menu-item *ngFor="let lang of _languages | async" (click)="langChange(lang.language_code)" value="{{lang.language_code}}">{{lang.name}}</button>
+                </mat-menu>
+            </div>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <a (click)="goToSection('owner', false)" data-target="#contact">{{'LANDING.OWNER' | translate}}</a>
+            </li>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <a (click)="goToSection('home', false)" data-target="#home" class="active">{{'LANDING.HOME' | translate}}</a>
+            </li>
+        </ul>
+        <a href="javascript:void(0)" class="button-collapse" (click)="openNav()">
+            <i class="material-icons">menu</i>
+        </a>
+    </div>
+</mat-toolbar>
+
+<div class="id">
+    <div class="container center">
+        <div class="idc opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
+            <img src="/images/iphone.png" />
+        </div>
+    </div>
+</div>
+
+<div id="about">
+    <div class="container">
+        <div class="section">
+            <div class="br">
+                <div class="bc opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
+                    <div class="icon-block center">
+                        <h2>
+                            <i class="material-icons bi">devices</i>
+                        </h2>
+                        <h5>{{'LANDING.ABOUT_CONTENT.TITLE1' | translate}}</h5>
+                        <p class="light">{{'LANDING.ABOUT_CONTENT.TEXT1' | translate}}</p>
+                    </div>
+                </div>
+
+                <div class="bc opacity revealOnScroll" data-animation="fadeInUp" data-timeout="600">
+                    <div class="icon-block center">
+                        <h2>
+                            <i class="material-icons bi">search</i>
+                        </h2>
+                        <h5>{{'LANDING.ABOUT_CONTENT.TITLE2' | translate}}</h5>
+                        <p class="light">{{'LANDING.ABOUT_CONTENT.TEXT2' | translate}}</p>
+                    </div>
+                </div>
+
+                <div class="bc opacity revealOnScroll" data-animation="fadeInUp" data-timeout="900">
+                    <div class="icon-block center">
+                        <h2>
+                            <i class="material-icons bi">pan_tool</i>
+                        </h2>
+                        <h5>{{'LANDING.ABOUT_CONTENT.TITLE3' | translate}}</h5>
+                        <p class="light">{{'LANDING.ABOUT_CONTENT.TEXT3' | translate}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="steps">
+    <div class="container">
+        <div class="section">
+            <div class="ro" style="display: block">
+                <h3 class="opacity revealOnScroll" data-animation="fadeInUp" data-timeout="100">{{ 'LANDING.STEPS.EASY_AND_FAST' | translate }}</h3>
+                <div class="sr">
+                    <div class="si opacity revealOnScroll" data-animation="fadeInUp" data-timeout="100">
+                        <div>
+                            <img src="/images/step-1.png" alt=""/>
+                        </div>
+                        <h5>{{ 'LANDING.STEPS.ONE' | translate }}</h5>
+                    </div>
+                </div>
+                <div class="sr">
+                    <div class="si opacity revealOnScroll" data-animation="fadeInUp" data-timeout="200">
+                        <div>
+                            <img src="/images/step-2.png" alt=""/>
+                        </div>
+                        <h5>{{ 'LANDING.STEPS.TWO' | translate }}</h5>
+                    </div>
+                </div>
+                <div class="sr">
+                    <div class="si opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
+                        <div>
+                            <img src="/images/step-3.png" alt=""/>
+                        </div>
+                        <h5>{{ 'LANDING.STEPS.THREE' | translate }}</h5>
+                    </div>
+                </div>
+                <div class="sr">
+                    <div class="si opacity revealOnScroll" data-animation="fadeInUp" data-timeout="400">
+                        <div>
+                            <img src="/images/step-4.png" alt=""/>
+                        </div>
+                        <h5>{{ 'LANDING.STEPS.FOUR' | translate }}</h5>
+                    </div>
+                </div>
+                <div class="sr">
+                    <div class="si opacity revealOnScroll" data-animation="fadeInUp" data-timeout="500">
+                        <div>
+                            <img src="/images/step-5.png" alt=""/>
+                        </div>
+                        <h5>{{ 'LANDING.STEPS.FIVE' | translate }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="owner">
+    <div class="parallax img-2 parallax-container valign-wrapper">
+        <div class="container">
+            <div class="dw">
+                <div class="dwt">
+                    <div class="dwt-1 opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
+                        {{'LANDING.OWNER_CONTENT.TITLE1' | translate}}
+                    </div>
+                    <div class="dwt-2 opacity revealOnScroll" data-animation="fadeInUp" data-timeout="600">
+                        {{'LANDING.OWNER_CONTENT.TEXT1' | translate}}
+                    </div>
+                    <div class="box-sizing">
+                        <div class="dwt-3 opacity revealOnScroll" data-animation="fadeInUp" data-timeout="800">
+                            {{'LANDING.OWNER_CONTENT.TEXT2' | translate}}
+                        </div>
+                    </div>
+                    <div class="dwtl opacity revealOnScroll" data-animation="fadeInUp" data-timeout="1000">
+                        <a mat-raised-button class="primary-button bv" href="/admin-signup">
+                            <button mat-raised-button class="primary-button bv" style="font-size: .9rem">
+                                {{'LANDING.ADMIN_SIGNUP' | translate}}
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="dwi">
+                    <div class="dwimg opacity revealOnScroll" data-animation="fadeInUp" data-timeout="600">
+                        <img src="/images/landing-pc.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="fc">
+    <div class="ft">
+        <div class="container opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
+            <div class="fr center">
+                <ul>
+                    <li>
+                        <a href="https://facebook.com" target="_blank">
+                            <i class="fa fa-facebook" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com" target="_blank">
+                            <i class="fa fa-twitter" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://instagram.com" target="_blank">
+                            <i class="fa fa-instagram" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="fb center">
+        <span class="opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">Iurest © 2017. {{'LANDING.FOOTER.ALL_RIGHT_RESERVED' | translate}}</span>
+    </div>
+</footer>

@@ -1,0 +1,68 @@
+<div class="call-card">
+    <mat-card class="card_image">
+        <mat-list>
+            <mat-list-item *ngFor="let _res of _restaurants | async">
+                    <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="_res.image" src="{{ _res.image.url }}">
+                    <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="!_res.image" src="/images/default-restaurant.png">                    
+                <h2 mat-line style="font-size: 1.5rem;"> {{_res.name}} </h2>
+                <p mat-line style="font-size: 1rem;">
+                    <mat-icon style="vertical-align: middle">location_on</mat-icon>
+                    <span> {{_res.address}} </span>
+                </p>
+                <p mat-line style="font-size: 1rem;">
+                    <mat-icon style="vertical-align: middle">phone</mat-icon>
+                    <span class="detail-message">{{_res.indicative}} {{_res.phone}}</span>
+                </p>
+            </mat-list-item>
+        </mat-list>
+    </mat-card>
+</div>
+
+<mat-card *ngIf="!_thereAreCalls">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" 
+                        src="/images/sections.png"/>
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{ 'WAITER_CALL.NO_CALLS' | translate }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<div>
+    <mat-card *ngFor="let _call of _waiterCallDetail | async" class="cards">
+        <mat-card-content>
+            <div class="item-block">
+                <img *ngIf="_call.type === 'SEND_ORDER'" class="img-list" src="/images/chef.png"/>
+                <img *ngIf="_call.type === 'CALL_OF_CUSTOMER'" class="img-list" src="/images/waiter-call.png"/>
+                <img *ngIf="_call.type === 'PAYMENT'" class="img-list" src="/images/cash-payment.png"/>
+                <img *ngIf="_call.type === 'USER_EXIT_TABLE'" class="img-list" src="/images/exit.png"/>
+                <div class="header-title">
+                    <div class="label">
+                        <span>{{ 'TABLES.TABLE' | translate }} {{getTableNumber(_call.table_id)}}</span>
+                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'SEND_ORDER'">{{ 'WAITER_CALL.CALL_LABEL_SEND_ORDER' | translate }}</p>
+                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'CALL_OF_CUSTOMER'">{{ 'WAITER_CALL.CALL_LABEL_CUSTOMER' | translate }}</p>
+                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'PAYMENT'">{{ 'WAITER_CALL.CALL_LABEL_CUSTOMER_PAYMENT' | translate }}</p>
+                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'USER_EXIT_TABLE'">{{ 'WAITER_CALL.CALL_LABEL_EXIT_TABLE' | translate }}</p>
+                    </div>
+                    <button mat-raised-button *ngIf="_call.type === 'CALL_OF_CUSTOMER'" (click)="showConfirm(_call)" class="active-button">{{ 'CLOSE' | translate }}</button>
+                    <button mat-raised-button *ngIf="_call.type === 'PAYMENT'" (click)="showPayment(_call)" class="active-button">{{ 'VIEW_DETAIL' | translate }}</button>
+                    <button mat-raised-button *ngIf="_call.type === 'SEND_ORDER'" (click)="showSendOrder(_call)" class="active-button">{{ 'VIEW_DETAIL' | translate }}</button>
+                    <button mat-raised-button *ngIf="_call.type === 'USER_EXIT_TABLE'" (click)="showUserExitTable(_call)" class="active-button">{{ 'VIEW_DETAIL' | translate }}</button>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-footer></mat-card-footer>
+    </mat-card>
+</div>
+
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>

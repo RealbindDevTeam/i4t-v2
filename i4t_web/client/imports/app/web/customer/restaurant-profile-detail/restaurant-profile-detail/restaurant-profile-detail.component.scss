@@ -1,0 +1,186 @@
+agm-map {
+    height: 300px;
+}
+
+.img {
+    width: 80px !important; 
+    height: 80px !important;
+}
+
+.name {
+    font-size: 1.3rem;
+    white-space: normal !important;
+}
+
+.location {
+    font-size: 1rem;
+
+    .location-icon {
+        vertical-align: middle;
+        color: #EF5350
+    }
+}
+
+.font-info {
+    font-size: 1rem;
+}
+
+.icon {
+    vertical-align: middle;
+    color: #EF5350
+}
+
+.schedule-social-networks {
+    color: #EF5350;
+    .social-networks{
+        display: inline;
+    }
+}
+
+.all-payments {
+    text-align: center;
+
+    .payment-meth {
+        display: inline-block;
+
+        .payment-info {
+            font-size: 1rem;
+
+            .payment-thumb {
+                width: 25px; 
+                height: 25px;
+            }
+
+            .payment-name {
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+.photos {
+    height: 150px;
+
+    .content {
+        overflow: auto;
+        white-space: nowrap;
+    }
+
+    .img-thumb {
+        margin-right: 1%;
+        width: 100px;
+        height: 100px;
+    }
+}
+
+
+button i.cust-facebook {
+    color: #3b5998;
+}
+
+button i.cust-twitter {
+    color: #00aced;
+}
+
+button i.cust-instagram {
+    color: #c13584;
+}
+
+.cust-icon {
+    color: #fd8c09;
+}
+
+.cust-content {
+    text-align: center;
+}
+
+.cust-margin{
+    margin-top: 14px;
+}
+
+
+@media only screen and (min-width: 600px){
+    .cust-width {
+        width: 50%;
+    }
+
+    .cust-margin-right {
+        margin-right: 20px;
+    }
+
+    .cust-flex {
+        display: flex;
+    }
+
+    .cust-paragraph{
+        margin-top: 14px;
+    }
+}
+
+
+
+
+//
+
+.main {
+    width: 80%; 
+    margin: 0 auto;
+
+
+    .no-restaurant-info {
+        margin: 0 auto;
+    }
+
+    .about-photos-panel{
+        width: 50%;
+        display: inline-block;
+
+        .about {
+            height: 182px;
+            overflow: scroll;
+            word-wrap: break-word;
+        }
+
+        .photos {
+            height: 150px;
+
+            .content {
+                overflow: auto;
+                white-space: nowrap;
+            }
+
+            .img-thumb {
+                margin-right: 1%;
+                width: 100px;
+                height: 100px;
+            }
+        }
+    }
+
+    .contact-payments-panel {
+        width: 47%;
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 2.4%;
+
+        .contact {
+            height: 182px;
+
+
+            .schedule-social-networks {
+                text-align: -webkit-center; 
+                color: #EF5350;
+                
+                .social-networks{
+                    display: inline;
+                }
+            }
+        }
+
+        .payment-methods {
+            height: 150px;
+
+            
+            }
+        }
+    }

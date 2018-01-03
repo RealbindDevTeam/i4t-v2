@@ -1,0 +1,123 @@
+.payments-info{
+    text-align: center;
+    margin-bottom: 2%;
+    font-weight: bold;
+}
+
+.table-info{
+    margin-bottom: 2%;
+}
+
+.table{
+    font-family: Roboto,'Helvetica Neue',sans-serif;
+    font-size: 20px;
+    display: inline;
+}
+
+.total-table{
+    font-family: Roboto,'Helvetica Neue',sans-serif;
+    font-size: 20px;
+    display: inline;
+    margin-left: 3%;
+}
+
+.ui {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ui p {
+    width: 30%;
+    color: darkgoldenrod;
+    font-weight: bold;
+}
+
+.uh {
+    display: flex;
+    justify-content: space-between;
+}
+
+.uhl {
+    display: -webkit-inline-box;
+}
+
+@media only screen and (max-width: 600px) {
+    .ui {
+        display: block;
+    }
+    
+    .ui h3 {
+        -webkit-margin-before: .5em;
+        -webkit-margin-after: .5em;
+    }
+    
+    .ui p {
+        width: 100%;
+    }
+    
+    .uhl {
+        display: inline-grid;
+        margin-right: 10px;
+    }
+
+    .uhl p {
+        -webkit-margin-before: 0;
+        -webkit-margin-after: 0;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .general-info{
+        width: 35rem;
+    }
+}
+
+.total-payment{
+    color: green;
+}
+
+.received{
+    background-color: green;
+    color: white;
+}
+
+.no-received{
+    background-color: red;
+    color: white;
+}
+
+.order{
+    width: 55%;
+    display: inline-block;
+
+}
+
+.order-info{
+    color: black;
+}
+
+.order-payment{
+    width: 35%;
+    text-align: right;
+    display: inline-block;
+}
+
+.order-payment-info{
+    color: black;
+}
+
+.item-name{
+    width: 50%;
+    display: inline-block;
+}
+
+.item-quantity{
+    width: 15%;
+    display: inline-block;
+}
+
+.item-price{
+    width: 30%;
+    display: inline-block;
+    text-align: right;
+}

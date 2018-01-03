@@ -1,0 +1,32 @@
+<ion-menu [content]="content" type="overlay" class="home-menu">
+    <ion-header>
+        <ion-navbar>
+            <ion-title>
+                <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
+            </ion-title>
+        </ion-navbar>
+    </ion-header>
+    <ion-content>
+        <ion-list>
+            <button menuClose ion-item text-wrap (click)="openSettings()">
+                <ion-avatar item-left>
+                    <img src="{{getUserImage()}}">
+                </ion-avatar>
+                {{gerUserName()}}
+            </button>
+        </ion-list>
+        <ion-list>
+            <button menuClose ion-item text-wrap *ngFor="let p of pages" (click)="openPage(p)">
+                <ion-icon item-start [name]="p.icon" style="color: rgba(60, 60, 60, 0.7)"></ion-icon>
+                {{p.title}}
+            </button>
+        </ion-list>
+    </ion-content>
+
+    <ion-footer padding>
+        <button ion-button block outline (click)="showComfirmSignOut()">{{'MOBILE.SETTINGS.SIGN_OUT' | translate}}</button>
+    </ion-footer>
+
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

@@ -1,0 +1,253 @@
+admin-signup {
+    background-color: whitesmoke;
+    height: 100%;
+    width: 100%;
+    display: block;
+}
+
+mat-toolbar {
+    background: transparent;
+}
+
+.pm {
+    background-color: whitesmoke;
+    height: 100%;
+    overflow: scroll;
+}
+
+.parallax-container {
+    min-height: 380px;
+    height: auto;
+}
+
+.parallax-container .section {
+    width: 100%;
+}
+
+.img-1 {
+    background-image: url("/images/landing-3.png");
+}
+  
+@media only screen and (max-width : 992px) {
+    .parallax-container .section {
+        position: absolute;
+    }
+}
+
+.parallax {
+    margin-top: -64px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+.container {
+    margin-right: auto;
+    margin-left: auto;
+    width: 90%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@media only screen and (min-width: 768px) {
+    .container {
+        width: 750px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .container {
+        width: 970px;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .container {
+        width: 1170px;
+    }
+}
+
+.dw {
+    box-sizing: border-box;
+    padding: 10rem 0;
+    position: relative; 
+}
+  
+.dwp{
+    color: white; 
+    padding-top: 70px;
+}
+  
+@media only screen and (max-width: 767px) {
+    .dw {
+        padding: 60px 0;
+    }
+}
+  
+@media only screen and (max-width: 992px) {
+    .dw {
+        padding: 70px 0;
+    }
+}
+  
+.dwt {
+    flex-basis: 450px; 
+    flex-grow: 1;
+}
+  
+.dwt-1 {
+    font-size: 36px; 
+    line-height: 48px; 
+    max-width: 50%;
+    -webkit-font-smoothing: antialiased;
+}
+  
+@media only screen and (max-width: 600px) {
+    .dwt-1 {
+        font-size: 2rem;
+        line-height: 1em; 
+        max-width: 100%;
+    }
+}
+  
+.dwt-2 {
+    box-sizing: border-box;
+    font-size: 22px;
+    line-height: 24px;
+    max-width: 50%;
+    padding: 1em 1em 1em 0;;
+    -webkit-font-smoothing: antialiased;
+}
+
+@media only screen and (max-width: 600px) {
+    .dwt-2 {
+        max-width: 100%;
+        padding: 1em 0;
+    }
+}
+  
+.dwt-3 {
+    box-sizing: border-box;
+    font-size: 22px;
+    line-height: 34px;
+    margin-bottom: 20px;
+    -webkit-font-smoothing: antialiased;
+}
+  
+.dwi {
+    display: none; 
+    padding: 6rem 0.5rem;
+    position: absolute;
+    box-sizing: border-box;
+    animation: opacityShow .9s ease-in both;
+}
+
+.dwf {
+    color: #3c4146;
+    background-color: #F8F8F9;
+    padding: 3em 3em;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    .primary-button {
+        background-color: transparent !important;
+    }
+    
+    .primary-button:hover{
+        background-color: #EF5350 !important;
+        color: white !important;
+    }
+}
+
+.dwfm {
+    display: none;
+}
+  
+.id {
+    display: none;
+}
+  
+@media only screen and (max-width: 766px){
+    .id {
+      display: block;
+    }
+  
+    .idc {
+      padding: 60px 0;
+    }
+  
+    .idc img {
+      width: 90%;
+    }
+}
+
+@media only screen and (min-width: 767px) {
+    .dwi {
+      display: block;
+      top: 0;
+      left: 60%;
+    }
+}
+
+.label-legal {
+    font-size: 11px;
+    text-align: center;
+    margin-top: 8px;
+    padding: 0 10px;
+    color: #444;
+}
+
+.br {
+    margin: 65px 0;
+    width: 55%;
+}
+  
+.bc {
+    margin: 26px 0;
+}
+  
+.bcr {
+    display: flex;
+    font-size: 1.5rem;
+}
+
+.bcr img {
+    margin: 1em 1em 1em 0;
+    width: 150px;
+    height: 150px;
+}
+
+@media only screen and (max-width : 600px){
+    .br {
+        width: 100%;
+    }
+
+    .bcr {
+        display: block;
+    }
+
+    .dimg {
+        width: 100%;
+        justify-content: center;
+        display: flex;    
+    }
+
+    .bcr img {
+        margin: 0 auto;
+        width: 200px;
+        height: 200px;
+    }
+  
+    .bc {
+        width: 100%;
+        margin: 0 auto;
+        padding: 26px 0;
+    }
+
+    .dwfm {
+        display: block;
+        padding: 2em;
+        background-color: white;
+    }
+}

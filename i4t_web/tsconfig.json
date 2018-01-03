@@ -1,0 +1,45 @@
+{
+    "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": ".",
+      "declaration": true,
+      "emitDecoratorMetadata": true,
+      "importHelpers": true,
+      "experimentalDecorators": true,
+      "lib": [
+        "dom",
+        "es2015"
+      ],
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "target": "es2015",
+      "skipLibCheck": true,
+      "stripInternal": true,
+      "noImplicitAny": false,
+      "isolatedModules": false,
+      "removeComments": false
+    },
+    "include": [
+      "both/**/*.ts",
+      "client/**/*.ts",
+      "server/**/*.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+    "files": [
+      "typings.d.ts"
+    ],
+    "types": [
+      "@types/chai",
+      "@types/hammerjs",
+      "@types/highcharts",
+      "@types/jasmine",
+      "@types/meteor",
+      "@types/mocha",
+      "@types/node",
+      "@types/prismjs"
+    ],
+    "compileOnSave": false
+  }

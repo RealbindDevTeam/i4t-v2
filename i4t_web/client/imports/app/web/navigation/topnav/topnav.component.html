@@ -1,0 +1,75 @@
+<mat-progress-bar mode="indeterminate" *ngIf="_isLoadingRoute"></mat-progress-bar>
+
+<mat-toolbar>
+  <button mat-icon-button (click)="toggleSidenav()" id="menu-toggler" *ngIf="_showToggleSidenav" style="margin-right: -16px;">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <div class="li">
+    <a href="">
+      <img class="logo" src="/images/logo_iurest_white.png">
+    </a>
+  </div>
+
+  <div class="ti">
+    <span class="breadcrumb-holder" *ngIf="_navigation.largeScreen">
+      <span *ngFor="let breadcrumb of _breadcrumbs" class="breadcrumb">
+        <a *ngIf="breadcrumb.link !== null" [routerLink]="breadcrumb.link" class="breadcrumb-link">{{breadcrumb.title}}</a>
+        <a *ngIf="breadcrumb.link === null" class="breadcrumb-link">{{breadcrumb.title}}</a>
+      </span>
+      <span class="breadcrumb" *ngIf="!showMenuName">{{ _pageTitle | translate }}</span>
+      <span class="breadcrumb" *ngIf="showMenuName">{{menuName}}</span>
+    </span>
+    <span *ngIf="_navigation.mediumScreenAndDown && (_breadcrumbs.length === 0 || _autoBreadcrumbs) && !_searchToggled">
+      {{ _pageTitle | translate }}
+    </span>
+  </div>
+
+  <span class="app-flex-filler"></span>
+
+  <div *ngIf="_showMenuButton" class="buttom-profile">
+    <button *ngIf="!_showToggleSidenav" mat-icon-button [mat-menu-trigger-for]="menu" id="user-dropdown-toggler" style="padding: 0;">
+      <img class="profile-img" mat-list-avatar src="{{ getUserImage() }}"> {{ _userName }}
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+    <button *ngIf="_showToggleSidenav" mat-icon-button id="user-dropdown-toggler" style="padding: 0;">
+      <img class="profile-img" mat-list-avatar src="{{ getUserImage() }}"> {{ _userName }}
+      <mat-icon></mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="!_showMenuButton" class="profile">
+    <div *ngIf="_showToggleSidenav">
+      <div style="display: inline-block; vertical-align: middle">
+        <img class="profile-img" style="display: block" src="{{ getUserImage() }}">
+      </div>
+      <div style="display: inline-block; vertical-align: middle">
+        <p style="font-size: 14px; color: white">{{ _userName }}</p>
+      </div>
+    </div>
+  </div>
+
+  <mat-menu #menu="matMenu" x-position="before">
+    <button mat-menu-item *ngIf="_itemsTopMenu === 'customer' " [routerLink]="['/app/customer-payments-history']" (click)="setMenuName('PAYMENTS_HISTORY.TITLE')">
+      <mat-icon>payment</mat-icon>
+      <span>{{ 'PAYMENTS_HISTORY.TITLE' | translate }}</span>
+    </button>
+    <button mat-menu-item [routerLink]="['/app/settings']" (click)="setMenuName('SETTINGS.TITTLE')">
+      <mat-icon>settings</mat-icon>
+      <span>{{ 'SETTINGS.TITTLE' | translate }}</span>
+    </button>
+    <button mat-menu-item (click)="signOut()">
+      <mat-icon>launch</mat-icon>
+      <span>{{ 'SIGN_OUT' | translate }}</span>
+    </button>
+  </mat-menu>
+  <mat-toolbar-row *ngIf="_navigation.mediumScreenAndDown && _breadcrumbs.length > 0 && !_autoBreadcrumbs">
+    <span class="breadcrumb-holder">
+      <span *ngFor="let breadcrumb of _breadcrumbs" class="breadcrumb">
+        <a *ngIf="breadcrumb.link !== null" [routerLink]="breadcrumb.link" class="breadcrumb-link">{{breadcrumb.title}}</a>
+        <a *ngIf="breadcrumb.link === null" class="breadcrumb-link">{{breadcrumb.title}}</a>
+      </span>
+      <span class="breadcrumb">{{ _pageTitle | translate }}</span>
+    </span>
+  </mat-toolbar-row>
+</mat-toolbar>

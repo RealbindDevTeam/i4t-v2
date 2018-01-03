@@ -1,0 +1,60 @@
+@import "public/css/animate";
+        
+.description {
+    color: black;
+}
+            
+.price {
+    font-weight: bold;
+    color: black;
+}
+
+.pr{
+    position: relative;
+}
+
+.quantity-count{
+    display: inline-block;
+    width: 100px;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.button-action {		
+    font-weight: bold;
+    position: absolute;
+    display: inline-block;
+    margin: 0;
+    padding: 8px;
+    right: 15px;
+}
+
+.available-button {
+    color: #D50000;
+}
+
+.price-button {
+    color: #3d4247;
+}
+
+.color-button-icon {
+    color: white;
+}
+
+mat-tab-group {
+    width: 348px;
+}
+
+@media only screen and (max-width: 480px){
+    .custom-cards {
+        width: 80% !important;
+    }
+}
+
+@media only screen and (min-width: 481px){
+    .custom-cards{
+        width: 240px !important;
+    }
+}

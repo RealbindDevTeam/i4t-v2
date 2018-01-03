@@ -1,0 +1,100 @@
+.page {
+    background: url('/images/landing-1.png');
+    background-color: black;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.section {
+    display: block;
+}
+
+.page .section >.container {
+    padding-bottom: 28px;
+    padding-top: 24px;
+}
+
+.content{
+    box-sizing: border-box;
+    display: block;
+    padding: 0 20px;
+    width: 50%;
+    margin: 10rem 0;
+    color: #FFF;
+}
+
+.signup-logo {
+    margin: 2rem 0;
+}
+
+.signup-logo a img {
+    display: block;
+    margin: auto;
+}
+
+.primary-button {
+    background-color: #EF5350 !important;
+    color: #f5f5f5 !important;
+    width: auto !important;
+}
+
+button[mat-raised-button]{
+  width: 90%;
+  margin-top: 2vh;
+}
+
+.dwtl {
+    display: inline-flex;
+    box-sizing: border-box;
+    margin: 1em 0;
+}
+
+.dwtl > a > img {
+    height: auto;
+    width: 171px;
+}
+
+@media only screen and (max-width: 360px) {
+    .dwtl > a > img {
+        width: 140px;
+    }
+}
+
+@media only screen and (max-width: 320px){
+    .content{
+        width: 320px;
+    }
+}
+@media only screen and (max-width: 600px){
+    .content{
+        width: 350px;
+        margin: 8rem 0;
+    }
+}
+
+@media only screen and (min-width: 960px){
+    
+    .signup-logo a img {
+        height: 100px;
+    }
+
+    .content{
+        margin: 10em 1em;
+    }
+
+    h1 {
+        font-size: 3em;
+    }
+    
+    h3 {
+        font-size: 2.17em;
+    }
+
+    .dwtl > a > img {
+        width: 342px;
+    }
+}

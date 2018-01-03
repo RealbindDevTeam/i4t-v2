@@ -1,0 +1,40 @@
+.name{
+    width: 45%;
+}
+
+.message{
+    display: inline-block;
+}
+
+.toogle{
+    width: 40%;
+    display: inline-block;
+    margin-left: 3%;
+}
+
+.checkbox{
+    padding-right: 15px;
+}
+
+.currencies{
+    width:40%;
+    display: inline-block;
+
+    .currency{
+        width: 80%;
+    }
+}
+
+.taxes{
+    width:45%;
+    display: inline-block;
+    vertical-align:top;
+
+    .tax{
+        width: 65%;
+    }
+}
+
+.actions{
+    padding-top: 10px;
+}

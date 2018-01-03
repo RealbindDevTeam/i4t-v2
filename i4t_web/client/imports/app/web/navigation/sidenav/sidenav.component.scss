@@ -1,0 +1,41 @@
+mat-toolbar {
+    height: 64px;
+    background-color: #EF5350;
+}
+
+.so {
+    width: 225px;
+    z-index: 999;
+}
+
+.buttom-profile {
+    background: whitesmoke;
+    display: none;
+    position: relative;
+    line-height: 64px;
+    padding: 0 16px;   
+    
+    &:after {
+        content: "";
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 225px;
+        height: 2px;
+        z-index: 3;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+    }
+}
+
+@media only screen and (max-width: 600px){
+    .buttom-profile {
+        display: block;
+    }
+}
+
+.profile-img {
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    margin-right: 10px;
+}

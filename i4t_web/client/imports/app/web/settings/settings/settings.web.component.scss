@@ -1,0 +1,112 @@
+$primary-color: #EF5350;
+
+.label-inline {
+    color: #3b3b3b;
+    width: 140px;
+    height: 19px;
+    font-size: 14px;
+    padding: 6px 29px 0 0;
+}
+
+@mixin transition($settings) {
+	-webkit-transition: $settings;
+	-moz-transition: $settings;
+	-ms-transition: $settings;
+	-o-transition: $settings;
+	transition: $settings;
+}
+
+.avatarWrapper {
+	position: relative;
+	margin: 0 auto;
+}
+
+.pau {
+	display: block;
+}
+
+.dr {
+	display: -webkit-inline-box;
+	width: 100%;
+	margin: 16px 0;
+}
+
+.dr .drl {
+	width: 60%;
+	padding: 0 10px;
+	word-break: break-word;
+}
+
+.da {
+	width: 100%;
+}
+
+@media only screen and (min-width: 600px){
+	.pau {
+		display: flex;
+	}
+
+	.da {
+		width: 20%;
+	}
+}
+
+.avatar {
+	background-color: #edebe1;
+	border-radius: 100%;
+	height: 100px;
+	width: 100px;
+	margin: 0 auto;
+
+	&.active {
+		border-radius: 100% 0 20px 100%;
+		background-color: $primary-color;
+	}
+	img {
+		border-radius: 100%;
+		width: 100px;
+	}
+	.uploadOverlay {
+		background-color: rgba(239, 83, 80, 0.60);
+		@include transition(all 150ms ease);
+		background-repeat: no-repeat;
+		background-position: center;
+		border-radius: 100%;
+		position: absolute;
+		height: 100px;
+		width: 100px;
+		top: 0;
+		opacity: 0;
+		i {
+			vertical-align: bottom;
+			display:inline-block;
+			line-height: 100px;
+			text-align: center;
+			font-size: 40px;
+			height: 100px;
+			width: 100px;
+			color:white;
+		}
+	}
+	&:hover .uploadOverlay {
+		@include transition(all 150ms ease);
+		opacity: 1;
+	}
+}
+
+.processing-overlay {
+    position: absolute;
+    background-color: rgba(239, 83, 80, 0.60);
+    border-radius: 50%;
+    width: 100px;
+
+    .spinner {
+        margin: 0 auto; 
+        height: 100px; 
+        width: 50px;
+    }
+}
+
+.mat-spinner path {
+    stroke: white !important;
+}

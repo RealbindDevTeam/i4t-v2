@@ -1,0 +1,26 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{'MOBILE.CODE_TYPE_SELECT.TITTLE' | translate}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding align="center">
+    <div class="img">
+        <img  src="assets/img/scan.png">
+    </div>
+
+    <div class="content">
+        <h5>{{'MOBILE.CODE_TYPE_SELECT.CONTENT' | translate}}</h5>
+    </div>
+</ion-content>
+
+<ion-footer padding>
+    <button ion-button block outline (click)="goToScann()">
+        {{'MOBILE.CODE_TYPE_SELECT.QR' | translate}}
+    </button>
+    <button ion-button block outline (click)="goToAlphanumericCode()">
+        {{'MOBILE.CODE_TYPE_SELECT.ALPHANUMERIC' | translate}}
+    </button>
+</ion-footer>

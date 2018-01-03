@@ -1,0 +1,12 @@
+<div class="item-block">
+    <img class="img-cards" *ngIf="isUser" src="assets/img/my-orders.png" style="width: 50px; height: 50px;">
+    <img class="img-cards" *ngIf="!isUser" src="assets/img/others-orders.png" style="width: 50px; height: 50px;">
+    <div class="custom-header-title">
+        <div class="custom-label">
+            <h2>{{'MOBILE.ORDERS.ORDER' | translate}}{{order.code}}</h2>
+            <h2>{{'MOBILE.ORDERS.TOTAL' | translate}}{{order.totalPayment}} {{currencyCode}}</h2>
+            <h2>{{'MOBILE.ORDERS.STATUS' | translate}}{{order.status | translate}}</h2>
+        </div>
+    </div>
+    <ion-icon showWhen="android" name="ios-arrow-forward" style="color: gray; float: right"></ion-icon>
+</div>

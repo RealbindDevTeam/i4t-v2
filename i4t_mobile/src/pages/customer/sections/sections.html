@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'MOBILE.SECTIONS.MENU' | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="_restaurants" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
+      <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
+          <ion-thumbnail item-left>
+              <img *ngIf="_restaurants.image" src="{{ _restaurants.image.url }}">
+              <img *ngIf="!_restaurants.image" src="assets/img/default-restaurant.png">
+          </ion-thumbnail>
+          <h2>{{_restaurants.name}}</h2>
+          <h2 *ngIf="_table">{{'MOBILE.ORDERS.TABLE' | translate}}: {{_table._number}}</h2>
+          <p>{{_restaurants.address}}</p>
+      </ion-item>
+  </ion-list>
+  <ion-card>
+    <ion-card-content>
+      <ion-list style="margin-bottom: 0px" no-lines>
+        <ion-item>
+          <ion-label>{{'MOBILE.SECTIONS.SELECTION' | translate}}</ion-label>
+          <ion-select [(ngModel)]="selected" interface="action-sheet" (ionChange)="validateSection(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
+            class="custom-select">
+            <ion-option value="all" selected="true">{{'MOBILE.SECTIONS.ALL' | translate}}</ion-option>
+            <ion-option *ngFor="let section of _sections | async" value="{{section._id}}">{{section.name}}</ion-option>
+            <ion-option *ngIf="_additionsShow" value="addition">{{'MOBILE.SECTIONS.ADDITION' | translate}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <div *ngFor="let section of _sections | async">
+    <div *ngFor="let item of _items | async">
+      <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
+        <ion-card>
+          <ion-card-content>
+            <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  </div>
+
+  <ion-item-group *ngFor="let category of _categories | async">
+    <ion-card>
+      <ion-card-content>
+        <h2 style="text-align: center; font-weight: bold; margin-bottom: 13px;">{{category.name}}</h2>
+        <div *ngFor="let item of _items | async">
+          <div *ngIf="(item.categoryId == category._id) && item.subcategoryId == ''" (click)="goToDetail(item._id)">
+            
+            <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
+          </div>
+        </div>
+        <div *ngFor="let subcategory of _subcategories | async">
+          <div *ngIf="subcategory.category == category._id">
+            <h2 style="font-weight: bold">{{subcategory.name}}</h2>
+            <div *ngFor="let item of _items | async">
+              <div *ngIf="item.subcategoryId == subcategory._id" (click)="goToDetail(item._id)">
+                
+                <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-item-group>
+</ion-content>
+
+<ion-footer>
+  <ion-fab right bottom>
+    <button style="bottom: 0px" ion-fab color="light" mini (click)="goTop()"><ion-icon name="arrow-up"></ion-icon></button>
+  </ion-fab>
+</ion-footer>

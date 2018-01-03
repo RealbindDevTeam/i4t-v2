@@ -1,0 +1,38 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            {{ 'MOBILE.SEND_ORDER.ORDER_DETAIL' | translate }}
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <ion-card-content>
+            <div *ngFor="let order of _orders | async">
+                <ion-item style="padding-left: 0;">
+                    <ion-avatar item-left>
+                        <img src="assets/img/chef.png">
+                    </ion-avatar>
+                    <h2>{{ 'MOBILE.SEND_ORDER.ORDER' | translate }} # {{order.code}} • {{ 'MOBILE.SEND_ORDER.TABLE' | translate }} {{_tableNumber}}</h2>
+                    <h2>{{ 'MOBILE.SEND_ORDER.CODE' | translate }} {{_tableQRCode}}</h2>
+                    <h2>{{ 'MOBILE.SEND_ORDER.CUSTOMER' | translate }}: {{ getUserName(order.creation_user) }}</h2>
+                </ion-item>
+                
+                <item-detail-send-order-component *ngFor="let it of order.items" [item]="it"></item-detail-send-order-component>
+
+                <ion-item-group *ngFor="let ad of order.additions">
+                    <ion-item-divider style="padding-left: 0; background: white; font-weight: bold;">
+                        {{ad.quantity}} {{ 'MOBILE.SEND_ORDER.ADDITION' | translate }} • {{ getNameAddition (ad.additionId) }}
+                    </ion-item-divider>
+                </ion-item-group>
+            </div>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
+
+<ion-footer padding style="background: white;">
+    <button ion-button block outline type="submit" (click)="closeWaiterCall()">
+        {{'MOBILE.SEND_ORDER.ORDER_DELIVERED' | translate}}
+    </button>
+</ion-footer>

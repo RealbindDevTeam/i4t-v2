@@ -1,0 +1,49 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle icon-only>
+            <ion-icon name='menu'></ion-icon>
+        </button>
+        <ion-title>{{'MOBILE.PAYMENTS_HISTORY.TITLE' | translate}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content text-wrap>
+    <ion-card *ngIf="_ionicUrlParam">
+        <ion-card-content>
+            <p>{{'MOBILE.PAYMENTS_HISTORY.INFO' | translate}}
+                <a href="{{_ionicUrlParam.value}}">iurest.com</a>
+            </p>
+        </ion-card-content>
+    </ion-card>
+    
+    <div *ngFor="let invoice of _invoices | async;">
+        <ion-card (click)="goToPaymentDetail(invoice)">
+            <ion-card-content>
+                <ion-list no-lines>
+                    <ion-item>
+                        <ion-avatar item-start>
+                            <img *ngIf="invoice.pay_method == 'PAYMENT_METHODS.CASH'" src="assets/img/cash-payment.png">
+                            <img *ngIf="invoice.pay_method == 'PAYMENT_METHODS.CREDIT_CARD'" src="assets/img/credit-card-payment.png">
+                            <img *ngIf="invoice.pay_method == 'PAYMENT_METHODS.DEBIT_CARD'" src="assets/img/debit-card-payment.png">
+                            <img *ngIf="invoice.pay_method == 'PAYMENT_METHODS.ONLINE'" src="assets/img/payment-online.png">
+                        </ion-avatar>
+                        <h2>{{invoice.restaurant_name}}</h2>
+                    </ion-item>
+                    <ion-item>
+                        <p item-start>{{invoice.total_pay}} {{invoice.currency}}</p>
+                        <p item-end>{{invoice.creation_date | date: 'dd MMM yyyy HH:mm'}}</p>
+                    </ion-item>
+                </ion-list>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+    <div *ngIf="(_invoices | async)?.length <= 0" style="padding: 0 16px;">
+        <div class="img">
+            <img src="assets/img/payments-history.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{'MOBILE.PAYMENTS_HISTORY.NO_PAYMENTS' | translate}}</h1>
+        </div>
+    </div>
+</ion-content>

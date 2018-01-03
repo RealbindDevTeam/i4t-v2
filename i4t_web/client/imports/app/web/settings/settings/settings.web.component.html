@@ -1,0 +1,118 @@
+<mat-card>
+    <mat-card-title>{{'SETTINGS.LOGIN' | translate}}</mat-card-title>
+    <mat-card-content class="pau">
+        <div *ngIf="_user" class="da">
+            <div>
+            <input [attr.disabled]="_user.services.facebook && _loading" (click)="changeImage()" style="display: none" name="file-1[]" id="file-1" data-multiple-caption="{count} files selected"/>
+            <label for="file-1">
+                <div class="avatarWrapper">
+                    <div class="avatar cursor-pointer">
+                        <div *ngIf="!_user.services.facebook && !_loading" class="uploadOverlay">
+                            <i class="fa fa-camera"></i>
+                        </div>
+                        <img style="border-radius: 100%;width: 100px;height: 100px;" *ngIf="!_loading" src="{{ getUsetImage() }}">
+                        <div *ngIf="_loading" class="processing-overlay">
+                            <mat-spinner class="spinner"></mat-spinner>
+                        </div>
+                    </div>
+                </div>
+            </label>
+            </div>
+        </div>
+
+        <div *ngIf="_user">
+            <div class="dr">
+                <div class="drl">
+                    <label>{{'EMAIL' | translate}}:</label>
+                    <strong *ngIf="_user.emails">
+                        {{_user.emails[0].address}}
+                    </strong>
+                    <strong *ngIf="_user.services.facebook">
+                        {{_user.services.facebook.email}}
+                    </strong>
+                </div>
+                <button mat-raised-button [disabled]="_validateChangeEmail" class="secondary-button" (click)="open()">{{'MODIFY' | translate}}</button>
+            </div>
+            
+            <div class="dr">
+                <div class="drl">
+                    <label>{{'PASSWORD' | translate}}:</label>
+                    <strong>********</strong>
+                </div>
+                <button mat-raised-button [disabled]="_validateChangePass" class="secondary-button" (click)="openModalChangePassword()">{{'MODIFY' | translate}}</button>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card>
+    <mat-card-title>{{'SETTINGS.MY_DATA' | translate}}</mat-card-title>
+    <mat-card-content>
+        <div *ngIf="_user">
+            <form [formGroup]="_userForm" (ngSubmit)="editUserDetail()">
+                <mat-form-field style="width: 100%">
+                    <input formControlName="username" matInput class="demo-full-width" #inputUserName placeholder="{{'SETTINGS.USERNAME' | translate}}" class="demo-full-width" style="width: 100%"/>
+                    <mat-hint align="end">{{inputUserName.value.length}} / 20</mat-hint>
+                </mat-form-field>
+                
+                <mat-form-field style="width: 100%">
+                    <input formControlName="first_name" matInput placeholder="{{'SETTINGS.FIRST_NAME' | translate}}" style="width: 100%" #inputFirstName/>
+                    <mat-hint align="end">{{inputFirstName.value.length}} / 30</mat-hint>
+                </mat-form-field>
+    
+                <mat-form-field style="width: 100%">
+                    <input formControlName="last_name" matInput placeholder="{{'SETTINGS.LAST_NAME' | translate}}" style="width: 100%" #inputLastName/>
+                    <mat-hint align="end">{{inputLastName.value.length}} / 30</mat-hint>
+                </mat-form-field>
+
+                <div *ngIf="_userDetail.role_id === '100'">
+                    <mat-form-field style="width: 100%">
+                        <input matInput formControlName="dniNumber" placeholder="{{'ADMIN_SIGNUP.DNI_NUMBER' | translate}}" name="dniNumber" required>
+                    </mat-form-field>
+                    <div *ngIf="_userForm.controls['dniNumber'].hasError('required') && _userForm.controls['dniNumber'].touched" class="error-message">{{'ADMIN_SIGNUP.REQUIRED_DNI' | translate}}</div>
+                    <div *ngIf="_userForm.controls['dniNumber'].hasError('maxlength') && _userForm.controls['dniNumber'].touched" class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_DNI' | translate}}</div>
+
+                    <mat-form-field style="width: 100%">
+                        <input matInput formControlName="contactPhone" placeholder="{{'ADMIN_SIGNUP.CONTACT_PHONE' | translate}}" name="contactPhone" required>
+                    </mat-form-field>
+                    <div *ngIf="_userForm.controls['contactPhone'].hasError('required') && _userForm.controls['contactPhone'].touched" class="error-message">{{'ADMIN_SIGNUP.REQUIRED_PHONE' | translate}}</div>
+                    <div *ngIf="_userForm.controls['contactPhone'].hasError('maxlength') && _userForm.controls['contactPhone'].touched" class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_PHONE' | translate}}</div>
+
+                    <mat-form-field style="width: 100%">
+                        <input matInput formControlName="shippingAddress" placeholder="{{'ADMIN_SIGNUP.ADDRESS' | translate}}" name="shippingAddress" required>
+                    </mat-form-field>
+                    <div *ngIf="_userForm.controls['shippingAddress'].hasError('required') && _userForm.controls['shippingAddress'].touched" class="error-message">{{'ADMIN_SIGNUP.REQUIRED_ADDRESS' | translate}}</div>
+                    <div *ngIf="_userForm.controls['shippingAddress'].hasError('maxlength') && _userForm.controls['shippingAddress'].touched" class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_ADDRESS' | translate}}</div>
+                    <mat-form-field style="width: 100%; margin-top: 10px">
+                        <mat-select formControlName="country" placeholder="{{'ADMIN_SIGNUP.COUNTRY' | translate}}">
+                            <mat-option *ngFor="let country of _countries | async" value="{{country._id}}" (click)="changeCountry(country._id)">{{country.name | translate}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field style="width: 100%; margin-top: 24px">
+                        <mat-select formControlName="city" placeholder="{{'ADMIN_SIGNUP.CITY' | translate}}">
+                            <mat-option *ngFor="let city of _cities | async" value="{{city._id}}" (click)="changeCity()">{{city.name}}</mat-option>
+                            <mat-option *ngIf="(_cities | async)?.length > 0" (click)="changeOtherCity('0000');" value="0000">{{'OTHER' | translate}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field *ngIf="_showOtherCity" style="width: 100%; margin-top: 15px">
+                        <input matInput formControlName="otherCity" placeholder="{{'ADMIN_SIGNUP.WHICH_ONE' | translate}}" required>
+                    </mat-form-field>
+                    <div *ngIf="_showOtherCity && _userForm.controls['otherCity'].hasError('required') && _userForm.controls['otherCity'].touched" class="error-message">{{'ADMIN_SIGNUP.REQUIRED_OTHER' | translate}}</div>
+                    <div *ngIf="_showOtherCity && _userForm.controls['otherCity'].hasError('maxlength') && _userForm.controls['otherCity'].touched" class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_OTHER' | translate}}</div>
+                </div>
+
+                <div *ngIf="this._user.username">
+                    <mat-form-field style="width: 100%; margin-top: 24px;">
+                        <mat-select formControlName="language_code" required #inputLanguageCode placeholder="{{'SETTINGS.LANGUAGE' | translate}}">
+                            <mat-option *ngFor="let lang of _languages | async" value="{{lang.language_code}}">{{lang.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <button align="end" mat-raised-button class="primary-button" type="submit" [disabled]="!_userForm.valid" style="margin-top: 20px">{{'UPDATE' | translate}}</button>
+                </div>
+            </form>
+        </div>
+    </mat-card-content>
+</mat-card>

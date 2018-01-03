@@ -1,0 +1,55 @@
+<div class="global-div">
+    <div class="div-whitout-overflow">
+        <div class="cards-div">
+            <div *ngFor="let restaurant of _restaurants | async" style="margin: 24px">
+                <mat-card>
+                    <mat-card-title>{{'MONTHLY_CONFIG.ACTIVE_INACTIVE_REST' | translate}}</mat-card-title>
+                    <mat-card-subtitle>{{'MONTHLY_CONFIG.ACTIVE_INACTIVE_REST_DESC' | translate}}</mat-card-subtitle>
+                    <mat-card-content>
+                        <label style="margin-right: 20px">{{restaurant.name}}</label>
+                        <button mat-raised-button *ngIf="restaurant.isActive" class="inactive-button" (click)="updateStatus(restaurant)">{{'MONTHLY_CONFIG.INACTIVATE_RES' | translate}}</button>
+                        <button mat-raised-button *ngIf="!restaurant.isActive" class="active-button" (click)="updateStatus(restaurant)">{{'MONTHLY_CONFIG.ACTIVATE_RES' | translate}}</button>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card>
+                    <mat-card-title>{{'MONTHLY_CONFIG.ADD_TABLES' | translate}}</mat-card-title>
+                    <mat-card-subtitle>{{'MONTHLY_CONFIG.DESC_ADD_TABLES' | translate}}</mat-card-subtitle>
+                    <mat-card-content style="background: #FFF">
+                        <form [formGroup]="_tableForm" (ngSubmit)="addTables();">
+                            <table style="width: 100%">
+                                <tr>
+                                    <th style="width: 10%">
+                                        <label>{{'TABLES.RESTAURANT' | translate}}</label>
+                                    </th>
+                                    <td style="width: 35%">
+                                        <label>{{restaurant.name}}</label>
+                                    </td>
+                                    <td style="width: 30%">
+                                        <mat-form-field style="width: 95%">
+                                            <input matInput required formControlName="tables_number" placeholder="{{'MONTHLY_CONFIG.NUMBER_TABLES' | translate}} {{max_table_number}}" minlength="1"
+                                                maxlength="3" [disabled]="!restaurant.isActive" #inputTables>
+                                            <mat-hint align="end">{{inputTables.value.length}} / 3</mat-hint>
+                                        </mat-form-field>
+                                    </td>
+                                    <td style="width: 25%; text-align:center">
+                                        <button mat-raised-button class="secondary-button" type="button" (click)="cancel()">{{'CANCEL' | translate}}</button>
+                                        <button mat-raised-button class="primary-button" type="submit" [disabled]="!_tableForm.valid">{{'CREATE' | translate}}</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card *ngFor="let table of _tables | async" style="width: 13.4%; display: inline-block; margin-right: 20px;">
+                    {{'MONTHLY_CONFIG.TABLE_ENUM' | translate}} {{table._number}}
+                    <mat-slide-toggle [(checked)]="table.is_active" (change)="updateTableStatus(table)" [disabled]="!restaurant.isActive">{{getTableStatus(table) | translate}}</mat-slide-toggle>
+                </mat-card>
+            </div>
+        </div>
+        <button class="fixed-action-btn" mat-fab (click)="backToList()">
+                <mat-icon style="color: white;">chevron_left</mat-icon>
+        </button>
+    </div>
+</div>

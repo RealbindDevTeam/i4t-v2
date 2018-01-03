@@ -1,0 +1,16 @@
+<div *ngFor="let item of _items | async" text-wrap>
+    <ion-item>
+        <ion-thumbnail item-left>
+            <img *ngIf="item.image" src="{{item.image.url}}">
+            <img *ngIf="!item.image" src="assets/img/default-plate.png">
+        </ion-thumbnail>
+        <h2>{{item.name}}</h2>
+        <div *ngFor="let price of item.prices">
+            <ng-template [ngIf]="price.currencyId === getIdCurrency(currency)">
+                <p>{{'MOBILE.ORDER_TRANS.PRICE' | translate}}: {{price.price}} - {{currency}}</p>
+            </ng-template>
+        </div>
+        <p>{{'MOBILE.ORDERS.QUANT' | translate}} {{quantity}}</p>
+        <p>{{'MOBILE.ORDERS.TOTAL' | translate}} {{price}} {{currency}}</p>
+    </ion-item>
+</div>

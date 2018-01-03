@@ -1,0 +1,125 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/animate.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="../images/favicon.png" />
+
+    <title>iurest</title>
+    <base href="/">
+
+    <style>
+        app>.background {
+            background-color: #fff;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        app>.background>.wrapper {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+        }
+
+        app>.background>.wrapper>.spinner {
+            margin: 100px auto;
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .cube1,
+        .cube2 {
+            background-color: #EF5350;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
+            animation: sk-cubemove 1.8s infinite ease-in-out;
+        }
+
+        .cube2 {
+            background-color: #3c4146;
+            -webkit-animation-delay: -0.9s;
+            animation-delay: -0.9s;
+        }
+
+        @-webkit-keyframes sk-cubemove {
+            25% {
+                -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5)
+            }
+            50% {
+                -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg)
+            }
+            75% {
+                -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5)
+            }
+            100% {
+                -webkit-transform: rotate(-360deg)
+            }
+        }
+
+        @keyframes sk-cubemove {
+            25% {
+                transform: translateX(42px) rotate(-90deg) scale(0.5);
+                -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
+            }
+            50% {
+                transform: translateX(42px) translateY(42px) rotate(-179deg);
+                -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
+            }
+            50.1% {
+                transform: translateX(42px) translateY(42px) rotate(-180deg);
+                -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
+            }
+            75% {
+                transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+                -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+            }
+            100% {
+                transform: rotate(-360deg);
+                -webkit-transform: rotate(-360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <app>
+        <div class="background">
+            <div class="wrapper">
+                <div class="spinner">
+                    <div class="cube1"></div>
+                    <div class="cube2"></div>
+                </div>
+            </div>
+        </div>
+    </app>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-50604904-2', 'auto');
+    </script>
+
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.7.2.js"></script>
+    <script src="../js/animate.js"></script>
+</body>

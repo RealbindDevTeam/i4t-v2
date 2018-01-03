@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-navbar>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding style="background: url('assets/img/background_signup.png'); background-size: 100%; background-repeat: no-repeat;">
+  <div class="img">
+    <img src="assets/img/logo_iurest_1000_x_260.png">
+  </div>
+  <button ion-button block class="btn-facebook button-social" type="submit" (click)="loginWithFacebook()">
+    <i class="fa fa-facebook icon-social" aria-hidden="true"></i>Facebook
+  </button>
+
+  <div class="divider">
+    <div class="divider-content">
+      <hr/>
+      <span>{{'MOBILE.SIGNUP.OR' | translate}}</span>
+      <hr/>
+    </div>
+  </div>
+
+  <form [formGroup]="signinForm" (ngSubmit)="login()" novalidate>
+    <ion-list>
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="person"></ion-icon> 
+          {{'MOBILE.SIGNIN.EMAIL_USERNAME' | translate}}
+        </ion-label>
+        <ion-input type="text" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="lock"></ion-icon> 
+          {{'MOBILE.SIGNIN.PASSWORD' | translate}}
+        </ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+    </ion-list>
+    <button ion-button block class="button-primary button-social" type="submit" [disabled]="!signinForm.valid">{{'MOBILE.SIGNIN.START_SESSION' | translate}}</button>
+    <button (click)="sendEmailPrompt()" ion-button clear block style="color: #fff" class="button-social">{{'MOBILE.SIGNIN.FORGOT_PASSWORD' | translate}}</button>
+  </form>
+</ion-content>

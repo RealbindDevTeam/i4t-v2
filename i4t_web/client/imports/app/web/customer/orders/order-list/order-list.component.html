@@ -1,0 +1,327 @@
+<div *ngIf="!_thereAreUserOrders && !_thereAreNotUserOrders">
+    <mat-card>
+        <mat-list>
+            <mat-list-item *ngFor="let _res of _restaurants | async">
+                <img mat-list-avatar class="custom" *ngIf="_res.image" src="{{ _res.image.url }}">
+                <img mat-list-avatar class="custom" *ngIf="!_res.image" src="/images/default-restaurant.png">
+                <h2 mat-line style="font-size: 1.3rem;"> {{_res.name}} </h2>
+                <p mat-line style="font-size: 1rem;">
+                    <mat-icon style="vertical-align: middle">location_on</mat-icon>
+                    <span>{{_res.address}}</span>
+                </p>
+                <p mat-line style="font-size: 1rem;font-weight: bold;">
+                    <mat-icon style="vertical-align: middle">restaurant</mat-icon>
+                    <span>{{'RESTAURANT_INFO_MASTER.TABLE_CODE' | translate}}: {{_tableNumber}}</span>
+                </p>
+                <button mat-icon-button (click)="openRestaurantProfileDetail(_res._id)">
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-card>
+    
+    <mat-card mat-cell="12">
+        <mat-card-content>
+            <div class="card_initial">
+                <div class="card_initial has-image">
+                    <div class="card_initial-image-container">
+                        <img class="card_initial-image" src="/images/item.png" />
+                    </div>
+                    <div class="card_initial-copy">
+                        <div class="card_initial-tagline">
+                            {{'ORDERS.MSG_1' | translate}}
+                        </div>
+                        <div class="card_initial-additional-links">
+                            {{'ORDERS.NO_ORDERS' | translate}}
+                        </div>
+                    </div>
+                    <div class="card_initial-button">
+                        <button mat-raised-button (click)="createNewOrderEvent()">{{'ORDERS.ORDER' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<div class="dpa" *ngIf="_thereAreUserOrders || _thereAreNotUserOrders">
+    <div class="dcf">
+        <div class="dc">
+            <div class="dmpc">
+                <mat-card>
+                    <mat-card-content>
+                        <mat-list>
+                            <mat-list-item *ngFor="let _res of _restaurants | async">
+                                <img mat-list-avatar class="custom" *ngIf="_res.image" src="{{ _res.image.url }}">
+                                <img mat-list-avatar class="custom" *ngIf="!_res.image" src="/images/default-restaurant.png">
+                                <h2 mat-line style="font-size: 1.3rem;"> {{_res.name}} </h2>
+                                <p mat-line style="font-size: 1rem;">
+                                    <mat-icon style="vertical-align: middle">location_on</mat-icon>
+                                    <span>{{_res.address}}</span>
+                                </p>
+                                <p mat-line style="font-size: 1rem;font-weight: bold;">
+                                    <mat-icon style="vertical-align: middle">restaurant</mat-icon>
+                                    <span>{{'RESTAURANT_INFO_MASTER.TABLE_CODE' | translate}}: {{_tableNumber}}</span>
+                                </p>
+                                <button mat-icon-button (click)="openRestaurantProfileDetail(_res._id)">
+                                    <mat-icon>keyboard_arrow_right</mat-icon>
+                                </button>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-card-content>
+                </mat-card>
+                <mat-form-field class="orders-bar">
+                    <mat-select placeholder="{{'ORDER_LIST.TABLE_ORDERS' | translate}}" [(ngModel)]="_initialValue">
+                        <mat-option (click)="changeOrderFilter('all')" value="all">{{'ORDER_LIST.ALL_ORDERS' | translate}}</mat-option>
+                        <mat-option (click)="changeOrderFilter('customer')" value="customer">{{'ORDER_LIST.MY_ORDERS' | translate}}</mat-option>
+                        <mat-option (click)="changeOrderFilter('other')" value="other">{{'ORDER_LIST.OTHER_ORDERS' | translate}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div *ngIf="_showCustomerOrders || _showAllOrders">
+                    <div *ngFor="let or of _orders | async; let i = index">
+                        <mat-toolbar class="customer-order" (click)="showCustomerOrderDetail(or,i)">
+                            <img class="order" src="/images/my-orders.png">
+                            <div class="mt-div">
+                                <span class="order-code">{{'ORDER_LIST.ORDERS' | translate}} # {{or.code}}</span>
+                                <span>{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
+                                <span class="app-flex-filler"></span>
+                                <span class="order-status">{{'ORDER_LIST.STATUS' | translate}}: {{or.status | translate}}</span>
+                            </div>
+                            <mat-icon>keyboard_arrow_right</mat-icon>
+                        </mat-toolbar>
+                        <mat-card *ngIf="_orderCustomerIndex == i">
+                            <mat-card-content style="margin-top: -1rem;">
+                                <mat-list *ngIf="(or.items.length > 0)">
+                                    <span *ngFor="let item of _items | async">
+                                        <span *ngFor="let it of or.items">
+                                            <ng-template [ngIf]="item._id === it.itemId">
+                                                <mat-list-item>
+                                                    <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
+                                                    <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
+                                                    <h4 mat-line>{{item.name}}</h4>
+                                                    <h5 mat-line>
+                                                        {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
+                                                        <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
+                                                        <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
+                                                    </h5>
+                                                    <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
+                                                    <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.REGISTERED'" (click)="showOrderItemDetail(it)">
+                                                        <mat-icon class="item-icon">mode_edit</mat-icon>
+                                                    </button>
+                                                    <button mat-icon-button *ngIf="or.status !== 'ORDER_STATUS.REGISTERED'" (click)="showOrderItemDetail(it)">
+                                                        <mat-icon class="item-icon">visibility</mat-icon>
+                                                    </button>
+                                                </mat-list-item>
+                                                <mat-divider class="divider"></mat-divider>
+                                            </ng-template>
+                                        </span>
+                                    </span>
+                                    
+                                    <span *ngIf="(or.additions.length > 0)">
+                                        <span *ngFor="let addition of _additions | async">
+                                            <span *ngFor="let ad of or.additions">
+                                                <ng-template [ngIf]="addition._id === ad.additionId">
+                                                    <mat-list-item>
+                                                        <img mat-list-avatar class="custom br" src="/images/default_addition.png">
+                                                        <h4 mat-line>{{addition.name}} <div style="display: inline-block;font-size: smaller;">({{'ORDER_LIST.ADDITION' | translate}})</div></h4>
+                                                        <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{ad.quantity}}</p>
+                                                        <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.REGISTERED'" (click)="showAdditionsDetail(ad)">
+                                                            <mat-icon class="item-icon">mode_edit</mat-icon>
+                                                        </button>
+                                                    </mat-list-item>
+                                                    <mat-divider class="divider"></mat-divider>
+                                                </ng-template>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </mat-list>
+                            </mat-card-content>
+                            <mat-card-actions *ngIf="_customerCanEdit">
+                                <button class="secondary-button" mat-raised-button (click)="cancelCustomerOrder(or)">{{'ORDER_LIST.CANCEL_ORDER' | translate}}</button>
+                                <button class="primary-button" mat-raised-button (click)="confirmCustomerOrder(or)">{{'ORDER_LIST.CONFIRM_ORDER' | translate}}</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </div>
+                <div *ngIf="_showOtherOrders || _showAllOrders">
+                    <div *ngFor="let or of _ordersTable | async; let in = index">
+                        <mat-toolbar class="customer-order" (click)="showOthersOrderDetail(or,in)">
+                            <img class="order" src="/images/others-orders.png">
+                            <div class="mt-div">
+                                <span class="order-code">{{'ORDER_LIST.ORDERS' | translate}} # {{or.code}}</span>
+                                <span>{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
+                                <span class="app-flex-filler"></span>
+                                <span class="order-status">{{'ORDER_LIST.STATUS' | translate}}: {{or.status | translate}}</span>
+                            </div>
+                            <mat-icon>keyboard_arrow_right</mat-icon>
+                        </mat-toolbar>
+                        <mat-card *ngIf="_orderOthersIndex == in">
+                            <mat-card-content style="margin-top: -1rem;">
+                                <mat-list *ngIf="(or.items.length > 0)">
+                                    <span *ngFor="let item of _items | async">
+                                        <span *ngFor="let it of or.items">
+                                            <ng-template [ngIf]="item._id === it.itemId">
+                                                <mat-list-item>
+                                                    <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
+                                                    <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
+                                                    <h4 mat-line>{{item.name}}</h4>
+                                                    <h5 mat-line>
+                                                        {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
+                                                        <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
+                                                        <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
+                                                    </h5>
+                                                    <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
+                                                    <button mat-icon-button (click)="showOrderItemDetail(it)">
+                                                        <mat-icon class="item-icon">visibility</mat-icon>
+                                                    </button>
+                                                </mat-list-item>
+                                                <mat-divider class="divider"></mat-divider>
+                                            </ng-template>
+                                        </span>
+                                    </span>
+                                    <span *ngIf="(or.additions.length > 0)">
+                                        <span *ngFor="let addition of _additions | async">
+                                            <span *ngFor="let ad of or.additions">
+                                                <ng-template [ngIf]="addition._id === ad.additionId">
+                                                    <mat-list-item>
+                                                        <img mat-list-avatar class="custom br" src="/images/default_addition.png">
+                                                        <h4 mat-line>{{addition.name}} <div class="addition-message">({{'ORDER_LIST.ADDITION' | translate}})</div></h4>
+                                                        <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{ad.quantity}}</p>
+                                                    </mat-list-item>
+                                                    <mat-divider class="divider"></mat-divider>
+                                                </ng-template>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </mat-list>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed-action-btn">
+            <button mat-fab (click)="createNewOrderEvent()">
+                <mat-icon style="color: white;">add</mat-icon>
+            </button>
+        </div>
+
+        <div id="item-selected" class="item-detail">
+            <div *ngIf="_showDetails">
+                <div *ngIf="_showOrderItemDetail">
+                    <div *ngFor="let item of _itemsToShowDetail | async">
+                        <div class="header-detail-static">
+                            <button class="btn-close" mat-raised-button (click)="viewItemDetail('item-selected',true)">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="mt" class="header-detail header-detail-hide">
+                            <label>{{item.name}}</label>
+                            <button class="btn-close" mat-raised-button (click)="viewItemDetail('item-selected',true)">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="is" class="item-detail-card" (scroll)="showHeaderDetail()">
+                            <div class="card-content">
+                                <div class="crop">
+                                    <img *ngIf="item.image" src="{{ item.image.url }}">
+                                    <img *ngIf="!item.image" src="/images/default-plate.png">
+                                </div>
+                                <div class="content">
+                                    <mat-card-subtitle class="description">{{item.description}}</mat-card-subtitle>
+                                    <div>{{setMaxGarnishFoodElements(item.garnishFoodQuantity)}}</div>
+                                    <div>{{setUnitPrice(item)}}</div>
+                                    <mat-card-subtitle class="price">{{'ORDER_LIST.UNIT_PRICE' | translate}}: {{ getItemPrice( item ) }} {{_currencyCode}}</mat-card-subtitle>
+                                    <mat-card-subtitle>{{'ORDER_LIST.COOKING_TIME' | translate}}: {{item.time}}</mat-card-subtitle>
+                                    <p *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.ITEM_UNAVAILABLE' | translate}}</p>
+                                    <div *ngIf="getItemAvailability(item._id)">
+                                        <div>
+                                            <div class="quantity-count">
+                                                <span>{{'ORDER_LIST.QUANTITY' | translate}}: {{ _quantityCount }}</span>
+                                            </div>
+                                            <div *ngIf="_customerCanEdit" class="inline-block">
+                                                <button mat-button class="quantity-button" (click)="removeCount()">
+                                                    <mat-icon>remove</mat-icon>
+                                                </button>
+                                                <button mat-button class="quantity-button" (click)="addCount()">
+                                                    <mat-icon>add</mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <form [formGroup]="_editOrderItemForm">
+                                            <mat-form-field *ngIf="item.observations" style="width: 100%;">
+                                                <input matInput formControlName="observations" placeholder="{{'ORDER_LIST.OBSERVATIONS' | translate}}" maxlength="50" #inputObservation>
+                                                <mat-hint align="end">{{inputObservation.value.length}} / 50</mat-hint>
+                                            </mat-form-field>
+                                            <mat-tab-group *ngIf="(item.garnishFood.length > 0) || (item.additions.length > 0)">
+                                                <mat-tab *ngIf="(item.garnishFood.length > 0)" label="{{'ORDER_LIST.GARNISH_FOOD' | translate}}">
+                                                    <p>{{'ORDER_LIST.SELECT_MAX' | translate}} {{item.garnishFoodQuantity}}:</p>
+                                                    <div formGroupName="garnishFood">
+                                                        <p *ngFor="let garnish of _garnishFoodCol | async">
+                                                            <span *ngFor="let gar of item.garnishFood">
+                                                                <ng-template [ngIf]="garnish._id === gar">
+                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="garnish._id" (change)="calculateFinalPriceGarnishFood($event, garnish)" [class.invalid]="!_editOrderItemForm.controls.garnishFood.valid">{{ getGarnishFoodInformation(garnish) }} {{_currencyCode}}<div class="inline-block"> x {{_quantityCount}}</div></mat-checkbox> 
+                                                                </ng-template>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                    <p *ngIf="_showGarnishFoodError" class="available-button">{{'ORDER_LIST.SELECT_MAX_VALID' | translate}} {{item.garnishFoodQuantity}}
+                                                        {{'ORDER_LIST.ELEMENTS' | translate}}</p>
+                                                </mat-tab>
+                                                <mat-tab *ngIf="(item.additions.length > 0)" label="{{'ORDER_LIST.ADDITIONS' | translate}}">
+                                                    <p>{{'ORDER_LIST.SELECT_ADDITIONS' | translate}}:</p>
+                                                    <div formGroupName="additions">
+                                                        <p *ngFor="let addition of _additions | async">
+                                                            <span *ngFor="let add of item.additions">
+                                                                <ng-template [ngIf]="addition._id === add">
+                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="addition._id" (change)="calculateFinalPriceAddition($event, addition)" [class.invalid]="!_editOrderItemForm.controls.additions.valid">{{ getAdditionInformation(addition) }} {{_currencyCode}}<div class="inline-block"> x {{_quantityCount}}</div></mat-checkbox> 
+                                                                </ng-template>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </mat-tab>
+                                            </mat-tab-group>
+                                        </form>
+                                    </div>
+                                    <h3>{{'ORDER_LIST.TOTAL_PRICE' | translate}}: {{ _finalPrice }} {{_currencyCode}}</h3>
+                                    <div>
+                                        <button mat-button class="primary-button" *ngIf="_customerCanEdit" [disabled]="!_editOrderItemForm.valid || _showGarnishFoodError"
+                                            (click)="deleteOrderItem(item._id)">{{'ORDER_LIST.DELETE_ITEM' | translate}}</button>
+                                        <button mat-button class="primary-button" *ngIf="_customerCanEdit && getItemAvailability(item._id)" [disabled]="!_editOrderItemForm.valid || _showGarnishFoodError"
+                                            (click)="editOrderItem(item._id)">{{'ORDER_LIST.MODIFY_ITEM' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="addition-detail" class="item-detail">
+            <div *ngFor="let add of _additionDetails | async">
+                <div class="header-detail-static pr">
+                    <button class="btn-close" mat-raised-button (click)="viewItemDetail('addition-detail', true)">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="item-detail-card">
+                    <div class="card-content">
+                        <div class="crop"></div>
+                        <div class="content">
+                            <p>{{'ORDER_LIST.ADD_ADDITIONS' | translate}}:</p>
+                            <form [formGroup]="_additionsDetailFormGroup">
+                                <mat-form-field style="width: 100%;">
+                                    <input matInput [formControlName]="add._id" type="number" placeholder="{{ getAdditionInformation(add) }} {{_currencyCode}}"
+                                        min="0" max="99">
+                                </mat-form-field>
+                            </form>
+                            <button mat-button class="primary-button" *ngIf="_customerCanEdit" style="margin-top: 5%;" (click)="deleteOrderAddition(add._id)">{{'ORDER_LIST.DELETE_ADDITION_ORDER' | translate}}</button>
+                            <button mat-button class="primary-button" *ngIf="_customerCanEdit" style="margin-top: 5%;" (click)="editOrderAddition()">{{'ORDER_LIST.MODIFY_ADDITION_ORDER' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+<mat-card style="box-shadow: none">
+    <mat-card-title>{{ 'WAITER_CALL.TITLE_PROMPT' | translate }}</mat-card-title>
+    <mat-card-content>
+        <div style="width: 250px">
+            {{ 'WAITER_CALL.CONTENT_PROMPT' | translate }}
+        </div>
+    </mat-card-content>
+    <mat-card-actions class="mobile">
+        <button mat-raised-button class="secondary-button" (click)="cancel()">{{ 'WAITER_CALL.NO_ANSWER' | translate }}</button>
+        <button mat-raised-button class="primary-button" (click)="closeWaiterCall()" type="submit">{{ 'WAITER_CALL.YES_ANSWER' | translate }}</button>
+    </mat-card-actions>
+</mat-card>

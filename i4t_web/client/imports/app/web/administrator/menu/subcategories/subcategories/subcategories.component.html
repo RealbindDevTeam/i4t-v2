@@ -1,0 +1,70 @@
+<mat-card *ngIf="_thereAreUsers">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>{{'SUBCATEGORIES.WARNING' | translate}} {{_usersCount}} {{'SUBCATEGORIES.WARNING_2' | translate}}</mat-card-title>
+    <mat-card-subtitle style="margin-bottom: 0px">{{'SUBCATEGORIES.WARNING_3' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+</mat-card>
+
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+  <mat-card-content>
+    <div class="card_initial">
+      <div class="card_initial has-image">
+        <div class="card_initial-image-container">
+          <img class="card_initial-image" src="/images/subcategories.png" />
+        </div>
+        <div class="card_initial-copy">
+          <div class="card_initial-tagline">
+            {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+          </div>
+          <div class="card_initial-additional-links">
+            {{'SECTIONS.MESSAGE' | translate}}
+          </div>
+        </div>
+        <div class="card_initial-button">
+          <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="_thereAreRestaurants">
+  <mat-card-title>{{'SUBCATEGORIES.SUBCATEGORY_CREATION' | translate}}</mat-card-title>
+  <mat-card-subtitle>{{'SUBCATEGORIES.SUBCATEGORY_TEXT' | translate}}</mat-card-subtitle>
+  <mat-card-content>
+    <form [formGroup]="_subcategoryForm" (ngSubmit)="addSubcategory();">
+      <div>
+        <mat-form-field class="name">
+          <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="50" #inputName>
+          <mat-hint align="end">{{inputName.value.length}} / 50</mat-hint>
+        </mat-form-field>
+        <mat-form-field  class="select">
+          <mat-select formControlName="category" required id="categorySelect" placeholder="{{'SUBCATEGORIES.CATEGORY_SELECTION' | translate}}" [(ngModel)]="_selectedValue">
+            <mat-option *ngFor="let category of _categories | async" value="{{category._id}}" (click)="changeCategory(category._id);">{{category.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <br/>
+      <button mat-raised-button class="secondary-button" [disabled]="!_subcategoryForm.valid" type="button" (click)="cancel()">{{'CANCEL' | translate}}</button>
+      <button mat-raised-button class="primary-button" [disabled]="!_subcategoryForm.valid" type="submit">{{'CREATE' | translate}}</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngFor="let subcategory of _subcategories | async" class="subcategory">
+  <mat-card-title>{{subcategory.name}}</mat-card-title>
+  <mat-card-content>
+    <span *ngFor="let cat of _categories | async">
+      <ng-template [ngIf]="cat._id == subcategory.category">                
+        <p *ngIf="cat.is_active" class="category-active">{{'SUBCATEGORIES.CATEGORY' | translate}}: {{cat.name}}</p>
+        <p *ngIf="!cat.is_active" class="category-inactive">{{'SUBCATEGORIES.CATEGORY' | translate}}: {{cat.name}}</p>
+      </ng-template>
+    </span>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="open(subcategory)" class="secondary-button">{{'SUBCATEGORIES.MODIFY' | translate}}</button>
+    <button mat-raised-button *ngIf="subcategory.is_active" class="inactive-button" (click)="updateStatus(subcategory)">{{'SUBCATEGORIES.INACTIVATE' | translate}}</button>
+    <button mat-raised-button *ngIf="!subcategory.is_active" class="active-button" (click)="updateStatus(subcategory)">{{'SUBCATEGORIES.ACTIVATE' | translate}}</button>
+  </mat-card-actions>
+</mat-card>

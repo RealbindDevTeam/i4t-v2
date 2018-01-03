@@ -1,0 +1,72 @@
+.name{
+    width: 40%
+}
+
+.message{
+    display: inline-block;
+}
+
+.checkbox{
+    padding-right: 15px;
+}
+
+.currencies{
+    width:40%;
+    display: inline-block;
+
+    .currency{
+        width: 80%;
+    }
+}
+
+.taxes{
+    width:45%;
+    display: inline-block;
+    vertical-align:top;
+
+    .tax{
+        width: 65%;
+    }
+}
+
+.cards{
+    width: 44%;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 1%;
+
+    .card-title{
+        display: inline-block;
+    }
+
+    .card-subtitle{
+        float: right;
+
+        .prices{
+            color: green;
+        }
+
+        .taxes{
+            color: goldenrod;
+        }
+    }
+
+    .card-addition-price{
+        font-size: x-large;
+        color: green;
+    }
+
+    .card-addition-tax{
+        font-size: initial;
+        color: goldenrod;
+    }
+
+    .card-actions{
+        margin-top: -2%;
+    }
+}
+
+.example-header-image {
+    background-image: url('/images/warning.png');
+    background-size: cover;
+  }

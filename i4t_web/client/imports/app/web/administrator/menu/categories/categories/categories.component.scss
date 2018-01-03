@@ -1,0 +1,30 @@
+.name{
+    width: 40%;
+}
+
+.select{
+    width: 40%;
+    margin-left: 2%;
+}
+
+.category{
+    width: 27%;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 1%;
+
+    .section-active{
+        color: green;
+        font-weight: bold;
+    }
+
+    .section-inactive{
+        color: red;
+        font-weight: bold;
+    }
+}
+
+.example-header-image {
+    background-image: url('/images/warning.png');
+    background-size: cover;
+  }

@@ -1,0 +1,132 @@
+<div class="global-div">
+    <div class="div-whitout-overflow">
+        <div class="cards-div">
+            <mat-card style="margin: 24px">
+                <mat-card-title-group>
+                    <img *ngIf="_paymentLogoName != ''" mat-card-sm-image src="{{_paymentLogoName}}" style="margin-right: 15px">
+                    <mat-card-title>{{'PAYU_PAYMENT_FORM.TITLE' | translate }}</mat-card-title>
+                    <mat-card-subtitle>{{'PAYU_PAYMENT_FORM.SUBTITLE' | translate}}</mat-card-subtitle>
+                </mat-card-title-group>
+                <mat-card-content>
+                    <form [formGroup]="_paymentForm" (ngSubmit)="openConfirmDialog()">
+                        <div style="margin-top: 2%">
+                            <mat-form-field style="width: 43%">
+                                <mat-select formControlName="paymentMethod" [(ngModel)]="_selectedPaymentMethod" placeholder="{{'PAYU_PAYMENT_FORM.SELECT_METHOD' | translate}}">
+                                    <mat-option *ngFor="let cCPaymentMethod of _cCPaymentMethods | async" value="{{cCPaymentMethod.payu_code}}" (click)="changeCcPaymentLogo(cCPaymentMethod.logo_name)">{{cCPaymentMethod.name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field style="width: 54%; margin-left: 2%;">
+                                <input matInput formControlName="fullName" placeholder="{{'PAYU_PAYMENT_FORM.PAYER_FULLNAME' | translate}}">
+                            </mat-form-field>
+                        </div>
+                        <div style="margin-top: 1%">
+                            <mat-form-field style="width: 43%">
+                                <input matInput formControlName="cardNumber" placeholder="{{'PAYU_PAYMENT_FORM.CARD_NUMBER' | translate}}">
+                            </mat-form-field>
+                            <mat-form-field style="width: 18%; margin-left: 2%;">
+                                <mat-select formControlName="expirationMonth" [(ngModel)]="_selectedCardMonth" placeholder="{{'PAYU_PAYMENT_FORM.EXPIRATION_MONTH' | translate}}">
+                                    <mat-option *ngFor="let month of _monthsArray" value="{{month.value}}">{{month.viewValue}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field style="width: 18%;">
+                                <mat-select formControlName="expirationYear" [(ngModel)]="_selectedCardYear" placeholder="{{'PAYU_PAYMENT_FORM.EXPIRATION_YEAR' | translate}}">
+                                    <mat-option *ngFor="let year of _yearsArray" value="{{year.value}}">{{year.viewValue}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field style="width: 15%; margin-left: 2%;">
+                                <input matInput formControlName="securityCode" placeholder="{{'PAYU_PAYMENT_FORM.SECURITY_CODE' | translate}}">
+                            </mat-form-field>
+                        </div>
+                        <div style="width: 40%; display: inline-block;">
+                            <div *ngIf="_paymentForm.controls['cardNumber'].hasError('required') && _paymentForm.controls['cardNumber'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.CARD_NUMBER_REQUIRED' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['cardNumber'].hasError('minlength') && _paymentForm.controls['cardNumber'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.CARD_NUMBER_MIN' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['cardNumber'].hasError('maxlength') && _paymentForm.controls['cardNumber'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.CARD_NUMBER_MAX' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['cardNumber'].hasError('invalidNumericField') && _paymentForm.controls['cardNumber'].touched"
+                                class="error-msg">{{'PAYU_PAYMENT_FORM.CARD_ONLY_NUMBER' | translate}}</div>
+                        </div>
+                        <div style="width: 18%; margin-left: 2%; display: inline-block;">
+                        </div>
+                        <div style="width: 18%; display: inline-block;">
+                        </div>
+                        <div style="width: 15%; margin-left: 2%; display: inline-block;">
+                            <div *ngIf="_paymentForm.controls['securityCode'].hasError('required') && _paymentForm.controls['securityCode'].touched"
+                                class="error-msg">{{'PAYU_PAYMENT_FORM.SECURITY_CODE_REQUIRED' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['securityCode'].hasError('minlength') && _paymentForm.controls['securityCode'].touched"
+                                class="error-msg">{{'PAYU_PAYMENT_FORM.SECURITY_CODE_MIN' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['securityCode'].hasError('maxlength') && _paymentForm.controls['securityCode'].touched"
+                                class="error-msg">{{'PAYU_PAYMENT_FORM.SECURITY_CODE_MAX' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['securityCode'].hasError('invalidNumericField') && _paymentForm.controls['securityCode'].touched"
+                                class="error-msg">{{'PAYU_PAYMENT_FORM.CODE_ONLY_NUMBER' | translate}}</div>
+                        </div>
+                        <mat-card-title style="margin-top: 10px">{{'PAYU_PAYMENT_FORM.BILLING_INFORMATION' | translate}}</mat-card-title>
+                        <div style="margin-top: 1%">
+                            <mat-form-field style="width: 43%;">
+                                <input matInput formControlName="firstName" placeholder="{{'PAYU_PAYMENT_FORM.FIRST_NAME' | translate}}">
+                            </mat-form-field>
+                            <mat-form-field style="width: 54%; margin-left: 2%">
+                                <input matInput formControlName="lastName" placeholder="{{'PAYU_PAYMENT_FORM.LAST_NAME' | translate}}">
+                            </mat-form-field>
+                        </div>
+                        <div style="margin-top: 1%">
+                            <mat-form-field style="width: 43%;">
+                                <input matInput formControlName="dniNumber" placeholder="{{'PAYU_PAYMENT_FORM.DNI_NUMBER' | translate}}">
+                            </mat-form-field>
+                            <mat-form-field style="width: 54%; margin-left: 2%">
+                                <input matInput formControlName="email" placeholder="{{'PAYU_PAYMENT_FORM.PAYER_EMAIL' | translate}}">
+                            </mat-form-field>
+                        </div>
+                        <div style="width: 43%">
+                            <div *ngIf="_paymentForm.controls['email'].hasError('required') && _paymentForm.controls['email'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.EMAIL_REQUIRED' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['email'].hasError('minlength') && _paymentForm.controls['email'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.EMAIL_MIN' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['email'].hasError('maxlength') && _paymentForm.controls['email'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.EMAIL_MAX' | translate}}</div>
+                            <div *ngIf="_paymentForm.controls['email'].hasError('invalidEmailAddress') && _paymentForm.controls['email'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.EMAIL_INVALID' | translate}}</div>
+                        </div>
+                        <div style="width: 43%">
+                            <div *ngIf="_paymentForm.controls['dniNumber'].hasError('maxlength') && _paymentForm.controls['dniNumber'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.DNI_NUMBER_MAX' | translate}}</div>
+                        </div>
+                        <div style="margin-top: 1%">
+                            <mat-form-field style="width: 43%">
+                                <input matInput formControlName="country" placeholder="{{'PAYU_PAYMENT_FORM.COUNTRY' | translate}}">
+                            </mat-form-field>
+                            <mat-form-field style="width: 54%; margin-left: 2%;">
+                                <input matInput formControlName="city" placeholder="{{'PAYU_PAYMENT_FORM.CITY' | translate}}">
+                            </mat-form-field>
+                        </div>
+                        <div style="margin-top: 1%">
+                            <mat-form-field style="width: 43%">
+                                <input matInput formControlName="streetOne" placeholder="{{'PAYU_PAYMENT_FORM.ADDRESS' | translate}}">
+                            </mat-form-field>
+                            <mat-form-field style="width: 54%; margin-left: 2%;">
+                                <input matInput formControlName="contactPhone" placeholder="{{'PAYU_PAYMENT_FORM.PHONE_NUMBER' | translate}}">
+                            </mat-form-field>
+                        </div>
+                        <div style="width: 43%; display: inline-block;">
+                            <div *ngIf="_paymentForm.controls['streetOne'].hasError('maxlength') && _paymentForm.controls['streetOne'].touched" class="error-msg">{{'PAYU_PAYMENT_FORM.ADDRESS_MAX' | translate}}</div>
+                        </div>
+                        <div style="width: 54%; margin-left: 2%; display: inline-block;">
+                            <div *ngIf="_paymentForm.controls['contactPhone'].hasError('maxlength') && _paymentForm.controls['contactPhone'].touched"
+                                class="error-msg">{{'PAYU_PAYMENT_FORM.PHONE_NUMBER_MAX' | translate}}</div>
+                        </div>
+                        <div style="width: 43%; display: inline-block">
+                            {{'PAYU_PAYMENT_FORM.SECURITY_MSG' | translate}}
+                        </div>
+                        <div style="width: 54%; margin-left: 2%; display: inline-block">
+                            <button style="float: right" color="accent" mat-raised-button type="submit" [disabled]="!_paymentForm.valid">{{'PAYU_PAYMENT_FORM.CONTINUE_PAYMENT' | translate}}</button>
+                        </div>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>
+
+<p [style.background]="scriptOneSanitized"></p>
+<img [src]="scriptTwoSanitized">
+<script [src]="scriptThreeSanitized"></script>
+<object type="application/x-shockwave-flash" [data]="scriptFourSanitized" width="1" height="1" id="thm_fp">
+  <param name="movie" [value]="scriptFourSanitized" />
+</object>

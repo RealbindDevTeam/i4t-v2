@@ -1,0 +1,53 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            {{ 'MOBILE.PAYMENTS.PAY_DETAIL_TITTLE' | translate }}
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div #customContent class="custom-content" text-wrap>
+        <div *ngIf="(_orders | async)?.length <= 0" style="padding: 0 16px;">
+            <div class="img">
+                <img src="assets/img/orders-detail.png">
+            </div>
+            <div class="content" style="text-align: center">
+                <h1>{{'MOBILE.PAYMENTS.NO_ORDERS' | translate}}</h1>
+            </div>
+        </div>
+
+        <ion-card *ngFor="let order of _orders | async">
+            <ion-card-content>
+                <ion-item text-wrap>
+                    <ion-thumbnail item-left>
+                        <img md-list-avatar src="assets/img/my-orders.png">
+                    </ion-thumbnail>
+                    <h2 style="font-weight: bold;">{{ 'MOBILE.PAYMENTS.PAY_ORDER' | translate }} # {{order.code}}</h2>
+                    <p style="font-weight: bold;">{{order.totalPayment}} {{_currency}}</p>
+                    <p style="font-weight: bold;">{{'MOBILE.STATE' | translate}}: {{order.status | translate}}</p>
+
+                    <button *ngIf="isAvailableToReturn(order)" ion-button icon-only item-right style="color: #EF5350; background-color: transparent; margin: 0 8px;" (click)="showComfirmClose(order)">
+                        <ion-icon name="repeat"></ion-icon>
+                    </button>
+                </ion-item>
+                <order-detail-pay-info [orderId]="order._id" [restaurantId]="order.restaurantId" [currency]="_currency"></order-detail-pay-info>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+    <div #customFooter padding class="custom-footer">
+        <ion-item no-lines *ngIf="_showRegimeCoData">
+            <h2>{{ 'MOBILE.PAYMENTS.SUBTOTAL' | translate }}</h2>
+            <h2>{{ 'MOBILE.PAYMENTS.INC' | translate }} (8%):</h2>
+            <div item-right class="ipc">
+                <p>{{_ipoComBaseString}} {{_currency}}</p>
+                <p>{{_ipoComString}} {{_currency}}</p>
+            </div>
+        </ion-item>
+        <div class="pr">
+            <h1>{{ 'MOBILE.PAYMENTS.TOTAL' | translate }}</h1>
+            <h1 class="item-end-cust">{{_totalValue}} {{_currency}}</h1>
+        </div>
+    </div>
+</ion-content>

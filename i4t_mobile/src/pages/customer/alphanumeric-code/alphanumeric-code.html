@@ -1,0 +1,37 @@
+<ion-header>
+
+    <ion-navbar>
+        <ion-title>{{'MOBILE.ALPHABET_CODE.TITTLE' | translate}}</ion-title>
+    </ion-navbar>
+
+</ion-header>
+
+<ion-content padding align="center">
+    <div showWhen="android" class="img">
+        <img src="assets/img/computer.png">
+    </div>
+
+    <div showWhen="ios" class="img" style="height:50%">
+        <img src="assets/img/computer.png">
+    </div>
+
+    <div id="content">
+        <p>{{'MOBILE.ALPHABET_CODE.CONTENT' | translate}}</p>
+    </div>
+
+    <form [formGroup]="_ordersForm" (ngSubmit)="validateQRCodeExists()" novalidate>
+        <div id="buttons">
+            <ion-list>
+                <ion-item style="background: whitesmoke;">
+                    <ion-label stacked></ion-label>
+                    <ion-input text-uppercase text-center formControlName="qrCode" style="font-size: 3.8rem; font-weight: 500"></ion-input>
+                </ion-item>
+                <ion-label>{{_error_msg}}</ion-label>
+            </ion-list>
+
+            <button ion-button block outline [disabled]="!_ordersForm.valid" type="submit">
+                {{'MOBILE.ALPHABET_CODE.ENTER' | translate}}
+            </button>
+        </div>
+    </form>
+</ion-content>

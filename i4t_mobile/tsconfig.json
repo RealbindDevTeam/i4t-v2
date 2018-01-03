@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "paths": {
+      "i4t_web/*": ["../i4t_web/*"]
+    },
+    "sourceMap": true,
+    "target": "es5",
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "noImplicitAny": false,
+    "types": [
+      "@types/meteor"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "../i4t_web/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "../i4t_web/node_modules",
+    "../i4t_web"
+  ],
+  "compileOnSave": false,
+  "atom": {
+    "rewriteTsconfig": false
+  }
+}

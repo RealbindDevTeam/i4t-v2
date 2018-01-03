@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-navbar>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding style="background: url('assets/img/background_signup.png'); background-size: 100%; background-repeat: no-repeat;">
+  <div class="img">
+    <img src="assets/img/logo_iurest_1000_x_260.png">
+  </div>
+
+  <button ion-button block class="btn-facebook button-social" (click)="loginWithFacebook()">
+      <i class="fa fa-facebook icon-social" aria-hidden="true"></i>Facebook
+  </button>
+
+  <div class="divider">
+    <div class="divider-content">
+      <hr/>
+      <span>{{'MOBILE.SIGNUP.OR' | translate}}</span>
+      <hr/>
+    </div>
+  </div>
+  <!--button (click)="showLoginPassword=false" ion-button clear block class="button-secundary button-social">
+    {{'MOBILE.SIGNUP.WITH_EMAIL' | translate}}
+  </button-->
+
+  <!--div [hidden]="showLoginPassword"-->
+  <form [formGroup]="signupForm" (ngSubmit)="register()" novalidate>
+    <ion-list>
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="person"></ion-icon> 
+          {{'MOBILE.USERNAME' | translate}}
+        </ion-label>
+        <ion-input type="text" formControlName="username"></ion-input>
+      </ion-item>
+      <div *ngIf="signupForm.controls['username'].hasError('required') && signupForm.controls['username'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.REQUIRED_USERNAME' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['username'].hasError('minlength') && signupForm.controls['username'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MIN_LENGTH_USERNAME' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['username'].hasError('maxlength') && signupForm.controls['username'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MAX_LENGTH_USERNAME' | translate}}</p>
+      </div>
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="mail"></ion-icon> 
+          {{'MOBILE.EMAIL' | translate}}
+        </ion-label>
+        <ion-input type="text" formControlName="email"></ion-input>
+      </ion-item>
+      <div *ngIf="signupForm.controls['email'].hasError('invalidEmailAddress') && signupForm.controls['email'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.REQUIRED_EMAIL' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['email'].hasError('minlength') && signupForm.controls['email'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MIN_LENGTH_EMAIL' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['email'].hasError('maxlength') && signupForm.controls['email'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MAX_LENGTH_EMAIL' | translate}}</p>
+      </div>
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="lock"></ion-icon> 
+          {{'MOBILE.PASSWORD' | translate}}
+        </ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <div *ngIf="signupForm.controls['password'].hasError('required') && signupForm.controls['password'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.REQUIRED_PASSWORD' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['password'].hasError('minlength') && signupForm.controls['password'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MIN_LENGTH_PASSWORD' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['password'].hasError('maxlength') && signupForm.controls['password'].touched" class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</p>
+      </div>
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="done-all"></ion-icon> 
+          {{'MOBILE.CONFIRM_PASSWORD' | translate}}
+        </ion-label>
+        <ion-input type="password" formControlName="confirmPassword"></ion-input>
+      </ion-item>
+      <div *ngIf="signupForm.controls['confirmPassword'].hasError('required') && signupForm.controls['confirmPassword'].touched"
+        class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.REQUIRED_PASSWORD' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['confirmPassword'].hasError('minlength') && signupForm.controls['confirmPassword'].touched"
+        class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MIN_LENGTH_PASSWORD' | translate}}</p>
+      </div>
+      <div *ngIf="signupForm.controls['confirmPassword'].hasError('maxlength') && signupForm.controls['confirmPassword'].touched"
+        class="error-message">
+        <p class="error-message">{{'MOBILE.SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</p>
+      </div>
+      <div>
+        <p *ngIf="showConfirmError" class="error-message"> {{'MOBILE.SIGNUP.PASSWORD_NOT_MATCH' | translate}}</p>
+      </div>
+    </ion-list>
+    <div>
+      <button ion-button block class="button-primary button-social" type="submit" [disabled]="!signupForm.valid">{{'MOBILE.INITIAL.SIGNUP' | translate}}
+        </button>
+    </div>
+  </form>
+  <!--/div-->
+</ion-content>

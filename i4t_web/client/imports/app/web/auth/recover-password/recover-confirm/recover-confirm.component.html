@@ -1,0 +1,12 @@
+<mat-card style="box-shadow: none">
+    <mat-card-title>{{data.title | translate}}</mat-card-title>
+    <mat-card-subtitle>{{data.subtitle | translate}}</mat-card-subtitle>
+
+    <mat-card-content>
+        <p>{{data.content | translate}}</p>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button *ngIf="showCancelButton" mat-raised-button class="secondary-button" (click)="cancel()">{{data.buttonCancel | translate}}</button>
+        <button mat-raised-button class="primary-button" (click)="closeConfirm()">{{data.buttonAccept | translate}}</button>
+    </mat-card-actions>
+</mat-card>

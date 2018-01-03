@@ -1,0 +1,49 @@
+
+page-initial {
+
+  /*portrait*/
+  @media screen and (orientation:portrait){
+    .logo-img{
+      height: 33rem;
+      width: 70%;
+      margin: 0 auto;
+      background-repeat: no-repeat;
+    }
+  }
+
+  /*landscape*/
+  @media screen and (orientation:landscape){
+    .logo-img{
+      height: 20rem;
+      width: 40%;
+      margin: 0 auto;
+      background-repeat: no-repeat;
+    }
+  }
+
+  .button_sign {
+    width: 40%;
+  }
+
+  .button_sign:focus{
+      background-color: #222;
+  }
+
+  .main{
+      text-align: center;
+      top: 50%;
+      -webkit-transform: translateY(-50%);
+      -moz-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+      -o-transform: translateY(-50%);
+      transform: translateY(-50%);
+      position: absolute !important;
+      width:100%;
+      
+      img {
+        width: 25rem;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+  }
+}

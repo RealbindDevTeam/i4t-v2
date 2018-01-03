@@ -1,0 +1,41 @@
+<mat-card style="box-shadow: none">
+    <mat-card-title>{{'PAYU_PAYMENT_FORM.DIALOG_TITLE' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'PAYU_PAYMENT_FORM.DIALOG_PLEASE' | translate}}</mat-card-subtitle>
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item>
+                <img mat-list-avatar class="image" src="/images/restaurantes.png">
+                <h2 mat-line class="card-title">{{'PAYU_PAYMENT_FORM.IUREST_SERVICE' | translate}}</h2>
+                <p mat-line *ngFor="let restaurant of data.restaurantArray"> - {{restaurant}}</p>
+            </mat-list-item>
+        </mat-list>
+        <mat-list>
+            <mat-list-item>
+                <img mat-list-avatar class="image" src="/images/orders.png">
+                <h2 mat-line class="card-title">{{'PAYU_PAYMENT_FORM.PERSONAL_INFO' | translate}}</h2>
+                <p mat-line>{{data.streetone}}</p>
+                <p mat-line>{{data.city}}, {{data.country | translate}}</p>
+                <p mat-line>{{data.customerName}}</p>
+                <p mat-line>{{'PAYU_PAYMENT_FORM.PERSONAL_TEL' | translate}} {{data.telephone}}</p>
+            </mat-list-item>
+        </mat-list>
+        <mat-list>
+            <mat-list-item>
+                <img mat-list-avatar class="image" src="{{data.ccmethod}}">
+                <h2 mat-line class="card-title">{{'PAYU_PAYMENT_FORM.PAY' | translate}}</h2>
+                <p mat-line>{{'PAYU_PAYMENT_FORM.CARD_FINISHED_IN' | translate}}{{_cardNumber}}</p>
+                <p mat-line>{{data.fullname}}</p>
+            </mat-list-item>
+        </mat-list>
+        <mat-list>
+            <mat-list-item>
+                <img mat-list-avatar class="image" src="/images/credit-card-payment.png">
+                <h2 mat-line class="card-title">{{'PAYU_PAYMENT_FORM.PRICE' | translate}} <span style="font-weight: 600">{{data.price}} {{data.currency}}</span></h2>
+            </mat-list-item>
+        </mat-list>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="secondary-button" (click)="cancel()">{{ 'PAYU_PAYMENT_FORM.PAY_CANCEL' | translate }}</button>
+        <button mat-raised-button class="primary-button" (click)="closeConfirm()">{{ 'PAYU_PAYMENT_FORM.PAY_CONFIRM' | translate }}</button>
+    </mat-card-actions>
+</mat-card>

@@ -1,0 +1,101 @@
+@media only screen and (min-width: 961px){
+    .cards{
+        width: 270px;
+        float: left;
+        margin-right: 20px;
+    }
+}
+
+.active-button{
+    margin-left: 5px;
+}
+
+.img {
+    width: 40px;
+    height: 40px;
+    margin-top: 25px;
+    border-radius: 50%;
+}
+
+.call-card {
+    margin: 0 auto;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.card_image {
+    background-image: url(/images/background_waiter.png); 
+    background-repeat: no-repeat; 
+    background-size: 100% 100%;
+}
+
+.item-block {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: hidden;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 4.4rem;
+    border: 0;
+    font-weight: normal;
+    line-height: normal;
+    text-align: initial;
+    text-decoration: none;
+    color: inherit;
+}
+
+.img-list {
+    width: 45px;
+    height: 45px;
+    margin-right: 5px;
+}
+
+.header-title {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: hidden;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 0;
+    width: 100%;
+    min-height: 4.4rem;
+    border: 0;
+    font-weight: normal;
+    line-height: normal;
+    text-align: initial;
+    text-decoration: none;
+    color: inherit;
+}
+
+.label {
+    display: block;
+    overflow: hidden;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin: 0;
+    font-size: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    span{
+        font-size: 1.5rem;
+    }
+}
+
+.mat-dialog-container {
+    max-height: 90vw !important;
+}

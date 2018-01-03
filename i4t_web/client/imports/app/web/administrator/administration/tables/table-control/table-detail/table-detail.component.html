@@ -1,0 +1,52 @@
+<div class="main">
+    <div class="mc">
+        <div class="detail-info">
+            <mat-card class="card-info">
+                <mat-list>
+                    <mat-list-item>
+                        <img mat-list-avatar class="image" src="/images/delivery-of-item.png">
+                        <h2 mat-line class="card-title">{{ 'TABLE_DETAIL.TABLE_DETAIL_TITLE' | translate }} # {{_tableNumber}}</h2>
+                        <p mat-line class="card-subtitle">{{ 'TABLE_DETAIL.TABLE_DETAIL_SUBTITLE' | translate }}</p>
+                    </mat-list-item>
+                </mat-list>
+            </mat-card>
+            <div *ngFor="let userDetail of _userDetails | async">
+                <div *ngFor="let user of _users | async">
+                    <div *ngIf="userDetail.user_id === user._id">
+                        <div *ngIf="user.services.facebook">
+                            <mat-card>
+                                <mat-list>
+                                    <mat-list-item>
+                                        <img mat-list-avatar class="image" src="{{getUserImage(user)}}">
+                                        <a href="{{user.services.facebook.link}}" target="_blank"><h2 mat-line class="card-title">{{user.services.facebook.name}}</h2></a>
+                                        <p mat-line class="card-subtitle">{{user.services.facebook.email}}</p>
+                                        <p mat-line class="customer-consumption">{{ 'TABLE_DETAIL.TOTAL_CONSUMPTION' | translate }}: {{getTotalConsumption(user._id)}} {{_currencyCode}}</p>
+                                        <button mat-raised-button class="primary-button card-button penalize-button" (click)="openCustomerPenalize(user)">{{ 'TABLE_DETAIL.PENALIZE' | translate }}</button>
+                                    </mat-list-item>
+                                </mat-list>
+                            </mat-card>
+                        </div>
+                        <div *ngIf="user.username">
+                            <mat-card>
+                                <mat-list>
+                                    <mat-list-item>
+                                        <img mat-list-avatar class="image" src="{{getUserImage(user)}}">
+                                        <h2 mat-line class="card-title">{{user.username}}</h2>
+                                        <p mat-line class="card-subtitle">{{user.emails[0].address}}</p>
+                                        <p mat-line class="customer-consumption">{{ 'TABLE_DETAIL.TOTAL_CONSUMPTION' | translate }}: {{getTotalConsumption(user._id)}} {{_currencyCode}}</p>
+                                        <button mat-raised-button class="primary-button card-button penalize-button" (click)="openCustomerPenalize(user)">{{ 'TABLE_DETAIL.PENALIZE' | translate }}</button>
+                                    </mat-list-item>
+                                </mat-list>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fixed-action-btn">
+        <button id="fb" mat-fab (click)="returnTableControl()">
+            <mat-icon class="color-button-icon">keyboard_arrow_left</mat-icon>
+        </button>
+    </div>
+</div>

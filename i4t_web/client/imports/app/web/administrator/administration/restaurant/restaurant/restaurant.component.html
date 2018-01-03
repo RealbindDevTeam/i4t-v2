@@ -1,0 +1,56 @@
+<mat-card *ngIf="!_thereAreRestaurants" mat-cell="12" class="demo-card demo-basic">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" 
+                    src="/images/restaurantes.png"/>
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{ 'RESTAURANT.MSG_INITIAL' | translate }}
+                    </div>
+                    <div class="card_initial-additional-links">
+                        
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="openRestaurantRegister()">{{'RESTAURANT.REGISTER_RESTAURANT' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<div class="global-div" *ngIf="_thereAreRestaurants">
+    <div class="div-whitout-overflow">
+        <div class="cards-div" style="padding: 20px 0 0 20px;">
+            <mat-card *ngFor="let restaurant of restaurants | async" class="custom-cards">
+                <div class="header-card">
+                    <img *ngIf="restaurant.image" src="{{ restaurant.image.url }}">
+                    <img *ngIf="!restaurant.image" src="/images/default-restaurant.png">
+                    <span class="mat-card-title">{{restaurant.name}}</span>
+                    <span class="mat-card-subtitle">{{restaurant.address}}</span>
+                    <button matTooltip="{{'RESTAURANT.EDIT_RESTAURANT' | translate}}" mat-fab class="btn-position-edition" (click)="openRestaurantEdition(restaurant)">
+                        <mat-icon style="color: white;" class="mat-24">create</mat-icon>
+                    </button>
+                </div>
+                <mat-card-content>
+                    <ul class="list">
+                        <li>
+                            <mat-icon class="vertical-align-middle" matTooltip="{{'RESTAURANT.COUNTRY' | translate}}">room</mat-icon>
+                            <label>{{ getRestaurantCountry(restaurant.countryId) | translate }} - {{ getRestaurantCity(restaurant.cityId,restaurant.other_city) | translate }}</label>
+                        </li>
+                        <li>
+                            <mat-icon class="vertical-align-middle" matTooltip="{{'RESTAURANT.PHONE' | translate}}">call</mat-icon>
+                            <label>{{restaurant.indicative}} {{restaurant.phone}}</label>
+                        </li>
+                    </ul>
+                    <p *ngIf="!restaurant.isActive" class="restaurant-inactive">{{'RESTAURANT.RESTAURANT_INACTIVE' | translate}}</p>
+                    <p *ngIf="restaurant.isActive" class="restaurant-active">{{'RESTAURANT.RESTAURANT_ACTIVE' | translate}}</p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    <button *ngIf="_thereAreRestaurants" matTooltip="{{'RESTAURANT.REGISTER_RESTAURANT' | translate}}" class="fixed-action-btn" mat-fab (click)="openRestaurantRegister()"> <mat-icon style="color: white;">add</mat-icon></button>
+</div>

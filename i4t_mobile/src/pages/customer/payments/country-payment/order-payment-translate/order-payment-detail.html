@@ -1,0 +1,13 @@
+<ion-list>
+    <ion-item>
+        <ion-thumbnail item-start>
+            <img src="assets/img/my-orders.png" style="width: 50px; height: 50px;">
+        </ion-thumbnail>
+
+        <h2 *ngIf="ordersConfirm">{{'MOBILE.ORDERS.ORDER' | translate}}{{orderCon.code}}</h2>
+        <p *ngIf="ordersConfirm">{{'MOBILE.ORDERS.TOTAL' | translate}}{{orderCon.totalPayment}} {{_currency}}</p>
+
+        <h2 *ngIf="!ordersConfirm">{{'MOBILE.ORDERS.ORDER' | translate}}{{orderCon.code}}</h2>
+        <p *ngIf="!ordersConfirm">{{orderCon.status | translate}}</p>
+    </ion-item>
+</ion-list>

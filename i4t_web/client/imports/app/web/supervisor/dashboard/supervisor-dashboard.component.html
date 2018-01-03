@@ -1,0 +1,79 @@
+<mat-card class="landing-welcome-card">
+  <mat-card-content>
+      <div class="left-content custom">
+          <div class="content">
+              <mat-card-title>
+                  {{'ADMIN_DASHBOARD.TITLE' | translate}}
+              </mat-card-title>
+              <mat-card-subtitle>
+                  {{'ADMIN_DASHBOARD.CARD_CONTENT' | translate}}
+              </mat-card-subtitle>
+          </div>
+      </div>
+      <div class="action-links custom">
+          <a class="dashboard-links" [routerLink]="['/app/restaurant']">
+              <mat-icon class="vertical-align-middle" matTooltip="{{'ADMIN_DASHBOARD.LINK.NEW_RESTAURANT' | translate}}">store</mat-icon>
+              {{'ADMIN_DASHBOARD.LINK.NEW_RESTAURANT' | translate}}
+          </a>
+          <a class="dashboard-links" [routerLink]="['/app/collaborators']">
+              <mat-icon class="vertical-align-middle" matTooltip="{{'ADMIN_DASHBOARD.LINK.NEW_COLLABORATOR' | translate}}">person</mat-icon>
+              {{'ADMIN_DASHBOARD.LINK.NEW_COLLABORATOR' | translate}}
+          </a>
+      </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngFor="let restaurant of _restaurants | async" class="custom-cards">
+  <div>
+      <span class="mat-card-title title">{{restaurant.name}}</span>
+      <span class="mat-card-subtitle">{{restaurant.address}}</span>
+  </div>
+  <mat-card-content>
+      <ul class="list">
+          <li>
+              <mat-icon style="color: #81C784;" class="vertical-align-middle" matTooltip="{{'ADMIN_DASHBOARD.SALES' | translate}}">local_atm</mat-icon>
+              <label>{{getDailySales( restaurant._id)}} {{getRestaurantCurrency( restaurant.currencyId )}}</label>
+          </li>
+          <li>
+              <mat-icon style="color: #90CAF9;" class="vertical-align-middle" matTooltip="{{'ADMIN_DASHBOARD.USERS' | translate}}">person</mat-icon>
+              <label>{{getRestaurantUsers( restaurant._id )}} {{'ADMIN_DASHBOARD.USERS' | translate}}</label>
+          </li>
+          <li>
+              <mat-icon style="color: #81C784;" class="vertical-align-middle" matTooltip="{{'ADMIN_DASHBOARD.FREE' | translate}}">check</mat-icon>
+              <label>{{getTablesWithFreeStatus( restaurant._id )}} {{'ADMIN_DASHBOARD.FREE' | translate}}</label>
+          </li>
+          <li>
+              <mat-icon style="color: #EF5350;" class="vertical-align-middle" matTooltip="{{'ADMIN_DASHBOARD.BUSY' | translate}}">not_interested</mat-icon>
+              <label>{{getTablesWithBusyStatus( restaurant._id )}} {{'ADMIN_DASHBOARD.BUSY' | translate}}</label>
+          </li>
+          <li>
+              <mat-icon style="color: #FDD835;" class="vertical-align-middle" matTooltip="{{'ADMIN_DASHBOARD.ITEMS' | translate}}">thumb_up</mat-icon>
+              <label>{{getItemsSold( restaurant._id )}} {{'ADMIN_DASHBOARD.ITEMS' | translate}}</label>
+          </li>
+      </ul>
+  </mat-card-content>
+</mat-card>
+
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="(_restaurants | async)?.length <= 0">
+  <mat-card-content>
+      <div class="card_initial">
+          <div class="card_initial has-image">
+              <div class="card_initial-image-container">
+                  <img class="card_initial-image" 
+                      src="/images/restaurante.png"/>
+              </div>
+              <div class="card_initial-copy">
+                  <div class="card_initial-tagline">
+                      {{'ADMIN_DASHBOARD.THERE_NOT_RESTAURANTS' | translate}}
+                  </div>
+                  <div class="card_initial-additional-links">
+                    {{'ADMIN_DASHBOARD.MESSAGE' | translate}}
+                  </div>
+              </div>
+              <div class="card_initial-button">
+                  <button mat-raised-button (click)="goToAddRestaurant()">{{'ADMIN_DASHBOARD.RESTAURANT_REGISTER' | translate}}</button>
+              </div>
+          </div>
+      </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,20 @@
+<div *ngFor="let item of _items | async">
+    <div class="item-divider-custom"></div>
+    <ion-item *ngIf="orderItem.itemId == item._id">
+        <ion-thumbnail item-left>
+            <img *ngIf="item.image" src="{{item.image.url}}">
+            <img *ngIf="!item.image" src="assets/img/default-plate.png">
+        </ion-thumbnail>
+        <h2 style="white-space: normal;">{{item.name}}</h2> 
+        <p style="white-space: normal;">{{orderItem.paymentItem}} {{currency}}</p>
+        <p style="white-space: normal;" *ngIf="!getItemAvailability(item._id)" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
+        <p style="white-space: normal;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{orderItem.quantity}}</p>
+        <button *ngIf="order.creation_user === _currentOrderUserId" ion-button icon-only clear item-right (click)="goToItemEdit(item._id, orderItem.index)">
+            <ion-icon *ngIf="order.status === 'ORDER_STATUS.REGISTERED'" name="create"></ion-icon>
+            <ion-icon *ngIf="order.status !== 'ORDER_STATUS.REGISTERED'" name="eye"></ion-icon> 
+        </button>
+        <button *ngIf="order.creation_user !== _currentOrderUserId && order.status !== 'ORDER_STATUS.DELIVERED'" ion-button icon-only clear item-right (click)="goToItemEdit(item._id, orderItem.index)">
+            <ion-icon name="eye"></ion-icon> 
+        </button>
+    </ion-item>
+</div>

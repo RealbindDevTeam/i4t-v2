@@ -1,0 +1,154 @@
+.clear {
+  clear:both;
+}
+
+body, div {
+  margin:0;
+  padding:0;
+  border:0;
+  font-size:100%;
+  font:inherit;vertical-align:baseline;
+  font-family: Roboto,'Helvetica Neue',sans-serif;
+}
+
+.main {
+  text-align: center;
+  background-color: whitesmoke;
+}
+
+.main-w3lsrow {
+  background-color: white;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+}
+
+.login-form {
+    padding: 1em 2em;
+}
+
+.login-form.login-form-image.signin{
+  background: url('/images/landing-2.png')no-repeat center -250px;
+}
+
+.login-form.login-form-image.signup{
+  background: url('/images/signup.png')no-repeat right 0px;
+}
+
+.login-form.login-form-image.admin-signup{
+  background: url('/images/admin-signup.png')no-repeat right 0px;
+}
+
+.signup-logo {
+  margin: 0 auto;
+  color: white;  
+}
+
+.login-form.login-form-right {
+  text-align: left;
+  transition: box-shadow 280ms cubic-bezier(.4,0,.2,1);
+  will-change: box-shadow;
+  display: block;
+  position: relative;
+  border-radius: 2px;
+}
+
+@media only screen and (min-width: 600px){
+  .main {
+    background-color: whitesmoke;
+    padding: 4.5em 0 4.5em;
+    text-align: center;
+    overflow: scroll;
+  }
+  
+  .main-height{
+    height: calc(100% - 9em);
+  }
+
+  .main-w3lsrow {
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    width: 80%;
+  }
+
+  .login-form {
+    width: 38%;
+    float: left;
+    padding: 3em 3em;
+  }
+
+  .login-form.login-form-image {
+    position: absolute;
+    height: 100%;
+    padding: 0;
+    width: 50%;
+  }
+
+  .signup-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 30%;
+    width: 50%;
+    margin: -10% 0 0 -25%;
+  }
+  
+  .login-form.login-form-right {
+    float: right;
+  }
+}
+
+@media only screen and (min-width: 840px){
+  .main-w3lsrow {
+    width: 65%;
+  }
+}
+
+
+.fa{
+  float:left;
+  line-height: inherit;
+}
+
+hr { 
+   border: 1px solid #f5f5f5; 
+   margin-top: 15px;
+   border-radius: 300px ; 
+   height: 0px; 
+   text-align: center; 
+ }
+
+button[mat-raised-button]{
+  width: 100%;
+  margin-top: 2vh;
+}
+
+.btn-facebook{
+  background-color: #3b5998;
+  color: #FFF;
+}
+
+.btn-facebook:hover {
+    background: #30487b;
+}
+
+.error-message{
+  color: #f44336;
+  font-size: 0.8em;
+}
+
+.label-legal {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 8px;
+  padding: 0 10px;
+  color: #444;
+}
+
+.display-inline-block {
+  display: block;
+  
+  hr {
+    display: inline-block;  
+    width: 45%;
+  }
+}

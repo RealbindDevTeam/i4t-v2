@@ -1,0 +1,77 @@
+<div class="global-div">
+    <div class="div-whitout-overflow">
+        <div class="cards-div">
+            <div class="call-card">
+                <mat-card class="card_image" style="margin: 24px;">
+                    <mat-list>
+                        <mat-list-item *ngIf="_restaurant">
+                            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="_restaurant.image" src="{{ _restaurant.image.url }}">
+                            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="!_restaurant.image" src="/images/default-restaurant.png">                            
+                            <h2 mat-line style="font-size: 1.5rem;"> {{_restaurant.name}} </h2>
+                            <p mat-line style="font-size: 1rem;">
+                                <mat-icon style="vertical-align: middle">location_on</mat-icon>
+                                <span> {{_restaurant.address}} </span>
+                            </p>
+                            <p mat-line style="font-size: 1rem;">
+                                <mat-icon style="vertical-align: middle">phone</mat-icon>
+                                <span class="detail-message">{{_restaurant.indicative}} {{_restaurant.phone}} </span>
+                            </p>
+                        </mat-list-item>
+                    </mat-list>
+                </mat-card>
+            </div>
+
+            <mat-card *ngFor="let userdetail of _userDetails | async" class="cards">
+                <div *ngFor="let user of _users | async">
+                    <div *ngIf="userdetail.user_id == user._id">
+                        <mat-card-header style="height: 80px; background: #eee;">
+                            <img class="img" mat-list-avatar src="/images/user_default_image.png">
+                            <mat-list>
+                                <mat-list-item>
+                                    <h3 mat-line> {{user.profile.first_name}} {{user.profile.last_name}} </h3>
+                                    <p mat-line>
+                                        <span> {{user.username}} </span>
+                                    </p>
+                                </mat-list-item>
+                            </mat-list>
+                        </mat-card-header>
+
+                        <mat-card-content>
+                            <button mat-mini-fab class="btn_edit" (click)="editCollaborator(userdetail, user)"> 
+                                <mat-icon style="color: white;">edit</mat-icon>
+                            </button>
+                            <ul class="list">
+                                <li *ngFor="let role of _roles | async">
+                                    <ng-template [ngIf]="role._id == userdetail.role_id">
+                                        <mat-icon matTooltip="{{'JOB' | translate}}" style="vertical-align: middle">assignment ind</mat-icon>
+                                        <label> {{ role.name | translate }} </label>
+                                    </ng-template>
+                                </li>
+                                <li *ngIf="user.emails">
+                                    <mat-icon style="vertical-align: middle" matTooltip="{{'EMAIL' | translate}}">mail outline</mat-icon>
+                                    <span> {{user.emails[0].address}} </span>
+                                </li>
+                                <li *ngIf="userdetail.phone">
+                                    <mat-icon style="vertical-align: middle" matTooltip="{{ 'PHONE' | translate }}">phone</mat-icon>
+                                    <span> {{userdetail.phone}} </span>
+                                </li>
+                                <li *ngIf="userdetail.birthdate">
+                                    <mat-icon style="vertical-align: middle" matTooltip="{{ 'BIRTHDATE' | translate }}">event</mat-icon>
+                                    <span> {{userdetail.birthdate | date: 'dd/MM/yyyy'}} </span>
+                                </li>
+                                <li>
+                                    <mat-slide-toggle [(checked)]="userdetail.is_active" (change)="changeUserState(userdetail)">
+                                        {{ 'STATE' | translate }}
+                                    </mat-slide-toggle>
+                                </li>
+                            </ul>
+                        </mat-card-content>
+                    </div>
+                </div>
+            </mat-card>
+            <button *ngIf="(_userDetails | async)?.length > 0" class="fixed-action-btn" mat-fab (click)="openCollaboratorstRegister()">
+                <mat-icon style="color: white;">add</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

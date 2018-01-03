@@ -1,0 +1,79 @@
+<div class="main">
+    <mat-card *ngIf="_user.services.facebook">
+        <mat-card-content>
+            <mat-list>
+                <mat-list-item>
+                    <img mat-list-avatar class="image" src="{{_urlImage}}">
+                    <h2 mat-line class="card-title">{{_user.services.facebook.name}}</h2>
+                    <p mat-line class="card-subtitle">{{_user.services.facebook.email}}</p>
+                </mat-list-item>
+            </mat-list>
+            <p class="status-message">{{ 'PENALIZE_CUSTOMER.STATUS_MSG' | translate }} <span class="username">{{_user.services.facebook.name}}</span>: </p>
+            <table class="centered striped">
+                <thead>
+                    <tr>
+                        <th data-field="order-registered">{{ 'PENALIZE_CUSTOMER.ORDER_REGISTERED' | translate }}</th>
+                        <th data-field="order-in-process">{{ 'PENALIZE_CUSTOMER.ORDER_IN_PROCESS' | translate }}</th>
+                        <th data-field="order-prepared">{{ 'PENALIZE_CUSTOMER.ORDER_PREPARED' | translate }}</th>
+                        <th data-field="order-delivered">{{ 'PENALIZE_CUSTOMER.ORDER_DELIVERED' | translate }}</th>
+                        <th data-field="order-in-translate">{{ 'PENALIZE_CUSTOMER.ORDER_TRANSLATE' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order-info">{{ getOrdersRegisteredStatus() }}</td>
+                        <td class="order-info">{{ getOrdersInProcessStatus() }}</td>
+                        <td class="order-info">{{ getOrdersInPreparedStatus() }}</td>
+                        <td class="order-info">{{ getOrdersDeliveredStatus() }}</td>
+                        <td class="order-info">{{ getOrdersPendingConfirmStatus() }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_MSG' | translate }}</p>
+            <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_TABLE' | translate }} <span class="table-number"># {{_tableNumber}}</span> {{ 'PENALIZE_CUSTOMER.PENALIZE_CONFIRM_MSG' | translate }}</p>
+            <button mat-raised-button class="primary-button card-button" (click)="close()">{{ 'NO' | translate }}</button>
+            <button mat-raised-button class="primary-button card-button" (click)="penalizeCustomer()">{{ 'YES' | translate }}</button>        
+        </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="_user.username">
+        <mat-card-content>
+            <mat-list>
+                <mat-list-item>
+                    <img mat-list-avatar class="image" src="{{_urlImage}}">
+                    <h2 mat-line class="card-title">{{_user.username}}</h2>
+                    <p mat-line class="card-subtitle">{{_user.emails[0].address}}</p>
+                </mat-list-item>
+            </mat-list>
+            <p class="status-message">{{ 'PENALIZE_CUSTOMER.STATUS_MSG' | translate }} <span class="username">{{_user.username}}</span>: </p>        
+            <table class="centered striped">
+                <thead>
+                    <tr>
+                        <th data-field="order-registered">{{ 'PENALIZE_CUSTOMER.ORDER_REGISTERED' | translate }}</th>
+                        <th data-field="order-in-process">{{ 'PENALIZE_CUSTOMER.ORDER_IN_PROCESS' | translate }}</th>
+                        <th data-field="order-prepared">{{ 'PENALIZE_CUSTOMER.ORDER_PREPARED' | translate }}</th>
+                        <th data-field="order-delivered">{{ 'PENALIZE_CUSTOMER.ORDER_DELIVERED' | translate }}</th>
+                        <th data-field="order-in-translate">{{ 'PENALIZE_CUSTOMER.ORDER_TRANSLATE' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order-info">{{ getOrdersRegisteredStatus() }}</td>
+                        <td class="order-info">{{ getOrdersInProcessStatus() }}</td>
+                        <td class="order-info">{{ getOrdersInPreparedStatus() }}</td>
+                        <td class="order-info">{{ getOrdersDeliveredStatus() }}</td>
+                        <td class="order-info">{{ getOrdersPendingConfirmStatus() }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_MSG' | translate }}</p>
+            <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_TABLE' | translate }} <span class="table-number"># {{_tableNumber}}</span> {{ 'PENALIZE_CUSTOMER.PENALIZE_CONFIRM_MSG' | translate }}</p>        
+            <button mat-raised-button class="primary-button card-button" (click)="close()">{{ 'NO' | translate }}</button>
+            <button mat-raised-button class="primary-button card-button" (click)="penalizeCustomer()">{{ 'YES' | translate }}</button>
+            <p class="error-msg" *ngIf="_showAccountError">{{ 'PENALIZE_CUSTOMER.ACCOUNT_ERROR' | translate }}</p>     
+            <p class="error-msg" *ngIf="_showGeneralError">{{ 'PENALIZE_CUSTOMER.GENERAL_ERROR' | translate }}</p>     
+        </mat-card-content>
+    </mat-card>
+</div>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>

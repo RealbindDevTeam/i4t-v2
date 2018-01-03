@@ -1,0 +1,85 @@
+:host {
+  display: block;
+}
+
+mat-progress-bar {
+  position: absolute;
+}
+
+mat-toolbar {
+  position: fixed;
+  background-color: #3c4146;
+  color: #fafafa;
+  z-index: 999;
+  -webkit-box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 600px) {
+  .mat-toolbar {
+      min-height: 64px;
+  }
+}
+
+.ti {
+  display: none;
+}
+
+.buttom-profile {
+  display: none;
+}
+
+div.profile {
+  display: none;
+}
+
+@media only screen and (max-width: 600px){
+  .li{
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media only screen and (min-width: 600px){
+  
+  .ti {
+    display: block;
+    line-height: 0;
+  }
+
+  .buttom-profile {
+    display: block;
+    padding: 0 40px 0 0;
+  }
+
+  div.profile {
+    display: block;
+    margin-right: 20px;
+  }
+}
+
+.profile-img {
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.logo {
+  padding: 0 40px 0 40px;
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimizeQuality;
+  image-rendering: optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+#menu-toggler {
+    color: #fafafa;
+}

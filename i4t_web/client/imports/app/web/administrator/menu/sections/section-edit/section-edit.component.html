@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-title>{{'SECTIONS.SECTION_EDIT' | translate}}</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="_editForm" (ngSubmit)="editSection();">
+      <div>
+        <mat-form-field class="name">
+          <input matInput required formControlName="editName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="50" #editInputName>
+          <mat-hint align="end">{{editInputName.value.length}} / 50</mat-hint>
+        </mat-form-field>
+        <mat-slide-toggle formControlName="editIsActive" class="status">{{'STATE' | translate}}</mat-slide-toggle>
+      </div>
+      <div>
+        <p>{{'SECTIONS.RESTAURANT_SECTION' | translate}}</p>
+        <div formGroupName="editRestaurants">
+            <mat-checkbox *ngFor="let restaurant of _restaurants | async" [formControlName]="restaurant._id" [class.invalid]="!_editForm.controls.editRestaurants.valid" class="checkbox">{{restaurant.name}}</mat-checkbox>
+            <label></label>
+        </div>
+      </div>
+      <br/>
+      <div>
+        <button mat-raised-button class="secondary-button" type="button" (click)="_dialogRef.close()">{{'CANCEL' | translate}}</button>
+        <button mat-raised-button class="primary-button" [disabled]="!_editForm.valid"  type="submit">{{'UPDATE' | translate}}</button>
+      </div>
+  </form>
+  </mat-card-content>
+</mat-card>

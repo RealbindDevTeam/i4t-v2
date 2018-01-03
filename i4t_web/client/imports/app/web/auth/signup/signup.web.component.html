@@ -1,0 +1,70 @@
+<div class="main main-height">
+    <div class="main-w3lsrow animated fadeIn">
+        <div class="login-form login-form-image signup">
+            <div class="signup-logo">
+                <a [routerLink]="['/']">
+                    <img src="/images/logo_iurest_190_x_60.png">
+                </a>
+            </div>
+        </div>
+        <div class="login-form login-form-right">
+            <div>
+                <button mat-raised-button class="btn-facebook" type="submit" (click)="loginWithFacebook()">
+                    <i class="fa fa-facebook" aria-hidden="true"></i>Facebook
+                </button>
+                <div class="display-inline-block">
+                    <hr/>
+                    <span style="color: #e0e0e0">{{'SIGNUP.OR' | translate}}</span>
+                    <hr/>
+                </div>
+                <div>
+                    <form [formGroup]="signupForm" (ngSubmit)="register()" novalidate>
+
+                        <mat-form-field style="width: 100%">
+                            <input matInput formControlName="username" placeholder="{{'USERNAME' | translate}}" required>
+                        </mat-form-field>
+                        <div *ngIf="signupForm.controls['username'].hasError('required') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.REQUIRED_USERNAME' | translate}}</div>
+                        <div *ngIf="signupForm.controls['username'].hasError('minlength') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_USERNAME' | translate}}</div>
+                        <div *ngIf="signupForm.controls['username'].hasError('maxlength') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_USERNAME' | translate}}</div>
+                        <div *ngIf="signupForm.controls['username'].hasError('invalidNoSpacesValidator') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.NO_SPACES' | translate}}</div>
+                        
+                        <mat-form-field style="width: 100%">
+                            <input matInput formControlName="email" placeholder="{{'EMAIL' | translate}}" name="email" required>
+                        </mat-form-field>
+                        <div *ngIf="signupForm.controls['email'].hasError('invalidEmailAddress') && signupForm.controls['email'].touched" class="error-message">{{'SIGNUP.REQUIRED_EMAIL' | translate}}</div>
+                        <div *ngIf="signupForm.controls['email'].hasError('minlength') && signupForm.controls['email'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_EMAIL' | translate}}</div>
+                        <div *ngIf="signupForm.controls['email'].hasError('maxlength') && signupForm.controls['email'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_EMAIL' | translate}}</div>
+
+                        <mat-form-field style="width: 100%">
+                            <input matInput formControlName="password" placeholder="{{'PASSWORD' | translate}}" name="password" required type="password">
+                        </mat-form-field>
+                        <div *ngIf="signupForm.controls['password'].hasError('required') && signupForm.controls['password'].touched" class="error-message">{{'SIGNUP.REQUIRED_PASSWORD' | translate}}</div>
+                        <div *ngIf="signupForm.controls['password'].hasError('minlength') && signupForm.controls['password'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_PASSWORD' | translate}}</div>
+                        <div *ngIf="signupForm.controls['password'].hasError('maxlength') && signupForm.controls['password'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</div>
+
+                        <mat-form-field style="width: 100%">
+                            <input matInput formControlName="confirmPassword" placeholder="{{'CONFIRM_PASSWORD' | translate}}" name="confirmPassword"
+                                required type="password">
+                        </mat-form-field>
+                        <div *ngIf="signupForm.controls['confirmPassword'].hasError('required') && signupForm.controls['confirmPassword'].touched"
+                            class="error-message">{{'SIGNUP.REQUIRED_PASSWORD' | translate}}</div>
+                        <div *ngIf="signupForm.controls['confirmPassword'].hasError('minlength') && signupForm.controls['confirmPassword'].touched"
+                            class="error-message">{{'SIGNUP.MIN_LENGTH_PASSWORD' | translate}}</div>
+                        <div *ngIf="signupForm.controls['confirmPassword'].hasError('maxlength') && signupForm.controls['confirmPassword'].touched"
+                            class="error-message">{{'SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</div>
+
+                        <div *ngIf="showConfirmError" class="error-message"> {{'SIGNUP.PASSWORD_NOT_MATCH' | translate}}</div>
+
+                        <button mat-raised-button class="primary-button" type="submit" [disabled]="!signupForm.valid">{{'LANDING.SIGNUP' | translate}}</button>
+                    </form>
+                </div>
+                <div style="text-align: center; padding-top: 10px">
+                    {{'SIGNUP.ALREADY_ACCOUNT'| translate}} <span class="right-align"><a routerLink="/signin">{{'LANDING.SIGNIN' | translate}}</a></span>
+                </div>
+                <div class="label-legal">
+                    {{'SIGNUP.LABEL_LEGAL' | translate}}
+                    <a>{{'SIGNUP.LABEL_LEGAL_END' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>

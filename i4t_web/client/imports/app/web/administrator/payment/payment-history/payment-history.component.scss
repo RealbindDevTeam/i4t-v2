@@ -1,0 +1,21 @@
+.app-flex-filler {
+  // This fills the remaining space, by using flexbox.
+  // Every toolbar row uses a flexbox row layout.
+  flex: 1 1 auto;
+}
+
+.cust-left-align{
+  text-align:left !important;
+}
+
+.cust-right-align{
+  text-align:right !important;
+}
+
+.cust-center-align{
+  text-align:center !important;
+}
+
+.link-color {
+  color: #039be5;
+}

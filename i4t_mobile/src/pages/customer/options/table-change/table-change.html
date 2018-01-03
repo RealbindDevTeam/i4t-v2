@@ -1,0 +1,32 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>{{'MOBILE.CHANGE_TABLE.TITLE' | translate}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding align="center">
+
+    <div *ngIf="_res_code !== '' && _table_code !== ''">
+        <div class="img">
+            <img src="assets/img/scan.png">
+        </div>
+
+        <div class="content">
+            <p>{{'MOBILE.CHANGE_TABLE.CONTENT' | translate}}</p>
+        </div>
+    </div>
+
+    <div *ngIf="_res_code === '' && _table_code === ''" style="padding: 0 16px;">
+        <div class="img">
+            <img src="assets/img/delivery-of-item.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{'MOBILE.CHANGE_TABLE.NO_RESTAURANT' | translate}}</h1>
+        </div>
+    </div>
+</ion-content>
+
+<ion-footer padding>
+    <button *ngIf="_res_code !== '' && _table_code !== ''" ion-button block outline (click)="goToScann()">{{'MOBILE.CODE_TYPE_SELECT.QR' | translate}}</button>
+    <button *ngIf="_res_code !== '' && _table_code !== ''" ion-button block outline (click)="goToAlphanumericCode()">{{'MOBILE.CODE_TYPE_SELECT.ALPHANUMERIC' | translate}}</button>
+</ion-footer>

@@ -1,0 +1,99 @@
+<div class="payments-info">
+    <div class="table-info">
+        <h3>{{ 'PAYMENT_CONFIRM.TABLE' | translate }} {{_tableNumber}} - {{ 'PAYMENT_CONFIRM.CODE' | translate }} {{_tableQRCode}}</h3>
+        <h3>{{ 'PAYMENT_CONFIRM.TOTAL_TABLE' | translate }} {{_totalPayment}}</h3>
+    </div>
+    <mat-checkbox (change)="markPaymentsAsReceived($event)">{{ 'PAYMENT_CONFIRM.MARK_PAYMENTS' | translate }}</mat-checkbox>
+</div>
+
+<div *ngFor="let payment of _payments | async; let inPay = index" class="general-info">
+    <mat-card-content>
+        <div class="ui">
+            <h3>{{ getUserName(payment.userId) }}</h3>
+            <h3 class="total-payment">{{ 'PAYMENT_CONFIRM.TOTAL' | translate }} {{payment.totalToPayment}} {{ getPaymentCurrency(payment.currencyId)}}</h3>
+            <div>
+                <button mat-raised-button *ngIf="!payment.received" class="active-button" (click)="updateReceivedStatus(payment)"><mat-icon class="mat-24">check</mat-icon>{{ 'PAYMENT_CONFIRM.RECEIVED' | translate }}</button>
+                <button mat-raised-button *ngIf="payment.received" class="inactive-button" (click)="updateReceivedStatus(payment)">{{ 'PAYMENT_CONFIRM.NO_RECEIVED' | translate }}</button>
+            </div>
+        </div>
+
+        <div class="ui">
+            <p>{{ 'PAYMENT_CONFIRM.PAYMENT_METHOD' | translate }} {{ getPaymentMethod(payment.paymentMethodId) | translate }}</p>
+            <p>{{ 'PAYMENT_CONFIRM.TIP' | translate }} {{payment.totalTip}} {{ getPaymentCurrency(payment.currencyId)}}</p>
+            <p>{{ 'PAYMENT_CONFIRM.ORDERS' | translate }} {{payment.totalOrdersPrice}} {{ getPaymentCurrency(payment.currencyId)}}</p>
+        </div>
+
+        <mat-divider></mat-divider>
+        <span *ngFor="let or of payment.orders; let inOrd = index">
+            <span *ngFor="let order of _orders | async">
+                <ng-template [ngIf]="or === order._id">
+                        <div class="uh">
+                            <div class="uhl">
+                                <p>{{ 'PAYMENT_CONFIRM.ORDER' | translate }} # {{order.code}}&nbsp;-&nbsp;</p>
+                                <p>{{ 'PAYMENT_CONFIRM.STATUS' | translate }}: {{order.status | translate}}</p>
+                            </div>
+                            <p class="order-payment-info">{{order.totalPayment}} {{ getPaymentCurrency(payment.currencyId)}}</p>
+                            <button mat-icon-button (click)="showOrderDetail(or, inPay, inOrd)"> <mat-icon class="mat-24">keyboard_arrow_right</mat-icon> </button>
+                        </div>
+                        <div class="items" *ngIf="_paymentIndex === inPay && _orderIndex === inOrd">
+                            <div *ngIf="(order.items.length > 0)">
+                                <span *ngFor="let it of order.items">
+                                    <span *ngFor="let item of _items | async">
+                                        <ng-template [ngIf]="item._id === it.itemId">                                            
+                                            <p class="item-name">- {{item.name}}</p>
+                                            <p class="item-quantity">{{ 'PAYMENT_CONFIRM.QUANTITY' | translate }} {{it.quantity}}</p>
+                                            <p class="item-price">{{ 'PAYMENT_CONFIRM.PRICE' | translate }} {{ getTotalPrice(item, it.quantity) }} {{ getPaymentCurrency(payment.currencyId) }}</p>
+                                            <div *ngIf="(it.garnishFood.length > 0)">
+                                                <span *ngFor="let gar of it.garnishFood">
+                                                    <span *ngFor="let garnish of _garnishFood | async">
+                                                        <ng-template [ngIf]="gar === garnish._id">
+                                                            <p class="item-name">- {{garnish.name}} ({{ 'PAYMENT_CONFIRM.GARNISH_FOOD' | translate }})</p>
+                                                            <p class="item-quantity">{{ 'PAYMENT_CONFIRM.QUANTITY' | translate }} {{it.quantity}}</p>
+                                                            <p class="item-price">{{ 'PAYMENT_CONFIRM.PRICE' | translate }} {{ getGarnishFoodTotalPrice(garnish, it.quantity) }} {{ getPaymentCurrency(payment.currencyId) }}</p>
+                                                        </ng-template>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div *ngIf="(it.additions.length > 0)">
+                                                <span *ngFor="let ad of it.additions">
+                                                    <span *ngFor="let addition of _additions | async">
+                                                        <ng-template [ngIf]="ad === addition._id">
+                                                            <p class="item-name">- {{addition.name}} ({{ 'PAYMENT_CONFIRM.ADDITION' | translate }})</p>
+                                                            <p class="item-quantity">{{ 'PAYMENT_CONFIRM.QUANTITY' | translate }} {{it.quantity}}</p>
+                                                            <p class="item-price">{{ 'PAYMENT_CONFIRM.PRICE' | translate }} {{ getAdditionTotalPrice(addition, it.quantity) }} {{ getPaymentCurrency(payment.currencyId) }}</p>
+                                                        </ng-template>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </ng-template>
+                                    </span>
+                                </span>
+                            </div>
+                            <div *ngIf="(order.additions.length > 0)">
+                                <span *ngFor="let add of order.additions">
+                                    <span *ngFor="let addition of _additions | async">
+                                        <ng-template [ngIf]="add.additionId === addition._id">
+                                            <p class="item-name">- {{addition.name}} ({{ 'PAYMENT_CONFIRM.ADDITION' | translate }})</p>
+                                            <p class="item-quantity">{{ 'PAYMENT_CONFIRM.QUANTITY' | translate }} {{add.quantity}}</p>
+                                            <p class="item-price">{{ 'PAYMENT_CONFIRM.PRICE' | translate }} {{add.paymentAddition}} {{ getPaymentCurrency(payment.currencyId) }}</p>
+                                        </ng-template>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    <mat-divider></mat-divider>
+                </ng-template>
+            </span>
+        </span>
+    </mat-card-content>
+    
+    <mat-card-actions class="mobile">
+        <button mat-raised-button class="secondary-button" (click)="close()">{{ 'CANCEL' | translate }}</button>
+        <button mat-raised-button *ngIf="!_payAllowed" disabled>{{ 'PAYMENT_CONFIRM.CLOSE_PAYMENTS' | translate }}</button>
+        <button mat-raised-button *ngIf="_payAllowed" class="primary-button" (click)="closePayments()">{{ 'PAYMENT_CONFIRM.CLOSE_PAYMENTS' | translate }}</button>
+    </mat-card-actions>
+</div>
+
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>

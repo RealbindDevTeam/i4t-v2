@@ -1,0 +1,54 @@
+main.fixed-header {
+    margin-top: 0 !important;
+  }
+  
+  .landing-welcome-card {
+    background-color: white;
+    background-image: url("/images/dashboard-banner.png");
+    background-repeat: no-repeat;
+    background-position: -webkit-calc(50% + 128px) 0;
+    background-position: 0;
+    background-position: calc(50% + 128px) 0;
+    -webkit-background-size: auto 100%;
+    background-size: auto 100%;
+    //-webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+    //box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+    padding: 48px 0 52px 0;
+  
+    .left-content{
+      width: 960px;
+      padding: 0 12px;
+  
+    }
+    .custom {
+      display: -webkit-box;
+      display: -moz-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      margin: 0 auto;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+    }
+  
+    .content {
+      width: 476px;
+    }
+  
+    .title{
+      font-size: 18px !important;
+    }
+  
+    .action-links{
+      width: 960px;
+      padding: 0 12px;
+      
+      .dashboard-links {
+        color: #EF5350 !important;
+        text-decoration: underline;
+        padding-right: 20px;
+      }
+    }
+  }

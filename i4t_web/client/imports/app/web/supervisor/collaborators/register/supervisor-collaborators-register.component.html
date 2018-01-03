@@ -1,0 +1,126 @@
+<mat-card class="card-toolbar">
+    <mat-card-content>
+        <form [formGroup]="_collaboratorRegisterForm">
+            <mat-tab-group [(selectedIndex)]="_selectedIndex">
+                <mat-tab [disabled]="!canMove(0)" label="{{'COLLABORATORS_REGISTER.COLLABORATORS_LABEL' | translate}}">
+                    <mat-card>
+                        <mat-card-title>{{'COLLABORATORS_REGISTER.GENERAL_INFO' | translate}}</mat-card-title>
+                        <mat-card-subtitle>{{'COLLABORATORS_REGISTER.GENERAL_INFO_TEXT' | translate}}</mat-card-subtitle>
+                        <mat-card-content>
+                            <table style="width: 100%" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <mat-form-field style="width: 100%;">
+                                            <mat-select required formControlName="role" placeholder="{{'COLLABORATORS_REGISTER.SELECT_ROLE' | translate}}">
+                                                <mat-option *ngFor="let rol of _roles | async" value="{{rol._id}}" (click)="validateWaiterRole(rol._id)" >{{rol.name | translate}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table style="width: 100%" cellspacing="0">
+                                <tr>
+                                    <td colspan="3" style="padding-top: 10px;">
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName/>
+                                            <mat-hint align="end">{{inputName.value.length}} / 70</mat-hint>
+                                        </mat-form-field>
+                                    </td>
+                                    <td colspan="3" style="padding-top: 10px;">
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput required formControlName="last_name" placeholder="{{'LAST_NAME' | translate}}" minlength="1" maxlength="70" #inputAddress/>
+                                            <mat-hint align="end">{{inputAddress.value.length}} / 70</mat-hint>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </table>   
+                            <table style="width: 100%" cellspacing="0">
+                                <tr>
+                                    <td colspan="1" style="padding-top: 10px; width: 50%">
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput [matDatepicker]="picker" placeholder="{{'BIRTHDATE' | translate}}" formControlName="birthdate">
+                                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </mat-form-field>
+                                    </td>
+                                    <td colspan="2" style="padding-top: 10px;">
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput formControlName="phone" placeholder="{{'PHONE' | translate}}" #inputPhone/>
+                                            <mat-hint align="end">{{inputPhone.value.length}} / 40</mat-hint>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="_showTablesSelect">
+                                    <td colspan="1" style="padding-top: 10px; width: 50%">
+                                        <mat-checkbox class="checkbox" (change)="pushSelectArray($event)">{{'COLLABORATORS_REGISTER.TABLES_ASSIGNMENT' | translate}}</mat-checkbox>
+                                        <mat-form-field style="width: 100px;">
+                                            <mat-select formControlName="table_init" [disabled]="_disabledTablesAssignment">
+                                                <mat-option *ngFor="let index of _tablesNumber" value="{{index}}" >{{index}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        &nbsp;
+                                        <mat-form-field style="width: 100px;">
+                                            <mat-select formControlName="table_end" [disabled]="_disabledTablesAssignment">
+                                                <mat-option *ngFor="let index of _tablesNumber" value="{{index}}">{{index}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </table>
+                        </mat-card-content>
+                        <mat-card-actions align="end">
+                            <button mat-raised-button class="secondary-button" (click)="cancel()">{{'CANCEL' | translate}}</button>
+                            <button mat-raised-button *ngIf="!canMove(1)" disabled>{{'NEXT' | translate}}</button>
+                            <button mat-raised-button class="primary-button" (click)="next()"  *ngIf="canMove(1)">{{'NEXT' | translate}}</button>
+                        </mat-card-actions>
+                    </mat-card>
+                </mat-tab>
+                
+                <mat-tab [disabled]="!canMove(1)" label="{{'COLLABORATORS_REGISTER.USER_LABEL' | translate}}">
+                    <mat-card>
+                        <mat-card-title>{{'COLLABORATORS_REGISTER.USER_INFO' | translate}}</mat-card-title>
+                        <mat-card-subtitle>{{'COLLABORATORS_REGISTER.USER_INFO_TEXT' | translate}}</mat-card-subtitle>
+                        <mat-card-content>
+                            <table style="width: 100%" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput style="width: 60%" required formControlName="username" placeholder="{{'USERNAME' | translate}}"/>
+                                        </mat-form-field>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['username'].hasError('required') && _collaboratorRegisterForm.controls['username'].touched" class="error-message">{{'SIGNUP.REQUIRED_USERNAME' | translate}}</div>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['username'].hasError('minlength') && _collaboratorRegisterForm.controls['username'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_USERNAME' | translate}}</div>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['username'].hasError('maxlength') && _collaboratorRegisterForm.controls['username'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_USERNAME' | translate}}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput style="width: 60%"  formControlName="password" placeholder="{{'PASSWORD' | translate}}" name="password" required type="password"/>
+                                        </mat-form-field>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['password'].hasError('required') && _collaboratorRegisterForm.controls['password'].touched" class="error-message">{{'SIGNUP.REQUIRED_PASSWORD' | translate}}</div>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['password'].hasError('minlength') && _collaboratorRegisterForm.controls['password'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_PASSWORD' | translate}}</div>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['password'].hasError('maxlength') && _collaboratorRegisterForm.controls['password'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput style="width: 60%"  formControlName="confirmPassword" placeholder="{{'CONFIRM_PASSWORD' | translate}}" name="confirmPassword" required type="password"/>
+                                        </mat-form-field>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['confirmPassword'].hasError('required') && _collaboratorRegisterForm.controls['confirmPassword'].touched" class="error-message">{{'SIGNUP.REQUIRED_PASSWORD' | translate}}</div>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['confirmPassword'].hasError('minlength') && _collaboratorRegisterForm.controls['confirmPassword'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_PASSWORD' | translate}}</div>
+                                        <div *ngIf="_collaboratorRegisterForm.controls['confirmPassword'].hasError('maxlength') && _collaboratorRegisterForm.controls['confirmPassword'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </mat-card-content>
+                        <mat-card-actions align="end">
+                            <button mat-raised-button class="secondary-button" (click)="previous()" [disabled]="!canMove(0)">{{'BACK' | translate}}</button>
+                            <button mat-raised-button class="primary-button" (click)="register()" [disabled]="!canMove(2)">{{'CREATE' | translate}}</button>
+                        </mat-card-actions>
+                    </mat-card>
+                </mat-tab>
+            </mat-tab-group>
+        </form>
+    </mat-card-content>
+</mat-card>

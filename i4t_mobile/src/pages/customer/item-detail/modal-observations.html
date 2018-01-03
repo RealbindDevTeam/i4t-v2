@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{'MOBILE.SECTIONS.OBSERVATIONS' | translate}}
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="closeNormal()">
+        <span ion-text style="color: #FFF" showWhen="ios">{{'MOBILE.SECTIONS.MODAL_CANCEL' | translate}}</span>
+        <ion-icon name="md-close" showWhen="android, windows"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only color="royal" (click)="closeObservations()">
+        <ion-icon name="checkmark"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: white">
+  <hr showWhen="android"/>
+  <ion-list>
+    <ion-item>
+      <ion-label style="white-space: normal; color: #666 !important" floating>{{'MOBILE.SECTIONS.MODEL_INDICATION' | translate}}</ion-label>
+      <ion-textarea rows="4" maxlength="50" [(ngModel)]="_observations"></ion-textarea>
+    </ion-item>
+  </ion-list>
+</ion-content>

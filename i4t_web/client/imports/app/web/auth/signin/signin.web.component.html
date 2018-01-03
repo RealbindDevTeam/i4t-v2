@@ -1,0 +1,51 @@
+<div class="main main-height">
+    <div class="main-w3lsrow animated fadeIn">
+        <div class="login-form login-form-image signin">
+            <div class="signup-logo">
+                <a [routerLink]="['/']">
+                    <img src="/images/logo_iurest_190_x_60.png">
+                </a>
+            </div>
+        </div>
+        <div class="login-form login-form-right">
+            <button mat-raised-button class="btn-facebook" type="submit" (click)="loginWithFacebook()">
+                <i class="fa fa-facebook" aria-hidden="true"></i>Facebook
+            </button>
+            <div class="display-inline-block">
+                <hr/>
+                <span style="color: #e0e0e0">{{'SIGNUP.OR' | translate}}</span>
+                <hr/>
+            </div>
+
+            <form [formGroup]="signinForm" (ngSubmit)="login()" novalidate>
+                <div>
+                    <mat-form-field style="width: 100%">
+                        <input matInput formControlName="email" placeholder="{{'SIGNIN.EMAIL_USERNAME' | translate}}" name="email" required/>
+                    </mat-form-field>
+                    <div *ngIf="signinForm.controls['email'].hasError('required') && signinForm.controls['email'].touched" class="error-message">{{'SIGNUP.REQUIRED_EMAIL' | translate}}</div>
+                </div>
+                <div>
+                    <mat-form-field style="width: 100%">
+                        <input matInput formControlName="password" placeholder="{{'SIGNIN.PASSWORD' | translate}}" name="password" required type="password"
+                        />
+                    </mat-form-field>
+                    <div *ngIf="signinForm.controls['password'].hasError('required') && signinForm.controls['password'].touched" class="error-message">{{'SIGNUP.REQUIRED_PASSWORD' | translate}}</div>
+                </div>
+                <!--
+                <div>
+                    <mat-checkbox [checked]="true" align="start">
+                        {{'SIGNIN.KEEP_SIGNED' | translate}}
+                    </mat-checkbox>
+                <div>
+                -->
+                <button mat-raised-button class="primary-button" type="submit" [disabled]="!signinForm.valid">{{'SIGNIN.START_SESSION' | translate}}</button>
+            </form>
+            <div style="text-align: center; padding-top: 10px">
+                <button style="margin: 0 auto" mat-button (click)="openDialogForgotPassword()">{{'SIGNIN.FORGOT_PASSWORD' | translate}}</button>
+            </div>
+            <div style="text-align: center; padding-top: 10px">
+                {{'SIGNIN.DONT_ACCOUNT'| translate}} <span class="right-align"><a routerLink="/signup">{{'LANDING.SIGNUP' | translate}}</a></span>
+            </div>
+        </div>
+    </div>
+</div>

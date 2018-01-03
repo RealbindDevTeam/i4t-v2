@@ -1,0 +1,33 @@
+<mat-card *ngIf="(_restaurants | async)?.length > 0">
+    <mat-card-title>{{'MONTHLY_CONFIG.TITLE' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'MONTHLY_CONFIG.SUBTITLE' | translate}}</mat-card-subtitle>
+    <mat-card-content>
+        <div *ngFor="let currency of _currencies | async">
+            <mat-toolbar color="primary">
+                <span>{{getCountryByCurrency(currency._id) | translate}}</span>
+            </mat-toolbar>
+            <table class="striped" width="100%" style="border:0.5px solid; border-color: lightgrey; margin-bottom: 20px">
+                <thead>
+                    <tr>
+                        <th data-field="name_restaurant" style="width: 60%">{{'MONTHLY_CONFIG.REST_NAME' | translate}}</th>
+                        <th data-field="tables_number" style="width: 10%">{{'MONTHLY_CONFIG.TABLES_NUMBER' | translate}}</th>
+                        <th data-field="tables_actives" style="width: 10%">{{'MONTHLY_CONFIG.ACTIVE_TABLES' | translate}}</th>
+                        <th data-field="status_restaurant" style="width: 10%">{{'MONTHLY_CONFIG.REST_STATUS' | translate}}</th>
+                        <th data-field="configuration" style="width: 10%">{{'MONTHLY_CONFIG.CONFIG' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let restaurant of _restaurants | async" style="background-color: whitesmoke !important">
+                        <td *ngIf="restaurant.currencyId === currency._id">{{restaurant.name}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id" class="cust-center-align">{{getAllTables(restaurant)}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id" class="cust-center-align">{{getActiveTables(restaurant)}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id" class="cust-center-align">{{getRestaurantStatus(restaurant) | translate}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id" class="cust-center-align">
+                            <button mat-raised-button [disabled]="validateConditions(restaurant)" (click)="goToEnableDisable(restaurant._id)">{{'MONTHLY_CONFIG.BTN_EDIT' | translate}}</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-card-content>
+</mat-card>

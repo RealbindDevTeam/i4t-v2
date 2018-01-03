@@ -1,0 +1,65 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle icon-only>
+            <ion-icon name='menu'></ion-icon>
+        </button>
+        <ion-title class="logo">
+            <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-list *ngFor="let _res of _restaurants | async" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
+        <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
+            <ion-thumbnail item-left>
+                <img *ngIf="_res.image" src="{{ _res.image.url }}">
+                <img *ngIf="!_res.image" src="assets/img/default-restaurant.png">
+            </ion-thumbnail>
+            <h2>{{_res.name}}</h2>
+            <p>{{_res.address}}</p>
+        </ion-item>
+    </ion-list>
+
+    <div *ngFor="let _call of _waiterCallDetail | async">
+        <div *ngFor="let _table of _tables | async">
+            <ion-card *ngIf="_table._id === _call.table_id">
+                <ion-card-content>
+                    <div class="item-block">
+                        <img *ngIf="_call.type == 'SEND_ORDER'" class="img-cards" src="assets/img/chef.png">
+                        <img *ngIf="_call.type == 'CALL_OF_CUSTOMER'" class="img-cards" src="assets/img/waiter-call.png">
+                        <img *ngIf="_call.type == 'PAYMENT'" class="img-cards" src="assets/img/cash-payment.png">
+                        <img *ngIf="_call.type == 'USER_EXIT_TABLE'" class="img-cards" src="assets/img/exit.png">
+                        <div class="header-title">
+                            <div class="label">
+                                <span>
+                                    {{ 'MOBILE.WAITER_CALL.TABLE' | translate }} {{_table._number}}
+                                </span>
+                                <p *ngIf="_call.type == 'SEND_ORDER'">{{ 'MOBILE.WAITER_CALL.CALL_LABEL_SEND_ORDER' | translate }}</p>
+                                <p *ngIf="_call.type == 'CALL_OF_CUSTOMER'">{{ 'MOBILE.WAITER_CALL.CALL_LABEL_CUSTOMER' | translate }}</p>
+                                <p *ngIf="_call.type == 'PAYMENT'">{{ 'MOBILE.WAITER_CALL.CALL_LABEL_CUSTOMER_PAYMENT' | translate }}</p>
+                                <p *ngIf="_call.type == 'USER_EXIT_TABLE'">{{ 'MOBILE.WAITER_CALL.CALL_LABEL_EXIT_CUSTOMER' | translate }}</p>
+                            </div>
+                            <button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="showComfirmClose(_call)"
+                                *ngIf="_call.type == 'CALL_OF_CUSTOMER'">
+                                {{'MOBILE.CLOSE' | translate}}
+                            </button>
+                            <button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="goToPaymentConfirm(_call)"
+                                *ngIf="_call.type == 'PAYMENT'">
+                                {{'MOBILE.VIEW' | translate}}
+                            </button>
+                            <button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="goToViewOrderDetailSend(_call)"
+                                *ngIf="_call.type == 'SEND_ORDER'">
+                                {{'MOBILE.VIEW' | translate}}
+                            </button>
+                            <button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="goToCancelOrder(_call)"
+                                *ngIf="_call.type == 'USER_EXIT_TABLE'">
+                                {{'MOBILE.VIEW' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </div>
+</ion-content>

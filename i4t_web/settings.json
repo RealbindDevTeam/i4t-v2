@@ -1,0 +1,38 @@
+{
+    "oneSignal": {
+        "apiKey": "ZWE4MTM3ZjMtOTk5Ni00ZmExLWFhZWEtMjAyNThjMjk1YmUw",
+        "appId": "d0d0fcd1-ed5a-4f7c-84e2-271fe9a553aa"
+    },
+    "facebook": {
+        "appId": "128565331134597",
+        "secret": "4df3e77e25eb20be5cf4554352c520cf"
+    },
+    "public": {
+        "facebook": {
+            "permissions": [
+                "basic_info",
+                "user_interests",
+                "user_activities",
+                "read_friendlists"
+            ],
+            "profileFields": [
+                "name",
+                "gender",
+                "location"
+            ]
+        },
+        "filepicker": {
+            "key": "Ap3hOg05TtWuYxXU4E2gJz",
+            "security": {
+                "policy": "eyJtaW5TaXplIjoiMSIsIm1heFNpemUiOiIxMDQ4NTc2IiwiY2FsbCI6WyJwaWNrIl19",
+                "signature": "2a1fa9ed15d987fd62f2134b481b0307120664e8f2534967e585892858fce95b"
+            }
+        },
+        "custpayinfo": {
+            "al": "pRRXKOl8ikMmt9u",
+            "ak": "4Vj8eK4rloUd272L48hsrarnUA",
+            "mi": "508029",
+            "ai": "512321"
+        }
+    }
+}

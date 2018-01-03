@@ -1,0 +1,81 @@
+<mat-card *ngIf="validatePeriodDays()">
+    <mat-card-title>{{'MONTHLY_PAYMENT.TITLE' | translate }}</mat-card-title>
+    <mat-card-subtitle>{{'MONTHLY_PAYMENT.SUBTITLE' | translate}}</mat-card-subtitle>
+    <mat-card-subtitle>
+        <h3>{{'MONTHLY_PAYMENT.INVOICE_PERIOD' | translate}} {{_firstMonthDay | date: 'd/M/y'}} {{'MONTHLY_PAYMENT.TO' | translate}}
+            {{_lastMonthDay | date: 'd/M/y'}} {{'MONTHLY_PAYMENT.MAX_PAY_TERM' | translate}} {{getMaxPaymentDay() | date:
+            'd/M/y'}}
+        </h3>
+    </mat-card-subtitle>
+    <mat-card-content style="background: #FFF">
+        <div *ngFor="let currency of _currencies | async">
+            <mat-toolbar color="primary">
+                <span>{{getCountryByCurrency(currency._id) | translate}}</span>
+                <span class="app-flex-filler"></span>
+                <span> {{'MONTHLY_PAYMENT.PRICE_BY_TABLE' | translate}} {{getUnitTablePrice(currency._id)}} {{currency.code}}</span>
+            </mat-toolbar>
+            <table class="striped" width="100%" style="border:0.5px solid; border-color: lightgrey">
+                <thead>
+                    <tr>
+                        <th data-field="name" style="width: 50%">{{'MONTHLY_PAYMENT.RESTAURANT_NAME' | translate}}</th>
+                        <th data-field="restaurant_price" style="width: 15%">{{'MONTHLY_PAYMENT.RESTAURANT_PRICE' | translate}}</th>
+                        <th data-field="tables_number" style="width: 10%">{{'MONTHLY_PAYMENT.TABLES_NUMBER' | translate}}</th>
+                        <th data-field="tables_price" style="width: 10%">{{'MONTHLY_PAYMENT.TABLES_PRICE' | translate}}</th>
+                        <th data-field="total_price" style="width: 15%">{{'MONTHLY_PAYMENT.FINAL_PRICE' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: whitesmoke !important" *ngFor="let restaurant of _restaurants | async">
+                        <td *ngIf="restaurant.currencyId === currency._id">{{restaurant.name}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id">{{getRestaurantPrice(restaurant)}} {{currency.code}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id" class="cust-center-align">{{getActiveTables(restaurant)}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id">{{getTablePrice(restaurant)}} {{currency.code}}</td>
+                        <td *ngIf="restaurant.currencyId === currency._id">
+                            <div *ngIf="restaurant.firstPay && !restaurant.freeDays" style="text-decoration: line-through">
+                                {{getTotalRestaurantNoDiscount(restaurant)}} {{currency.code}}
+                                <mat-icon style="color:royalblue; font-size: medium" matTooltip="{{'MONTHLY_PAYMENT.DISCOUNT_TOOLTIP_1' | translate}} 
+                                    {{getDiscount()}}% {{'MONTHLY_PAYMENT.DISCOUNT_TOOLTIP_2' | translate}}">info
+                                </mat-icon>
+                            </div>
+                            <div *ngIf="restaurant.firstPay && restaurant.freeDays" style="text-decoration: line-through">
+                                {{getTotalRestaurantNoDiscount(restaurant)}} {{currency.code}}
+                                <mat-icon style="color:royalblue; font-size: medium" matTooltip="{{'MONTHLY_PAYMENT.FREE_DAYS_MSG' | translate}}">info</mat-icon>
+                            </div>
+                            <div>
+                                {{getTotalRestaurant(restaurant)}} {{currency.code}}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div *ngIf="getOnlyOneRestaurant(currency._id)" style="text-align: right">
+                <h2> <span style="margin-right: 10px"> 
+                    <button color="accent" mat-raised-button (click)="goToPaymentForm(currency.code)">{{'MONTHLY_PAYMENT.PAY' | translate}}</button>
+                    </span>{{'MONTHLY_PAYMENT.TOTAL_PRICE' | translate}}{{getTotalByCurrency(currency._id)}} {{currency.code}}
+                </h2>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+<mat-card *ngIf="!validatePeriodDays()" mat-cell="12" class="demo-card demo-basic">
+    <mat-card-title>{{'MONTHLY_PAYMENT.TITLE' | translate }}</mat-card-title>
+    <mat-card-subtitle>{{'MONTHLY_PAYMENT.SUBTITLE' | translate}}</mat-card-subtitle>
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/payments.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{'MONTHLY_PAYMENT.NEXT_PAY_MSG' | translate}}
+                        <h3>{{_firstNextMonthDay | date: 'd/M/y'}}</h3>
+                    </div>
+                    <div class="card_initial-additional-links">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

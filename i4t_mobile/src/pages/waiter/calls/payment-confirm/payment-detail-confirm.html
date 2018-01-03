@@ -1,0 +1,10 @@
+<div *ngFor="let order of _orders | async; let i = index" style="margin-bottom: 16px;">
+    <button ion-item style="padding-left: 0;" (click)="showDetail(i)">
+        {{'MOBILE.ORDERS.ORDER' | translate}} {{order.code}}
+        <ion-note item-right>{{order.totalPayment}} {{currency}}</ion-note>
+        <ion-icon showWhen="android" item-right name="ios-arrow-forward-outline" style="float: right; color: #c5c5c5"></ion-icon>
+    </button>
+    <div *ngIf="_orderIndex == i">
+        <item-detail-payment-confirm *ngFor="let item of order.items" [itemId]="item.itemId" [quantity]="item.quantity" [paymentItem]="item.paymentItem" [currency]="currency"></item-detail-payment-confirm>
+    </div>
+</div>

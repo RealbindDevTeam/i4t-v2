@@ -1,0 +1,131 @@
+page-signin {
+  
+  .btn-facebook{
+    background-color: #fff;
+    color: #3b5998;
+  }
+
+  .btn-facebook:hover {
+      background: #f5f5f5;
+  }
+
+  .btn-twitter{
+    background-color: #00aced;
+    color: #FFF;
+  }
+
+  .btn-twitter:hover {
+      background: #07c;
+  }
+
+  .btn-google{
+    background-color: #dd4b39;
+    color: #FFF;
+  }
+
+  .btn-google:hover {
+      background: #a53325;
+  }
+
+  .button-social{
+    margin-top: 10px;
+  }
+
+  .icon-social{
+    position: absolute;
+    left: 15px;
+  }
+
+  .item {
+    border-color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+
+    ion-label{
+      //color: #fff;
+      text-transform: inherit;
+    }
+  }
+
+  .item-inner{
+    border-bottom: 0px solid #fff !important;
+  }
+
+  .error-message{
+    color: #F5F5F5;
+    width:100%;
+    word-wrap: break-word;
+    padding-left: 9px;
+  }
+
+  .list-ios > .item-block:first-child {
+    border-top: 0;
+  }
+
+  .toolbar-background {
+    background: rgba(255, 255, 255, 0) !important;
+  }
+
+  .scroll-content {
+    margin-top: 0 !important;
+    //margin-bottom: 100px !important;
+  }
+
+  .img {
+    position: relative;
+    height: 100px;
+    margin: -16px -16px 0;
+  }
+
+  .img img {
+    width: 17rem;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  .header-ios .toolbar-ios:last-child .toolbar-background-ios {
+    border-width: 0;
+  }
+
+  .header-md::after, .tabs-md[tabsPlacement="top"] > .tabbar::after, .footer-md::before, .tabs-md[tabsPlacement="bottom"] > .tabbar::before{
+    background-image: none;
+  }
+
+  .divider {
+    width: 100%; 
+    text-align: center;
+
+    .divider-content {
+      width: 90%; 
+      display: inline-flex;
+
+      hr {
+        border: 1px solid #f5f5f5;
+        border-radius: 300px;
+        height: 0px;
+        width: 45%;
+        text-align: center;
+      }
+
+      span {
+        color: #e0e0e0
+      }
+    }
+  }
+
+  .item-input ion-label{
+    color: #fff;
+  }
+
+  .item-ios.item-label-stacked .text-input, .item-ios.item-label-floating .text-input{
+    color: #fff;
+  }
+
+  .item-label-stacked .text-input-md, .item-label-floating .text-input-md{
+    color: #fff;
+  }
+
+}

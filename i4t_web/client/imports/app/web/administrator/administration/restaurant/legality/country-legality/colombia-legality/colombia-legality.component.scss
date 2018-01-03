@@ -1,0 +1,141 @@
+.regime-si{
+    margin-left: 2rem;
+}
+
+.forced-invoice{
+    margin-top: 1rem;
+}
+
+.business-name{
+    width: 49%;
+    display: inline-block;
+
+    .name{
+        width: 100%;
+    }
+}
+
+.document{
+    width: 47%;
+    display: inline-block;
+    margin-left: 2rem;
+
+    .name{
+        width: 100%;
+    }
+}
+
+.invoice-resolution{
+    width: 49%;
+    display: inline-block;
+
+    .invoice{
+        width: 100%;
+    }
+}
+
+.invoice-resolution-date{
+    width: 47%;
+    display: inline-block;
+    margin-left: 2rem;
+
+    .date{
+        width: 100%;
+    }
+}
+
+.prefix{
+    width: 35%;
+    display: inline-block;
+}
+
+.dian-numeration{
+    width: 35%;
+    display: inline-block;
+
+    .numeration-to{
+        margin-left: 1rem;
+    }
+}
+
+.dian-big-contributor{
+    width: 49%;
+    display: inline-block;
+
+    .resolution{
+        width: 100%;
+    }
+}
+
+.date-big-contributor{
+    width: 47%;
+    display: inline-block;
+    margin-left: 2rem;
+
+    .date{
+        width: 100%;
+    }
+}
+
+.dian-self-accepting{
+    width: 49%;
+    display: inline-block;
+
+    .resolution{
+        width: 100%;
+    }
+}
+
+.date-self-accepting{
+    width: 47%;
+    display: inline-block;
+    margin-left: 2rem;
+
+    .date{
+        width: 100%;
+    }
+}
+
+.final-text{
+    width: 100%;
+}
+
+.buttons{
+    margin-top: 1rem;
+}
+
+.div-cust{
+    width: 100%;
+}
+
+mat-form-field.hundred{
+    width: 100%;
+} 
+
+@media only screen and (min-width: 600px){
+    .cust-resolution-sty{
+        justify-content: space-between; 
+        display: flex;
+    
+        mat-form-field.hundred{
+            width: 50%;
+        }
+
+        div.hundred{
+            width: 50%;
+            mat-form-field.hundred{
+                width: 49%;
+            }
+        }
+    }
+}
+
+.flexdivcust { 
+    display: flex; 
+    /* Optional, if you want the DIVs 100% width: */ 
+    flex-direction: column;
+  }
+
+  .flexdivcust > #diva { order: 2; }
+  .flexdivcust > #divb { order: 1; }
+
