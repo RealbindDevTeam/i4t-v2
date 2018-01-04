@@ -6,7 +6,7 @@ export function createCrons() {
   let activeCountries = Countries.collection.find({ is_active: true }).fetch();
   activeCountries.forEach(country => {
     /**
-    * This cron evaluates the freeDays flag on restaurants with value true, and change it to false
+    * This cron evaluates the freeDays flag on establishments with value true, and change it to false
     */
     SyncedCron.add({
       name: 'cronChangeFreeDays.' + country.name,
@@ -43,7 +43,7 @@ export function createCrons() {
       }
     });
     /**
-     * This cron evaluates the isActive flag on restaurants with value true, and insert them on history_payment collection
+     * This cron evaluates the isActive flag on establishments with value true, and insert them on history_payment collection
      */
     SyncedCron.add({
       name: 'cronValidateActive.' + country.name,
@@ -51,7 +51,7 @@ export function createCrons() {
         return parser.cron(country.cronValidateActive);
       },
       job: function () {
-        Meteor.call('validateActiveRestaurants', country._id);
+        Meteor.call('validateActiveEstablishments', country._id);
       }
     });
     /**

@@ -1,0 +1,17 @@
+<mat-card>
+    <mat-list>
+        <mat-list-item *ngFor="let _est of _establishments | async">
+            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="_est.image" src="{{ _est.image.url }}">
+            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="!_est.image" src="/images/default-restaurant.png">
+            <h2 mat-line style="font-size: 1.3rem;"> {{_est.name}} </h2>
+            <p mat-line style="font-size: 1rem;">
+                <mat-icon style="vertical-align: middle">location_on</mat-icon>
+                <span>{{_est.address}}</span>
+            </p>
+            <p *ngIf="_showTableInfo" mat-line style="font-size: 1rem;font-weight: bold;">
+                <mat-icon style="vertical-align: middle">restaurant</mat-icon>
+                <span>{{'RESTAURANT_INFO_MASTER.TABLE_CODE' | translate}}: {{_tableNumber}}</span>
+            </p>
+        </mat-list-item>
+    </mat-list>
+</mat-card>

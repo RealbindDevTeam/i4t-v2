@@ -3,8 +3,8 @@ import { check } from 'meteor/check';
 import { Email } from 'meteor/email';
 import { EmailContents } from '../../collections/general/email-content.collection';
 import { EmailContent } from '../../models/general/email-content.model';
-import { Restaurants } from '../../collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../models/restaurant/restaurant.model';
+import { Establishments } from '../../collections/establishment/establishment.collection';
+import { Establishment } from '../../models/establishment/establishment.model';
 import { Users } from '../../collections/auth/user.collection';
 import { User } from '../../models/auth/user.model';
 import { Parameters } from '../../collections/general/parameter.collection';
@@ -14,7 +14,7 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 if (Meteor.isServer) {
     Meteor.methods({
         /**
-         * This function validate if restaurant trial period has ended
+         * This function validate if establishment trial period has ended
          */
         validateTrialPeriod: function (_countryId: string) {
 
@@ -25,9 +25,9 @@ if (Meteor.isServer) {
             var secondAdviceDays: number = Number.parseInt(Parameters.collection.findOne({ name: 'second_advice_days' }).value);
             var thirdAdviceDays: number = Number.parseInt(Parameters.collection.findOne({ name: 'third_advice_days' }).value);
 
-            Restaurants.collection.find({ countryId: _countryId, isActive: true, tstPeriod: true }).forEach(function <Restaurant>(restaurant, index, ar) {
-                let diff = Math.round((currentDate.valueOf() - restaurant.creation_date.valueOf()) / (1000 * 60 * 60 * 24));
-                let forwardDate: Date = Meteor.call('addDays', restaurant.creation_date, trialDays);
+            Establishments.collection.find({ countryId: _countryId, isActive: true, tstPeriod: true }).forEach(function <Establishment>(establishment, index, ar) {
+                let diff = Math.round((currentDate.valueOf() - establishment.creation_date.valueOf()) / (1000 * 60 * 60 * 24));
+                let forwardDate: Date = Meteor.call('addDays', establishment.creation_date, trialDays);
                 let forwardString: string = Meteor.call('convertDate', forwardDate);
                 let firstAdviceDate: Date = Meteor.call('substractDays', forwardDate, firstAdviceDays);
                 let firstAdviceString: string = Meteor.call('convertDate', firstAdviceDate);
@@ -37,10 +37,10 @@ if (Meteor.isServer) {
                 let thirdAdviceString: string = Meteor.call('convertDate', thirdAdviceDate);
 
                 if (diff > trialDays) {
-                    Restaurants.collection.update({ _id: restaurant._id }, { $set: { isActive: false, tstPeriod: false } })
+                    Establishments.collection.update({ _id: establishment._id }, { $set: { isActive: false, tstPeriod: false } })
                 } else {
                     if (currentString == firstAdviceString || currentString == secondAdviceString || currentString == thirdAdviceString) {
-                        Meteor.call('sendTrialEmail', restaurant.creation_user, forwardString);
+                        Meteor.call('sendTrialEmail', establishment.creation_user, forwardString);
                     }
                 }
             });

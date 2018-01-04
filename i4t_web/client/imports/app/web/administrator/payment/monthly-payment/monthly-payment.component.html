@@ -18,38 +18,38 @@
                 <thead>
                     <tr>
                         <th data-field="name" style="width: 50%">{{'MONTHLY_PAYMENT.RESTAURANT_NAME' | translate}}</th>
-                        <th data-field="restaurant_price" style="width: 15%">{{'MONTHLY_PAYMENT.RESTAURANT_PRICE' | translate}}</th>
+                        <th data-field="establishment_price" style="width: 15%">{{'MONTHLY_PAYMENT.RESTAURANT_PRICE' | translate}}</th>
                         <th data-field="tables_number" style="width: 10%">{{'MONTHLY_PAYMENT.TABLES_NUMBER' | translate}}</th>
                         <th data-field="tables_price" style="width: 10%">{{'MONTHLY_PAYMENT.TABLES_PRICE' | translate}}</th>
                         <th data-field="total_price" style="width: 15%">{{'MONTHLY_PAYMENT.FINAL_PRICE' | translate}}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="background-color: whitesmoke !important" *ngFor="let restaurant of _restaurants | async">
-                        <td *ngIf="restaurant.currencyId === currency._id">{{restaurant.name}}</td>
-                        <td *ngIf="restaurant.currencyId === currency._id">{{getRestaurantPrice(restaurant)}} {{currency.code}}</td>
-                        <td *ngIf="restaurant.currencyId === currency._id" class="cust-center-align">{{getActiveTables(restaurant)}}</td>
-                        <td *ngIf="restaurant.currencyId === currency._id">{{getTablePrice(restaurant)}} {{currency.code}}</td>
-                        <td *ngIf="restaurant.currencyId === currency._id">
-                            <div *ngIf="restaurant.firstPay && !restaurant.freeDays" style="text-decoration: line-through">
-                                {{getTotalRestaurantNoDiscount(restaurant)}} {{currency.code}}
+                    <tr style="background-color: whitesmoke !important" *ngFor="let establishment of _establishments | async">
+                        <td *ngIf="establishment.currencyId === currency._id">{{establishment.name}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id">{{getEstablishmentPrice(establishment)}} {{currency.code}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id" class="cust-center-align">{{getActiveTables(establishment)}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id">{{getTablePrice(establishment)}} {{currency.code}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id">
+                            <div *ngIf="establishment.firstPay && !establishment.freeDays" style="text-decoration: line-through">
+                                {{getTotalEstablishmentNoDiscount(establishment)}} {{currency.code}}
                                 <mat-icon style="color:royalblue; font-size: medium" matTooltip="{{'MONTHLY_PAYMENT.DISCOUNT_TOOLTIP_1' | translate}} 
                                     {{getDiscount()}}% {{'MONTHLY_PAYMENT.DISCOUNT_TOOLTIP_2' | translate}}">info
                                 </mat-icon>
                             </div>
-                            <div *ngIf="restaurant.firstPay && restaurant.freeDays" style="text-decoration: line-through">
-                                {{getTotalRestaurantNoDiscount(restaurant)}} {{currency.code}}
+                            <div *ngIf="establishment.firstPay && establishment.freeDays" style="text-decoration: line-through">
+                                {{getTotalEstablishmentNoDiscount(establishment)}} {{currency.code}}
                                 <mat-icon style="color:royalblue; font-size: medium" matTooltip="{{'MONTHLY_PAYMENT.FREE_DAYS_MSG' | translate}}">info</mat-icon>
                             </div>
                             <div>
-                                {{getTotalRestaurant(restaurant)}} {{currency.code}}
+                                {{getTotalEstablishment(establishment)}} {{currency.code}}
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-            <div *ngIf="getOnlyOneRestaurant(currency._id)" style="text-align: right">
+            <div *ngIf="getOnlyOneEstablishment(currency._id)" style="text-align: right">
                 <h2> <span style="margin-right: 10px"> 
                     <button color="accent" mat-raised-button (click)="goToPaymentForm(currency.code)">{{'MONTHLY_PAYMENT.PAY' | translate}}</button>
                     </span>{{'MONTHLY_PAYMENT.TOTAL_PRICE' | translate}}{{getTotalByCurrency(currency._id)}} {{currency.code}}

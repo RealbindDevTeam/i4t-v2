@@ -9,13 +9,13 @@ import { VerifyResultComponent } from './verify-result/verify-result.component';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { PaymentsHistory } from '../../../../../../../both/collections/payment/payment-history.collection';
 import { PaymentHistory } from '../../../../../../../both/models/payment/payment-history.model';
-import { Restaurants } from '../../../../../../../both/collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../../../../../../both/models/restaurant/restaurant.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
 import { ResponseQuery, Merchant, Details } from '../../../../../../../both/models/payment/response-query.model';
 import { PaymentTransactions } from '../../../../../../../both/collections/payment/payment-transaction.collection';
 import { PaymentTransaction } from '../../../../../../../both/models/payment/payment-transaction.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
 import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/alert-confirm.component';
 import { Parameter } from '../../../../../../../both/models/general/parameter.model';
 import { Parameters } from '../../../../../../../both/collections/general/parameter.collection';
@@ -39,7 +39,7 @@ let jsPDF = require('jspdf');
 export class PaymentHistoryComponent implements OnInit, OnDestroy {
 
     private _historyPaymentSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _paymentTransactionSub: Subscription;
     private _parameterSub: Subscription;
     private _userDetailSub: Subscription;
@@ -50,7 +50,6 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
     private _historyPayments: Observable<PaymentHistory[]>;
     private _historyPayments2: Observable<PaymentHistory[]>;
     private _paymentTransactions: Observable<PaymentTransaction[]>;
-    private _restaurants: Observable<Restaurant[]>;
 
     private _selectedMonth: string;
     private _selectedYear: string;
@@ -120,7 +119,7 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
         });
 
         this._iurestInvoiceSub = MeteorObservable.subscribe('getIurestInvoiceByUser', Meteor.userId()).subscribe();
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', Meteor.userId()).subscribe();
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe();
         this._paymentTransactionSub = MeteorObservable.subscribe('getTransactionsByUser', Meteor.userId()).subscribe();
 
         this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
@@ -157,7 +156,7 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
      */
     removeSubscriptions(): void {
         if (this._historyPaymentSub) { this._historyPaymentSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._paymentTransactionSub) { this._paymentTransactionSub.unsubscribe(); }
         if (this._parameterSub) { this._parameterSub.unsubscribe(); }
         if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
@@ -360,7 +359,7 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * This function updates the history Payment status, payment transaction status, restaurant and tables
+     * This function updates the history Payment status, payment transaction status, establishment and tables
      * @param {string} _status
      * */
     updateAllStatus(_historyPayment: PaymentHistory, _paymentTransaction: PaymentTransaction, _response: any) {
@@ -384,10 +383,10 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
             });
 
         if (_response.result.payload.state == 'APPROVED') {
-            _historyPayment.restaurantIds.forEach((restaurantId) => {
-                Restaurants.collection.update({ _id: restaurantId }, { $set: { isActive: true, firstPay: false } });
+            _historyPayment.establishment_ids.forEach((establishmentId) => {
+                Establishments.collection.update({ _id: establishmentId }, { $set: { isActive: true, firstPay: false } });
 
-                Tables.collection.find({ restaurantId: restaurantId }).forEach(function <Table>(table, index, ar) {
+                Tables.collection.find({ establishment_id: establishmentId }).forEach(function <Table>(table, index, ar) {
                     Tables.collection.update({ _id: table._id }, { $set: { is_active: true } });
                 });
             });
@@ -398,13 +397,13 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * This functions gets de restaurant name by id
-     * @param {string }_restaurantId 
+     * This functions gets de establishment name by id
+     * @param {string }_establishmentId 
      */
-    getRestaurantName(_restaurantId: string): string {
-        let restaurant = Restaurants.findOne({ _id: _restaurantId });
-        if (restaurant) {
-            return restaurant.name;
+    getEstablishmentName(_establishmentId: string): string {
+        let establishment = Establishments.findOne({ _id: _establishmentId });
+        if (establishment) {
+            return establishment.name;
         } else {
             return '';
         }

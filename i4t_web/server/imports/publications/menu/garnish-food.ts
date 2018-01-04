@@ -15,12 +15,12 @@ Meteor.publish('garnishFood', function (_userId: string) {
 });
 
 /**
- * Meteor publication return garnish food with restaurant condition
- * @param {string} _restaurantId
+ * Meteor publication return garnish food with establishment condition
+ * @param {string} _establishmentId
  */
-Meteor.publish('garnishFoodByRestaurant', function (_restaurantId: string) {
-    check(_restaurantId, String);
-    return GarnishFoodCol.find({ 'restaurants.restaurantId': { $in: [_restaurantId] }, is_active: true });
+Meteor.publish('garnishFoodByEstablishment', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return GarnishFoodCol.find({ 'establishments.establishment_id': { $in: [_establishmentId] }, is_active: true });
 });
 
 /**
@@ -47,14 +47,14 @@ Meteor.publish('garnishesByItem', function (_itemId: string) {
 });
 
 /**
- * Meteor publication garnish food by restaurant work
+ * Meteor publication garnish food by establishment work
  * @param {string} _userId
  */
-Meteor.publish('garnishFoodByRestaurantWork', function (_userId: string) {
+Meteor.publish('garnishFoodByEstablishmentWork', function (_userId: string) {
     check(_userId, String);
     let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
     if( _lUserDetail ){
-        return GarnishFoodCol.find({ 'restaurants.restaurantId': { $in: [_lUserDetail.restaurant_work] }, is_active: true });
+        return GarnishFoodCol.find({ 'establishments.establishment_id': { $in: [_lUserDetail.establishment_work] }, is_active: true });
     } else {
         return;
     }

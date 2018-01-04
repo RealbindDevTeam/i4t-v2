@@ -23,10 +23,10 @@ import { Parameter } from '../../../../../../../both/models/general/parameter.mo
 import { Parameters } from '../../../../../../../both/collections/general/parameter.collection';
 import { PaymentHistory } from '../../../../../../../both/models/payment/payment-history.model';
 import { PaymentsHistory } from '../../../../../../../both/collections/payment/payment-history.collection';
-import { Restaurant } from '../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../both/collections/restaurant/restaurant.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
 import { CcRequestColombia, Merchant, Transaction, Order, Payer, TX_VALUE, TX_TAX, TX_TAX_RETURN_BASE, CreditCard, ExtraParameters, AdditionalValues, Buyer, ShippingBillingAddress } from '../../../../../../../both/models/payment/cc-request-colombia.model';
 import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/alert-confirm.component';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
@@ -60,7 +60,7 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
     private _citySub: Subscription;
     private _paymentTransactionSub: Subscription;
     private _parameterSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _userDetailSub: Subscription;
     private _invoiceInfoSub: Subscription;
 
@@ -70,10 +70,9 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
     private _paymentTransactions: Observable<PaymentTransaction[]>;
     private _parameters: Observable<Parameter[]>;
     private _historyPayments: Observable<PaymentHistory[]>;
-    private _restaurants: Observable<Restaurant[]>;
 
-    private _restaurantsIdsArray: string[];
-    private _restaurantsNamesArray: string[];
+    private _establishmentsIdsArray: string[];
+    private _establishmentsNamesArray: string[];
     private _currentDate: Date;
     private _currentYear: number;
     private _yearsArray: any[];
@@ -277,9 +276,9 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
         });
 
         if (this._mode === 'normal') {
-            this._restaurantSub = MeteorObservable.subscribe('currentRestaurantsNoPayed', Meteor.userId()).subscribe();
+            this._establishmentSub = MeteorObservable.subscribe('currentEstablishmentsNoPayed', Meteor.userId()).subscribe();
         } else {
-            this._restaurantSub = MeteorObservable.subscribe('getInactiveRestaurants', Meteor.userId()).subscribe();
+            this._establishmentSub = MeteorObservable.subscribe('getInactiveEstablishments', Meteor.userId()).subscribe();
         }
 
         this._monthsArray = [{ value: '01', viewValue: '01' }, { value: '02', viewValue: '02' }, { value: '03', viewValue: '03' },
@@ -307,7 +306,7 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
         if (this._citySub) { this._citySub.unsubscribe(); }
         if (this._paymentTransactionSub) { this._paymentTransactionSub.unsubscribe(); }
         if (this._parameterSub) { this._parameterSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
         if (this._invoiceInfoSub) { this._invoiceInfoSub.unsubscribe(); }
     }
@@ -335,15 +334,15 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
     */
     openConfirmDialog() {
         let auxstreet: string = this._paymentForm.value.streetOne;
-        this._restaurantsNamesArray = [];
+        this._establishmentsNamesArray = [];
 
         if (this._mode === 'normal') {
-            Restaurants.find({ creation_user: Meteor.userId(), isActive: true }).fetch().forEach((restaurant) => {
-                this._restaurantsNamesArray.push(restaurant.name);
+            Establishments.find({ creation_user: Meteor.userId(), isActive: true }).fetch().forEach((establishment) => {
+                this._establishmentsNamesArray.push(establishment.name);
             });
         } else {
-            Restaurants.find({ creation_user: Meteor.userId(), isActive: false, _id: this._mode }).fetch().forEach((restaurant) => {
-                this._restaurantsNamesArray.push(restaurant.name);
+            Establishments.find({ creation_user: Meteor.userId(), isActive: false, _id: this._mode }).fetch().forEach((establishment) => {
+                this._establishmentsNamesArray.push(establishment.name);
             });
         }
 
@@ -359,7 +358,7 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
                 cardnumber: this._paymentForm.value.cardNumber,
                 price: this._valueToPay,
                 currency: this._currency,
-                restaurantArray: this._restaurantsNamesArray,
+                establishmentsArray: this._establishmentsNamesArray,
                 customerName: Meteor.user().profile.first_name + ' ' + Meteor.user().profile.last_name
             },
             height: '85%',
@@ -635,20 +634,20 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
 
         let transactionId = PaymentTransactions.collection.findOne({ _id: _transactionId })._id;
 
-        this._restaurantsIdsArray = [];
+        this._establishmentsIdsArray = [];
 
         if (this._mode === 'normal') {
-            Restaurants.find({ creation_user: Meteor.userId(), isActive: true }).fetch().forEach((restaurant) => {
-                this._restaurantsIdsArray.push(restaurant._id);
+            Establishments.find({ creation_user: Meteor.userId(), isActive: true }).fetch().forEach((establishment) => {
+                this._establishmentsIdsArray.push(establishment._id);
             });
         } else {
-            Restaurants.find({ creation_user: Meteor.userId(), isActive: false, _id: this._mode }).fetch().forEach((restaurant) => {
-                this._restaurantsIdsArray.push(restaurant._id);
+            Establishments.find({ creation_user: Meteor.userId(), isActive: false, _id: this._mode }).fetch().forEach((establishment) => {
+                this._establishmentsIdsArray.push(establishment._id);
             });
         }
 
         let payment_history: string = PaymentsHistory.collection.insert({
-            restaurantIds: this._restaurantsIdsArray,
+            establishment_ids: this._establishmentsIdsArray,
             startDate: this._firstMonthDay,
             endDate: this._lastMonthDay,
             month: (this._currentDate.getMonth() + 1).toString(),
@@ -664,14 +663,14 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
 
         if (_response.transactionResponse.state == 'APPROVED') {
             if (this._mode != 'normal') {
-                Restaurants.collection.update({ _id: this._mode }, { $set: { isActive: true, firstPay: false } });
+                Establishments.collection.update({ _id: this._mode }, { $set: { isActive: true, firstPay: false } });
 
-                Tables.collection.find({ restaurantId: this._mode }).forEach(function <Table>(table, index, ar) {
+                Tables.collection.find({ establishment_id: this._mode }).forEach(function <Table>(table, index, ar) {
                     Tables.collection.update({ _id: table._id }, { $set: { is_active: true } });
                 });
             } else {
-                this._restaurantsIdsArray.forEach((resId: string) => {
-                    Restaurants.collection.update({ _id: resId }, { $set: { isActive: true, firstPay: false } });
+                this._establishmentsIdsArray.forEach((resId: string) => {
+                    Establishments.collection.update({ _id: resId }, { $set: { isActive: true, firstPay: false } });
                 });
             }
 

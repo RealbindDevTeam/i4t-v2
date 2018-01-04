@@ -114,7 +114,7 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
     }
 
     /**
-     * This function makes the administrator register for iurest restaurant
+     * This function makes the administrator register for iurest establishment
      */
     register() {
 

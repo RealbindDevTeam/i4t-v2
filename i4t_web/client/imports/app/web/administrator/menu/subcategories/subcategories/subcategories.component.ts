@@ -12,8 +12,8 @@ import { Subcategory } from '../../../../../../../../both/models/menu/subcategor
 import { Categories } from '../../../../../../../../both/collections/menu/category.collection';
 import { Category } from '../../../../../../../../both/models/menu/category.model';
 import { SubcategoryEditComponent } from '../subcategories-edit/subcategories-edit.component';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { AlertConfirmComponent } from '../../../../general/alert-confirm/alert-confirm.component';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -31,20 +31,20 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
 
     private _subcategories: Observable<Subcategory[]>;
     private _categories: Observable<Category[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _userDetails: Observable<UserDetail[]>;
 
     private _subcategorySub: Subscription;
     private _categoriesSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _userDetailsSub: Subscription;
 
     _selectedValue: string;
     private titleMsg: string;
     private btnAcceptLbl: string;
     _dialogRef: MatDialogRef<any>;
-    private _thereAreRestaurants: boolean = true;
-    private _lRestaurantsId: string[] = [];
+    private _thereAreEstablishments: boolean = true;
+    private _lEstablishmentsId: string[] = [];
     private _thereAreUsers: boolean = false;
     private _usersCount: number;
 
@@ -83,19 +83,19 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
             category: new FormControl('')
         });
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
-                    this._lRestaurantsId.push(restaurant._id);
+                this._establishments = Establishments.find({}).zone();
+                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                    this._lEstablishmentsId.push(establishment._id);
                 });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByRestaurantsId', this._lRestaurantsId).subscribe(() => {
-                    this._userDetails = UserDetails.find({ current_restaurant: { $in: this._lRestaurantsId } }).zone();
-                    this.countRestaurantsUsers();
-                    this._userDetails.subscribe(() => { this.countRestaurantsUsers(); });
+                this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', this._lEstablishmentsId).subscribe(() => {
+                    this._userDetails = UserDetails.find({ current_establishment: { $in: this._lEstablishmentsId } }).zone();
+                    this.countEstablishmentsUsers();
+                    this._userDetails.subscribe(() => { this.countEstablishmentsUsers(); });
                 });
-                this.countRestaurants();
-                this._restaurants.subscribe(() => { this.countRestaurants(); });
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
         this._categoriesSub = MeteorObservable.subscribe('categories', this._user).subscribe(() => {
@@ -111,18 +111,18 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishments exists
      */
-    countRestaurants(): void {
-        Restaurants.collection.find({}).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+    countEstablishments(): void {
+        Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishments exists
      */
-    countRestaurantsUsers(): void {
+    countEstablishmentsUsers(): void {
         let auxUserCount: number;
-        auxUserCount = UserDetails.collection.find({ current_restaurant: { $in: this._lRestaurantsId } }).count();
+        auxUserCount = UserDetails.collection.find({ current_establishment: { $in: this._lEstablishmentsId } }).count();
 
         if (auxUserCount > 0) {
             this._thereAreUsers = true
@@ -139,7 +139,7 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
     removeSubscriptions(): void {
         if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
         if (this._subcategorySub) { this._subcategorySub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
     }
 
@@ -239,10 +239,10 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to add new Restaurant
+     * Go to add new Establishment
      */
-    goToAddRestaurant() {
-        this._router.navigate(['/app/restaurant-register']);
+    goToAddEstablishment() {
+        this._router.navigate(['/app/establishment-register']);
     }
 
     /**

@@ -7,12 +7,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription } from 'rxjs';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../../both/shared-components/validators/custom-validator';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { Role } from '../../../../../../../../both/models/auth/role.model';
 import { Roles } from '../../../../../../../../both/collections/auth/role.collection';
-import { Table } from '../../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../../both/collections/restaurant/table.collection';
+import { Table } from '../../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../../both/collections/establishment/table.collection';
 import { UserProfile } from '../../../../../../../../both/models/auth/user-profile.model';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -31,7 +31,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
     private _collaboratorEditionForm: FormGroup;
     private _mdDialogRef: MatDialogRef<any>;
 
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _roles: Observable<Role[]>;
     private _tables: Observable<Table[]>;
 
@@ -48,7 +48,6 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
     private _userLang: string;
     private _error: string
     private _message: string;
-    private _selectedRestaurant: string;
     private _showConfirmError: boolean = false;
     private _showTablesSelect: boolean = false;
     private _disabledTablesAssignment: boolean = true;
@@ -85,7 +84,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
             name: [this.selectUser.profile.first_name, [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
             last_name: [this.selectUser.profile.last_name, [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
             birthdate: [this.selectUserDetail.birthdate, [Validators.required]],
-            restaurant_work: [this.selectUserDetail.restaurant_work],
+            establishment_work: [this.selectUserDetail.establishment_work],
             role: [this.selectUserDetail.role_id],
             phone: [this.selectUserDetail.phone],
             username: [this.selectUser.username],
@@ -99,9 +98,9 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
         });
         this._tableInit = this.selectUserDetail.table_assignment_init;
         this._tableEnd = this.selectUserDetail.table_assignment_end;
-        this._restaurants = Restaurants.find({}).zone();
+        this._establishments = Establishments.find({}).zone();
         this._roles = Roles.find({}).zone();
-        this._tableSub = MeteorObservable.subscribe('getTablesByRestaurantWork', this.selectUser._id).subscribe();
+        this._tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this.selectUser._id).subscribe();
     }
 
     /**
@@ -185,7 +184,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
                     if (this._collaboratorEditionForm.value.role === '200') {
                         UserDetails.update({ _id: this.selectUserDetail._id }, {
                             $set: {
-                                restaurant_work: this._collaboratorEditionForm.value.restaurant_work,
+                                establishment_work: this._collaboratorEditionForm.value.establishment_work,
                                 birthdate: this._collaboratorEditionForm.value.birthdate,
                                 phone: this._collaboratorEditionForm.value.phone,
                                 table_assignment_init: Number.parseInt(this._collaboratorEditionForm.value.table_init.toString()),
@@ -195,7 +194,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
                     } else {
                         UserDetails.update({ _id: this.selectUserDetail._id }, {
                             $set: {
-                                restaurant_work: this._collaboratorEditionForm.value.restaurant_work,
+                                establishment_work: this._collaboratorEditionForm.value.establishment_work,
                                 birthdate: this._collaboratorEditionForm.value.birthdate,
                                 phone: this._collaboratorEditionForm.value.phone
                             }
@@ -238,7 +237,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
         this._collaboratorEditionForm.controls['name'].reset();
         this._collaboratorEditionForm.controls['last_name'].reset();
         this._collaboratorEditionForm.controls['birthdate'].reset();
-        this._collaboratorEditionForm.controls['restaurant_work'].reset();
+        this._collaboratorEditionForm.controls['establishment_work'].reset();
         this._collaboratorEditionForm.controls['phone'].reset();
         this._collaboratorEditionForm.controls['username'].reset();
         this._collaboratorEditionForm.controls['email'].reset();

@@ -14,10 +14,10 @@ export interface UserDetail extends CollectionObject {
     other_city?: string;
     //
 
-    restaurant_work?: string;
+    establishment_work?: string;
     jobs?: number;
     penalties?: UserDetailPenalty[];
-    current_restaurant?: string;
+    current_establishment?: string;
     current_table?: string;
     birthdate?: Date;
     phone?: string;
@@ -28,7 +28,7 @@ export interface UserDetail extends CollectionObject {
 }
 
 export interface UserDetailPenalty {
-    restaurant_id: string;
+    establishment_id: string;
     date: Date;
 }
 

@@ -6,7 +6,7 @@
   </mat-card-header>
 </mat-card>
 
-<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
     <mat-card-content>
         <div class="card_initial">
             <div class="card_initial has-image">
@@ -23,14 +23,14 @@
                     </div>
                 </div>
                 <div class="card_initial-button">
-                    <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
                 </div>
             </div>
         </div>
     </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="_thereAreRestaurants">
+<mat-card *ngIf="_thereAreEstablishments">
   <mat-card-title>{{'ADDITIONS.ADDITION_CREATION' | translate}}</mat-card-title>
   <mat-card-subtitle>{{'ADDITIONS.ADDITIONS_TEXT' | translate}}</mat-card-subtitle>
   <mat-card-content>
@@ -47,7 +47,7 @@
         <p *ngIf="_showTaxes" class="message">{{'ADDITIONS.ADDITION_TAXES' | translate}}</p>
         <div *ngFor="let currency of _currencies | async">
           <div *ngIf="_showCurrencies" formGroupName="currencies" class="currencies">
-            <div *ngFor="let cur of _restaurantCurrencies">
+            <div *ngFor="let cur of _establishmentCurrencies">
                 <mat-form-field *ngIf="currency._id === cur" class="currency">
                   <input matInput required [formControlName]="cur" [class.invalid]="!_additionForm.controls.currencies.valid" type="number" placeholder="{{'ADDITIONS.ADITION_PRICE' | translate}}" min="0" [step]="currency.decimal">
                   <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
@@ -55,7 +55,7 @@
             </div>
           </div>
           <div *ngIf="_showTaxes" formGroupName="taxes" class="taxes">
-            <div *ngFor="let tax of _restaurantTaxes">
+            <div *ngFor="let tax of _establishmentTaxes">
               <mat-form-field *ngIf="currency._id === tax" class="tax">
                 <input matInput required [formControlName]="tax" [class.invalid]="!_additionForm.controls.taxes.valid" type="number" placeholder="{{'ADDITIONS.TAXES' | translate}}" min="0" max="100">
                 <span matSuffix>% {{currency.code}} - {{currency.name | translate}} </span>

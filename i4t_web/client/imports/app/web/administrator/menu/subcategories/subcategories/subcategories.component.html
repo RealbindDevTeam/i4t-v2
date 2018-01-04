@@ -6,7 +6,7 @@
   </mat-card-header>
 </mat-card>
 
-<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
   <mat-card-content>
     <div class="card_initial">
       <div class="card_initial has-image">
@@ -22,14 +22,14 @@
           </div>
         </div>
         <div class="card_initial-button">
-          <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+          <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
         </div>
       </div>
     </div>
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="_thereAreRestaurants">
+<mat-card *ngIf="_thereAreEstablishments">
   <mat-card-title>{{'SUBCATEGORIES.SUBCATEGORY_CREATION' | translate}}</mat-card-title>
   <mat-card-subtitle>{{'SUBCATEGORIES.SUBCATEGORY_TEXT' | translate}}</mat-card-subtitle>
   <mat-card-content>

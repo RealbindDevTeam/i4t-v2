@@ -7,7 +7,7 @@
         </mat-card-header>
     </mat-card>
 
-    <mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+    <mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
         <mat-card-content>
             <div class="card_initial">
                 <div class="card_initial has-image">
@@ -23,14 +23,14 @@
                         </div>
                     </div>
                     <div class="card_initial-button">
-                        <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                        <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
                     </div>
                 </div>
             </div>
         </mat-card-content>
     </mat-card>
     
-    <mat-card *ngIf="_thereAreRestaurants && !_thereAreItems" mat-cell="12" class="demo-card demo-basic" style="width: 90%; margin: 0 auto">
+    <mat-card *ngIf="_thereAreEstablishments && !_thereAreItems" mat-cell="12" class="demo-card demo-basic" style="width: 90%; margin: 0 auto">
         <mat-card-content>
             <div class="card_initial">
                 <div class="card_initial has-image">
@@ -53,7 +53,7 @@
         </mat-card-content>
     </mat-card>
 
-    <div *ngIf="_thereAreRestaurants && _thereAreItems">
+    <div *ngIf="_thereAreEstablishments && _thereAreItems">
         <mat-card id="card-main" class="custom-cards" *ngFor="let item of _items | async">
             <div class="header-card">
                 <img *ngIf="item.image" src="{{ item.image.url }}">
@@ -76,7 +76,7 @@
         </mat-card>
     </div>
             
-    <div *ngIf="_thereAreRestaurants && _thereAreItems" class="fixed-action-btn">
+    <div *ngIf="_thereAreEstablishments && _thereAreItems" class="fixed-action-btn">
         <button matTooltip="{{'ITEMS.CREATE_NEW_ITEM' | translate}}" mdTooltipPosition="above" class="fixed-action-btn" mat-fab (click)="openItemCreation()">
             <mat-icon style="color: white;">
                 add

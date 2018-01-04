@@ -5,43 +5,43 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Restaurants } from '../../../../../../../both/collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../../../../../../both/models/restaurant/restaurant.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
 import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
 import { Currency } from '../../../../../../../both/models/general/currency.model';
 import { Countries } from '../../../../../../../both/collections/general/country.collection';
 import { Country } from '../../../../../../../both/models/general/country.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
 import { Parameters } from '../../../../../../../both/collections/general/parameter.collection';
 import { Parameter } from '../../../../../../../both/models/general/parameter.model';
 
 @Component({
-    selector: 'reactivate-restaurant',
-    templateUrl: './reactivate-restaurant.component.html',
-    styleUrls: [ './reactivate-restaurant.component.scss' ]
+    selector: 'reactivate-establishment',
+    templateUrl: './reactivate-establishment.component.html',
+    styleUrls: [ './reactivate-establishment.component.scss' ]
 })
-export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
+export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _currencySub: Subscription;
     private _countrySub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _parameterSub: Subscription;
     private _tableSub: Subscription;
 
     private _currencies: Observable<Currency[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _tables: Observable<Table[]>;
 
     private _currentDate: Date;
     private _firstMonthDay: Date;
     private _lastMonthDay: Date;
     private _firstNextMonthDay: Date;
-    private _thereAreRestaurants: boolean = true;
+    private _thereAreEstablishments: boolean = true;
 
     /**
-     * ReactivateRestaurantComponent Constructor
+     * ReactivateEstablishmentComponent Constructor
      * @param {Router} _router 
      * @param {FormBuilder} _formBuilder 
      * @param {TranslateService} _translate 
@@ -61,11 +61,11 @@ export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe( () => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe( () => {
             this._ngZone.run( () => {
-                this._restaurants = Restaurants.find({ creation_user: this._user, isActive: false }).zone();
-                this.countRestaurants();
-                this._restaurants.subscribe( () => { this.countRestaurants(); });
+                this._establishments = Establishments.find({ creation_user: this._user, isActive: false }).zone();
+                this.countEstablishments();
+                this._establishments.subscribe( () => { this.countEstablishments(); });
             });
         });
         this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').subscribe( () => {
@@ -84,10 +84,10 @@ export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishments exists
      */
-    countRestaurants():void{
-        Restaurants.collection.find( { creation_user: this._user, isActive: false } ).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+    countEstablishments():void{
+        Establishments.collection.find( { creation_user: this._user, isActive: false } ).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
@@ -96,7 +96,7 @@ export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
     removeSubscriptions(): void {
         if (this._currencySub) { this._currencySub.unsubscribe(); }
         if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._parameterSub) { this._parameterSub.unsubscribe(); }
         if (this._tableSub) { this._tableSub.unsubscribe(); }
     }
@@ -130,26 +130,26 @@ export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
     }
 
     /**
-    * This function gets the restaurant price according to the country
-    * @param {Restaurant} _restaurant
+    * This function gets the establishment price according to the country
+    * @param {Establishment} _establishment
     * @return {number} 
     */
-    getRestaurantPrice(_restaurant: Restaurant): number {
+    getEstablishmentPrice(_establishment: Establishment): number {
         let country: Country;
-        country = Countries.findOne({ _id: _restaurant.countryId });
+        country = Countries.findOne({ _id: _establishment.countryId });
         if (country) {
-            return country.restaurantPrice;
+            return country.establishment_price;
         }
     }
 
     /**
-     * This function gets the active tables by restaurant
-     * @param {Restaurant} _restaurant
+     * This function gets the active tables by establishment
+     * @param {Establishment} _establishment
      * @return {number}
      */
-    getTables(_restaurant: Restaurant): number {
+    getTables(_establishment: Establishment): number {
         let tables_length: number;
-        tables_length = Tables.find({ restaurantId: _restaurant._id }).fetch().length;
+        tables_length = Tables.find({ establishment_id: _establishment._id }).fetch().length;
         if (tables_length) {
             return tables_length;
         } else {
@@ -158,16 +158,16 @@ export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * This function gets de tables price by restaurant and country cost
-     * @param {Restaurant} _restaurant
+     * This function gets de tables price by establishment and country cost
+     * @param {Establishment} _establishment
      * @return {number}
      */
-    getTablePrice(_restaurant: Restaurant): number {
+    getTablePrice(_establishment: Establishment): number {
         let tables_length: number;
         let country: Country;
 
-        country = Countries.findOne({ _id: _restaurant.countryId });
-        tables_length = Tables.collection.find({ restaurantId: _restaurant._id }).count();
+        country = Countries.findOne({ _id: _establishment.countryId });
+        tables_length = Tables.collection.find({ establishment_id: _establishment._id }).count();
 
         if (country && tables_length) {
             return country.tablePrice * tables_length;
@@ -177,43 +177,43 @@ export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * This function gets the total cost by restaurant to pay for first and forward pays
-     * @param {Restaurant} _restaurant
+     * This function gets the total cost by establishment to pay for first and forward pays
+     * @param {Establishment} _establishment
      * @return {number}
      */
-    getTotalRestaurant(_restaurant: Restaurant): number {
+    getTotalEstablishment(_establishment: Establishment): number {
         let country: Country;
         let tables_length: number;
 
-        country = Countries.findOne({ _id: _restaurant.countryId });
-        tables_length = Tables.find({ restaurantId: _restaurant._id }).fetch().length;
+        country = Countries.findOne({ _id: _establishment.countryId });
+        tables_length = Tables.find({ establishment_id: _establishment._id }).fetch().length;
 
         if (country && tables_length) {
-            return country.restaurantPrice + (country.tablePrice * tables_length);
+            return country.establishment_price + (country.tablePrice * tables_length);
         } else if (country && !tables_length) {
-            return country.restaurantPrice;
+            return country.establishment_price;
         }
     }
 
     /**
-     * This function get de total by restaurant and sends to payu payment form
-     * @param {Restaurant} _restaurant
+     * This function get de total by establishment and sends to payu payment form
+     * @param {Establishment} _establishment
      * @param {string} _currency
      */
-    goToPayByRestaurant(_restaurant: Restaurant, _currencyCode: string) {
+    goToPayByEstablishment(_establishment: Establishment, _currencyCode: string) {
         let country: Country;
         let tables_length: number
-        let priceByRestaurant: number;
+        let priceByEstablishment: number;
 
-        country = Countries.findOne({ _id: _restaurant.countryId });
-        tables_length = Tables.find({ restaurantId: _restaurant._id }).fetch().length;
+        country = Countries.findOne({ _id: _establishment.countryId });
+        tables_length = Tables.find({ establishment_id: _establishment._id }).fetch().length;
 
         if (country && tables_length) {
-            priceByRestaurant = country.restaurantPrice + (country.tablePrice * tables_length);
+            priceByEstablishment = country.establishment_price + (country.tablePrice * tables_length);
         } else if (country && !tables_length) {
-            priceByRestaurant = country.restaurantPrice;
+            priceByEstablishment = country.establishment_price;
         }
-        this._router.navigate(['app/payment-form', priceByRestaurant, _currencyCode, _restaurant._id], { skipLocationChange: true });
+        this._router.navigate(['app/payment-form', priceByEstablishment, _currencyCode, _establishment._id], { skipLocationChange: true });
     }
 
     /**
@@ -225,9 +225,9 @@ export class ReactivateRestaurantComponent implements OnInit, OnDestroy {
         let endDay = Parameters.findOne({ name: 'end_payment_day' });
         let lastCurrentMonthDay = this._lastMonthDay.getDate();
         let currentDay = this._currentDate.getDate();
-        let restaurants = Restaurants.collection.find({ creation_user: Meteor.userId(), isActive: false }).fetch();
-        if (lastCurrentMonthDay && endDay && restaurants) {
-            if (currentDay > Number(endDay.value) && currentDay <= lastCurrentMonthDay && (restaurants.length > 0)) {
+        let establishments = Establishments.collection.find({ creation_user: Meteor.userId(), isActive: false }).fetch();
+        if (lastCurrentMonthDay && endDay && establishments) {
+            if (currentDay > Number(endDay.value) && currentDay <= lastCurrentMonthDay && (establishments.length > 0)) {
                 return true;
             } else {
                 return false;

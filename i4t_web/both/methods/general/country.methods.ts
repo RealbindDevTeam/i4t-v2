@@ -1,22 +1,22 @@
 import { Meteor } from 'meteor/meteor';
 import { Countries } from '../../collections/general/country.collection';
 import { Country } from '../../models/general/country.model';
-import { Restaurants } from '../../collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../models/restaurant/restaurant.model';
-import { Tables } from '../../collections/restaurant/table.collection';
-import { Table } from '../../models/restaurant/table.model';
+import { Establishments } from '../../collections/establishment/establishment.collection';
+import { Establishment } from '../../models/establishment/establishment.model';
+import { Tables } from '../../collections/establishment/table.collection';
+import { Table } from '../../models/establishment/table.model';
 
 if (Meteor.isServer) {
 
     Meteor.methods({
-        getCountryByRestaurantId: function (_restaurantId: string) {
+        getCountryByEstablishmentId: function (_establishmentId: string) {
 
             let tables_length: number;
             let country: Country;
-            let restaurant: Restaurant;
+            let establishment: Establishment;
 
-            restaurant = Restaurants.collection.findOne({ _id: _restaurantId });
-            country = Countries.findOne({ _id: restaurant.countryId });
+            establishment = Establishments.collection.findOne({ _id: _establishmentId });
+            country = Countries.findOne({ _id: establishment.countryId });
 
             return country.name;
         }
