@@ -651,7 +651,9 @@
         "WARNING_2": "usuarios activos en tus restaurantes",
         "WARNING_3": "Modificar la configuración de un item podría afectar la experiencia de los usuarios",
         "ITEM_CREATED": "Item creado correctamente",
-        "CREATION_ERROR": "Se ha presentado un error creando el item. Por favor intenta nuevamente."
+        "CREATION_ERROR": "Se ha presentado un error creando el item. Por favor intenta nuevamente.",
+        "REWARD_LABEL":"Asignar puntos de recompensa",
+        "POINTS_PLACEHOLER": "Puntos"
     },
     "ROLE": {
         "ADMINISTRATOR": "Administrador",

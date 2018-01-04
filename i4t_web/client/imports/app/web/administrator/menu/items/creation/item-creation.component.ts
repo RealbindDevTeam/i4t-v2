@@ -85,6 +85,10 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     private titleMsg: string;
     private btnAcceptLbl: string;
 
+    private _rewardEnable: boolean = false;
+    private _cookingTimeArray: any[];
+    private _rewardPointsArray: any[];
+
     /**
      * ItemComponent constructor
      * @param {FormBuilder} _formBuilder
@@ -123,8 +127,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             category: new FormControl(''),
             subcategory: new FormControl(''),
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(55)]),
-            description: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(200)]),
-            cookingTime: new FormControl('', [Validators.required]),
+            description: new FormControl('', [Validators.minLength(1), Validators.maxLength(200)]),
+            cookingTime: new FormControl(''),
             restaurants: this._restaurantsFormGroup,
             currencies: this._currenciesFormGroup,
             taxes: this._taxesFormGroup,
@@ -132,7 +136,9 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             image: new FormControl(''),
             garnishFoodQuantity: new FormControl('0'),
             garnishFood: this._garnishFormGroup,
-            additions: this._additionsFormGroup
+            additions: this._additionsFormGroup,
+            acceptReward: new FormControl(false),
+            rewardValue: new FormControl('')
         });
 
         this._sectionsSub = MeteorObservable.subscribe('sections', this._user).subscribe(() => {
@@ -155,6 +161,16 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         this._itemsSub = MeteorObservable.subscribe('items', this._user).subscribe();
         this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).subscribe();
         this._additionSub = MeteorObservable.subscribe('additions', this._user).subscribe();
+
+
+        this._cookingTimeArray = [{ value: "5 min aprox", label: "5 min aprox" }, { value: "15 min aprox", label: "15 min aprox" },
+        { value: "30 min aprox", label: "30 min aprox" }, { value: "45 min aprox", label: "45 min aprox" },
+        { value: "1 h aprox", label: "1 h aprox" }, { value: "1 h 15 min aprox", label: "1 h 15 min aprox" },
+        { value: "1 h 30 min aprox", label: "1 h 30 min aprox" }, { value: "1 h 45 min aprox", label: "1 h 45 min aprox" },
+        { value: "2 h aprox", label: "2 h aprox" }, { value: "+ 2 h aprox", label: "+ 2 h aprox" }];
+
+        this._rewardPointsArray = [{ value: 1, label: "1 pt" }, { value: 2, label: "2 pts" }, { value: 3, label: "3 pts" }, { value: 4, label: "4 pts" }, { value: 5, label: "5 pts" },
+        { value: 6, label: "6 pts" }, { value: 7, label: "7 pts" }, { value: 8, label: "8 pts" }, { value: 9, label: "9 pts" }, { value: 10, label: "10 pts" }];
     }
 
     /**
@@ -353,6 +369,13 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                     }
                 });
 
+                let rewardPointsAux: number;
+                if (this._itemForm.value.acceptReward) {
+                    rewardPointsAux = this._itemForm.value.rewardValue
+                } else {
+                    rewardPointsAux = 0;
+                }
+
                 if (this._createImage) {
                     _lNewItem = Items.collection.insert({
                         creation_user: this._user,
@@ -372,7 +395,9 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         image: this._itemImageToInsert,
                         garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
                         garnishFood: _lGarnishFoodToInsert,
-                        additions: _lAdditionsToInsert
+                        additions: _lAdditionsToInsert,
+                        has_reward: this._itemForm.value.acceptReward,
+                        reward_points: rewardPointsAux
                     });
                 } else {
                     _lNewItem = Items.collection.insert({
@@ -392,7 +417,9 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         observations: this._itemForm.value.observations,
                         garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
                         garnishFood: _lGarnishFoodToInsert,
-                        additions: _lAdditionsToInsert
+                        additions: _lAdditionsToInsert,
+                        has_reward: this._itemForm.value.acceptReward,
+                        reward_points: rewardPointsAux
                     });
                 }
                 resolve(_lNewItem);
