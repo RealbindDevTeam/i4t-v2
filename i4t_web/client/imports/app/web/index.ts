@@ -83,7 +83,6 @@ import { RestaurantTableControlComponent } from './administrator/administration/
 import { TableDetailComponent } from './administrator/administration/tables/table-control/table-detail/table-detail.component';
 import { PenalizeCustomerComponent } from './administrator/administration/tables/table-control/table-detail/penalize-customer/penalize-customer.component';
 import { SupervisorRestaurantTableControlComponent } from './supervisor/restaurant-table-control/supervisor-restaurant-table-control.component';
-import { InvoicesDownloadPage } from './administrator/administration/invoices-download/invoices-download.component';
 import { RestaurantLegalityComponent } from './administrator/administration/restaurant/legality/restaurant-legality.component';
 import { ColombiaLegalityComponent } from './administrator/administration/restaurant/legality/country-legality/colombia-legality/colombia-legality.component';
 import { RestaurantProfileComponent } from './administrator/administration/restaurant/profile/restaurant-profile.component';
@@ -152,7 +151,6 @@ export const WEB_DECLARATIONS = [
     RestaurantTableControlComponent,
     TableDetailComponent,
     SupervisorRestaurantTableControlComponent,
-    InvoicesDownloadPage,
     RestaurantLegalityComponent,
     ColombiaLegalityComponent,
     RestaurantProfileComponent,
