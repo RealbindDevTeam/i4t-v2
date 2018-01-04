@@ -18,5 +18,6 @@ export const Sections = new MongoObservable.Collection<Section>('sections');
  */
 Sections.allow({
     insert: loggedIn,
-    update: loggedIn
+    update: loggedIn,
+    remove: loggedIn
 });

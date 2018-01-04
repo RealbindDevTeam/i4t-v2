@@ -32,13 +32,6 @@ export function loadRoles() {
             description: "restaurant customer",
             menus: ["4000","5000","6000","11000","12000","20000", "19000"]
         },{
-            _id: "500",
-            is_active: true,
-            name: "ROLE.CHEF",
-            description: "restaurant chef",
-            menus: ["7000","9000", "20000"],
-            user_prefix: 'cf'            
-        },{
             _id: "600",
             is_active: true,
             name: "ROLE.SUPERVISOR",

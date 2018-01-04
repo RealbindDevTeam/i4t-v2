@@ -18,5 +18,6 @@ export const Categories = new MongoObservable.Collection<Category>('categories')
  */
 Categories.allow({
     insert: loggedIn,
-    update: loggedIn
+    update: loggedIn,
+    remove: loggedIn
 });

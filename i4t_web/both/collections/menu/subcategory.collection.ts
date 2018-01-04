@@ -18,5 +18,6 @@ export const Subcategories = new MongoObservable.Collection<Subcategory>('subcat
  */
 Subcategories.allow({
     insert: loggedIn,
-    update: loggedIn
+    update: loggedIn,
+    remove: loggedIn
 });

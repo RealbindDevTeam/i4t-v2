@@ -1,11 +1,3 @@
-<mat-card *ngIf="_thereAreUsers">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{'SECTIONS.WARNING' | translate}} {{_usersCount}} {{'SECTIONS.WARNING_2' | translate}}</mat-card-title>
-    <mat-card-subtitle style="margin-bottom: 0px">{{'SECTIONS.WARNING_3' | translate}}</mat-card-subtitle>
-  </mat-card-header>
-</mat-card>
-
 <mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
   <mat-card-content>
     <div class="card_initial">
@@ -42,7 +34,9 @@
       </div>
       <div>
         <p>{{'SECTIONS.RESTAURANT_SECTION' | translate}}</p>
-        <p><label *ngIf="!_showRestaurants" class="label-field-void">{{'SECTIONS.NO_RESTAURANT_CREATED' | translate}}</label></p>
+        <p>
+          <label *ngIf="!_showRestaurants" class="label-field-void">{{'SECTIONS.NO_RESTAURANT_CREATED' | translate}}</label>
+        </p>
         <div *ngIf="_showRestaurants" formGroupName="restaurants">
           <mat-checkbox *ngFor="let restaurant of _restaurants | async" [formControlName]="restaurant._id" [class.invalid]="!_sectionForm.controls.restaurants.valid"
             class="checkbox">{{restaurant.name}}</mat-checkbox>
@@ -55,6 +49,7 @@
     </form>
   </mat-card-content>
 </mat-card>
+
 <mat-card *ngFor="let section of _sections | async" class="section">
   <mat-card-title>{{section.name}}</mat-card-title>
   <mat-card-content>
@@ -72,9 +67,11 @@
       </div>
     </div>
   </mat-card-content>
-  <mat-card-actions>
-    <button mat-raised-button (click)="open(section)" class="secondary-button">{{'SECTIONS.MODIFY' | translate}}</button>
-    <button mat-raised-button *ngIf="section.is_active" class="inactive-button" (click)="updateStatus(section)">{{'SECTIONS.INACTIVATE' | translate}}</button>
-    <button mat-raised-button *ngIf="!section.is_active" class="active-button" (click)="updateStatus(section)">{{'SECTIONS.ACTIVATE' | translate}}</button>
+  <mat-card-actions align="end">
+    <button mat-button (click)="open(section)">{{'SECTIONS.MODIFY' | translate}}</button>
+    <button mat-button (click)="confirmRemove(section)">{{'SECTIONS.REMOVE' | translate}}</button>
+    <span class="app-flex-filler lh">
+      <mat-slide-toggle [(checked)]="section.is_active" (change)="updateStatus(section)"></mat-slide-toggle>
+    </span>
   </mat-card-actions>
 </mat-card>

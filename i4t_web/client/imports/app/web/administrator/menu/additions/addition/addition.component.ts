@@ -43,10 +43,10 @@ export class AdditionComponent implements OnInit, OnDestroy {
     private _restaurantSub: Subscription;
     private _currenciesSub: Subscription;
     private _countriesSub: Subscription;
-    private _userDetailsSub: Subscription;
 
     public _dialogRef: MatDialogRef<any>;
     private titleMsg: string;
+    private btnCancelLbl: string;
     private btnAcceptLbl: string;
     private _restaurantCurrencies: string[] = [];
     private _showCurrencies: boolean = false;
@@ -54,7 +54,6 @@ export class AdditionComponent implements OnInit, OnDestroy {
     private _showTaxes: boolean = false;
     private _thereAreRestaurants: boolean = true;
     private _lRestaurantsId: string[] = [];
-    private _thereAreUsers: boolean = false;
     private _usersCount: number;
 
     /**
@@ -78,6 +77,7 @@ export class AdditionComponent implements OnInit, OnDestroy {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
+        this.btnCancelLbl = 'CANCEL';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
     }
 
@@ -97,11 +97,6 @@ export class AdditionComponent implements OnInit, OnDestroy {
                 this._restaurants = Restaurants.find({}).zone();
                 Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
                     this._lRestaurantsId.push(restaurant._id);
-                });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByRestaurantsId', this._lRestaurantsId).subscribe(() => {
-                    this._userDetails = UserDetails.find({ current_restaurant: { $in: this._lRestaurantsId } }).zone();
-                    this.countRestaurantsUsers();
-                    this._userDetails.subscribe(() => { this.countRestaurantsUsers(); });
                 });
                 this.countRestaurants();
                 this._restaurants.subscribe(() => { this.buildControls(); this.countRestaurants(); });
@@ -123,22 +118,6 @@ export class AdditionComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if restaurants exists
-     */
-    countRestaurantsUsers(): void {
-        let auxUserCount: number;
-        auxUserCount = UserDetails.collection.find({ current_restaurant: { $in: this._lRestaurantsId } }).count();
-
-        if (auxUserCount > 0) {
-            this._thereAreUsers = true
-            this._usersCount = auxUserCount;
-        } else {
-            this._thereAreUsers = false;
-            this._usersCount = 0;
-        }
-    }
-
-    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
@@ -146,7 +125,6 @@ export class AdditionComponent implements OnInit, OnDestroy {
         if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
         if (this._countriesSub) { this._countriesSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
     }
 
     /**
@@ -273,6 +251,51 @@ export class AdditionComponent implements OnInit, OnDestroy {
                 modification_date: new Date(),
                 modification_user: this._user
             }
+        });
+    }
+
+    /**
+    * Show confirm dialog to remove the Addition
+    * @param {Addition} _pAddition
+    */
+    confirmRemove(_pAddition: Addition) {
+        let dialogTitle = "ADDITIONS.REMOVE_TITLE";
+        let dialogContent = "ADDITIONS.REMOVE_MSG";
+        let error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
+
+        if (!Meteor.userId()) {
+            this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+            return;
+        }
+        this._mdDialogRef = this._dialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: dialogTitle,
+                subtitle: '',
+                content: dialogContent,
+                buttonCancel: this.btnCancelLbl,
+                buttonAccept: this.btnAcceptLbl,
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                this.removeAddition(_pAddition);
+            }
+        });
+    }
+
+    /**
+     * Function to allow remove addition
+     * @param {Addition} _pAddition
+     */
+    removeAddition(_pAddition: Addition): void {
+        let _lMessage: string;
+        Additions.remove(_pAddition._id);
+        _lMessage = this.itemNameTraduction('ADDITIONS.SUBCATEGORY_REMOVED');
+        this.snackBar.open(_lMessage, '', {
+            duration: 2500
         });
     }
 
