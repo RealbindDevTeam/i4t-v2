@@ -62,7 +62,7 @@
                         </mat-form-field>
                         
                         <mat-form-field>
-                            <input type="number" min="0" matInput placeholder="Cantidad de restaurantes" [(ngModel)]="_restaurantsUnits" (ngModelChange)="calculate($event)">
+                            <input type="number" min="0" matInput placeholder="Cantidad de restaurantes" [(ngModel)]="_establishmentsUnits" (ngModelChange)="calculate($event)">
                         </mat-form-field>
                         
                         <mat-form-field>
@@ -71,7 +71,7 @@
                     </mat-card>
 
                     <div class="tp">
-                        <span>{{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.RESTAURANT_PRICE' | translate}}: {{_country?.restaurantPrice}} {{_currency?.code}}</span>
+                        <span>{{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.RESTAURANT_PRICE' | translate}}: {{_country?.establishment_price}} {{_currency?.code}}</span>
                         <span>{{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.TABLE_PRICE' | translate}}: {{_country?.tablePrice}} {{_currency?.code}}</span>
                         <span>{{'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.TOTAL' | translate}}: {{_total}} {{_currency?.code}}</span>
                     </div>

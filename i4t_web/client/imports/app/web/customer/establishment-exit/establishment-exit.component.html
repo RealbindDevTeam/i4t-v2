@@ -1,5 +1,5 @@
 <div *ngFor="let userDetail of _userDetails | async">
-    <div *ngIf=" userDetail.current_restaurant !== '' && userDetail.current_table !== '' ">
+    <div *ngIf=" userDetail.current_establishment !== '' && userDetail.current_table !== '' ">
         <div *ngFor="let table of _tables | async">
             <div *ngIf="table._id === userDetail.current_table">
                 <mat-card *ngIf="_showWaiterCard">
@@ -9,13 +9,13 @@
                             <h2 mat-line class="card-title">{{'EXIT_TABLE.WAITER_ON_THE_WAY' | translate}}</h2>
                             <p mat-line class="card-waiter-msg">{{'EXIT_TABLE.CANCEL_ORDERS_MSG' | translate}}</p>
                             <button mat-icon-button color="warn">
-                                <mat-icon class="md-24 fab-button" aria-label="cancel" (click)="cancelWaiterCall(userDetail.current_restaurant, userDetail.current_table)">cancel</mat-icon>
+                                <mat-icon class="md-24 fab-button" aria-label="cancel" (click)="cancelWaiterCall(userDetail.current_establishment, userDetail.current_table)">cancel</mat-icon>
                             </button>
-                            <button mat-raised-button class="primary-button" (click)="cancelWaiterCall(userDetail.current_restaurant, userDetail.current_table)">{{'EXIT_TABLE.CANCEL_CALL' | translate}}</button> 
+                            <button mat-raised-button class="primary-button" (click)="cancelWaiterCall(userDetail.current_establishment, userDetail.current_table)">{{'EXIT_TABLE.CANCEL_CALL' | translate}}</button> 
                         </mat-list-item>
                     </mat-list>
                 </mat-card>
-                <restaurant-info [restaurantId]="userDetail.current_restaurant" [tableQRCode]="table.QR_code"></restaurant-info>
+                <establishment-info [establishmentId]="userDetail.current_establishment" [tableQRCode]="table.QR_code"></establishment-info>
                 <mat-card mat-cell="12" class="demo-card demo-basic">
                     <mat-card-content>
                         <div class="card_initial">
@@ -33,7 +33,7 @@
                                     </div>
                                 </div>
                                 <div class="card_initial-button">
-                                    <button mat-raised-button (click)="exitRestaurantTable(userDetail._id,userDetail.current_restaurant, userDetail.current_table)">{{'EXIT_TABLE.EXIT_MSG' | translate}}</button>
+                                    <button mat-raised-button (click)="exitEstablishmentTable(userDetail._id,userDetail.current_establishment, userDetail.current_table)">{{'EXIT_TABLE.EXIT_MSG' | translate}}</button>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf=" userDetail.current_restaurant === '' && userDetail.current_table === '' ">
+    <div *ngIf=" userDetail.current_establishment === '' && userDetail.current_table === '' ">
         <mat-card mat-cell="12">
             <mat-card-content>
                 <div class="card_initial">

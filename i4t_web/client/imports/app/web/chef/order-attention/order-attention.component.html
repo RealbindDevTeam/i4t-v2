@@ -1,17 +1,17 @@
-<div class="restaurant-card">
+<div class="establishment-card">
     <mat-card class="card_image">
         <mat-list>
-            <mat-list-item *ngFor="let _res of _restaurants | async">
-                <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="_res.image" src="{{ _res.image.url }}">
-                <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="!_res.image" src="/images/default-restaurant.png">
-                <h2 mat-line style="font-size: 1.5rem;"> {{_res.name}} </h2>
+            <mat-list-item *ngFor="let _es of _establishments | async">
+                <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="_es.image" src="{{ _es.image.url }}">
+                <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="!_es.image" src="/images/default-restaurant.png">
+                <h2 mat-line style="font-size: 1.5rem;"> {{_es.name}} </h2>
                 <p mat-line style="font-size: 1rem;">
                     <mat-icon style="vertical-align: middle">location_on</mat-icon>
-                    <span> {{_res.address}} </span>
+                    <span> {{_es.address}} </span>
                 </p>
                 <p mat-line style="font-size: 1rem;">
                     <mat-icon style="vertical-align: middle">phone</mat-icon>
-                    <span class="detail-message">{{_res.indicative}} {{_res.phone}}</span>
+                    <span class="detail-message">{{_es.indicative}} {{_es.phone}}</span>
                 </p>
             </mat-list-item>
         </mat-list>

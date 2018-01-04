@@ -1,19 +1,19 @@
 <div *ngIf="!_thereAreUserOrders && !_thereAreNotUserOrders">
     <mat-card>
         <mat-list>
-            <mat-list-item *ngFor="let _res of _restaurants | async">
-                <img mat-list-avatar class="custom" *ngIf="_res.image" src="{{ _res.image.url }}">
-                <img mat-list-avatar class="custom" *ngIf="!_res.image" src="/images/default-restaurant.png">
-                <h2 mat-line style="font-size: 1.3rem;"> {{_res.name}} </h2>
+            <mat-list-item *ngFor="let _es of _establishments | async">
+                <img mat-list-avatar class="custom" *ngIf="_es.image" src="{{ _es.image.url }}">
+                <img mat-list-avatar class="custom" *ngIf="!_es.image" src="/images/default-restaurant.png">
+                <h2 mat-line style="font-size: 1.3rem;"> {{_es.name}} </h2>
                 <p mat-line style="font-size: 1rem;">
                     <mat-icon style="vertical-align: middle">location_on</mat-icon>
-                    <span>{{_res.address}}</span>
+                    <span>{{_es.address}}</span>
                 </p>
                 <p mat-line style="font-size: 1rem;font-weight: bold;">
                     <mat-icon style="vertical-align: middle">restaurant</mat-icon>
                     <span>{{'RESTAURANT_INFO_MASTER.TABLE_CODE' | translate}}: {{_tableNumber}}</span>
                 </p>
-                <button mat-icon-button (click)="openRestaurantProfileDetail(_res._id)">
+                <button mat-icon-button (click)="openEstablishmentProfileDetail(_es._id)">
                     <mat-icon>keyboard_arrow_right</mat-icon>
                 </button>
             </mat-list-item>
@@ -51,19 +51,19 @@
                 <mat-card>
                     <mat-card-content>
                         <mat-list>
-                            <mat-list-item *ngFor="let _res of _restaurants | async">
-                                <img mat-list-avatar class="custom" *ngIf="_res.image" src="{{ _res.image.url }}">
-                                <img mat-list-avatar class="custom" *ngIf="!_res.image" src="/images/default-restaurant.png">
-                                <h2 mat-line style="font-size: 1.3rem;"> {{_res.name}} </h2>
+                            <mat-list-item *ngFor="let _es of _establishments | async">
+                                <img mat-list-avatar class="custom" *ngIf="_es.image" src="{{ _es.image.url }}">
+                                <img mat-list-avatar class="custom" *ngIf="!_es.image" src="/images/default-restaurant.png">
+                                <h2 mat-line style="font-size: 1.3rem;"> {{_es.name}} </h2>
                                 <p mat-line style="font-size: 1rem;">
                                     <mat-icon style="vertical-align: middle">location_on</mat-icon>
-                                    <span>{{_res.address}}</span>
+                                    <span>{{_es.address}}</span>
                                 </p>
                                 <p mat-line style="font-size: 1rem;font-weight: bold;">
                                     <mat-icon style="vertical-align: middle">restaurant</mat-icon>
                                     <span>{{'RESTAURANT_INFO_MASTER.TABLE_CODE' | translate}}: {{_tableNumber}}</span>
                                 </p>
-                                <button mat-icon-button (click)="openRestaurantProfileDetail(_res._id)">
+                                <button mat-icon-button (click)="openEstablishmentProfileDetail(_es._id)">
                                     <mat-icon>keyboard_arrow_right</mat-icon>
                                 </button>
                             </mat-list-item>

@@ -109,7 +109,7 @@ export class SigninWebComponent extends AuthClass implements OnInit {
      * @param _pRoute 
      */
     validateUserIsActive( _pRoute : string){
-        MeteorObservable.call('validateRestaurantIsActive').subscribe((_restaruantActive) => {
+        MeteorObservable.call('validateEstablishmentIsActive').subscribe((_restaruantActive) => {
             if(_restaruantActive){
                 
                 MeteorObservable.call('validateUserIsActive').subscribe((_active) => {

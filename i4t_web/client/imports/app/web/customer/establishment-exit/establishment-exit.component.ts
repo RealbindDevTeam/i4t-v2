@@ -8,22 +8,22 @@ import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../services/general/user-language.service';
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../both/models/auth/user-detail.model';
-import { Table } from '../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../both/collections/restaurant/table.collection';
-import {  Order } from '../../../../../../both/models/restaurant/order.model';
-import { Orders  } from '../../../../../../both/collections/restaurant/order.collection';
-import { Payments } from '../../../../../../both/collections/restaurant/payment.collection';
-import { WaiterCallDetails } from '../../../../../../both/collections/restaurant/waiter-call-detail.collection';
-import { Account } from '../../../../../../both/models/restaurant/account.model';
-import { Accounts } from '../../../../../../both/collections/restaurant/account.collection';
+import { Table } from '../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../both/collections/establishment/table.collection';
+import { Order } from '../../../../../../both/models/establishment/order.model';
+import { Orders } from '../../../../../../both/collections/establishment/order.collection';
+import { Payments } from '../../../../../../both/collections/establishment/payment.collection';
+import { WaiterCallDetails } from '../../../../../../both/collections/establishment/waiter-call-detail.collection';
+import { Account } from '../../../../../../both/models/establishment/account.model';
+import { Accounts } from '../../../../../../both/collections/establishment/account.collection';
 import { AlertConfirmComponent } from '../../../web/general/alert-confirm/alert-confirm.component';
 
 @Component({
-    selector: 'restaurant-exit',
-    templateUrl: './restaurant-exit.component.html',
-    styleUrls: ['./restaurant-exit.component.scss']
+    selector: 'establishment-exit',
+    templateUrl: './establishment-exit.component.html',
+    styleUrls: ['./establishment-exit.component.scss']
 })
-export class RestaurantExitComponent implements OnInit, OnDestroy {
+export class EstablishmentExitComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _userDetailsSub: Subscription;
@@ -44,7 +44,7 @@ export class RestaurantExitComponent implements OnInit, OnDestroy {
     private _loading: boolean = false;
 
     /**
-     * ExitRestaurantComponent Constructor
+     * EstablishmentExitComponent Constructor
      * @param {TranslateService} _translate 
      * @param {NgZone} _ngZone 
      * @param {UserLanguageService} _userLanguageService
@@ -112,44 +112,44 @@ export class RestaurantExitComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Allow user exit restaurant table
+     * Allow user exit establishment table
      */
-    exitRestaurantTable(_pUserDetailId: string, _pCurrentRestaurant: string, _pCurrentTable: string): void {
+    exitEstablishmentTable(_pUserDetailId: string, _pCurrentEstablishment: string, _pCurrentTable: string): void {
 
-        let _lUserAccount: Account = Accounts.findOne({ restaurantId: _pCurrentRestaurant, tableId: _pCurrentTable, status: 'OPEN' });
+        let _lUserAccount: Account = Accounts.findOne({ establishment_id: _pCurrentEstablishment, tableId: _pCurrentTable, status: 'OPEN' });
 
         if (_lUserAccount) {
 
             let _lOrdersRegisteredStatus: number = Orders.collection.find({
-                creation_user: this._user, restaurantId: _pCurrentRestaurant, accountId: _lUserAccount._id,
+                creation_user: this._user, establishment_id: _pCurrentEstablishment, accountId: _lUserAccount._id,
                 tableId: _pCurrentTable, status: 'ORDER_STATUS.REGISTERED'
             }).count();
             let _lOrdersInProcessStatus: number = Orders.collection.find({
-                creation_user: this._user, restaurantId: _pCurrentRestaurant, accountId: _lUserAccount._id,
+                creation_user: this._user, establishment_id: _pCurrentEstablishment, accountId: _lUserAccount._id,
                 tableId: _pCurrentTable, status: 'ORDER_STATUS.IN_PROCESS'
             }).count();
             let _lOrdersPreparedStatus: number = Orders.collection.find({
-                creation_user: this._user, restaurantId: _pCurrentRestaurant, accountId: _lUserAccount._id,
+                creation_user: this._user, establishment_id: _pCurrentEstablishment, accountId: _lUserAccount._id,
                 tableId: _pCurrentTable, status: 'ORDER_STATUS.PREPARED'
             }).count();
             let _lOrdersDeliveredStatus: number = Orders.collection.find({
-                creation_user: this._user, restaurantId: _pCurrentRestaurant, accountId: _lUserAccount._id,
+                creation_user: this._user, establishment_id: _pCurrentEstablishment, accountId: _lUserAccount._id,
                 tableId: _pCurrentTable, status: 'ORDER_STATUS.DELIVERED', toPay: false
             }).count();
             let _lOrdersToConfirm: number = Orders.collection.find({
-                restaurantId: _pCurrentRestaurant, tableId: _pCurrentTable, 'translateInfo.firstOrderOwner': this._user,
+                establishment_id: _pCurrentEstablishment, tableId: _pCurrentTable, 'translateInfo.firstOrderOwner': this._user,
                 accountId: _lUserAccount._id, 'translateInfo.markedToTranslate': true, status: 'ORDER_STATUS.PENDING_CONFIRM', toPay: false
             }).count();
             let _lOrdersWithPendingConfirmation: number = Orders.collection.find({
-                restaurantId: _pCurrentRestaurant, tableId: _pCurrentTable, 'translateInfo.lastOrderOwner': this._user,
+                establishment_id: _pCurrentEstablishment, tableId: _pCurrentTable, 'translateInfo.lastOrderOwner': this._user,
                 accountId: _lUserAccount._id, 'translateInfo.markedToTranslate': true, status: 'ORDER_STATUS.PENDING_CONFIRM', toPay: false
             }).count();
             let _lUserWaiterCallsCount: number = WaiterCallDetails.collection.find({
-                restaurant_id: _pCurrentRestaurant, table_id: _pCurrentTable,
+                establishment_id: _pCurrentEstablishment, table_id: _pCurrentTable,
                 type: 'CALL_OF_CUSTOMER', user_id: this._user, status: { $in: ['waiting', 'completed'] }
             }).count();
             let _lUserPaymentsCount: number = Payments.collection.find({
-                creation_user: this._user, restaurantId: _pCurrentRestaurant, accountId: _lUserAccount._id,
+                creation_user: this._user, establishment_id: _pCurrentEstablishment, accountId: _lUserAccount._id,
                 tableId: _pCurrentTable, status: 'PAYMENT.NO_PAID', received: false
             }).count();
 
@@ -172,7 +172,7 @@ export class RestaurantExitComponent implements OnInit, OnDestroy {
                     if (result.success) {
                         this._loading = true;
                         setTimeout(() => {
-                            MeteorObservable.call('restaurantExit', _pUserDetailId, _pCurrentRestaurant, _pCurrentTable).subscribe(() => {
+                            MeteorObservable.call('establishmentExit', _pUserDetailId, _pCurrentEstablishment, _pCurrentTable).subscribe(() => {
                                 this._loading = false;
                                 let _lMessage: string = this.itemNameTraduction('EXIT_TABLE.LEAVE_RESTAURANT_MSG');
                                 this._snackBar.open(_lMessage, '', { duration: 2500 });
@@ -201,7 +201,7 @@ export class RestaurantExitComponent implements OnInit, OnDestroy {
                         if (result.success) {
                             this._loading = true;
                             setTimeout(() => {
-                                MeteorObservable.call('restaurantExitWithRegisteredOrders', this._user, _pUserDetailId, _pCurrentRestaurant, _pCurrentTable).subscribe(() => {
+                                MeteorObservable.call('establishmentExitWithRegisteredOrders', this._user, _pUserDetailId, _pCurrentEstablishment, _pCurrentTable).subscribe(() => {
                                     this._loading = false;
                                     let _lMessage: string = this.itemNameTraduction('EXIT_TABLE.LEAVE_RESTAURANT_MSG');
                                     this._snackBar.open(_lMessage, '', { duration: 2500 });
@@ -287,7 +287,7 @@ export class RestaurantExitComponent implements OnInit, OnDestroy {
                                         if (result.success) {
                                             this._loading = true;
                                             setTimeout(() => {
-                                                MeteorObservable.call('restaurantExitWithOrdersInInvalidStatus', this._user, _pCurrentRestaurant, _pCurrentTable).subscribe(() => {
+                                                MeteorObservable.call('establishmentExitWithOrdersInInvalidStatus', this._user, _pCurrentEstablishment, _pCurrentTable).subscribe(() => {
                                                     this._loading = false;
                                                     this._dialogRef = this._mdDialog.open(AlertConfirmComponent, {
                                                         disableClose: true,
@@ -346,19 +346,19 @@ export class RestaurantExitComponent implements OnInit, OnDestroy {
 
     /**
      * Function to cancel waiter call
-     * @param {string} _pCurrentRestaurant 
+     * @param {string} _pCurrentEstablishment
      * @param {string} _pCurrentTable 
      */
-    cancelWaiterCall(_pCurrentRestaurant: string, _pCurrentTable: string): void {
+    cancelWaiterCall(_pCurrentEstablishment: string, _pCurrentTable: string): void {
         this._loading = true;
         Orders.find({
-            creation_user: this._user, restaurantId: _pCurrentRestaurant, tableId: _pCurrentTable, markedToCancel: true,
+            creation_user: this._user, establishment_id: _pCurrentEstablishment, tableId: _pCurrentTable, markedToCancel: true,
             status: { $in: ['ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED'] }
         }).fetch().forEach((order) => {
             Orders.update({ _id: order._id }, { $set: { markedToCancel: null, modification_date: new Date() } });
         });
         setTimeout(() => {
-            let waiterCall = WaiterCallDetails.findOne({ user_id: this._user, type: 'USER_EXIT_TABLE', restaurant_id: _pCurrentRestaurant, table_id: _pCurrentTable, status: { $in: ["waiting", "completed"] } });
+            let waiterCall = WaiterCallDetails.findOne({ user_id: this._user, type: 'USER_EXIT_TABLE', establishment_id: _pCurrentEstablishment, table_id: _pCurrentTable, status: { $in: ["waiting", "completed"] } });
             if (waiterCall) {
                 MeteorObservable.call('cancelCallClient', waiterCall, Meteor.userId()).subscribe(() => {
                     this._loading = false;

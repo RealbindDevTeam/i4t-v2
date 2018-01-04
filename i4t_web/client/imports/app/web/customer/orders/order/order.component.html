@@ -34,8 +34,8 @@
         </div>
     </mat-card-content>
 </mat-card>
-<order-create *ngIf="_showOrderCreation" [restaurantId]="_currentRestaurant._id" [restaurantCurrency]="_currentRestaurant.currencyId" [tableQRCode]="_currentQRCode" (finishOrdenCreation)="validateFinishOrderCreation($event)"></order-create>
-<order-list *ngIf="_showOrderList" [restaurantId]="_currentRestaurant._id" [restaurantCurrency]="_currentRestaurant.currencyId" [tableQRCode]="_currentQRCode" (createNewOrder)="createNewOrder($event)"></order-list>
+<order-create *ngIf="_showOrderCreation" [establishmentId]="_currentEstablishment._id" [establishmentCurrency]="_currentEstablishment.currencyId" [tableQRCode]="_currentQRCode" (finishOrdenCreation)="validateFinishOrderCreation($event)"></order-create>
+<order-list *ngIf="_showOrderList" [establishmentId]="_currentEstablishment._id" [establishmentCurrency]="_currentEstablishment.currencyId" [tableQRCode]="_currentQRCode" (createNewOrder)="createNewOrder($event)"></order-list>
 
 <div class="fixed-action-btn" *ngIf="!_showOrderList">
     <button *ngIf="_showNewOrderButton" mat-fab (click)="createNewOrder()">

@@ -7,8 +7,8 @@ import { Meteor } from 'meteor/meteor';
 import { MatSnackBar, MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from "@angular/router";
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Order, OrderItem, OrderAddition } from '../../../../../../../both/models/restaurant/order.model';
-import { Orders } from '../../../../../../../both/collections/restaurant/order.collection';
+import { Order, OrderItem, OrderAddition } from '../../../../../../../both/models/establishment/order.model';
+import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
 import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
@@ -17,9 +17,9 @@ import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
 import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
 import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/alert-confirm.component';
-import { Restaurant } from '../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../both/collections/restaurant/restaurant.collection';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
 
 @Component({
     selector: 'order-list',
@@ -28,9 +28,9 @@ import { Tables } from '../../../../../../../both/collections/restaurant/table.c
 })
 export class OrdersListComponent implements OnInit, OnDestroy {
 
-    @Input() restaurantId: string;
+    @Input() establishmentId: string;
     @Input() tableQRCode: string;
-    @Input() restaurantCurrency: string;
+    @Input() establishmentCurrency: string;
     @Output() createNewOrder = new EventEmitter();
 
     private _user = Meteor.userId();
@@ -39,7 +39,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _garnishFoodSub: Subscription;
     private _additionsSub: Subscription;
     private _currenciesSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
     private _mdDialogRef: MatDialogRef<any>;
 
@@ -50,7 +50,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
     private _additionDetails: Observable<Addition[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
 
     private _showOrderItemDetail: boolean = false;
     private _currentOrder: Order;
@@ -126,7 +126,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._ordersSub = MeteorObservable.subscribe('getOrders', this.restaurantId, this.tableQRCode, ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED']).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED']).subscribe(() => {
             this._ngZone.run(() => {
                 this.countUserOrders();
                 this._orders = Orders.find({ creation_user: this._user }).zone();
@@ -136,7 +136,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 this._ordersTable.subscribe(() => { this.countNotUserOrders(); });
             });
         });
-        this._itemsSub = MeteorObservable.subscribe('itemsByRestaurant', this.restaurantId).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
             });
@@ -150,24 +150,24 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             additions: this._additionsFormGroup
         });
 
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByRestaurant', this.restaurantId).subscribe(() => {
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFoodCol = GarnishFoodCol.find({}).zone();
             });
         });
-        this._additionsSub = MeteorObservable.subscribe('additionsByRestaurant', this.restaurantId).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
             });
         });
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this.restaurantId]).subscribe(() => {
+        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.establishmentId]).subscribe(() => {
             this._ngZone.run(() => {
-                this._currencyCode = Currencies.findOne({ _id: this.restaurantCurrency }).code + ' ';
+                this._currencyCode = Currencies.findOne({ _id: this.establishmentCurrency }).code + ' ';
             });
         });
-        this._restaurantSub = MeteorObservable.subscribe('getRestaurantById', this.restaurantId).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('getEstablishmentById', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({ _id: this.restaurantId }).zone();
+                this._establishments = Establishments.find({ _id: this.establishmentId }).zone();
             });
         });
         this._tablesSub = MeteorObservable.subscribe('getTableByQRCode', this.tableQRCode).subscribe(() => {
@@ -200,7 +200,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
         if (this._additionsSub) { this._additionsSub.unsubscribe(); }
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
     }
 
@@ -586,7 +586,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * @param {number} _price 
      */
     calculateFinalPriceGarnishFood(_event: any, _pGarnishFood: GarnishFood): void {
-        let _price = _pGarnishFood.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        let _price = _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
         if (_event.checked) {
             this._finalPrice = (Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount));
             this._garnishFoodElementsCount += 1;
@@ -604,7 +604,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * @param {number} _price 
      */
     calculateFinalPriceAddition(_event: any, _pAddition: Addition): void {
-        let _price = _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        let _price = _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
         if (_event.checked) {
             this._finalPrice = (Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount));
         } else {
@@ -757,7 +757,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * @param {Addition} _pAddition 
      */
     getAdditionPrice(_pAddition: Addition): number {
-        return _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        return _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
     }
 
     /**
@@ -832,7 +832,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                     let _lOrderItems: OrderItem[] = _pOrder.items;
                     _lOrderItems.forEach((it) => {
                         let _lItem: Item = Items.findOne({ _id: it.itemId });
-                        let aux = _lItem.restaurants.find(element => element.restaurantId === this.restaurantId);
+                        let aux = _lItem.establishments.find(element => element.establishment_id === this.establishmentId);
                         if (aux.isAvailable === false) {
                             _lItemsIsAvailable = false
                         }
@@ -871,11 +871,11 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Return Item price by current restaurant
+     * Return Item price by current establishment
      * @param {Item} _pItem 
      */
     getItemPrice(_pItem: Item): number {
-        return _pItem.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        return _pItem.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
     }
 
     /**
@@ -883,7 +883,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * @param {Addition} _pAddition
      */
     getAdditionInformation(_pAddition: Addition): string {
-        return _pAddition.name + ' - ' + _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price + ' ';
+        return _pAddition.name + ' - ' + _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
 
     /**
@@ -891,7 +891,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * @param {GarnishFood} _pGarnishFood
      */
     getGarnishFoodInformation(_pGarnishFood: GarnishFood): string {
-        return _pGarnishFood.name + ' - ' + _pGarnishFood.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price + ' ';
+        return _pGarnishFood.name + ' - ' + _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
 
     createNewOrderEvent(): void {
@@ -902,8 +902,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     * Function to get item avalaibility 
     */
     getItemAvailability(itemId: string): boolean {
-        let _itemRestaurant: Item = Items.collection.findOne({ _id: itemId }, { fields: { _id: 0, restaurants: 1 } });
-        let aux = _itemRestaurant.restaurants.find(element => element.restaurantId === this.restaurantId);
+        let _itemEstablishment: Item = Items.collection.findOne({ _id: itemId }, { fields: { _id: 0, establishments: 1 } });
+        let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this.establishmentId);
         return aux.isAvailable;
     }
 
@@ -938,11 +938,11 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Open Restaurant profile detail
-     * @param {string} _pRestaurantId 
+     * Open establishment profile detail
+     * @param {string} _pEstablishmentId 
      */
-    openRestaurantProfileDetail(_pRestaurantId: string): void {
-        this._router.navigate(['app/restaurant-detail', _pRestaurantId]);
+    openEstablishmentProfileDetail(_pEstablishmentId: string): void {
+        this._router.navigate(['app/establishment-detail', _pEstablishmentId]);
     }
 
     /**

@@ -6,10 +6,10 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
-import { Restaurant } from '../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail, UserDetailImage } from '../../../../../../../both/models/auth/user-detail.model';
 import { AlertConfirmComponent } from '../../../general/alert-confirm/alert-confirm.component';
@@ -27,10 +27,10 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     private _tablesSub: Subscription;
     private _userDetailsSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
 
     private _userDetails: Observable<UserDetail[]>;
-    private _currentRestaurant: Restaurant;
+    private _currentEstablishment: Establishment;
     private _currentQRCode: string;
     private titleMsg: string;
     private btnAcceptLbl: string;
@@ -72,12 +72,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
                 this._userDetails = UserDetails.find({ user_id: this._user }).zone();
                 this._userDetails.subscribe(() => { this.validateUser(); });
                 let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: this._user });
-                if (_lUserDetail.current_restaurant !== "" && _lUserDetail.current_table !== "") {
-                    this._restaurantSub = MeteorObservable.subscribe('getRestaurantByCurrentUser', this._user).subscribe(() => {
+                if (_lUserDetail.current_establishment !== "" && _lUserDetail.current_table !== "") {
+                    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', this._user).subscribe(() => {
                         this._ngZone.run(() => {
-                            let _lRestaurant: Restaurant = Restaurants.findOne({ _id: _lUserDetail.current_restaurant });
+                            let _lEstablishment: Establishment = Establishments.findOne({ _id: _lUserDetail.current_establishment });
                             let _lTable: Table = Tables.findOne({ _id: _lUserDetail.current_table });
-                            this._currentRestaurant = _lRestaurant;
+                            this._currentEstablishment = _lEstablishment;
                             this._currentQRCode = _lTable.QR_code;
                             this._showAlphanumericCodeCard = false;
                             this._showOrderList = true;
@@ -100,7 +100,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     removeSubscriptions(): void {
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
         if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
     }
 
     /**
@@ -119,8 +119,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
                 if (_lTable.is_active) {
                     this._loading = true;
                     setTimeout(() => {
-                        MeteorObservable.call('getRestaurantByQRCode', _lTable.QR_code, this._user).subscribe((_result: Restaurant) => {
-                            this._currentRestaurant = _result;
+                        MeteorObservable.call('getEstablishmentByQRCode', _lTable.QR_code, this._user).subscribe((_result: Establishment) => {
+                            this._currentEstablishment = _result;
                             this._currentQRCode = _lTable.QR_code;
                             this._showAlphanumericCodeCard = false;
                             this._showOrderList = true;
@@ -187,7 +187,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     validateUser(): void {
         let _user: UserDetail = UserDetails.findOne({ user_id: this._user });
         if (_user) {
-            if (_user.current_restaurant === '' && _user.current_table === '') {
+            if (_user.current_establishment === '' && _user.current_table === '') {
                 this._showAlphanumericCodeCard = true;
                 this._showOrderList = false;
                 this._showNewOrderButton = false;
