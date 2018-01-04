@@ -55,7 +55,6 @@ import { RestaurantExitComponent } from './web/customer/restaurant-exit/restaura
 import { RestaurantTableControlComponent } from './web/administrator/administration/tables/table-control/restaurant-table-control.component';
 import { TableDetailComponent } from './web/administrator/administration/tables/table-control/table-detail/table-detail.component';
 import { SupervisorRestaurantTableControlComponent } from './web/supervisor/restaurant-table-control/supervisor-restaurant-table-control.component';
-import { InvoicesDownloadPage } from './web/administrator/administration/invoices-download/invoices-download.component';
 import { RestaurantProfileComponent } from './web/administrator/administration/restaurant/profile/restaurant-profile.component';
 import { RestaurantProFileDetailComponent } from './web/customer/restaurant-profile-detail/restaurant-profile-detail/restaurant-profile-detail.component';
 import { ColombiaOrderInfoComponent } from './web/customer/payments/country-payment/colombia-payment/colombia-order-info/colombia-order-info.component';
@@ -104,7 +103,6 @@ export const routes: Route[] = [
             { path: 'restaurant-table-control', component: RestaurantTableControlComponent, canActivate: [AdminGuard] },
             { path: 'table-detail/:param1/:param2/:param3/:param4/:param5', component: TableDetailComponent, canActivate: [SupervisorGuard] },
             { path: 'supervisor-restaurant-table-control', component: SupervisorRestaurantTableControlComponent, canActivate: [SupervisorGuard] },
-            { path: 'invoices-download', component: InvoicesDownloadPage, canActivate: [AdminGuard] },
             { path: 'restaurant-profile', component: RestaurantProfileComponent, canActivate: [AdminGuard] },
             { path: 'restaurant-detail', component: RestaurantProFileDetailComponent },
             { path: 'restaurant-detail/:param1', component: RestaurantProFileDetailComponent }

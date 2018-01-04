@@ -94,14 +94,7 @@ export function loadMenus() {
                             name: "MENUS.ADMINISTRATION.COLLABORATORS",
                             url: "/app/collaborators",
                             icon_name: "",
-                            order: 1005
-                        }, {
-                            _id: "1004",
-                            is_active: true,
-                            name: "MENUS.ADMINISTRATION.INVOICES_DOWNLOAD",
-                            url: "/app/invoices-download",
-                            icon_name: "",
-                            order: 1007
+                            order: 1003
                         }
                     ]
             },
