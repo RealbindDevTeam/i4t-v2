@@ -38,7 +38,6 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
     private _subcategorySub: Subscription;
     private _categoriesSub: Subscription;
     private _restaurantSub: Subscription;
-    private _userDetailsSub: Subscription;
     private _itemsSubscription: Subscription;
 
     _selectedValue: string;
@@ -48,7 +47,6 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
     _dialogRef: MatDialogRef<any>;
     private _thereAreRestaurants: boolean = true;
     private _lRestaurantsId: string[] = [];
-    private _thereAreUsers: boolean = false;
     private _usersCount: number;
 
 
@@ -93,11 +91,6 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
                 Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
                     this._lRestaurantsId.push(restaurant._id);
                 });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByRestaurantsId', this._lRestaurantsId).subscribe(() => {
-                    this._userDetails = UserDetails.find({ current_restaurant: { $in: this._lRestaurantsId } }).zone();
-                    this.countRestaurantsUsers();
-                    this._userDetails.subscribe(() => { this.countRestaurantsUsers(); });
-                });
                 this.countRestaurants();
                 this._restaurants.subscribe(() => { this.countRestaurants(); });
             });
@@ -123,29 +116,12 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if restaurants exists
-     */
-    countRestaurantsUsers(): void {
-        let auxUserCount: number;
-        auxUserCount = UserDetails.collection.find({ current_restaurant: { $in: this._lRestaurantsId } }).count();
-
-        if (auxUserCount > 0) {
-            this._thereAreUsers = true
-            this._usersCount = auxUserCount;
-        } else {
-            this._thereAreUsers = false;
-            this._usersCount = 0;
-        }
-    }
-
-    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
         if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
         if (this._subcategorySub) { this._subcategorySub.unsubscribe(); }
         if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
         if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
     }
 

@@ -1,11 +1,3 @@
-<mat-card *ngIf="_thereAreUsers">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{'SECTIONS.WARNING' | translate}} {{_usersCount}} {{'SECTIONS.WARNING_2' | translate}}</mat-card-title>
-    <mat-card-subtitle style="margin-bottom: 0px">{{'SECTIONS.WARNING_3' | translate}}</mat-card-subtitle>
-  </mat-card-header>
-</mat-card>
-
 <mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
   <mat-card-content>
     <div class="card_initial">

@@ -1,33 +1,24 @@
-<mat-card *ngIf="_thereAreUsers">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{'GARNISHFOOD.WARNING' | translate}} {{_usersCount}} {{'GARNISHFOOD.WARNING_2' | translate}}</mat-card-title>
-    <mat-card-subtitle style="margin-bottom: 0px">{{'GARNISHFOOD.WARNING_3' | translate}}</mat-card-subtitle>
-  </mat-card-header>
-</mat-card>
-
 <mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
-    <mat-card-content>
-        <div class="card_initial">
-            <div class="card_initial has-image">
-                <div class="card_initial-image-container">
-                    <img class="card_initial-image" 
-                        src="/images/garnish-food.png"/>
-                </div>
-                <div class="card_initial-copy">
-                    <div class="card_initial-tagline">
-                        {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
-                    </div>
-                    <div class="card_initial-additional-links">
-                      {{'SECTIONS.MESSAGE' | translate}}
-                    </div>
-                </div>
-                <div class="card_initial-button">
-                    <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
-                </div>
-            </div>
+  <mat-card-content>
+    <div class="card_initial">
+      <div class="card_initial has-image">
+        <div class="card_initial-image-container">
+          <img class="card_initial-image" src="/images/garnish-food.png" />
         </div>
-    </mat-card-content>
+        <div class="card_initial-copy">
+          <div class="card_initial-tagline">
+            {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+          </div>
+          <div class="card_initial-additional-links">
+            {{'SECTIONS.MESSAGE' | translate}}
+          </div>
+        </div>
+        <div class="card_initial-button">
+          <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>
 
 <mat-card *ngIf="_thereAreRestaurants">
@@ -48,16 +39,18 @@
         <div *ngFor="let currency of _currencies | async">
           <div *ngIf="_showCurrencies" formGroupName="currencies" class="currencies">
             <div *ngFor="let cur of _restaurantCurrencies">
-                <mat-form-field *ngIf="currency._id === cur" class="currency">
-                  <input matInput required [formControlName]="cur" [class.invalid]="!_garnishFoodForm.controls.currencies.valid" type="number" placeholder="{{'GARNISHFOOD.GARNISHFOOD_PRICE' | translate}}" min="0" [step]="currency.decimal">
-                  <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
-                </mat-form-field>
+              <mat-form-field *ngIf="currency._id === cur" class="currency">
+                <input matInput required [formControlName]="cur" [class.invalid]="!_garnishFoodForm.controls.currencies.valid" type="number"
+                  placeholder="{{'GARNISHFOOD.GARNISHFOOD_PRICE' | translate}}" min="0" [step]="currency.decimal">
+                <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
+              </mat-form-field>
             </div>
           </div>
           <div *ngIf="_showTaxes" formGroupName="taxes" class="taxes">
             <div *ngFor="let tax of _restaurantTaxes">
               <mat-form-field *ngIf="currency._id === tax" class="tax">
-                <input matInput required [formControlName]="tax" [class.invalid]="!_garnishFoodForm.controls.taxes.valid" type="number" placeholder="{{'GARNISHFOOD.TAXES' | translate}}" min="0" max="100">
+                <input matInput required [formControlName]="tax" [class.invalid]="!_garnishFoodForm.controls.taxes.valid" type="number" placeholder="{{'GARNISHFOOD.TAXES' | translate}}"
+                  min="0" max="100">
                 <span matSuffix>% {{currency.code}} - {{currency.name | translate}} </span>
               </mat-form-field>
             </div>
@@ -66,7 +59,7 @@
       </div>
       <button mat-raised-button class="secondary-button" type="button" (click)="cancel()">{{'CANCEL' | translate}}</button>
       <button mat-raised-button class="primary-button" [disabled]="!_garnishFoodForm.valid" type="submit">{{'CREATE' | translate}}</button>
-    </form>    
+    </form>
   </mat-card-content>
 </mat-card>
 <mat-card *ngFor="let garnishFood of _garnishFoodCol | async" class="cards">
@@ -77,11 +70,13 @@
   <mat-card-title class="card-title">{{garnishFood.name}}</mat-card-title>
   <mat-card-content>
     <div class="card-garnishfood-price">{{showGarnishFoodPrices(garnishFood.prices)}}</div>
-    <div class="card-garnishfood-tax">{{showGarnishFoodTaxes(garnishFood.prices)}}</div>    
+    <div class="card-garnishfood-tax">{{showGarnishFoodTaxes(garnishFood.prices)}}</div>
   </mat-card-content>
-  <mat-card-actions class="card-actions">
+  <mat-card-actions align="end">
     <button mat-raised-button (click)="open(garnishFood)" class="secondary-button">{{'GARNISHFOOD.MODIFY' | translate}}</button>
-    <button mat-raised-button *ngIf="garnishFood.is_active" class="inactive-button" (click)="updateStatus(garnishFood)">{{'GARNISHFOOD.INACTIVATE' | translate}}</button>
-    <button mat-raised-button *ngIf="!garnishFood.is_active" class="active-button" (click)="updateStatus(garnishFood)">{{'GARNISHFOOD.ACTIVATE' | translate}}</button>
+    <button mat-button (click)="confirmRemove(garnishFood)">{{'SECTIONS.REMOVE' | translate}}</button>
+    <span class="app-flex-filler lh">
+      <mat-slide-toggle [(checked)]="garnishFood.is_active" (change)="updateStatus(garnishFood)"></mat-slide-toggle>
+    </span>
   </mat-card-actions>
 </mat-card>
