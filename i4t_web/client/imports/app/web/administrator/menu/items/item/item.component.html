@@ -66,6 +66,9 @@
                         <button mat-button (click)="open(item)">{{'ITEMS.EDIT_ITEM' | translate}}</button>
                         <button mat-button (click)="confirmRemove(item)">{{'ITEMS.REMOVE' | translate}}</button>
                         <span class="app-flex-filler lh">
+                            <button mat-icon-button>
+                                <mat-icon class="md-24" aria-label="Example icon-button with a heart icon">favorite</mat-icon>
+                            </button>
                             <mat-slide-toggle [(checked)]="item.is_active" (change)="updateStatus(item)"></mat-slide-toggle>
                         </span>
                     </mat-card-actions>
