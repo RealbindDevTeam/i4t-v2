@@ -24,6 +24,7 @@ export interface Restaurant extends CollectionObject {
     firstPay: boolean;
     freeDays?: boolean;
     is_premium?: boolean;
+    is_beta_tester: boolean;
 }
 
 /**
@@ -166,7 +167,7 @@ export interface RestaurantProfile extends CollectionObject {
     web_page?: string;
     email?: string;
     social_networks?: RestaurantSocialNetwork;
-    images?:RestaurantProfileImage[];
+    images?: RestaurantProfileImage[];
     schedule: RestaurantSchedule;
     location: RestaurantLocation;
 }
