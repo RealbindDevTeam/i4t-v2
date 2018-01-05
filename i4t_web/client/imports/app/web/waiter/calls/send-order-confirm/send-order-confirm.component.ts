@@ -5,15 +5,15 @@ import { MatDialogRef } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { WaiterCallDetail } from '../../../../../../../both/models/restaurant/waiter-call-detail.model';
-import { Order } from '../../../../../../../both/models/restaurant/order.model';
-import { Orders } from '../../../../../../../both/collections/restaurant/order.collection';
+import { WaiterCallDetail } from '../../../../../../../both/models/establishment/waiter-call-detail.model';
+import { Order } from '../../../../../../../both/models/establishment/order.model';
+import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Users } from '../../../../../../../both/collections/auth/user.collection';
 import { User } from '../../../../../../../both/models/auth/user.model';
 import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
 import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
@@ -72,15 +72,15 @@ export class SendOrderConfirmComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.restaurant_id, this.call.table_id).subscribe();
+        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.establishment_id, this.call.table_id).subscribe();
 
-        this._itemsSub = MeteorObservable.subscribe('itemsByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
             });
         });
 
-        this._tablesSub = MeteorObservable.subscribe('getTablesByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 let _lTable: Table = Tables.collection.find({ _id: this.call.table_id }).fetch()[0];
                 this._tableNumber = _lTable._number + '';
@@ -88,13 +88,13 @@ export class SendOrderConfirmComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._additionsSub = MeteorObservable.subscribe('additionsByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
             });
         });
 
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFood = GarnishFoodCol.find({}).zone();
             });

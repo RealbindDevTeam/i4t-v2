@@ -5,13 +5,13 @@ import { MatSnackBar, MatDialogRef } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { WaiterCallDetail } from '../../../../../../../both/models/restaurant/waiter-call-detail.model';
-import { Order } from '../../../../../../../both/models/restaurant/order.model';
-import { Orders } from '../../../../../../../both/collections/restaurant/order.collection';
+import { WaiterCallDetail } from '../../../../../../../both/models/establishment/waiter-call-detail.model';
+import { Order } from '../../../../../../../both/models/establishment/order.model';
+import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
@@ -20,16 +20,16 @@ import { UserDetails } from '../../../../../../../both/collections/auth/user-det
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
 import { Users } from '../../../../../../../both/collections/auth/user.collection';
 import { User } from '../../../../../../../both/models/auth/user.model';
-import { Accounts } from '../../../../../../../both/collections/restaurant/account.collection';
-import { Account } from '../../../../../../../both/models/restaurant/account.model';
+import { Accounts } from '../../../../../../../both/collections/establishment/account.collection';
+import { Account } from '../../../../../../../both/models/establishment/account.model';
 
 @Component({
-    selector: 'restaurant-exit-confirm',
-    templateUrl: './restaurant-exit-confirm.component.html',
-    styleUrls: ['./restaurant-exit-confirm.component.scss'],
+    selector: 'establishment-exit-confirm',
+    templateUrl: './establishment-exit-confirm.component.html',
+    styleUrls: ['./establishment-exit-confirm.component.scss'],
     providers: [UserLanguageService]
 })
-export class RestaurantExitConfirmComponent implements OnInit, OnDestroy {
+export class EstablishmentExitConfirmComponent implements OnInit, OnDestroy {
 
     public call: WaiterCallDetail;
 
@@ -75,40 +75,40 @@ export class RestaurantExitConfirmComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this.call.restaurant_id, this.call.table_id).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this.call.establishment_id, this.call.table_id).subscribe(() => {
             this._ngZone.run(() => {
-                this._usersDetails = UserDetails.find({ current_restaurant: this.call.restaurant_id, current_table: this.call.table_id }).zone();
+                this._usersDetails = UserDetails.find({ current_establishment: this.call.establishment_id, current_table: this.call.table_id }).zone();
             });
         });
-        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.restaurant_id, this.call.table_id).subscribe();
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this.call.restaurant_id, this.call.table_id,
+        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.establishment_id, this.call.table_id).subscribe();
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this.call.establishment_id, this.call.table_id,
             ['ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED']).subscribe(() => {
                 this._ngZone.run(() => {
                     this._orders = Orders.find({}).zone();
                 });
             });
-        this._itemsSub = MeteorObservable.subscribe('itemsByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
             });
         });
-        this._tablesSub = MeteorObservable.subscribe('getTablesByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 let _lTable: Table = Tables.collection.find({ _id: this.call.table_id }).fetch()[0];
                 this._tableNumber = _lTable._number + '';
             });
         });
-        this._additionsSub = MeteorObservable.subscribe('additionsByRestaurantWork', this._user).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
             });
         });
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByRestaurantWork', this._user).subscribe(() => {
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFood = GarnishFoodCol.find({}).zone();
             });
         });
-        this._accountsSub = MeteorObservable.subscribe('getAccountsByTableRestaurant', this.call.restaurant_id, 'OPEN').subscribe();
+        this._accountsSub = MeteorObservable.subscribe('getAccountsByTableEstablishment', this.call.establishment_id, 'OPEN').subscribe();
     }
 
     /**
@@ -148,14 +148,14 @@ export class RestaurantExitConfirmComponent implements OnInit, OnDestroy {
     cancelOrderToExitTable(_pOrder: Order): void {
         this._loading = true;
         setTimeout(() => {
-            MeteorObservable.call('cancelOrderToRestaurantExit', _pOrder, this.call, this._user).subscribe(() => {
+            MeteorObservable.call('cancelOrderToEstablishmentExit', _pOrder, this.call, this._user).subscribe(() => {
                 this._loading = false;
                 let _lMessage: string = this.itemNameTraduction('EXIT_TABLE_CONFIRM.ORDER_CANCELED')
                 this._snackBar.open(_lMessage, '', {
                     duration: 2500
                 });
                 let _lOrdersToCancel: number = Orders.collection.find({
-                    restaurantId: this.call.restaurant_id, tableId: this.call.table_id,
+                    establishment_id: this.call.establishment_id, tableId: this.call.table_id,
                     markedToCancel: { $in: [true, false] }, status: { $in: ['ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED'] }
                 }).count();
                 if (_lOrdersToCancel === 0) {

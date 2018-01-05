@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { TranslateService } from '@ngx-translate/core';
-import { RestaurantProfile } from '../../../../../../../both/models/restaurant/restaurant.model';
+import { EstablishmentProfile } from '../../../../../../../both/models/establishment/establishment.model';
 
 @Component({
     selector: 'resturant-schedule',
@@ -12,7 +12,7 @@ import { RestaurantProfile } from '../../../../../../../both/models/restaurant/r
 })
 export class ScheduleDetailComponent {
 
-    public _restaurantSchedule: RestaurantProfile;
+    public _establishmentSchedule: EstablishmentProfile;
 
     /**
      * ScheduleDetailComponent constructor

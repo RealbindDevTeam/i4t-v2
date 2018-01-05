@@ -1,4 +1,4 @@
-<mat-card *ngIf="!_thereAreRestaurants" mat-cell="12" class="demo-card demo-basic">
+<mat-card *ngIf="!_thereAreEstablishments" mat-cell="12" class="demo-card demo-basic">
         <mat-card-content>
             <div class="card_initial">
                 <div class="card_initial has-image">
@@ -18,7 +18,7 @@
     
     <div *ngIf="_thereAreTables" style="width: 100%">
         <mat-card>
-            <mat-card-title>{{'TABLES.TABLES_SEARCH' | translate}} - {{restaurant_name}}</mat-card-title>
+            <mat-card-title>{{'TABLES.TABLES_SEARCH' | translate}} - {{establishment_name}}</mat-card-title>
             <mat-card-content>
                 <div *ngIf="show_cards">
                     <mat-checkbox [(ngModel)]="all_checked" [disabled]="enable_print" matTooltip="{{tooltip_msg}}">{{'TABLES.SELECT_ALL' | translate}}</mat-checkbox>
@@ -34,9 +34,9 @@
     <div *ngIf="show_cards">
         <mat-card id="qr-card" *ngFor="let table of tables | async" style="display: inline-block; margin-right: 20px; width:250px">
             <mat-card-header>
-                <mat-card-title *ngFor="let rest of restaurants | async">
-                    <div *ngIf="rest._id == table.restaurantId">
-                        <label>{{rest.name}}</label>
+                <mat-card-title *ngFor="let est of establishments | async">
+                    <div *ngIf="est._id == table.establishment_id">
+                        <label>{{est.name}}</label>
                     </div>
                 </mat-card-title>
                 <mat-card-subtitle>

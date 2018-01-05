@@ -2,7 +2,7 @@
     <mat-card-content>
         <div class="card_initial">
 
-            <div *ngIf="!_userRestaurant" class="card_initial has-image">
+            <div *ngIf="!_userEstablishment" class="card_initial has-image">
                 <div class="card_initial-image-container">
                     <img class="card_initial-image" src="/images/employees.png"/>
                 </div>
@@ -18,7 +18,7 @@
                 </div>
             </div>
 
-            <div *ngIf="_userRestaurant && !_validatedWaterCall" class="card_initial has-image">
+            <div *ngIf="_userEstablishment && !_validatedWaterCall" class="card_initial has-image">
                 <div class="card_initial-image-container">
                     <img class="card_initial-image" 
                         src="/images/employees.png"/>
@@ -33,7 +33,7 @@
                 </div>
             </div>
             
-            <div *ngIf="_userRestaurant && _validatedWaterCall" class="card_initial has-image">
+            <div *ngIf="_userEstablishment && _validatedWaterCall" class="card_initial has-image">
                 <div class="card_initial-image-container">
                     <svg id="loading" class="img">
                         <g>

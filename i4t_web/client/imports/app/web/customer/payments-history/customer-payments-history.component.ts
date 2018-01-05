@@ -89,14 +89,14 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
         }
 
         if (_pCountryId === '1900') {
-            this.generateColombiaInvoice(_pInvoice, _pCountryId);
+            //this.generateColombiaInvoice(_pInvoice, _pCountryId);
         }
     }
 
     /**
      * Generate colombia restaurant invoice
      * @param {Invoice} _pInvoice
-     */
+     
     generateColombiaInvoice(_pInvoice: Invoice, _pCountryId: string): void {
         let heightPage: number = this.calculateHeight(_pInvoice, _pCountryId);
 
@@ -418,7 +418,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
         } else {
             pdf.save(_pInvoice.legal_information.number + '_' + this.dateFormater(_pInvoice.creation_date, false) + '.pdf');
         }
-    }
+    }*/
 
     /**
      * Allow add top to pdf page

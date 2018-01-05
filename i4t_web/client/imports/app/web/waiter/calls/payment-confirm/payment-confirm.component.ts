@@ -5,10 +5,10 @@ import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Payment } from '../../../../../../../both/models/restaurant/payment.model';
-import { Payments } from '../../../../../../../both/collections/restaurant/payment.collection';
-import { Order } from '../../../../../../../both/models/restaurant/order.model';
-import { Orders } from '../../../../../../../both/collections/restaurant/order.collection';
+import { Payment } from '../../../../../../../both/models/establishment/payment.model';
+import { Payments } from '../../../../../../../both/collections/establishment/payment.collection';
+import { Order } from '../../../../../../../both/models/establishment/order.model';
+import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Users } from '../../../../../../../both/collections/auth/user.collection';
 import { User } from '../../../../../../../both/models/auth/user.model';
 import { Currency } from '../../../../../../../both/models/general/currency.model';
@@ -17,9 +17,9 @@ import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
 import { PaymentMethod } from '../../../../../../../both/models/general/paymentMethod.model';
 import { PaymentMethods } from '../../../../../../../both/collections/general/paymentMethod.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
-import { WaiterCallDetail } from '../../../../../../../both/models/restaurant/waiter-call-detail.model';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { WaiterCallDetail } from '../../../../../../../both/models/establishment/waiter-call-detail.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
@@ -82,23 +82,23 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._paymentsSub = MeteorObservable.subscribe('getPaymentsToWaiter', this.call.restaurant_id, this.call.table_id).subscribe(() => {
+        this._paymentsSub = MeteorObservable.subscribe('getPaymentsToWaiter', this.call.establishment_id, this.call.table_id).subscribe(() => {
             this._ngZone.run(() => {
                 this._payments = Payments.find({}).zone();
                 this._payments.subscribe(() => { this.totalPayment(); this.verifyReceivedPayments(); });
             });
         });
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this.call.restaurant_id, this.call.table_id, ['ORDER_STATUS.DELIVERED']).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this.call.establishment_id, this.call.table_id, ['ORDER_STATUS.DELIVERED']).subscribe(() => {
             this._ngZone.run(() => {
                 this._orders = Orders.find({}).zone();
             });
         });
 
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this.call.restaurant_id]).subscribe();
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.call.establishment_id]).subscribe();
 
-        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.restaurant_id, this.call.table_id).subscribe();
+        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.establishment_id, this.call.table_id).subscribe();
 
-        this._itemsSub = MeteorObservable.subscribe('itemsByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
             });
@@ -110,7 +110,7 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._tablesSub = MeteorObservable.subscribe('getTablesByRestaurant', this.call.restaurant_id).subscribe(() => {
+        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishment', this.call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 let _lTable: Table = Tables.collection.find({ _id: this.call.table_id }).fetch()[0];
                 this._tableNumber = _lTable._number + '';
@@ -118,13 +118,13 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._additionsSub = MeteorObservable.subscribe('additionsByRestaurantWork', this._user).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
             });
         });
 
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByRestaurantWork', this._user).subscribe(() => {
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFood = GarnishFoodCol.find({}).zone();
             });
@@ -214,7 +214,7 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
      */
     totalPayment() {
         this._totalPayment = 0;
-        Payments.collection.find({ restaurantId: this.call.restaurant_id, tableId: this.call.table_id }).fetch().forEach((pay) => {
+        Payments.collection.find({ establishment_id: this.call.establishment_id, tableId: this.call.table_id }).fetch().forEach((pay) => {
             this._totalPayment += pay.totalToPayment;
         });
     }
@@ -223,7 +223,7 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
      * Function to verify all table payments received status is recived
      */
     verifyReceivedPayments(): void {
-        let _lPaymentsReceived = Payments.collection.find({ restaurantId: this.call.restaurant_id, tableId: this.call.table_id, status: 'PAYMENT.NO_PAID', received: true }).count();
+        let _lPaymentsReceived = Payments.collection.find({ establishment_id: this.call.establishment_id, tableId: this.call.table_id, status: 'PAYMENT.NO_PAID', received: true }).count();
         _lPaymentsReceived > 0 ? this._payAllowed = true : this._payAllowed = false;
     }
 
@@ -235,7 +235,7 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
         setTimeout(() => {
             this.closePay().then((result) => {
                 if (result) {
-                    let _lPaymentsNoReceived = Payments.collection.find({ restaurantId: this.call.restaurant_id, tableId: this.call.table_id, status: 'PAYMENT.NO_PAID', received: false }).count();
+                    let _lPaymentsNoReceived = Payments.collection.find({ establishment_id: this.call.establishment_id, tableId: this.call.table_id, status: 'PAYMENT.NO_PAID', received: false }).count();
                     this._loading = false;
                     if (_lPaymentsNoReceived === 0) {
                         this.close();
@@ -261,7 +261,7 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
     closePay(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             try {
-                MeteorObservable.call('closePay', this.call.restaurant_id, this.call.table_id, this.call).subscribe(() => {
+                MeteorObservable.call('closePay', this.call.establishment_id, this.call.table_id, this.call).subscribe(() => {
                     resolve(true);
                 }, (error) => {
                     resolve(false);
@@ -293,14 +293,14 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
      * @param {Item} _pItem 
      */
     getTotalPrice(_pItem: Item, _pOrderItemQuantity: number): number {
-        return _pItem.restaurants.filter(p => p.restaurantId === this.call.restaurant_id)[0].price * _pOrderItemQuantity;
+        return _pItem.establishments.filter(p => p.establishment_id === this.call.establishment_id)[0].price * _pOrderItemQuantity;
     }
 
     /**
      * Return Total Garnish Food Price
      */
     getGarnishFoodTotalPrice(_pGarnishFood: GarnishFood, _pOrderItemQuantity: number): number {
-        return _pGarnishFood.restaurants.filter(g => g.restaurantId === this.call.restaurant_id)[0].price * _pOrderItemQuantity;
+        return _pGarnishFood.establishments.filter(g => g.establishment_id === this.call.establishment_id)[0].price * _pOrderItemQuantity;
     }
 
     /**
@@ -308,7 +308,7 @@ export class PaymentConfirmComponent implements OnInit, OnDestroy {
      * @param {Addition} _pAddition 
      */
     getAdditionTotalPrice(_pAddition: Addition, _pOrderItemQuantity: number): number {
-        return _pAddition.restaurants.filter(a => a.restaurantId === this.call.restaurant_id)[0].price * _pOrderItemQuantity;
+        return _pAddition.establishments.filter(a => a.establishment_id === this.call.establishment_id)[0].price * _pOrderItemQuantity;
     }
 
     /**

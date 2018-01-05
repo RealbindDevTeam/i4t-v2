@@ -4,10 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Subscription } from "rxjs";
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Restaurants } from "../../../../../../../both/collections/restaurant/restaurant.collection";
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
-import { WaiterCallDetail } from '../../../../../../../both/models/restaurant/waiter-call-detail.model';
-import { WaiterCallDetails } from '../../../../../../../both/collections/restaurant/waiter-call-detail.collection';
+import { Establishments } from "../../../../../../../both/collections/establishment/establishment.collection";
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { WaiterCallDetail } from '../../../../../../../both/models/establishment/waiter-call-detail.model';
+import { WaiterCallDetails } from '../../../../../../../both/collections/establishment/waiter-call-detail.collection';
 import { User } from '../../../../../../../both/models/auth/user.model';
 import { Users } from '../../../../../../../both/collections/auth/user.collection';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
@@ -15,7 +15,7 @@ import { UserDetails } from '../../../../../../../both/collections/auth/user-det
 import { CallCloseConfirmComponent } from '../call-close-confirm/call-close-confirm.component';
 import { PaymentConfirmComponent } from '../payment-confirm/payment-confirm.component';
 import { SendOrderConfirmComponent } from '../send-order-confirm/send-order-confirm.component';
-import { RestaurantExitConfirmComponent } from '../restaurant-exit-confirm/restaurant-exit-confirm.component';
+import { EstablishmentExitConfirmComponent } from '../establishment-exit-confirm/establishment-exit-confirm.component';
 
 @Component({
     selector: 'calls',
@@ -27,16 +27,15 @@ export class CallsComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
 
     private _userDetailSubscription: Subscription;
-    private _userRestaurantSubscription: Subscription;
+    private _userEstablishmentSubscription: Subscription;
     private _callsDetailsSubscription: Subscription;
     private _tableSubscription: Subscription;
 
     private _mdDialogRef: MatDialogRef<any>;
 
     private _userDetail: UserDetail;
-    private _restaurants: any;
+    private _establishments: any;
     private _waiterCallDetail: any;
-    private _imgRestaurant: any;
 
     private _loading: boolean;
     private _thereAreCalls: boolean = true;
@@ -64,8 +63,8 @@ export class CallsComponent implements OnInit, OnDestroy {
         this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
             this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
             if (this._userDetail) {
-                this._userRestaurantSubscription = MeteorObservable.subscribe('getRestaurantById', this._userDetail.restaurant_work).subscribe(() => {
-                    this._restaurants = Restaurants.find({ _id: this._userDetail.restaurant_work });
+                this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstabishmentById', this._userDetail.establishment_work).subscribe(() => {
+                    this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
                 });
             }
         });
@@ -78,7 +77,7 @@ export class CallsComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._tableSubscription = MeteorObservable.subscribe('getTablesByRestaurantWork', this._user).subscribe();
+        this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).subscribe();
     }
 
     /**
@@ -86,7 +85,7 @@ export class CallsComponent implements OnInit, OnDestroy {
      */
     removeSubscriptions(): void {
         if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-        if (this._userRestaurantSubscription) { this._userRestaurantSubscription.unsubscribe(); }
+        if (this._userEstablishmentSubscription) { this._userEstablishmentSubscription.unsubscribe(); }
         if (this._callsDetailsSubscription) { this._callsDetailsSubscription.unsubscribe(); }
         if (this._tableSubscription) { this._tableSubscription.unsubscribe(); }
     }
@@ -152,7 +151,7 @@ export class CallsComponent implements OnInit, OnDestroy {
      * This function show modal dialog with exit user information
      */
     showUserExitTable(_call: WaiterCallDetail): void {
-        this._mdDialogRef = this._mdDialog.open(RestaurantExitConfirmComponent, {
+        this._mdDialogRef = this._mdDialog.open(EstablishmentExitConfirmComponent, {
             disableClose: true
         });
         this._mdDialogRef.componentInstance.call = _call;

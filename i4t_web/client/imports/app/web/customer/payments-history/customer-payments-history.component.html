@@ -21,9 +21,9 @@
     <mat-accordion class="example-headers-align">
         <mat-expansion-panel *ngFor="let invoice of _invoices | async" hideToggle="true">
             <mat-expansion-panel-header>
-                <mat-panel-title>
+                <!--mat-panel-title>
                     {{invoice.restaurant_name}}
-                </mat-panel-title>
+                </mat-panel-title-->
                 <mat-panel-description>
                     {{invoice.creation_date | date: 'MM/dd/yyyy HH:mm a'}}
                     <button mat-icon-button *ngIf="isInvoiceCanDownload(invoice, invoice.country_id)" (click)="invoiceGenerate(invoice, invoice.country_id)"

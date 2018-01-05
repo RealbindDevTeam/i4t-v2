@@ -6,8 +6,8 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../../../services/general/user-language.service';
-import { RestaurantLegality } from '../../../../../../../../../../both/models/restaurant/restaurant.model';
-import { RestaurantsLegality } from '../../../../../../../../../../both/collections/restaurant/restaurant.collection';
+//import { RestaurantLegality } from '../../../../../../../../../../both/models/restaurant/restaurant.model';
+//import { RestaurantsLegality } from '../../../../../../../../../../both/collections/restaurant/restaurant.collection';
 import { AlertConfirmComponent } from '../../../../../../../web/general/alert-confirm/alert-confirm.component';
 
 @Component({
@@ -44,8 +44,8 @@ export class ColombiaLegalityComponent implements OnInit, OnDestroy {
     private _showMessage: boolean = false;
 
     private _restaurantLegalitySub: Subscription;
-    private _restaurantLegality: RestaurantLegality = { restaurant_id: '' };
-    private _restaurantLegalityInEditMode: RestaurantLegality;
+    private _restaurantLegality: any = { restaurant_id: '' };
+    private _restaurantLegalityInEditMode: any;
     private _dialogRef: MatDialogRef<any>;
 
     /**
@@ -95,7 +95,7 @@ export class ColombiaLegalityComponent implements OnInit, OnDestroy {
         if (this.restaurantId !== null && this.restaurantId !== undefined) {
             this._restaurantLegalitySub = MeteorObservable.subscribe('getRestaurantLegality', this.restaurantId).subscribe(() => {
                 this._ngZone.run(() => {
-                    this._restaurantLegalityInEditMode = RestaurantsLegality.findOne({ restaurant_id: this.restaurantId });
+                    //this._restaurantLegalityInEditMode = RestaurantsLegality.findOne({ restaurant_id: this.restaurantId });
                     if (this._restaurantLegalityInEditMode) {
                         this._showDivider = true;
                         this._showNextResolution = true;

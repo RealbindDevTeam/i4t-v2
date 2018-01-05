@@ -1,6 +1,6 @@
 <div *ngFor="let userDetail of _usersDetails | async">
     <div *ngFor="let order of _orders | async" class="order">
-        <div *ngIf="order.creation_user === userDetail.user_id && order.restaurantId === userDetail.current_restaurant && order.tableId === userDetail.current_table && order.markedToCancel === true">
+        <div *ngIf="order.creation_user === userDetail.user_id && order.establishment_id === userDetail.current_establishment && order.tableId === userDetail.current_table && order.markedToCancel === true">
             <div class="main-info">
                 <h2 class="customer-info">{{'EXIT_TABLE_CONFIRM.CUSTOMER' | translate}}: {{ getUserName(userDetail.user_id) }} - {{'EXIT_TABLE_CONFIRM.TABLE' | translate}} # {{_tableNumber}}</h2>
                 <p class="order-cancel-error" *ngIf="_showError">{{'EXIT_TABLE_CONFIRM.CANCELING_ORDER_ERROR' | translate}}. {{'EXIT_TABLE_CONFIRM.VALIDATE_ORDER_MSG' | translate}}</p>

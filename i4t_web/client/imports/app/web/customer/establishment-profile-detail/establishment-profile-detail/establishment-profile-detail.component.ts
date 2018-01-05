@@ -7,8 +7,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Restaurant, RestaurantProfile, RestaurantProfileImage } from '../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants, RestaurantsProfile } from '../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment, EstablishmentProfile, EstablishmentProfileImage } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments, EstablishmentsProfile } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Country } from '../../../../../../../both/models/general/country.model';
 import { Countries } from '../../../../../../../both/collections/general/country.collection';
 import { City } from '../../../../../../../both/models/general/city.model';
@@ -20,28 +20,28 @@ import { PaymentMethods } from '../../../../../../../both/collections/general/pa
 import { ScheduleDetailComponent } from '../schedule-detail/schedule-detail.component';
 
 @Component({
-    selector: 'restaurant-profile-detail',
-    templateUrl: './restaurant-profile-detail.component.html',
-    styleUrls: ['./restaurant-profile-detail.component.scss']
+    selector: 'establishment-profile-detail',
+    templateUrl: './establishment-profile-detail.component.html',
+    styleUrls: ['./establishment-profile-detail.component.scss']
 })
-export class RestaurantProFileDetailComponent implements OnInit, OnDestroy {
+export class EstablishmentProFileDetailComponent implements OnInit, OnDestroy {
 
-    private restaurantId: string;
+    private establishmentId: string;
 
-    private _restaurantSub: Subscription;
-    private _restaurantProfileSub: Subscription;
+    private _establishmentSub: Subscription;
+    private _establishmentProfileSub: Subscription;
     private _countriesSub: Subscription;
     private _citiesSub: Subscription;
     private _currencySub: Subscription;
     private _paymentMethodSub: Subscription;
 
-    private _restaurants: Observable<Restaurant[]>;;
-    private _restaurantsProfile: Observable<RestaurantProfile[]>;
-    private _restaurantPaymentMethods: Observable<PaymentMethod[]>;
+    private _establishments: Observable<Establishment[]>;
+    private _establishmentsProfile: Observable<EstablishmentProfile[]>;
+    private _establishmentPaymentMethods: Observable<PaymentMethod[]>;
 
-    private _restaurantCountry: string;
-    private _restaurantCity: string;
-    private _restaurantCurrency: string = '';
+    private _establishmentCountry: string;
+    private _establishmentCity: string;
+    private _establishmentCurrency: string = '';
     public _dialogRef: MatDialogRef<any>;
 
     private _descriptionAux: string;
@@ -50,7 +50,7 @@ export class RestaurantProFileDetailComponent implements OnInit, OnDestroy {
     private _btnLabel: string;
 
     /**
-     * RestaurantProFileDetailComponent Constructor
+     * EstablishmentProFileDetailComponent Constructor
      * @param {TranslateService} _translate 
      * @param {NgZone} _ngZone 
      * @param {UserLanguageService} _userLanguageService 
@@ -72,7 +72,7 @@ export class RestaurantProFileDetailComponent implements OnInit, OnDestroy {
             _translate.setDefaultLang('en');
         }
         this._activatedRoute.params.forEach((params: Params) => {
-            this.restaurantId = params['param1'];
+            this.establishmentId = params['param1'];
         });
     }
 
@@ -80,50 +80,50 @@ export class RestaurantProFileDetailComponent implements OnInit, OnDestroy {
      * ngOnInit Implementation
      */
     ngOnInit() {
-        this._location.replaceState("/app/restaurant-detail");
+        this._location.replaceState("/app/establishment-detail");
         this.removeSubscriptions();
-        if (this.restaurantId !== null && this.restaurantId !== undefined) {
-            this._restaurantSub = MeteorObservable.subscribe('getRestaurantById', this.restaurantId).subscribe(() => {
+        if (this.establishmentId !== null && this.establishmentId !== undefined) {
+            this._establishmentSub = MeteorObservable.subscribe('getEstablishmentById', this.establishmentId).subscribe(() => {
                 this._ngZone.run(() => {
-                    this._restaurants = Restaurants.find({ _id: this.restaurantId }).zone();
-                    let _lRestaurant: Restaurant = Restaurants.findOne({ _id: this.restaurantId });
-                    this._restaurants.subscribe(() => {
-                        _lRestaurant = Restaurants.findOne({ _id: this.restaurantId });
-                        if (_lRestaurant) {
-                            this._countriesSub = MeteorObservable.subscribe('getCountryByRestaurantId', this.restaurantId).subscribe(() => {
+                    this._establishments = Establishments.find({ _id: this.establishmentId }).zone();
+                    let _lEstablishment: Establishment = Establishments.findOne({ _id: this.establishmentId });
+                    this._establishments.subscribe(() => {
+                        _lEstablishment = Establishments.findOne({ _id: this.establishmentId });
+                        if (_lEstablishment) {
+                            this._countriesSub = MeteorObservable.subscribe('getCountryByEstablishmentId', this.establishmentId).subscribe(() => {
                                 this._ngZone.run(() => {
-                                    let _lCountry: Country = Countries.findOne({ _id: _lRestaurant.countryId });
-                                    this._restaurantCountry = this.itemNameTraduction(_lCountry.name);
+                                    let _lCountry: Country = Countries.findOne({ _id: _lEstablishment.countryId });
+                                    this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
                                 });
                             });
-                            this._citiesSub = MeteorObservable.subscribe('getCityByRestaurantId', this.restaurantId).subscribe(() => {
+                            this._citiesSub = MeteorObservable.subscribe('getCityByEstablishmentId', this.establishmentId).subscribe(() => {
                                 this._ngZone.run(() => {
-                                    if (_lRestaurant.cityId === '') {
-                                        this._restaurantCity = _lRestaurant.other_city;
+                                    if (_lEstablishment.cityId === '') {
+                                        this._establishmentCity = _lEstablishment.other_city;
                                     } else {
-                                        let _lCity: City = Cities.findOne({ _id: _lRestaurant.cityId });
-                                        this._restaurantCity = this.itemNameTraduction(_lCity.name);
+                                        let _lCity: City = Cities.findOne({ _id: _lEstablishment.cityId });
+                                        this._establishmentCity = this.itemNameTraduction(_lCity.name);
                                     }
                                 });
                             });
-                            this._currencySub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this.restaurantId]).subscribe(() => {
+                            this._currencySub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.establishmentId]).subscribe(() => {
                                 this._ngZone.run(() => {
-                                    let find: Currency = Currencies.findOne({ _id: _lRestaurant.currencyId });
-                                    this._restaurantCurrency = find.code + ' - ' + this.itemNameTraduction(find.name);
+                                    let find: Currency = Currencies.findOne({ _id: _lEstablishment.currencyId });
+                                    this._establishmentCurrency = find.code + ' - ' + this.itemNameTraduction(find.name);
                                 });
                             });
-                            this._paymentMethodSub = MeteorObservable.subscribe('getPaymentMethodsByrestaurantId', this.restaurantId).subscribe(() => {
+                            this._paymentMethodSub = MeteorObservable.subscribe('getPaymentMethodsByestablishmentId', this.establishmentId).subscribe(() => {
                                 this._ngZone.run(() => {
-                                    this._restaurantPaymentMethods = PaymentMethods.find({ _id: { $in: _lRestaurant.paymentMethods }, isActive: true }).zone();
+                                    this._establishmentPaymentMethods = PaymentMethods.find({ _id: { $in: _lEstablishment.paymentMethods }, isActive: true }).zone();
                                 });
                             });
                         }
                     });
                 });
             });
-            this._restaurantProfileSub = MeteorObservable.subscribe('getRestaurantProfile', this.restaurantId).subscribe(() => {
+            this._establishmentProfileSub = MeteorObservable.subscribe('getEstablishmentProfile', this.establishmentId).subscribe(() => {
                 this._ngZone.run(() => {
-                    this._restaurantsProfile = RestaurantsProfile.find({ restaurant_id: this.restaurantId }).zone();
+                    this._establishmentsProfile = EstablishmentsProfile.find({ establishment_id: this.establishmentId }).zone();
                 });
             });
 
@@ -142,8 +142,8 @@ export class RestaurantProFileDetailComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
-        if (this._restaurantProfileSub) { this._restaurantProfileSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
+        if (this._establishmentProfileSub) { this._establishmentProfileSub.unsubscribe(); }
         if (this._countriesSub) { this._countriesSub.unsubscribe(); }
         if (this._citiesSub) { this._citiesSub.unsubscribe(); }
         if (this._currencySub) { this._currencySub.unsubscribe(); }
@@ -166,14 +166,14 @@ export class RestaurantProFileDetailComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Open restaurant schedule
-     * @param {RestaurantProfile} _pRestaurantProfile 
+     * Open establishment schedule
+     * @param {EstablishmentProfile} _pEstablishmentProfile 
      */
-    openSchedule(_pRestaurantProfile: RestaurantProfile): void {
+    openSchedule(_pEstablishmentProfile: EstablishmentProfile): void {
         this._dialogRef = this._dialog.open(ScheduleDetailComponent, {
             disableClose: true
         });
-        this._dialogRef.componentInstance._restaurantSchedule = _pRestaurantProfile;
+        this._dialogRef.componentInstance._establishmentSchedule = _pEstablishmentProfile;
         this._dialogRef.afterClosed().subscribe(result => {
             this._dialogRef = null;
         });
@@ -222,7 +222,7 @@ export class RestaurantProFileDetailComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Function to extend the restaurant description
+     * Function to extend the establishment description
      */
     extendDescription() {
         if(this._showExtended){
