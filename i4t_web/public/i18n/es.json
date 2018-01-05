@@ -674,7 +674,9 @@
         "REMOVE" : "REMOVER",
         "REMOVE_TITLE" : "Remover item",
         "REMOVE_MSG" : "Deseas remover el item?",
-        "ITEM_REMOVED" : "Item removido correctamente"
+        "ITEM_REMOVED" : "Item removido correctamente",
+        "REWARD_LABEL":"Asignar puntos de recompensa",
+        "POINTS_PLACEHOLER": "Puntos"
     },
     "ROLE": {
         "ADMINISTRATOR": "Administrador",

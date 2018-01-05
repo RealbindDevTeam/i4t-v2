@@ -18,6 +18,8 @@ export interface Item extends CollectionObject {
     garnishFoodQuantity: number;
     garnishFood: string[];
     additions: string[];
+    has_reward?: boolean;
+    reward_points?: number;
 }
 
 /**
@@ -47,6 +49,7 @@ export interface ItemEstablishment {
     price: number;
     itemTax?: number;
     isAvailable: boolean;
+    aply_reward?: boolean;
 }
 
 /**
