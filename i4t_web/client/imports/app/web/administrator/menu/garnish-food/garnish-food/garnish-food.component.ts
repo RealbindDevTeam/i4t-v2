@@ -43,10 +43,10 @@ export class GarnishFoodComponent implements OnInit, OnDestroy {
     private _establishmentsSub: Subscription;
     private _currenciesSub: Subscription;
     private _countriesSub: Subscription;
-    private _userDetailsSub: Subscription;
 
     public _dialogRef: MatDialogRef<any>;
     private titleMsg: string;
+    private btnCancelLbl: string;
     private btnAcceptLbl: string;
     private _establishmentCurrencies: string[] = [];
     private _showCurrencies: boolean = false;
@@ -54,7 +54,6 @@ export class GarnishFoodComponent implements OnInit, OnDestroy {
     private _showTaxes: boolean = false;
     private _thereAreEstablishments: boolean = true;
     private _lEstablishmentsId: string[] = [];
-    private _thereAreUsers: boolean = false;
     private _usersCount: number;
 
     /**
@@ -78,6 +77,7 @@ export class GarnishFoodComponent implements OnInit, OnDestroy {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
+        this.btnCancelLbl = 'CANCEL';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
     }
 
@@ -97,11 +97,6 @@ export class GarnishFoodComponent implements OnInit, OnDestroy {
                 this._establishments = Establishments.find({}).zone();
                 Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
                     this._lEstablishmentsId.push(establishment._id);
-                });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', this._lEstablishmentsId).subscribe(() => {
-                    this._userDetails = UserDetails.find({ current_establishment: { $in: this._lEstablishmentsId } }).zone();
-                    this.countEstablishmentsUsers();
-                    this._userDetails.subscribe(() => { this.countEstablishmentsUsers(); });
                 });
                 this.countEstablishments();
                 this._establishments.subscribe(() => { this.buildControls(); this.countEstablishments(); });
@@ -123,22 +118,6 @@ export class GarnishFoodComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if establishments exists
-     */
-    countEstablishmentsUsers(): void {
-        let auxUserCount: number;
-        auxUserCount = UserDetails.collection.find({ current_establishment: { $in: this._lEstablishmentsId } }).count();
-
-        if (auxUserCount > 0) {
-            this._thereAreUsers = true
-            this._usersCount = auxUserCount;
-        } else {
-            this._thereAreUsers = false;
-            this._usersCount = 0;
-        }
-    }
-
-    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
@@ -146,7 +125,6 @@ export class GarnishFoodComponent implements OnInit, OnDestroy {
         if (this._establishmentsSub) { this._establishmentsSub.unsubscribe(); }
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
         if (this._countriesSub) { this._countriesSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
     }
 
     /**
@@ -273,6 +251,51 @@ export class GarnishFoodComponent implements OnInit, OnDestroy {
                 modification_date: new Date(),
                 modification_user: this._user
             }
+        });
+    }
+
+    /**
+    * Show confirm dialog to remove the GarnishFood
+    * @param {GarnishFood} _pGarnishFood
+    */
+    confirmRemove(_pGarnishFood: GarnishFood) {
+        let dialogTitle = "GARNISHFOOD.REMOVE_TITLE";
+        let dialogContent = "ADDITIONS.REMOVE_MSG";
+        let error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
+
+        if (!Meteor.userId()) {
+            this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+            return;
+        }
+        this._mdDialogRef = this._dialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: dialogTitle,
+                subtitle: '',
+                content: dialogContent,
+                buttonCancel: this.btnCancelLbl,
+                buttonAccept: this.btnAcceptLbl,
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                this.removeGarsnihFood(_pGarnishFood);
+            }
+        });
+    }
+
+    /**
+     * Function to allow remove GarnishFood
+     * @param {GarnishFood} _pGarnishFood
+     */
+    removeGarsnihFood(_pGarnishFood: GarnishFood): void {
+        let _lMessage: string;
+        GarnishFoodCol.remove(_pGarnishFood._id);
+        _lMessage = this.itemNameTraduction('GARNISHFOOD.SUBCATEGORY_REMOVED');
+        this.snackBar.open(_lMessage, '', {
+            duration: 2500
         });
     }
 

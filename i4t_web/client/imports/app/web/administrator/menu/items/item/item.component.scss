@@ -1,49 +1,49 @@
-.btn-position-create{
-    position: absolute;
-    top: -45px;
-    right: 0;
-}
 
-.item-co-1 {
-    height: calc(100vh - 127px);
-}
-
-.custom-cards {
-    margin: 0 20px 20px 0 !important;
-}
-
-.cards{
-    width: 240px;
-    display: inline-block; 
-    margin-right: 20px; 
-    vertical-align: top;
-
-    mat-card-content {
-        margin-top: 16px;
-        margin-bottom: 16px;
-        height: 50px;
+@media only screen and (min-width: 600px) {
+    mat-card.item {
+        display: inline-block; 
+        margin: 0 20px 20px 0 !important;
+        width: 280px;
+        vertical-align: top;
     }
 }
 
-.crop {
-    height: 200px;
+.lh {
+    line-height: 36px;
+}
+
+.mdc-card__horizontal-block {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.mdc-card__primary {
+    padding: 0 24px 24px 0;
     overflow: hidden;
-    margin: 0 -24px 0px;
 }
 
-.crop img {
-    width: calc(100% + 48px);
-    height: 35vh;
-    margin: 0 -15px 0px;
+.mdc-card-media-item {
+    display: inline-block;
+    margin-left: 24px;
+    margin-right: 0;
+    width: 120px;
+    height: 120px;
+    padding: 0;
 }
 
-.fixed-action-btn {		
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
- }
-
- .example-header-image {
-    background-image: url('/images/warning.png');
-    background-size: cover;
-  }
+.fixed-action-btn{
+    z-index: 999;
+}

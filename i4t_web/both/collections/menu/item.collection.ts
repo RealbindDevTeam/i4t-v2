@@ -18,5 +18,6 @@ export const Items = new MongoObservable.Collection<Item>('items');
  */
 Items.allow({
     insert: loggedIn,
-    update: loggedIn
+    update: loggedIn,
+    remove: loggedIn
 });

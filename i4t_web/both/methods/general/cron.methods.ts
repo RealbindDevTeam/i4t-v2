@@ -25,7 +25,7 @@ if (Meteor.isServer) {
          */
 
         changeFreeDaysToFalse: function (_countryId: string) {
-            Establishments.collection.update({ countryId: _countryId, freeDays: true }, { $set: { freeDays: false } });
+            Establishments.collection.update({ countryId: _countryId, freeDays: true, is_beta_tester: false }, { $set: { freeDays: false } });
         },
 
         /**
@@ -44,7 +44,7 @@ if (Meteor.isServer) {
             let lastMonthDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
             let auxArray: string[] = [];
 
-            Establishments.collection.find({ countryId: _countryId, isActive: true }).forEach(function <Establishment>(establishment, index, ar) {
+            Establishments.collection.find({ countryId: _countryId, isActive: true, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
                 let user: User = Users.collection.findOne({ _id: establishment.creation_user });
                 let indexofvar = auxArray.indexOf(user._id);
 
@@ -55,7 +55,7 @@ if (Meteor.isServer) {
 
             Users.collection.find({ _id: { $in: auxArray } }).forEach((user: User) => {
                 let auxEstablishments: string[] = [];
-                Establishments.collection.find({ creation_user: user._id }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
+                Establishments.collection.find({ creation_user: user._id, is_beta_tester: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
                     auxEstablishments.push(name.name);
                 });
 
@@ -106,7 +106,7 @@ if (Meteor.isServer) {
             maxPaymentDay.setDate(maxPaymentDay.getDate() + (Number(endDay.value) - 1));
             let auxArray: string[] = [];
 
-            Establishments.collection.find({ countryId: _countryId, isActive: true, freeDays: false }).forEach(function <Establishment>(establishment, index, ar) {
+            Establishments.collection.find({ countryId: _countryId, isActive: true, freeDays: false, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
                 let user: User = Users.collection.findOne({ _id: establishment.creation_user });
                 let indexofvar = auxArray.indexOf(user._id);
 
@@ -117,7 +117,7 @@ if (Meteor.isServer) {
 
             Users.collection.find({ _id: { $in: auxArray } }).forEach((user: User) => {
                 let auxEstablishments: string[] = [];
-                Establishments.collection.find({ creation_user: user._id, isActive: true, freeDays: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
+                Establishments.collection.find({ creation_user: user._id, isActive: true, freeDays: false, is_beta_tester: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
                     auxEstablishments.push(name.name);
                 });
 
@@ -154,12 +154,12 @@ if (Meteor.isServer) {
          * This function validate the establishment registered in history_payment and change isActive to false if is not 
          * @param {string} _countryId
          */
-        validateActiveEstablishments: function (_countryId: string) {
-            let currentDate: Date = new Date();
+        validateActiveRestaurants: function (_countryId: string) {
+            let currentDate: Date = new Date(2018,1,6);
             let currentMonth: string = (currentDate.getMonth() + 1).toString();
             let currentYear: string = currentDate.getFullYear().toString();
 
-            Establishments.collection.find({ countryId: _countryId, isActive: true, freeDays: false }).forEach(function <Establishment>(establishment, index, ar) {
+            Establishments.collection.find({ countryId: _countryId, isActive: true, freeDays: false, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
                 let historyPayment: PaymentHistory;
                 let auxArray: string[] = [];
                 auxArray.push(establishment._id);
@@ -167,7 +167,7 @@ if (Meteor.isServer) {
                 historyPayment = PaymentsHistory.collection.findOne({ establishment_ids: { $in: auxArray }, month: currentMonth, year: currentYear, status: 'TRANSACTION_STATUS.APPROVED' });
 
                 if (!historyPayment) {
-                    Establishments.collection.update({ _id: establishment._id }, { $set: { isActive: false, firstPay: false } });
+                    Establishments.collection.update({ _id: establishment._id, is_beta_tester: false}, { $set: { isActive: false, firstPay: false } });
 
                     Tables.collection.find({ establishment_id: establishment._id }).forEach(function <Table>(table, index, ar) {
                         Tables.collection.update({ _id: table._id }, { $set: { is_active: false } });
@@ -189,7 +189,7 @@ if (Meteor.isServer) {
 
             let auxArray: string[] = [];
 
-            Establishments.collection.find({ countryId: _countryId, isActive: false, freeDays: false, firstPay: false }).forEach(function <Establishment>(establishment, index, ar) {
+            Establishments.collection.find({ countryId: _countryId, isActive: false, freeDays: false, firstPay: false, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
                 let user: User = Users.collection.findOne({ _id: establishment.creation_user });
                 let indexofvar = auxArray.indexOf(user._id);
 
@@ -200,7 +200,7 @@ if (Meteor.isServer) {
 
             Users.collection.find({ _id: { $in: auxArray } }).forEach((user: User) => {
                 let auxEstablishments: string[] = [];
-                Establishments.collection.find({ creation_user: user._id, isActive: false, freeDays: false, firstPay: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
+                Establishments.collection.find({ creation_user: user._id, isActive: false, freeDays: false, firstPay: false, is_beta_tester: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
                     auxEstablishments.push(name.name);
                 });
 

@@ -358,7 +358,8 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         queue: this._queues,
                         isActive: true,
                         firstPay: true,
-                        freeDays: true
+                        freeDays: true,
+                        is_beta_tester: false
                     });
                 } else {
                     _lNewEstablishment = Establishments.collection.insert({
@@ -383,7 +384,8 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         queue: this._queues,
                         isActive: true,
                         firstPay: true,
-                        freeDays: true
+                        freeDays: true,
+                        is_beta_tester: false
                     });
                 }
 

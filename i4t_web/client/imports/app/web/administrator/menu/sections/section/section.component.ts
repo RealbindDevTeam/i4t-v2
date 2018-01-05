@@ -8,6 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { MatSnackBar } from '@angular/material';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
+import { Categories } from '../../../../../../../../both/collections/menu/category.collection';
+import { Items } from '../../../../../../../../both/collections/menu/item.collection';
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
 import { Section } from '../../../../../../../../both/models/menu/section.model';
 import { SectionEditComponent } from '../section-edit/section-edit.component';
@@ -18,7 +20,7 @@ import { UserDetails } from '../../../../../../../../both/collections/auth/user-
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
 
 @Component({
-    selector: 'section',
+    selector: 'section-component',
     templateUrl: './section.component.html',
     styleUrls: ['./section.component.scss']
 })
@@ -35,14 +37,15 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     private _sectionSub: Subscription;
     private _establishmentSub: Subscription;
-    private _userDetailsSub: Subscription;
+    private _itemsSubscription: Subscription;
+    private _categoriesSubscription: Subscription;
 
     public _dialogRef: MatDialogRef<any>;
     private _showEstablishments: boolean = true;
     private titleMsg: string;
+    private btnCancelLbl: string;
     private btnAcceptLbl: string;
     private _thereAreEstablishments: boolean = true;
-    private _thereAreUsers: boolean = false;
     private _lEstablishmentsId: string[] = [];
     private _usersCount: number;
 
@@ -66,6 +69,7 @@ export class SectionComponent implements OnInit, OnDestroy {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
+        this.btnCancelLbl = 'CANCEL';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
     }
 
@@ -85,12 +89,6 @@ export class SectionComponent implements OnInit, OnDestroy {
                 Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
                     this._lEstablishmentsId.push(establishment._id);
                 });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', this._lEstablishmentsId).subscribe(() => {
-                    this._userDetails = UserDetails.find({ current_establishment: { $in: this._lEstablishmentsId } }).zone();
-                    this.countEstablishmentsUsers();
-                    this._userDetails.subscribe(() => { this.countEstablishmentsUsers(); });
-                });
-
                 this.countEstablishments();
                 this._establishments.subscribe(() => { this.createEstablishmentsForm(); this.countEstablishments(); });
             });
@@ -101,6 +99,9 @@ export class SectionComponent implements OnInit, OnDestroy {
                 this._sections = Sections.find({}).zone();
             });
         });
+
+        this._categoriesSubscription = MeteorObservable.subscribe('categories', this._user).subscribe();
+        this._itemsSubscription = MeteorObservable.subscribe('items', this._user).subscribe();
     }
 
     /**
@@ -111,28 +112,13 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if establishments exists
-     */
-    countEstablishmentsUsers(): void {
-        let auxUserCount: number;
-        auxUserCount = UserDetails.collection.find({ current_establishment: { $in: this._lEstablishmentsId } }).count();
-
-        if (auxUserCount > 0) {
-            this._thereAreUsers = true
-            this._usersCount = auxUserCount;
-        } else {
-            this._thereAreUsers = false;
-            this._usersCount = 0;
-        }
-    }
-
-    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
         if (this._sectionSub) { this._sectionSub.unsubscribe(); }
         if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
+        if (this._categoriesSubscription) { this._categoriesSubscription.unsubscribe(); }
     }
 
     /**
@@ -212,6 +198,83 @@ export class SectionComponent implements OnInit, OnDestroy {
                 modification_user: this._user
             }
         });
+    }
+
+    /**
+     * Show confirm dialog to remove the section
+     * @param _pSection 
+     */
+    confirmRemove(_pSection: Section) {
+        let dialogTitle = "SECTIONS.REMOVE_TITLE";
+        let dialogContent = "SECTIONS.REMOVE_MSG";
+        let error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
+
+        if (!Meteor.userId()) {
+            this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+            return;
+        }
+        this._mdDialogRef = this._dialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: dialogTitle,
+                subtitle: '',
+                content: dialogContent,
+                buttonCancel: this.btnCancelLbl,
+                buttonAccept: this.btnAcceptLbl,
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                this.removeSection(_pSection);
+            }
+        });
+    }
+
+    /**
+     * Function to allow remove sections
+     * @param {Section} _pSection
+     */
+    removeSection(_pSection: Section): void {
+        let _lMessage: string;
+        if (!this.searchCategoriesBySection(_pSection._id) && !this.searchItemsBySection(_pSection._id)) {
+            Sections.remove(_pSection._id);
+            _lMessage = this.itemNameTraduction('SECTIONS.SECTION_REMOVED');
+            this.snackBar.open(_lMessage, '', {
+                duration: 2500
+            });
+        } else {
+            _lMessage = this.itemNameTraduction('SECTIONS.SECTION_NOT_REMOVED');
+            this.snackBar.open(_lMessage, '', {
+                duration: 2500
+            });
+            return;
+        }
+    }
+
+    /**
+     * Search categories by section
+     * @param {string} _pSectionId 
+     */
+    searchCategoriesBySection(_pSectionId: string): boolean {
+        let lCategories = Categories.collection.find({ section: _pSectionId }).count();
+        if (lCategories > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Search items by section
+     * @param {string} _pSectionId 
+     */
+    searchItemsBySection(_pSectionId: string): boolean {
+        let lItems = Items.collection.find({ sectionId: _pSectionId }).count();
+        if (lItems > 0) {
+            return true;
+        }
+        return false;
     }
 
     /**

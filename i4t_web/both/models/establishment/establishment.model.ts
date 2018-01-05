@@ -24,6 +24,7 @@ export interface Establishment extends CollectionObject {
     firstPay: boolean;
     freeDays?: boolean;
     is_premium?: boolean;
+    is_beta_tester: boolean;
 }
 
 /**

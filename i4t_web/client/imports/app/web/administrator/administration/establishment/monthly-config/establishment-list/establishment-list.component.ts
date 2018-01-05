@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, OnDestroy, EventEmitter, NgZone } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -52,7 +52,8 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
      */
     constructor(private translate: TranslateService,
         private _router: Router,
-        private _userLanguageService: UserLanguageService) {
+        private _userLanguageService: UserLanguageService,
+        private _ngZone: NgZone) {
         translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         translate.setDefaultLang('en');
     }
@@ -73,10 +74,18 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
             this._currencies = Currencies.find({}).zone();
         });
         this._countrySub = MeteorObservable.subscribe('countries').subscribe();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+            this._ngZone.run(() => {
+                let is_prod_flag = Parameters.findOne({ name: 'payu_is_prod' }).value;
+                if (is_prod_flag == 'true') {
+                    this._currentDate = new Date();
+                } else {
+                    let test_date = Parameters.findOne({ name: 'date_test_monthly_pay' }).value;
+                    this._currentDate = new Date(test_date);
+                }
+            });
+        });
         this._paymentHistorySub = MeteorObservable.subscribe('getHistoryPaymentsByUser', Meteor.userId()).subscribe();
-
-        this._currentDate = new Date();
     }
 
     /**

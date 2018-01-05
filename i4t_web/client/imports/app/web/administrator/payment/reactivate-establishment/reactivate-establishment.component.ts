@@ -35,10 +35,13 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
     private _tables: Observable<Table[]>;
 
     private _currentDate: Date;
-    private _firstMonthDay: Date;
     private _lastMonthDay: Date;
+<<<<<<< HEAD:i4t_web/client/imports/app/web/administrator/payment/reactivate-establishment/reactivate-establishment.component.ts
     private _firstNextMonthDay: Date;
     private _thereAreEstablishments: boolean = true;
+=======
+    private _thereAreRestaurants: boolean = true;
+>>>>>>> 92413670d26970efbb47891b6231c4ab3c822375:i4t_web/client/imports/app/web/administrator/payment/reactivate-restaurant/reactivate-restaurant.component.ts
 
     /**
      * ReactivateEstablishmentComponent Constructor
@@ -51,7 +54,7 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
         private _formBuilder: FormBuilder,
         private _translate: TranslateService,
         private _userLanguageService: UserLanguageService,
-        private _ngZone: NgZone ) {
+        private _ngZone: NgZone) {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
     }
@@ -61,33 +64,53 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
+<<<<<<< HEAD:i4t_web/client/imports/app/web/administrator/payment/reactivate-establishment/reactivate-establishment.component.ts
         this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe( () => {
             this._ngZone.run( () => {
                 this._establishments = Establishments.find({ creation_user: this._user, isActive: false }).zone();
                 this.countEstablishments();
                 this._establishments.subscribe( () => { this.countEstablishments(); });
+=======
+        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+            this._ngZone.run(() => {
+                this._restaurants = Restaurants.find({ creation_user: this._user, isActive: false }).zone();
+                this.countRestaurants();
+                this._restaurants.subscribe(() => { this.countRestaurants(); });
+>>>>>>> 92413670d26970efbb47891b6231c4ab3c822375:i4t_web/client/imports/app/web/administrator/payment/reactivate-restaurant/reactivate-restaurant.component.ts
             });
         });
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').subscribe( () => {
-            this._ngZone.run( () => {
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').subscribe(() => {
+            this._ngZone.run(() => {
                 this._currencies = Currencies.find({}).zone();
             });
         });
         this._countrySub = MeteorObservable.subscribe('countries').subscribe();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+            this._ngZone.run(() => {
+                let is_prod_flag = Parameters.findOne({ name: 'payu_is_prod' }).value;
+                if (is_prod_flag == 'true') {
+                    this._currentDate = new Date();
+                    this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
+                } else {
+                    let test_date = Parameters.findOne({ name: 'date_test_reactivate' }).value;
+                    this._currentDate = new Date(test_date);
+                    this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
+                }
+            });
+        });
         this._tableSub = MeteorObservable.subscribe('tables', this._user).subscribe();
-
-        this._currentDate = new Date();
-        this._firstMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth(), 1);
-        this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
-        this._firstNextMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 1);
     }
 
     /**
      * Validate if establishments exists
      */
+<<<<<<< HEAD:i4t_web/client/imports/app/web/administrator/payment/reactivate-establishment/reactivate-establishment.component.ts
     countEstablishments():void{
         Establishments.collection.find( { creation_user: this._user, isActive: false } ).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
+=======
+    countRestaurants(): void {
+        Restaurants.collection.find({ creation_user: this._user, isActive: false }).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+>>>>>>> 92413670d26970efbb47891b6231c4ab3c822375:i4t_web/client/imports/app/web/administrator/payment/reactivate-restaurant/reactivate-restaurant.component.ts
     }
 
     /**
@@ -223,6 +246,7 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
     validatePeriodDays(): boolean {
         //let startDay = Parameters.findOne({ name: 'start_payment_day' });
         let endDay = Parameters.findOne({ name: 'end_payment_day' });
+<<<<<<< HEAD:i4t_web/client/imports/app/web/administrator/payment/reactivate-establishment/reactivate-establishment.component.ts
         let lastCurrentMonthDay = this._lastMonthDay.getDate();
         let currentDay = this._currentDate.getDate();
         let establishments = Establishments.collection.find({ creation_user: Meteor.userId(), isActive: false }).fetch();
@@ -231,6 +255,18 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
                 return true;
             } else {
                 return false;
+=======
+        let restaurants = Restaurants.collection.find({ creation_user: Meteor.userId(), isActive: false }).fetch();
+        if (this._currentDate && this._lastMonthDay) {
+            let currentDay = this._currentDate.getDate();
+            let lastCurrentMonthDay = this._lastMonthDay.getDate();
+            if (lastCurrentMonthDay && endDay && restaurants) {
+                if (currentDay > Number(endDay.value) && currentDay <= lastCurrentMonthDay && (restaurants.length > 0)) {
+                    return true;
+                } else {
+                    return false;
+                }
+>>>>>>> 92413670d26970efbb47891b6231c4ab3c822375:i4t_web/client/imports/app/web/administrator/payment/reactivate-restaurant/reactivate-restaurant.component.ts
             }
         }
     }
