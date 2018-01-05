@@ -4,10 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { UserLanguageService } from '../../services/general/user-language.service';
-import { Invoice, InvoiceLegalInformation } from '../../../../../../both/models/restaurant/invoice.model';
-import { Invoices } from '../../../../../../both/collections/restaurant/invoice.collection';
-import { Restaurant } from '../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../both/collections/restaurant/restaurant.collection';
+import { Invoice, InvoiceLegalInformation } from '../../../../../../both/models/establishment/invoice.model';
+import { Invoices } from '../../../../../../both/collections/establishment/invoice.collection';
+import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../both/models/auth/user-detail.model';
 import { AlertConfirmComponent } from '../../general/alert-confirm/alert-confirm.component';
@@ -89,14 +89,14 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
         }
 
         if (_pCountryId === '1900') {
-            this.generateColombiaInvoice(_pInvoice, _pCountryId);
+            //this.generateColombiaInvoice(_pInvoice, _pCountryId);
         }
     }
 
     /**
      * Generate colombia restaurant invoice
      * @param {Invoice} _pInvoice
-     */
+     
     generateColombiaInvoice(_pInvoice: Invoice, _pCountryId: string): void {
         let heightPage: number = this.calculateHeight(_pInvoice, _pCountryId);
 
@@ -418,7 +418,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
         } else {
             pdf.save(_pInvoice.legal_information.number + '_' + this.dateFormater(_pInvoice.creation_date, false) + '.pdf');
         }
-    }
+    }*/
 
     /**
      * Allow add top to pdf page

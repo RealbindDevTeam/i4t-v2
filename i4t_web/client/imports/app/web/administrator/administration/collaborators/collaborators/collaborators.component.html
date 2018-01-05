@@ -1,4 +1,4 @@
-<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
     <mat-card-content>
         <div class="card_initial">
             <div class="card_initial has-image">
@@ -15,14 +15,14 @@
                     </div>
                 </div>
                 <div class="card_initial-button">
-                    <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
                 </div>
             </div>
         </div>
     </mat-card-content>
 </mat-card>
     
-<div *ngIf="_thereAreRestaurants" class="global-div">
+<div *ngIf="_thereAreEstablishments" class="global-div">
     <div class="div-whitout-overflow">
         <div class="cards-div">
             <mat-card style="margin: 24px;">
@@ -31,13 +31,13 @@
                 <mat-card-content>
                     <mat-form-field  style="width: 100%;">
                         <mat-select placeholder="{{'TABLES.SELECT_RESTAURANT' | translate}}">
-                            <mat-option *ngFor="let rest of _restaurants | async" (click)="collaboratorsSearch(rest._id);" value="{{rest._id}}">{{rest.name}}</mat-option>
+                            <mat-option *ngFor="let est of _establishments | async" (click)="collaboratorsSearch(est._id);" value="{{rest._id}}">{{rest.name}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </mat-card-content>
             </mat-card>
             
-            <mat-card *ngIf="_thereAreRestaurants && (_userDetails | async)?.length <= 0" mat-cell="12" class="demo-card demo-basic" style="margin: 24px;">
+            <mat-card *ngIf="_thereAreEstablishments && (_userDetails | async)?.length <= 0" mat-cell="12" class="demo-card demo-basic" style="margin: 24px;">
                 <mat-card-content>
                     <div class="card_initial">
                         <div class="card_initial has-image">

@@ -11,7 +11,7 @@ export interface Item extends CollectionObject {
     name: string;
     description: string;
     time: string;
-    restaurants: ItemRestaurant[];
+    establishments: ItemEstablishment[];
     prices: ItemPrice[];
     observations: boolean;
     image?: ItemImage;
@@ -40,10 +40,10 @@ export interface ItemImage {
 }
 
 /**
- * Item Restaurant model
+ * Item Establishment model
  */
-export interface ItemRestaurant {
-    restaurantId: string;
+export interface ItemEstablishment {
+    establishment_id: string;
     price: number;
     itemTax?: number;
     isAvailable: boolean;

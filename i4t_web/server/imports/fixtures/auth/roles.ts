@@ -9,33 +9,43 @@ export function loadRoles() {
             _id: "100",
             is_active: true,
             name: "ROLE.ADMINISTRATOR",
-            description: "restaurant administrator",
+            description: "establishment administrator",
             menus: ["900","1000", "2000", "3000", "20000"]
         },{
             _id: "200",
             is_active: true,
             name: "ROLE.WAITER",
-            description: "restaurant waiter",
+            description: "establishment waiter",
             menus: ["8000","9000", "20000"],
             user_prefix: 'wa'
         },{
             _id: "300",
             is_active: false,
             name: "ROLE.CASHIER",
-            description: "restaurant cashier",
+            description: "establishment cashier",
             menus: [],
             user_prefix: 'ca'            
         },{
             _id: "400",
             is_active: true,
             name: "ROLE.CUSTOMER",
-            description: "restaurant customer",
+            description: "establishment customer",
             menus: ["4000","5000","6000","11000","12000","20000", "19000"]
         },{
+<<<<<<< HEAD
+            _id: "500",
+            is_active: true,
+            name: "ROLE.CHEF",
+            description: "establishment chef",
+            menus: ["7000","9000", "20000"],
+            user_prefix: 'cf'            
+        },{
+=======
+>>>>>>> 92413670d26970efbb47891b6231c4ab3c822375
             _id: "600",
             is_active: true,
             name: "ROLE.SUPERVISOR",
-            description: "restaurant supervisor",
+            description: "establishment supervisor",
             menus: ["910","1100","3100", "1200", "1300", "20000"],
             user_prefix: 'sp'            
         }];

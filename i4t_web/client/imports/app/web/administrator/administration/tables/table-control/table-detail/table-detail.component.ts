@@ -10,8 +10,8 @@ import { User } from '../../../../../../../../../both/models/auth/user.model';
 import { Users } from '../../../../../../../../../both/collections/auth/user.collection';
 import { UserDetail, UserDetailImage } from '../../../../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../../../../both/collections/auth/user-detail.collection';
-import { Order } from '../../../../../../../../../both/models/restaurant/order.model';
-import { Orders  } from '../../../../../../../../../both/collections/restaurant/order.collection';
+import { Order } from '../../../../../../../../../both/models/establishment/order.model';
+import { Orders  } from '../../../../../../../../../both/collections/establishment/order.collection';
 import { Currency } from '../../../../../../../../../both/models/general/currency.model';
 import { Currencies } from '../../../../../../../../../both/collections/general/currency.collection';
 import { PenalizeCustomerComponent } from './penalize-customer/penalize-customer.component';
@@ -24,7 +24,7 @@ import { PenalizeCustomerComponent } from './penalize-customer/penalize-customer
 export class TableDetailComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
-    private _restaurantId: string;
+    private _establishmentId: string;
     private _tableId: string;
     private _tableNumber: string;
     private _currencyId: string;
@@ -57,7 +57,7 @@ export class TableDetailComponent implements OnInit, OnDestroy {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
         this._route.params.forEach((params: Params) => {
-            this._restaurantId = params['param1'];
+            this._establishmentId = params['param1'];
             this._tableId = params['param2'];
             this._tableNumber = params['param3'];
             this._currencyId = params['param4'];
@@ -70,21 +70,21 @@ export class TableDetailComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removesubscriptions();
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._restaurantId, this._tableId).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._establishmentId, this._tableId).subscribe(() => {
             this._ngZone.run(() => {
-                this._userDetails = UserDetails.find({ current_restaurant: this._restaurantId, current_table: this._tableId }).zone();
+                this._userDetails = UserDetails.find({ current_establishment: this._establishmentId, current_table: this._tableId }).zone();
             });
         });
-        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._restaurantId, this._tableId).subscribe(() => {
+        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._establishmentId, this._tableId).subscribe(() => {
             this._ngZone.run(() => {
                 this._users = Users.find({}).zone();
             });
         });
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._restaurantId, this._tableId,
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._establishmentId, this._tableId,
             ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS',
                 'ORDER_STATUS.PREPARED', 'ORDER_STATUS.DELIVERED',
                 'ORDER_STATUS.PENDING_CONFIRM']).subscribe();
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this._restaurantId]).subscribe(() => {
+        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._establishmentId]).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCurrency: Currency = Currencies.findOne({ _id: this._currencyId });
                 this._currencyCode = _lCurrency.code;
@@ -131,7 +131,7 @@ export class TableDetailComponent implements OnInit, OnDestroy {
      */
     getTotalConsumption(_pUserId: string): number {
         let _lConsumption: number = 0;
-        Orders.collection.find({ creation_user: _pUserId, status: { $in: ['ORDER_STATUS.DELIVERED', 'ORDER_STATUS.PENDING_CONFIRM'] }, restaurantId: this._restaurantId, tableId: this._tableId }).fetch().forEach((order) => {
+        Orders.collection.find({ creation_user: _pUserId, status: { $in: ['ORDER_STATUS.DELIVERED', 'ORDER_STATUS.PENDING_CONFIRM'] }, establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((order) => {
             _lConsumption += order.totalPayment;
         });
         return _lConsumption;
@@ -141,8 +141,8 @@ export class TableDetailComponent implements OnInit, OnDestroy {
      * Return to Table Control
      */
     returnTableControl(): void {
-        if (this._role === '100') { this._router.navigate(['app/restaurant-table-control']); }
-        if (this._role === '600') { this._router.navigate(['app/supervisor-restaurant-table-control']); }
+        if (this._role === '100') { this._router.navigate(['app/establishment-table-control']); }
+        if (this._role === '600') { this._router.navigate(['app/supervisor-establishment-table-control']); }
     }
 
     /**
@@ -155,7 +155,7 @@ export class TableDetailComponent implements OnInit, OnDestroy {
             width: '60%'
         });
         this._dialogRef.componentInstance._user = _pUser;
-        this._dialogRef.componentInstance._restaurantId = this._restaurantId;
+        this._dialogRef.componentInstance._establishmentId = this._establishmentId;
         this._dialogRef.componentInstance._tableId = this._tableId;
         this._dialogRef.componentInstance._urlImage = this.getUserImage(_pUser);
         this._dialogRef.componentInstance._tableNumber = this._tableNumber;

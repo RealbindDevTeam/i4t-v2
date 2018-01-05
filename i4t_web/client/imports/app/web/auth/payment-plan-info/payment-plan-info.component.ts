@@ -24,7 +24,7 @@ export class PaymentPlanInfo implements OnInit, OnDestroy {
     private _countries: Observable<Country[]>;
 
     private _countryId: string = "";
-    private _restaurantsUnits: number = 0;
+    private _establishmentsUnits: number = 0;
     private _tablesUnits: number = 0;
     private _total: number = 0;
 
@@ -41,14 +41,12 @@ export class PaymentPlanInfo implements OnInit, OnDestroy {
     }
 
     calculate() {
-        console.log('******************');
-        if (this._countryId && this._restaurantsUnits >= 0 && this._tablesUnits >= 0) {
-            console.log(JSON.stringify(this._countryId));
+        if (this._countryId && this._establishmentsUnits >= 0 && this._tablesUnits >= 0) {
             if(this._countryId){
                 this._country = Countries.findOne({ _id : this._countryId });
                 if(this._country){
                     this._currency = Currencies.findOne({ _id: this._country.currencyId });
-                    this._total = (Number.parseInt(this._country.restaurantPrice.toString()) * this._restaurantsUnits) +
+                    this._total = (Number.parseInt(this._country.establishment_price.toString()) * this._establishmentsUnits) +
                         (Number.parseInt(this._country.tablePrice.toString()) * this._tablesUnits);
                 }
             }

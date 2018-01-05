@@ -44,14 +44,14 @@ export function loadMenus() {
                                         _id: "10011",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.MY_RESTAURANTS",
-                                        url: "/app/restaurant",
+                                        url: "/app/establishment",
                                         icon_name: "",
                                         order: 10011
                                     }, {
                                         _id: "10012",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.PROFILE",
-                                        url: "/app/restaurant-profile",
+                                        url: "/app/establishment-profile",
                                         icon_name: "",
                                         order: 10012
                                     }, {
@@ -83,7 +83,7 @@ export function loadMenus() {
                                         _id: "10022",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.TABLE_CONTROL",
-                                        url: "/app/restaurant-table-control",
+                                        url: "/app/establishment-table-control",
                                         icon_name: "",
                                         order: 10022
                                     }
@@ -118,7 +118,7 @@ export function loadMenus() {
                 _id: "1300",
                 is_active: true,
                 name: "MENUS.ADMINISTRATION.TABLE_CONTROL",
-                url: "/app/supervisor-restaurant-table-control",
+                url: "/app/supervisor-establishment-table-control",
                 icon_name: "list",
                 order: 1300
             },
@@ -151,7 +151,7 @@ export function loadMenus() {
                             _id: "2003",
                             is_active: true,
                             name: "MENUS.PAYMENTS.REACTIVATE_RESTAURANT",
-                            url: "/app/reactivate-restaurant",
+                            url: "/app/reactivate-establishment",
                             icon_name: "",
                             order: 2003
                         }
@@ -294,7 +294,7 @@ export function loadMenus() {
                 _id: "12000",
                 is_active: true,
                 name: "MENUS.RESTAURANT_EXIT",
-                url: "/app/restaurant-exit",
+                url: "/app/establishment-exit",
                 icon_name: "exit_to_app",
                 order: 12000
             },

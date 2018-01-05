@@ -1,4 +1,4 @@
-<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
   <mat-card-content>
     <div class="card_initial">
       <div class="card_initial has-image">
@@ -21,7 +21,7 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="_thereAreRestaurants">
+<mat-card *ngIf="_thereAreEstablishments">
   <mat-card-title>{{'CATEGORIES.CATEGORIES_CREATION' | translate}}</mat-card-title>
   <mat-card-subtitle>{{'CATEGORIES.CATEGORIES_TEXT' | translate}}</mat-card-subtitle>
   <mat-card-content>

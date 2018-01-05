@@ -9,8 +9,8 @@ import { MatSnackBar } from '@angular/material';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
 import { Section } from '../../../../../../../../both/models/menu/section.model';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { AlertConfirmComponent } from '../../../../general/alert-confirm/alert-confirm.component';
 
 @Component({
@@ -24,13 +24,13 @@ export class SectionEditComponent implements OnInit {
     private _user = Meteor.userId();
     public _sectionToEdit: Section;
     private _editForm: FormGroup;
-    private _restaurantsFormGroup: FormGroup = new FormGroup({});
+    private _establishmentsFormGroup: FormGroup = new FormGroup({});
     private _mdDialogRef: MatDialogRef<any>;
 
     private _sections: Observable<Section[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
 
-    private _sectionRestaurants: string[];
+    private _sectionEstablishments: string[];
     private titleMsg: string;
     private btnAcceptLbl: string;
 
@@ -52,7 +52,7 @@ export class SectionEditComponent implements OnInit {
         protected _mdDialog: MatDialog) {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
-        this._sectionRestaurants = [];
+        this._sectionEstablishments = [];
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
     }
@@ -65,26 +65,26 @@ export class SectionEditComponent implements OnInit {
             editId: [this._sectionToEdit._id],
             editName: [this._sectionToEdit.name, Validators.required],
             editIsActive: [this._sectionToEdit.is_active],
-            editRestaurants: this._restaurantsFormGroup
+            editEstablishments: this._establishmentsFormGroup
         });
-        this._sectionRestaurants = this._sectionToEdit.restaurants;
+        this._sectionEstablishments = this._sectionToEdit.establishments;
         this._sections = Sections.find({}).zone();
-        this._restaurants = Restaurants.find({}).zone();
-        this._restaurants.subscribe(() => { this.createRestaurantForm(); });
+        this._establishments = Establishments.find({}).zone();
+        this._establishments.subscribe(() => { this.createEstablishmentForm(); });
     }
 
     /**
-     * Create restaurants controls in form
+     * Create establishments controls in form
      */
-    createRestaurantForm(): void {
-        Restaurants.collection.find({}).fetch().forEach((res) => {
-            let find = this._sectionRestaurants.filter(r => r == res._id);
+    createEstablishmentForm(): void {
+        Establishments.collection.find({}).fetch().forEach((res) => {
+            let find = this._sectionEstablishments.filter(r => r == res._id);
             if (find.length > 0) {
                 let control: FormControl = new FormControl(true);
-                this._restaurantsFormGroup.addControl(res._id, control);
+                this._establishmentsFormGroup.addControl(res._id, control);
             } else {
                 let control: FormControl = new FormControl(false);
-                this._restaurantsFormGroup.addControl(res._id, control);
+                this._establishmentsFormGroup.addControl(res._id, control);
             }
         });
     }
@@ -100,12 +100,12 @@ export class SectionEditComponent implements OnInit {
         }
 
         if (this._editForm.valid) {
-            let _edition_restaurants: string[] = [];
-            let arr: any[] = Object.keys(this._editForm.value.editRestaurants);
+            let _edition_establishments: string[] = [];
+            let arr: any[] = Object.keys(this._editForm.value.editEstablishments);
 
-            arr.forEach((rest) => {
-                if (this._editForm.value.editRestaurants[rest]) {
-                    _edition_restaurants.push(rest);
+            arr.forEach((est) => {
+                if (this._editForm.value.editEstablishments[est]) {
+                    _edition_establishments.push(est);
                 }
             });
 
@@ -115,7 +115,7 @@ export class SectionEditComponent implements OnInit {
                     modification_date: new Date(),
                     name: this._editForm.value.editName,
                     is_active: this._editForm.value.editIsActive,
-                    restaurants: _edition_restaurants
+                    establishments: _edition_establishments
                 }
             });
 

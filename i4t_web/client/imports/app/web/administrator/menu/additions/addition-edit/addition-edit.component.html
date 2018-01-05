@@ -14,7 +14,7 @@
                     <p *ngIf="_showTaxes" class="message">{{'ADDITIONS.ADDITION_TAXES' | translate}}</p>
                     <div *ngFor="let currency of _currencies | async">
                         <div *ngIf="_showCurrencies" formGroupName="editCurrencies" class="currencies">
-                            <div *ngFor="let cur of _restaurantCurrencies">
+                            <div *ngFor="let cur of _establishmentCurrencies">
                                 <mat-form-field *ngIf="currency._id === cur" class="currency" style="width: 300px">
                                     <input matInput required [formControlName]="cur" [class.invalid]="!_editForm.controls.editCurrencies.valid" type="number"
                                         placeholder="{{'ADDITIONS.ADITION_PRICE' | translate}}" min="0" [step]="currency.decimal">
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div *ngIf="_showTaxes" formGroupName="editTaxes" class="taxes">
-                            <div *ngFor="let tax of _restaurantTaxes">
+                            <div *ngFor="let tax of _establishmentTaxes">
                                 <mat-form-field *ngIf="currency._id === tax" class="tax" style="width: 300px">
                                     <input matInput required [formControlName]="tax" [class.invalid]="!_editForm.controls.editTaxes.valid" type="number" placeholder="{{'ADDITIONS.TAXES' | translate}}"
                                         min="0" max="100">

@@ -46,7 +46,7 @@ export class ItemEnableSupComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._itemsSub = MeteorObservable.subscribe('getItemsByUserRestaurantWork', this._user).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('getItemsByUserEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
                 this._itemsFilter = Items.collection.find({}).fetch();
@@ -83,7 +83,7 @@ export class ItemEnableSupComponent implements OnInit, OnDestroy {
     updateAvailableFlag(_itemId: string): void {
         let snackMsg: string = this.itemNameTraduction('ENABLE_DISABLED.AVAILABILITY_CHANGED');
         if (this._userDetail) {
-            MeteorObservable.call('updateItemAvailable', this._userDetail.restaurant_work, _itemId).subscribe();
+            MeteorObservable.call('updateItemAvailable', this._userDetail.establishment_work, _itemId).subscribe();
             this.snackBar.open(snackMsg, '', {
                 duration: 1000,
             });
@@ -91,16 +91,16 @@ export class ItemEnableSupComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Get the item available for the supervisor restaurant
+     * Get the item available for the supervisor establishment
      */
     getItemAvailable(_item: Item): boolean {
-        let _itemRestaurant
+        let _itemEstablishment;
         /**
          * let _userDetail: UserDetail = UserDetails.collection.findOne({ user_id: Meteor.userId() });
          */
         if (this._userDetail) {
-            _itemRestaurant = Items.collection.findOne({ _id: _item._id }, { fields: { _id: 0, restaurants: 1 } });
-            let aux = _itemRestaurant.restaurants.find(element => element.restaurantId === this._userDetail.restaurant_work);
+            _itemEstablishment = Items.collection.findOne({ _id: _item._id }, { fields: { _id: 0, establishments: 1 } });
+            let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this._userDetail.establishment_work);
             return aux.isAvailable;
         } else {
             return;

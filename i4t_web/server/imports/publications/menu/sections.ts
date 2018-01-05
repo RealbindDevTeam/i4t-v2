@@ -13,12 +13,12 @@ Meteor.publish('sections', function (_userId: string) {
 });
 
 /**
- * Meteor publication restaurants sections 
- * @param {string} _restaurantId
+ * Meteor publication establishments sections 
+ * @param {string} _establishmentId
 */
-Meteor.publish('sectionsByRestaurant', function (_restaurantId: string) {
-    check(_restaurantId, String);
-    return Sections.find({ restaurants: { $in: [_restaurantId] }, is_active: true });
+Meteor.publish('sectionsByEstablishment', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return Sections.find({ establishments: { $in: [_establishmentId] }, is_active: true });
 });
 
 Meteor.publish('getSections', function () {
@@ -26,14 +26,14 @@ Meteor.publish('getSections', function () {
 });
 
 /**
- * Meteor publication restaurants sections by restaurant work
+ * Meteor publication establishments sections by establishment work
  * @param {string} _userId
 */
-Meteor.publish('getSectionsByRestaurantWork', function (_userId: string) {
+Meteor.publish('getSectionsByEstablishmentWork', function (_userId: string) {
     check(_userId, String);
     let user_detail = UserDetails.findOne({ user_id: _userId });
     if( user_detail ){
-        return Sections.find({ restaurants: { $in: [user_detail.restaurant_work] }, is_active: true });
+        return Sections.find({ establishments: { $in: [user_detail.establishment_work] }, is_active: true });
     } else {
         return;
     }

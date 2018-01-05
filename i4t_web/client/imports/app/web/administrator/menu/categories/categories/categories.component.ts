@@ -15,8 +15,8 @@ import { Category } from '../../../../../../../../both/models/menu/category.mode
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
 import { Section } from '../../../../../../../../both/models/menu/section.model';
 import { CategoriesEditComponent } from '../categories-edit/categories-edit.component';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { AlertConfirmComponent } from '../../../../../web/general/alert-confirm/alert-confirm.component';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -32,13 +32,13 @@ export class CategoryComponent implements OnInit, OnDestroy {
     private _categoryForm: FormGroup;
     private _categories: Observable<Category[]>;
     private _sections: Observable<Section[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _mdDialogRef: MatDialogRef<any>;
     private _userDetails: Observable<UserDetail[]>;
 
     private _categoriesSub: Subscription;
     private _sectionsSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _itemsSubscription: Subscription;
     private _subCategoriesSubscription: Subscription;
 
@@ -47,8 +47,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
     private btnCancelLbl: string;
     private btnAcceptLbl: string;
     public _dialogRef: MatDialogRef<any>;
-    private _thereAreRestaurants: boolean = true;
-    private _lRestaurantsId: string[] = [];
+    private _thereAreEstablishments: boolean = true;
+    private _lEstablishmentsId: string[] = [];
     private _usersCount: number;
 
     /**
@@ -86,14 +86,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
             section: new FormControl('')
         });
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
-                    this._lRestaurantsId.push(restaurant._id);
+                this._establishments = Establishments.find({}).zone();
+                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                    this._lEstablishmentsId.push(establishment._id);
                 });
-                this.countRestaurants();
-                this._restaurants.subscribe(() => { this.countRestaurants(); });
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
         this._sectionsSub = MeteorObservable.subscribe('sections', this._user).subscribe(() => {
@@ -112,10 +112,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishment exists
      */
-    countRestaurants(): void {
-        Restaurants.collection.find().count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+    countEstablishments(): void {
+        Establishments.collection.find().count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
@@ -124,7 +124,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     removeSubscriptions(): void {
         if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
         if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
         if (this._subCategoriesSubscription) { this._subCategoriesSubscription.unsubscribe(); }
     }
@@ -302,10 +302,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to add new Restaurant
+     * Go to add new Establishment
      */
-    goToAddRestaurant() {
-        this._router.navigate(['/app/restaurant-register']);
+    goToAddEstablishment() {
+        this._router.navigate(['/app/establishment-register']);
     }
 
     /**

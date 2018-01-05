@@ -1,0 +1,105 @@
+$primary-color: #EF5350;
+
+@mixin transition($settings) {
+	-webkit-transition: $settings;
+	-moz-transition: $settings;
+	-ms-transition: $settings;
+	-o-transition: $settings;
+	transition: $settings;
+}
+
+agm-map {
+    height: 300px;
+  }
+
+.wrapper {
+	position: relative;
+	margin: 0 auto;
+}
+
+.avatar {
+	background-color: #edebe1;
+	height: 100px;
+	width: 100px;
+	&.active {
+		border-radius: 100% 0 20px 100%;
+		background-color: $primary-color;
+  }
+  .uploadOverlay {
+		background-color: rgba(239, 83, 80, 0.60);
+		@include transition(all 150ms ease);
+		background-repeat: no-repeat;
+		background-position: center;
+		position: absolute;
+		height: 100px;
+		width: 100px;
+		top: 0;
+		opacity: 0;
+		i {
+			vertical-align: bottom;
+			display:inline-block;
+			line-height: 100px;
+			text-align: center;
+			font-size: 40px;
+			height: 100px;
+			width: 100px;
+			color:white;
+		}
+	}&:hover .uploadOverlay {
+		@include transition(all 150ms ease);
+		opacity: 1;
+	}
+}
+
+.main {
+	.establishment-select {
+		width: 100%;		
+	}
+	
+	.establishment-name {
+		text-align: center;
+	}
+
+	.general-info {
+		.description {
+			width: 99%;
+			.description-detail {
+				width: 100%;
+			}
+		}
+
+		.input {
+			width: 49%;
+			display: inline-block;
+
+			.input-left {
+				width: 95%;
+			}
+
+			.input-right {
+				width: 100%;
+			}
+		}
+	}
+
+	.schedule {
+		text-align: -webkit-center;
+	}
+
+	.images {
+		.no-image-msg {
+			font-weight: bold;
+		}
+
+		.img-thumb {
+			display: inline-block;
+			margin-right: 1rem;
+			margin-bottom: 1rem;
+		}
+
+		.select-img {
+			text-align: center;
+			margin-top: 1rem;
+		}
+	}
+}

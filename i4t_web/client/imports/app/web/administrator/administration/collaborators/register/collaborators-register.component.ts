@@ -7,12 +7,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription } from 'rxjs';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../../both/shared-components/validators/custom-validator';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { Role } from '../../../../../../../../both/models/auth/role.model';
 import { Roles } from '../../../../../../../../both/collections/auth/role.collection';
-import { Table } from '../../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../../both/collections/restaurant/table.collection';
+import { Table } from '../../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../../both/collections/establishment/table.collection';
 import { UserProfile } from '../../../../../../../../both/models/auth/user-profile.model';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -27,11 +27,11 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
 
     private _collaboratorRegisterForm: FormGroup;
     private _mdDialogRef: MatDialogRef<any>;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _roleSub: Subscription;
     private _tableSub: Subscription;
 
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _roles: Observable<Role[]>;
     private _tables: Observable<Table[]>;
 
@@ -41,7 +41,6 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
     public _selectedIndex: number = 0;
     private _userLang: string;
     private _error: string;
-    private _selectedRestaurant: string;
     private _message: string;
     private titleMsg: string;
     private btnAcceptLbl: string;
@@ -83,7 +82,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
             last_name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
             birthdate: new FormControl('', [Validators.required]),
-            restaurant_work: new FormControl('', [Validators.required]),
+            establishment_work: new FormControl('', [Validators.required]),
             role: new FormControl('', [Validators.required]),
             phone: new FormControl('', [Validators.minLength(1), Validators.maxLength(40)]),
             username: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20), CustomValidators.noSpacesValidator]),
@@ -93,8 +92,8 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
             table_init: new FormControl(0),
             table_end: new FormControl(0),
         });
-        this._restaurants = Restaurants.find({}).zone();
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', Meteor.userId()).subscribe();
+        this._establishments = Establishments.find({}).zone();
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe();
         this._roles = Roles.find({}).zone();
         this._roleSub = MeteorObservable.subscribe('getRoleCollaborators').subscribe();
         this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).subscribe(() => {
@@ -106,17 +105,17 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._roleSub) { this._roleSub.unsubscribe(); }
         if (this._tableSub) { this._tableSub.unsubscribe(); }
     }
 
     /**
-     * Validate restaurantId is select to enabled tables assignment
-     * @param _pRestaurantId 
+     * Validate establishmentId is select to enabled tables assignment
+     * @param _pEstablishmentId 
      */
-    validateRestaurantSelection(_pRestaurantId: string) {
-        if (_pRestaurantId) {
+    validateEstablishmentSelection(_pEstablishmentId: string) {
+        if (_pEstablishmentId) {
             this._showTablesSelectByRest = true;
         } else {
             this._showTablesSelectByRest = false;
@@ -150,7 +149,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
         if (_pEvent.checked) {
             this._disabledTablesAssignment = false;
             let tablesCount: number = 0;
-            tablesCount = Tables.collection.find({ restaurantId: this._collaboratorRegisterForm.value.restaurant_work }).count();
+            tablesCount = Tables.collection.find({ establishment_id: this._collaboratorRegisterForm.value.establishment_work }).count();
             for (var index = 1; index <= tablesCount; index++) {
                 this._tablesNumber.push(index);
             }
@@ -170,7 +169,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
             case 1:
                 if (this._collaboratorRegisterForm.controls['name'].valid
                     && this._collaboratorRegisterForm.controls['last_name'].valid
-                    && this._collaboratorRegisterForm.controls['restaurant_work'].valid
+                    && this._collaboratorRegisterForm.controls['establishment_work'].valid
                     && this._collaboratorRegisterForm.controls['role'].valid
                     && this._collaboratorRegisterForm.controls['birthdate'].valid) {
                     return true;
@@ -225,7 +224,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
 
                         if (this._collaboratorRegisterForm.value.role === '200') {
                             if (this._disabledTablesAssignment || (this._collaboratorRegisterForm.value.table_init === 0 && this._collaboratorRegisterForm.value.table_end === 0)) {
-                                this._collaboratorRegisterForm.value.table_end = Tables.collection.find({ restaurantId: this._collaboratorRegisterForm.value.restaurant_work }).count();
+                                this._collaboratorRegisterForm.value.table_end = Tables.collection.find({ establishment_id: this._collaboratorRegisterForm.value.establishment_work }).count();
                                 if (this._collaboratorRegisterForm.value.table_end > 0) {
                                     this._collaboratorRegisterForm.value.table_init = 1;
                                 }
@@ -251,7 +250,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
                                     user_id: result.toString(),
                                     role_id: this._collaboratorRegisterForm.value.role,
                                     is_active: true,
-                                    restaurant_work: this._collaboratorRegisterForm.value.restaurant_work,
+                                    establishment_work: this._collaboratorRegisterForm.value.establishment_work,
                                     jobs: 0,
                                     birthdate: this._collaboratorRegisterForm.value.birthdate,
                                     phone: this._collaboratorRegisterForm.value.phone,
@@ -264,7 +263,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
                                     user_id: result.toString(),
                                     role_id: this._collaboratorRegisterForm.value.role,
                                     is_active: true,
-                                    restaurant_work: this._collaboratorRegisterForm.value.restaurant_work,
+                                    establishment_work: this._collaboratorRegisterForm.value.establishment_work,
                                     jobs: 0,
                                     birthdate: new Date("<" + this._collaboratorRegisterForm.value.birthdate_yyyy + "-" +
                                         this._collaboratorRegisterForm.value.birthdate_mm + "-" +
@@ -315,7 +314,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
         this._collaboratorRegisterForm.controls['name'].reset();
         this._collaboratorRegisterForm.controls['last_name'].reset();
         this._collaboratorRegisterForm.controls['birthdate'].reset();
-        this._collaboratorRegisterForm.controls['restaurant_work'].reset();
+        this._collaboratorRegisterForm.controls['establishment_work'].reset();
         this._collaboratorRegisterForm.controls['phone'].reset();
         this._collaboratorRegisterForm.controls['username'].reset();
         this._collaboratorRegisterForm.controls['email'].reset();

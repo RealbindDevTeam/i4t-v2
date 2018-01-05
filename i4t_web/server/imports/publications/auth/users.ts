@@ -1,14 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Users } from '../../../../both/collections/auth/user.collection';
 import { UserDetails } from '../../../../both/collections/auth/user-detail.collection';
-import { Restaurants } from '../../../../both/collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../../../both/models/restaurant/restaurant.model';
+import { Establishments } from '../../../../both/collections/establishment/establishment.collection';
+import { Establishment } from '../../../../both/models/establishment/establishment.model';
 import { UserDetail } from '../../../../both/models/auth/user-detail.model';
 import { check } from 'meteor/check';
-
-/*Meteor.publish('getUserProfile', function () {
-    return Users.find({_id: this.userId});
-});*/
 
 Meteor.publish('getUserSettings', function () {
     return Users.find({ _id: this.userId }, { fields: { username: 1, "services.profile.name": 1, "services.facebook": 1, "services.twitter": 1, "services.google": 1 } });
@@ -29,15 +25,15 @@ Meteor.publish('getUserByUserId', function (_usrId: string) {
 });
 
 /**
- * Meteor publication return users with restaurant and table Id conditions
- * @param {string} _pRestaurantId
+ * Meteor publication return users with establishment and table Id conditions
+ * @param {string} _pEstablishmentId
  * @param {string} _pTableId
  */
-Meteor.publish('getUserByTableId', function (_pRestaurantId: string, _pTableId) {
-    check(_pRestaurantId, String);
+Meteor.publish('getUserByTableId', function (_pEstablishmentId: string, _pTableId) {
+    check(_pEstablishmentId, String);
     check(_pTableId, String);
     let _lUsers: string[] = [];
-    UserDetails.collection.find({ current_restaurant: _pRestaurantId, current_table: _pTableId }).fetch().forEach(function <UserDetail>(user, index, arr) {
+    UserDetails.collection.find({ current_establishment: _pEstablishmentId, current_table: _pTableId }).fetch().forEach(function <UserDetail>(user, index, arr) {
         _lUsers.push(user.user_id);
     });
     return Users.find({ _id: { $in: _lUsers } });
@@ -48,12 +44,12 @@ Meteor.publish('getUserByTableId', function (_pRestaurantId: string, _pTableId) 
  */
 Meteor.publish('getUsersByAdminUser', function (_pUserId: string) {
     check(_pUserId, String);
-    let _lRestaurantsId: string[] = [];
+    let _lEstablishmentsId: string[] = [];
     let _lUsers: string[] = [];
-    Restaurants.collection.find({ creation_user: _pUserId }).fetch().forEach(function <Restaurant>(restaurant, index, arr) {
-        _lRestaurantsId.push(restaurant._id);
+    Establishments.collection.find({ creation_user: _pUserId }).fetch().forEach(function <Establishment>(establishment, index, arr) {
+        _lEstablishmentsId.push(establishment._id);
     });
-    UserDetails.collection.find({ current_restaurant: { $in: _lRestaurantsId } }).fetch().forEach(function <UserDetail>(userDetail, index, arr) {
+    UserDetails.collection.find({ current_establishment: { $in: _lEstablishmentsId } }).fetch().forEach(function <UserDetail>(userDetail, index, arr) {
         _lUsers.push(userDetail.user_id);
     });
     return Users.find({ _id: { $in: _lUsers } });

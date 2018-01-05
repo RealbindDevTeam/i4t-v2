@@ -31,7 +31,7 @@
                                 <td>{{historyPayment.creation_date | date: 'd/M/y'}}</td>
                                 <td>{{historyPayment.paymentValue}} {{historyPayment.currency}}</td>
                                 <td>
-                                    <tr *ngFor="let restaurantId of historyPayment.restaurantIds">- {{getRestaurantName(restaurantId)}}</tr>
+                                    <tr *ngFor="let establishmentId of historyPayment.establishment_ids">- {{getEstablishmentName(establishmentId)}}</tr>
                                 </td>
                                 <td class="cust-center-align">
                                     <div>

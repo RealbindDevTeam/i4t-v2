@@ -1,0 +1,653 @@
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
+import { Observable, Subscription } from 'rxjs';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { MeteorObservable } from 'meteor-rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
+import { Meteor } from 'meteor/meteor';
+import { UserLanguageService } from '../../../../services/general/user-language.service';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
+import { Establishment, EstablishmentImage } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Currency } from '../../../../../../../../both/models/general/currency.model';
+import { Currencies } from '../../../../../../../../both/collections/general/currency.collection';
+import { PaymentMethod } from '../../../../../../../../both/models/general/paymentMethod.model';
+import { PaymentMethods } from '../../../../../../../../both/collections/general/paymentMethod.collection';
+import { Countries } from '../../../../../../../../both/collections/general/country.collection';
+import { Country } from '../../../../../../../../both/models/general/country.model';
+import { City } from '../../../../../../../../both/models/general/city.model';
+import { Cities } from '../../../../../../../../both/collections/general/city.collection';
+import { createEstablishmentCode, generateQRCode, createTableCode } from '../../../../../../../../both/methods/establishment/establishment.methods';
+import { CreateConfirmComponent } from './create-confirm/create-confirm.component';
+import { Table } from '../../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../../both/collections/establishment/table.collection';
+import { PaymentsHistory } from '../../../../../../../../both/collections/payment/payment-history.collection';
+import { AlertConfirmComponent } from '../../../../../web/general/alert-confirm/alert-confirm.component';
+import { ImageService } from '../../../../services/general/image.service';
+import { Addition, AdditionPrice, AdditionEstablishment } from '../../../../../../../../both/models/menu/addition.model';
+import { GarnishFood, GarnishFoodPrice, GarnishFoodEstablishment } from '../../../../../../../../both/models/menu/garnish-food.model';
+import { Additions } from '../../../../../../../../both/collections/menu/addition.collection';
+import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/garnish-food.collection';
+
+import * as QRious from 'qrious';
+
+@Component({
+    selector: 'establishment-register',
+    templateUrl: './establishment-register.component.html',
+    styleUrls: ['./establishment-register.component.scss']
+})
+export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
+
+    private _user = Meteor.userId();
+    private _establishmentForm: FormGroup;
+    private _paymentsFormGroup: FormGroup = new FormGroup({});
+
+    private _establishmentSub: Subscription;
+    private _currencySub: Subscription;
+    private _countriesSub: Subscription;
+    private _citiesSub: Subscription;
+    private _paymentMethodsSub: Subscription;
+    private _additionsSub: Subscription;
+    private _garnishFoodSub: Subscription;
+
+    private _countries: Observable<Country[]>;
+    private _cities: Observable<City[]>;
+    private _paymentMethods: Observable<PaymentMethod[]>;
+
+    private _establishmentImageToInsert: EstablishmentImage;
+    private _createImage: boolean;
+    private _nameImageFile: string;
+    public _selectedIndex: number = 0;
+
+    private _queues: string[] = [];
+    private _selectedCountryValue: string;
+    private _selectedCityValue: string;
+    private _establishmentCurrency: string = '';
+    private _countryIndicative: string;
+    private _establishmentCurrencyId: string = '';
+
+    private establishmentCode: string = '';
+
+    private _loading: boolean;
+    private _showMessage: boolean = false;
+    private _mdDialogRef: MatDialogRef<any>;
+    private _currentDate: Date;
+    private _firstMonthDay: Date;
+    private _lastMonthDay: Date;
+    private titleMsg: string;
+    private btnAcceptLbl: string;
+    //private _restaurantLegality: RestaurantLegality;
+    private _tipValue: number = 0;
+
+    private max_table_number: number;
+
+    /**
+     * EstablishmentRegisterComponent constructor
+     * @param {FormBuilder} _formBuilder
+     * @param {TranslateService} _translate
+     * @param {NgZone} _ngZone
+     * @param {Router} _router
+     * @param {MatDialog} _mdDialog
+     * @param {UserLanguageService} _userLanguageService
+     */
+    constructor(private _formBuilder: FormBuilder,
+        private _translate: TranslateService,
+        private _ngZone: NgZone,
+        private _router: Router,
+        public _mdDialog: MatDialog,
+        private _userLanguageService: UserLanguageService,
+        private _imageService: ImageService,
+        private _snackBar: MatSnackBar) {
+        let _lng: string = this._userLanguageService.getLanguage(Meteor.user());
+        _translate.use(_lng);
+        _translate.setDefaultLang('en');
+        this._imageService.setPickOptionsLang(_lng);
+        this._selectedCountryValue = "";
+        this._selectedCityValue = "";
+        this._nameImageFile = "";
+        this._createImage = false;
+        this.titleMsg = 'SIGNUP.SYSTEM_MSG';
+        this.btnAcceptLbl = 'SIGNUP.ACCEPT';
+    }
+
+    /**
+     * Implements ngOnInit implementation
+     */
+    ngOnInit() {
+        this.removeSubscriptions();
+        this._establishmentForm = new FormGroup({
+            country: new FormControl('', [Validators.required]),
+            city: new FormControl('', [Validators.required]),
+            name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
+            address: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(90)]),
+            phone: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]),
+            tables_number: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(3)]),
+            image: new FormControl(''),
+            paymentMethods: this._paymentsFormGroup,
+            otherCity: new FormControl()
+        });
+
+        this._paymentMethodsSub = MeteorObservable.subscribe('paymentMethods').subscribe(() => {
+            this._ngZone.run(() => {
+                this._paymentMethods = PaymentMethods.find({}).zone();
+                this._paymentMethods.subscribe(() => { this.createPaymentMethods() });
+            });
+        });
+
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe();
+        this._countriesSub = MeteorObservable.subscribe('countries').subscribe(() => {
+            this._ngZone.run(() => {
+                this._countries = Countries.find({}).zone();
+            });
+        });
+        this._citiesSub = MeteorObservable.subscribe('cities').subscribe();
+        this._currencySub = MeteorObservable.subscribe('currencies').subscribe();
+        this._additionsSub = MeteorObservable.subscribe('additions', this._user).subscribe();
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).subscribe();
+        this._currentDate = new Date();
+        this._firstMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth(), 1);
+        this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
+
+        this._establishmentForm.get('tables_number').disable();
+    }
+
+    /**
+     * Remove all subscriptions
+     */
+    removeSubscriptions(): void {
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
+        if (this._countriesSub) { this._countriesSub.unsubscribe(); }
+        if (this._citiesSub) { this._citiesSub.unsubscribe(); }
+        if (this._currencySub) { this._currencySub.unsubscribe(); }
+        if (this._paymentMethodsSub) { this._paymentMethodsSub.unsubscribe(); }
+        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
+        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
+    }
+
+    /**
+     * This function get selectedIndex
+     
+    get selectedIndex(): number {
+        return this._selectedIndex;
+    }*/
+
+    /**
+     * This function set selectedIndex
+     * @param {number} _selectedIndex
+     
+    set selectedIndex(_selectedIndex: number) {
+        this._selectedIndex = _selectedIndex;
+    }*/
+
+    /**
+     * This fuction allow wizard to create restaurant
+     
+    canFinish(): boolean {
+        return this._restaurantForm.valid;
+    }*/
+
+    /**
+     * This function allow move in wizard tabs
+     * @param {number} _index
+     
+    canMove(_index: number): boolean {
+        switch (_index) {
+            case 0:
+                return true;
+            case 1:
+                let arrPay: any[] = Object.keys(this._restaurantForm.value.paymentMethods);
+                let _lPaymentMethods: string[] = [];
+                let _validNumber: boolean;
+
+                if (this._restaurantForm.value.tables_number <= this.max_table_number) {
+                    _validNumber = true;
+                } else {
+                    _validNumber = false;
+                }
+
+                arrPay.forEach((pay) => {
+                    if (this._restaurantForm.value.paymentMethods[pay]) {
+                        _lPaymentMethods.push(pay);
+                    }
+                });
+
+                if (this._restaurantForm.controls['country'].valid && this._restaurantForm.controls['city'].valid
+                    && this._restaurantForm.controls['name'].valid && this._restaurantForm.controls['address'].valid
+                    && this._restaurantForm.controls['phone'].valid && this._restaurantForm.controls['tables_number'].valid
+                    && _lPaymentMethods.length > 0 && _validNumber) {
+                    return true;
+                } else {
+                    return false;
+                }
+            default:
+                return true;
+        }
+    }*/
+
+    /**
+     * This function move to the next tab
+     
+    next(): void {
+        if (this.canMove(this.selectedIndex + 1)) {
+            this.selectedIndex++;
+        }
+    }*/
+
+    /**
+     * This function move to the previous tab
+     
+    previous(): void {
+        if (this.selectedIndex === 0) {
+            return;
+        }
+        if (this.canMove(this.selectedIndex - 1)) {
+            this.selectedIndex--;
+        }
+    }*/
+
+    /**
+     * Function to cancel add Establishment 
+     */
+    cancel(): void {
+        if (this._selectedCountryValue !== "") { this._selectedCountryValue = ""; }
+        if (this._selectedCityValue !== "") { this._selectedCityValue = ""; }
+        this._establishmentForm.controls['paymentMethods'].reset();
+        this._establishmentForm.controls['name'].reset();
+        this._establishmentForm.controls['address'].reset();
+        this._establishmentForm.controls['phone'].reset();
+        this._establishmentForm.controls['tables_number'].reset();
+        this._router.navigate(['app/establishment']);
+    }
+
+    /**
+     * Create Payment Methods
+     */
+    createPaymentMethods(): void {
+        PaymentMethods.collection.find({}).fetch().forEach((pay) => {
+            if (this._paymentsFormGroup.contains(pay._id)) {
+                this._paymentsFormGroup.controls[pay._id].setValue(false);
+            } else {
+                let control: FormControl = new FormControl(false);
+                this._paymentsFormGroup.addControl(pay._id, control);
+            }
+        });
+    }
+
+    /**
+     * Function to add Establishment
+     */
+    addEstablishment(): void {
+        if (!this._user) {
+            this.openDialog(this.titleMsg, '', 'LOGIN_SYSTEM_OPERATIONS_MSG', '', this.btnAcceptLbl, false);
+            return;
+        }
+
+        this._mdDialogRef = this._mdDialog.open(CreateConfirmComponent, {
+            disableClose: true
+        });
+
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                this._loading = true;
+                setTimeout(() => {
+                    this.createNewEstablishment().then((establishment_id) => {
+                        this._loading = false;
+                        let _lMessage: string = this.itemNameTraduction('RESTAURANT_REGISTER.RESTAURANT_CREATED');
+                        this._snackBar.open(_lMessage, '', { duration: 2500 });
+                        this._router.navigate(['app/establishment']);
+                    }).catch((err) => {
+                        this._loading = false;
+                        var error: string = this.itemNameTraduction('RESTAURANT_REGISTER.CREATION_ERROR');
+                        this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+                        this._router.navigate(['app/establishment']);
+                    });
+                }, 2500);
+            }
+        });
+    }
+
+    /**
+     * Promise to create new establishment
+     */
+    createNewEstablishment(): Promise<string> {
+        let cityIdAux: string;
+        let cityAux: string;
+        let _lNewEstablishment: string;
+
+        return new Promise((resolve, reject) => {
+            try {
+                let arrPay: any[] = Object.keys(this._establishmentForm.value.paymentMethods);
+                let _lPaymentMethodsToInsert: string[] = [];
+
+                arrPay.forEach((pay) => {
+                    if (this._establishmentForm.value.paymentMethods[pay]) {
+                        _lPaymentMethodsToInsert.push(pay);
+                    }
+                });
+
+                if (this._selectedCityValue === '0000') {
+                    cityIdAux = '';
+                    cityAux = this._establishmentForm.value.otherCity;
+                } else {
+                    cityIdAux = this._selectedCityValue;
+                    cityAux = '';
+                }
+
+                if (this._createImage) {
+                    _lNewEstablishment = Establishments.collection.insert({
+                        creation_user: this._user,
+                        creation_date: new Date(),
+                        modification_user: '-',
+                        modification_date: new Date(),
+                        countryId: this._establishmentForm.value.country,
+                        cityId: cityIdAux,
+                        other_city: cityAux,
+                        name: this._establishmentForm.value.name,
+                        currencyId: this._establishmentCurrencyId,
+                        address: this._establishmentForm.value.address,
+                        indicative: this._countryIndicative,
+                        phone: this._establishmentForm.value.phone,
+                        establishment_code: this.generateEstablishmentCode(),
+                        paymentMethods: _lPaymentMethodsToInsert,
+                        tip_percentage: this._tipValue,
+                        image: this._establishmentImageToInsert,
+                        tables_quantity: 0,
+                        orderNumberCount: 0,
+                        max_jobs: 5,
+                        queue: this._queues,
+                        isActive: true,
+                        firstPay: true,
+                        freeDays: true,
+                        is_beta_tester: false
+                    });
+                } else {
+                    _lNewEstablishment = Establishments.collection.insert({
+                        creation_user: this._user,
+                        creation_date: new Date(),
+                        modification_user: '-',
+                        modification_date: new Date(),
+                        countryId: this._establishmentForm.value.country,
+                        cityId: cityIdAux,
+                        other_city: cityAux,
+                        name: this._establishmentForm.value.name,
+                        currencyId: this._establishmentCurrencyId,
+                        address: this._establishmentForm.value.address,
+                        indicative: this._countryIndicative,
+                        phone: this._establishmentForm.value.phone,
+                        establishment_code: this.generateEstablishmentCode(),
+                        paymentMethods: _lPaymentMethodsToInsert,
+                        tip_percentage: this._tipValue,
+                        tables_quantity: 0,
+                        orderNumberCount: 0,
+                        max_jobs: 5,
+                        queue: this._queues,
+                        isActive: true,
+                        firstPay: true,
+                        freeDays: true,
+                        is_beta_tester: false
+                    });
+                }
+
+                //this._restaurantLegality.restaurant_id = _lNewEstablishment;
+                //RestaurantsLegality.insert(this._restaurantLegality);
+
+                //Insert tables
+                let _lEstabl: Establishment = Establishments.findOne({ _id: _lNewEstablishment });
+                let _lTableNumber: number = this._establishmentForm.value.tables_number;
+                this.establishmentCode = _lEstabl.establishment_code;
+
+                for (let _i = 0; _i < _lTableNumber; _i++) {
+                    let _lEstablishmentTableCode: string = '';
+                    let _lTableCode: string = '';
+
+                    _lTableCode = this.generateTableCode();
+                    _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
+                    let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
+
+                    let _lQrCode = new QRious({
+                        background: 'white',
+                        backgroundAlpha: 1.0,
+                        foreground: 'black',
+                        foregroundAlpha: 1.0,
+                        level: 'H',
+                        mime: 'image/svg',
+                        padding: null,
+                        size: 150,
+                        value: _lCodeGenerator.getQRCode()
+                    });
+
+                    let _lNewTable: Table = {
+                        creation_user: this._user,
+                        creation_date: new Date(),
+                        establishment_id: _lNewEstablishment,
+                        table_code: _lTableCode,
+                        is_active: true,
+                        QR_code: _lCodeGenerator.getQRCode(),
+                        QR_information: {
+                            significativeBits: _lCodeGenerator.getSignificativeBits(),
+                            bytes: _lCodeGenerator.getFinalBytes()
+                        },
+                        amount_people: 0,
+                        status: 'FREE',
+                        QR_URI: _lQrCode.toDataURL(),
+                        _number: _i + 1
+                    };
+                    Tables.insert(_lNewTable);
+                    Establishments.update({ _id: _lNewEstablishment }, { $set: { tables_quantity: _i + 1 } })
+                }
+
+                let _lCurrency: Currency;
+                Currencies.find({ _id: _lEstabl.currencyId }).fetch().forEach((cu) => {
+                    _lCurrency = cu;
+                });
+
+                PaymentsHistory.collection.insert({
+                    establishment_ids: [_lNewEstablishment],
+                    startDate: this._firstMonthDay,
+                    endDate: this._lastMonthDay,
+                    month: (this._currentDate.getMonth() + 1).toString(),
+                    year: (this._currentDate.getFullYear()).toString(),
+                    status: 'TRANSACTION_STATUS.APPROVED',
+                    creation_user: Meteor.userId(),
+                    creation_date: new Date(),
+                    paymentValue: 0,
+                    currency: _lCurrency.code,
+                    isInitial: true
+                });
+
+                if (Additions.collection.find({ creation_user: this._user }).count() > 0) {
+                    Additions.collection.find({ creation_user: this._user }).forEach(function <Addition>(addition, index, arr) {
+                        addition.prices.forEach(function <AdditionPrice>(additionPrice, index, arr) {
+                            if (_lCurrency._id === additionPrice.currencyId) {
+                                let _lAdditionEstablishment: AdditionEstablishment = { establishment_id: _lEstabl._id, price: additionPrice.price };
+                                Additions.update({ _id: addition._id }, { $push: { establishments: _lAdditionEstablishment } });
+                            }
+                        });
+                    });
+                }
+
+                if (GarnishFoodCol.collection.find({ creation_user: this._user }).count() > 0) {
+                    GarnishFoodCol.collection.find({ creation_user: this._user }).forEach(function <GarnishFood>(garnishFood, index, arr) {
+                        garnishFood.prices.forEach(function <GarnishFoodPrice>(garnishFoodPrice, index, arr) {
+                            if (_lCurrency._id === garnishFoodPrice.currencyId) {
+                                let _lGarnishFoodEstablishment: GarnishFoodEstablishment = { establishment_id: _lEstabl._id, price: garnishFoodPrice.price };
+                                GarnishFoodCol.update({ _id: garnishFood._id }, { $push: { establishments: _lGarnishFoodEstablishment } })
+                            }
+                        })
+                    });
+                }
+
+                resolve(_lNewEstablishment);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    /**
+     * Function to translate information
+     * @param {string} _itemName
+     */
+    itemNameTraduction(_itemName: string): string {
+        var _wordTraduced: string;
+        this._translate.get(_itemName).subscribe((res: string) => {
+            _wordTraduced = res;
+        });
+        return _wordTraduced;
+    }
+
+    /**
+     * Function to change country
+     * @param {string} _country
+     */
+    changeCountry(_country) {
+        this._selectedCountryValue = _country;
+        this._establishmentForm.controls['country'].setValue(_country);
+
+        let _lCountry: Country;
+        Countries.find({ _id: _country }).fetch().forEach((c) => {
+            _lCountry = c;
+            this.max_table_number = _lCountry.max_number_tables;
+        });
+        let _lCurrency: Currency;
+        Currencies.find({ _id: _lCountry.currencyId }).fetch().forEach((cu) => {
+            _lCurrency = cu;
+        });
+        this._establishmentCurrencyId = _lCurrency._id;
+        this._establishmentCurrency = _lCurrency.code + ' - ' + this.itemNameTraduction(_lCurrency.name);
+        this._countryIndicative = _lCountry.indicative;
+        this._queues = _lCountry.queue;
+        this._cities = Cities.find({ country: _country }).zone();
+
+        this._establishmentForm.get('tables_number').enable();
+    }
+
+    /**
+     * Function to change city
+     * @param {string} _city
+     */
+    changeCity(_city) {
+
+        if (_city === '0000') {
+            this._showMessage = true;
+            this._establishmentForm.controls['otherCity'].setValidators(Validators.compose([Validators.required, Validators.minLength(1), Validators.maxLength(50)]));
+        } else {
+            this._showMessage = false;
+            this._establishmentForm.controls['otherCity'].clearValidators();
+        }
+
+        this._selectedCityValue = _city;
+        this._establishmentForm.controls['city'].setValue(_city);
+    }
+
+    /**
+     * Function to insert new image
+     */
+    changeImage(): void {
+        this._imageService.client.pick(this._imageService.pickOptions).then((res) => {
+            let _imageToUpload: any = res.filesUploaded[0];
+            this._nameImageFile = _imageToUpload.filename;
+            this._establishmentImageToInsert = _imageToUpload;
+            this._createImage = true;
+        }).catch((err) => {
+            var error: string = this.itemNameTraduction('UPLOAD_IMG_ERROR');
+            this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+        });
+    }
+
+    /**
+     * Function to generate Establishment code
+     */
+    generateEstablishmentCode(): string {
+        let _lCode: string = '';
+
+        while (true) {
+            _lCode = createEstablishmentCode();
+            if (Establishments.find({ establishment_code: _lCode }).cursor.count() === 0) {
+                break;
+            }
+        }
+        return _lCode;
+    }
+
+    /**
+     * Set establishment legality
+     * @param {RestaurantLegality} _event
+     
+    setRestaurantLegality(_event: RestaurantLegality): void {
+        this._restaurantLegality = _event;
+        this.addRestaurant();
+    }*/
+
+    /**
+     * Set Restaurant Financial Information
+     * @return {string} 
+     */
+    generateTableCode(): string {
+        let _lCode: string = '';
+
+        while (true) {
+            _lCode = createTableCode();
+            if (Tables.find({ table_code: _lCode }).cursor.count() === 0) {
+                break;
+            }
+        }
+        return _lCode;
+    }
+
+    /**
+     * Run previous function
+     * @param {boolean} _event 
+     
+    runPrevious(_event: boolean): void {
+        if (_event) {
+            this.previous();
+        }
+    }*/
+
+    /**
+     * Set establishment tip value
+     * @param {number} _event
+     */
+    setTipValue(_event: number): void {
+        this._tipValue = _event;
+    }
+
+    /**
+    * This function open de error dialog according to parameters 
+    * @param {string} title
+    * @param {string} subtitle
+    * @param {string} content
+    * @param {string} btnCancelLbl
+    * @param {string} btnAcceptLbl
+    * @param {boolean} showBtnCancel
+    */
+    openDialog(title: string, subtitle: string, content: string, btnCancelLbl: string, btnAcceptLbl: string, showBtnCancel: boolean) {
+
+        this._mdDialogRef = this._mdDialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: title,
+                subtitle: subtitle,
+                content: content,
+                buttonCancel: btnCancelLbl,
+                buttonAccept: btnAcceptLbl,
+                showBtnCancel: showBtnCancel
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+
+            }
+        });
+    }
+
+    /**
+     * Implements ngOnDestroy function
+     */
+    ngOnDestroy() {
+        this.removeSubscriptions();
+    }
+}

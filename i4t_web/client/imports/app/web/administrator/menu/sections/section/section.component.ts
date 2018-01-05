@@ -13,8 +13,8 @@ import { Items } from '../../../../../../../../both/collections/menu/item.collec
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
 import { Section } from '../../../../../../../../both/models/menu/section.model';
 import { SectionEditComponent } from '../section-edit/section-edit.component';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { AlertConfirmComponent } from '../../../../general/alert-confirm/alert-confirm.component';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -28,25 +28,25 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _sectionForm: FormGroup;
-    private _restaurantsFormGroup: FormGroup = new FormGroup({});
+    private _establishmentsFormGroup: FormGroup = new FormGroup({});
     private _mdDialogRef: MatDialogRef<any>;
 
     private _sections: Observable<Section[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _userDetails: Observable<UserDetail[]>;
 
     private _sectionSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _itemsSubscription: Subscription;
     private _categoriesSubscription: Subscription;
 
     public _dialogRef: MatDialogRef<any>;
-    private _showRestaurants: boolean = true;
+    private _showEstablishments: boolean = true;
     private titleMsg: string;
     private btnCancelLbl: string;
     private btnAcceptLbl: string;
-    private _thereAreRestaurants: boolean = true;
-    private _lRestaurantsId: string[] = [];
+    private _thereAreEstablishments: boolean = true;
+    private _lEstablishmentsId: string[] = [];
     private _usersCount: number;
 
     /**
@@ -80,17 +80,17 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.removeSubscriptions();
         this._sectionForm = new FormGroup({
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
-            restaurants: this._restaurantsFormGroup
+            establishments: this._establishmentsFormGroup
         });
 
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
-                    this._lRestaurantsId.push(restaurant._id);
+                this._establishments = Establishments.find({}).zone();
+                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                    this._lEstablishmentsId.push(establishment._id);
                 });
-                this.countRestaurants();
-                this._restaurants.subscribe(() => { this.createRestaurantForm(); this.countRestaurants(); });
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.createEstablishmentsForm(); this.countEstablishments(); });
             });
         });
 
@@ -105,10 +105,10 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishments exists
      */
-    countRestaurants(): void {
-        Restaurants.collection.find({}).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+    countEstablishments(): void {
+        Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
@@ -116,26 +116,26 @@ export class SectionComponent implements OnInit, OnDestroy {
      */
     removeSubscriptions(): void {
         if (this._sectionSub) { this._sectionSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
         if (this._categoriesSubscription) { this._categoriesSubscription.unsubscribe(); }
     }
 
     /**
-     * Create restaurants controls in form
+     * Create establishments controls in form
      */
-    createRestaurantForm(): void {
-        Restaurants.collection.find({}).fetch().forEach((res) => {
-            if (this._restaurantsFormGroup.contains(res._id)) {
-                this._restaurantsFormGroup.controls[res._id].setValue(false);
+    createEstablishmentsForm(): void {
+        Establishments.collection.find({}).fetch().forEach((res) => {
+            if (this._establishmentsFormGroup.contains(res._id)) {
+                this._establishmentsFormGroup.controls[res._id].setValue(false);
             } else {
                 let control: FormControl = new FormControl(false);
-                this._restaurantsFormGroup.addControl(res._id, control);
+                this._establishmentsFormGroup.addControl(res._id, control);
             }
         });
 
-        if (Restaurants.collection.find({}).count() === 0) {
-            this._showRestaurants = false;
+        if (Establishments.collection.find({}).count() === 0) {
+            this._showEstablishments = false;
         }
     }
 
@@ -150,12 +150,12 @@ export class SectionComponent implements OnInit, OnDestroy {
         }
 
         if (this._sectionForm.valid) {
-            let _create_restaurants: string[] = [];
-            let arr: any[] = Object.keys(this._sectionForm.value.restaurants);
+            let _create_establishments: string[] = [];
+            let arr: any[] = Object.keys(this._sectionForm.value.establishments);
 
-            arr.forEach((rest) => {
-                if (this._sectionForm.value.restaurants[rest]) {
-                    _create_restaurants.push(rest);
+            arr.forEach((est) => {
+                if (this._sectionForm.value.establishments[est]) {
+                    _create_establishments.push(est);
                 }
             });
 
@@ -164,7 +164,7 @@ export class SectionComponent implements OnInit, OnDestroy {
                 creation_date: new Date(),
                 modification_user: '-',
                 modification_date: new Date(),
-                restaurants: _create_restaurants,
+                establishments: _create_establishments,
                 is_active: true,
                 name: this._sectionForm.value.name
             });
@@ -312,10 +312,10 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to add new Restaurant
+     * Go to add new establishments
      */
-    goToAddRestaurant() {
-        this._router.navigate(['/app/restaurant-register']);
+    goToAddEstablishment() {
+        this._router.navigate(['/app/establishment-register']);
     }
 
     /**

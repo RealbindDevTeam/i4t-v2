@@ -11,7 +11,7 @@ import { CompanyInfo, ClientInfo } from '../../models/payment/iurest-invoice.mod
 if (Meteor.isServer) {
     Meteor.methods({
         /**
-         * This function allow generate iurest invoice for admin restaurant
+         * This function allow generate iurest invoice for admin establishment
          * @param { string } _paymentHistoryId
          * @param { string } _userId 
          */

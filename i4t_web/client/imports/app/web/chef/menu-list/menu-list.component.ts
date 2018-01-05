@@ -19,8 +19,8 @@ import { Addition } from '../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../both/collections/menu/addition.collection';
 import { Currencies } from '../../../../../../both/collections/general/currency.collection';
 import { AlertConfirmComponent } from '../../../web/general/alert-confirm/alert-confirm.component';
-import { Restaurant } from '../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
 
 @Component({
     selector: 'menu-list',
@@ -40,7 +40,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
     private _additionsSub: Subscription;
     private _ordersSub: Subscription;
     private _currenciesSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
 
     private _sections: Observable<Section[]>;
     private _sectionsFilter: Observable<Section[]>;
@@ -51,7 +51,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
     private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
 
-    private restaurantId: string;
+    private establishmentId: string;
     private _numberColums: number = 3;
     private _currencyCode: string;
     private titleMsg: string;
@@ -94,45 +94,45 @@ export class MenuListComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
 
-        this._restaurantSub = MeteorObservable.subscribe('getRestaurantByRestaurantWork', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
-                this.restaurantId = Restaurants.collection.find({}).fetch()[0]._id;
+                this.establishmentId = Establishments.collection.find({}).fetch()[0]._id;
             });
         });
-        this._itemsSub = MeteorObservable.subscribe('getItemsByRestaurantWork', this._user).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
             });
         });
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByRestaurantWork', this._user).subscribe(() => {
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFoodCol = GarnishFoodCol.find({}).zone();
             });
         });
-        this._additionsSub = MeteorObservable.subscribe('additionsByRestaurantWork', this._user).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
-                this.validateRestaurantAdditions();
-                this._additions.subscribe(() => { this.validateRestaurantAdditions(); });
+                this.validateEstablishmentAdditions();
+                this._additions.subscribe(() => { this.validateEstablishmentAdditions(); });
             });
         });
-        this._sectionsSub = MeteorObservable.subscribe('getSectionsByRestaurantWork', this._user).subscribe(() => {
+        this._sectionsSub = MeteorObservable.subscribe('getSectionsByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._sectionsFilter = Sections.find({}).zone();
                 this._sections = Sections.find({}).zone();
             });
         });
-        this._categoriesSub = MeteorObservable.subscribe('getCategoriesByRestaurantWork', this._user).subscribe(() => {
+        this._categoriesSub = MeteorObservable.subscribe('getCategoriesByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._categories = Categories.find({}).zone();
             });
         });
-        this._subcategoriesSub = MeteorObservable.subscribe('getSubcategoriesByRestaurantWork', this._user).subscribe(() => {
+        this._subcategoriesSub = MeteorObservable.subscribe('getSubcategoriesByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._subcategories = Subcategories.find({}).zone();
             });
         });
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByRestaurantWork', this._user).subscribe(() => {
+        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._currencyCode = Currencies.findOne({}).code + ' ';
             });
@@ -150,11 +150,11 @@ export class MenuListComponent implements OnInit, OnDestroy {
         if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
         if (this._additionsSub) { this._additionsSub.unsubscribe(); }
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
     }
 
     /**
-     * Show All restaurant items
+     * Show All establishment items
      */
     showAllItems(): void {
         this._sections = Sections.find({}).zone();
@@ -169,7 +169,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Show restaurant additions
+     * Show establishment additions
      */
     showAdditions(): void {
         this.showAllItems();
@@ -188,20 +188,20 @@ export class MenuListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Verify restaurants additions
+     * Verify establishments additions
      */
-    validateRestaurantAdditions(): void {
+    validateEstablishmentAdditions(): void {
         let _lAdditions: number = Additions.collection.find({}).count();
         _lAdditions > 0 ? this._showAdditionsOption = true : this._showAdditionsOption = false;
     }
 
     /**
-     * Return Item price by current restaurant
+     * Return Item price by current establishment
      * @param {Item} _pItem 
      */
 
     getItemPrice(_pItem: Item): number {
-        return _pItem.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        return _pItem.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
     }
 
     /**
@@ -224,7 +224,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
      * @param {Addition} _pAddition
      */
     getAdditionInformation(_pAddition: Addition): string {
-        return _pAddition.name + ' - ' + _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price + ' ';
+        return _pAddition.name + ' - ' + _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
 
     /**
@@ -233,7 +233,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
      */
 
     getGarnishFoodInformation(_pGarnishFood: GarnishFood): string {
-        return _pGarnishFood.name + ' - ' + _pGarnishFood.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price + ' ';
+        return _pGarnishFood.name + ' - ' + _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
 
     /**
@@ -241,7 +241,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
      * @param {Addition} _pAddition 
      */
     getAdditionPrice(_pAddition: Addition): string {
-        return _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price + ' ';
+        return _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
 
     /**
@@ -260,8 +260,8 @@ export class MenuListComponent implements OnInit, OnDestroy {
      * Function to get item avalaibility 
      */
     getItemAvailability(itemId: string): boolean {
-        let _itemRestaurant: Item = Items.collection.findOne({ _id: itemId }, { fields: { _id: 1, restaurants: 1 } });
-        let aux = _itemRestaurant.restaurants.find(element => element.restaurantId === this.restaurantId);
+        let _itemEstablishment: Item = Items.collection.findOne({ _id: itemId }, { fields: { _id: 1, establishments: 1 } });
+        let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this.establishmentId);
         return aux.isAvailable;
     }
 

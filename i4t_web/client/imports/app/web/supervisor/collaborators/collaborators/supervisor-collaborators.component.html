@@ -4,17 +4,17 @@
             <div class="call-card">
                 <mat-card class="card_image" style="margin: 24px;">
                     <mat-list>
-                        <mat-list-item *ngIf="_restaurant">
-                            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="_restaurant.image" src="{{ _restaurant.image.url }}">
-                            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="!_restaurant.image" src="/images/default-restaurant.png">                            
-                            <h2 mat-line style="font-size: 1.5rem;"> {{_restaurant.name}} </h2>
+                        <mat-list-item *ngIf="_establishment">
+                            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="_establishment.image" src="{{ _establishment.image.url }}">
+                            <img mat-list-avatar style="border-radius: 50%; width: 100px; height: 100px;" *ngIf="!_establishment.image" src="/images/default-restaurant.png">                            
+                            <h2 mat-line style="font-size: 1.5rem;"> {{_establishment.name}} </h2>
                             <p mat-line style="font-size: 1rem;">
                                 <mat-icon style="vertical-align: middle">location_on</mat-icon>
-                                <span> {{_restaurant.address}} </span>
+                                <span> {{_establishment.address}} </span>
                             </p>
                             <p mat-line style="font-size: 1rem;">
                                 <mat-icon style="vertical-align: middle">phone</mat-icon>
-                                <span class="detail-message">{{_restaurant.indicative}} {{_restaurant.phone}} </span>
+                                <span class="detail-message">{{_establishment.indicative}} {{_establishment.phone}} </span>
                             </p>
                         </mat-list-item>
                     </mat-list>

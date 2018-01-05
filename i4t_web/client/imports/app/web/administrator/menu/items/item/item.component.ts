@@ -12,8 +12,8 @@ import { Items } from '../../../../../../../../both/collections/menu/item.collec
 import { ItemEditionComponent } from '../edition/item-edition.component';
 import { Currency } from '../../../../../../../../both/models/general/currency.model';
 import { Currencies } from '../../../../../../../../both/collections/general/currency.collection';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { AlertConfirmComponent } from '../../../../general/alert-confirm/alert-confirm.component';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -28,19 +28,19 @@ export class ItemComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
     private _itemsSub: Subscription;
     private _currenciesSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
 
     private _items: Observable<Item[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _userDetails: Observable<UserDetail[]>;
 
     public _dialogRef: MatDialogRef<any>;
     private titleMsg: string;
     private btnCancelLbl: string;
     private btnAcceptLbl: string;
-    private _thereAreRestaurants: boolean = true;
+    private _thereAreEstablishments: boolean = true;
     private _thereAreItems: boolean = true;
-    private _lRestaurantsId: string[] = [];
+    private _lEstablishmentsId: string[] = [];
     private _usersCount: number;
 
     /**
@@ -79,23 +79,23 @@ export class ItemComponent implements OnInit, OnDestroy {
             });
         });
         this._currenciesSub = MeteorObservable.subscribe('currencies').subscribe();
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
-                    this._lRestaurantsId.push(restaurant._id);
+                this._establishments = Establishments.find({}).zone();
+                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                    this._lEstablishmentsId.push(establishment._id);
                 });
-                this.countRestaurants();
-                this._restaurants.subscribe(() => { this.countRestaurants(); });
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishments exists
      */
-    countRestaurants(): void {
-        Restaurants.collection.find({}).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+    countEstablishments(): void {
+        Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
@@ -111,7 +111,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     removeSubscriptions(): void {
         if (this._itemsSub) { this._itemsSub.unsubscribe(); }
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
     }
 
     /**
@@ -236,10 +236,10 @@ export class ItemComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to add new Restaurant
+     * Go to add new Establishment
      */
-    goToAddRestaurant() {
-        this._router.navigate(['/app/restaurant-register']);
+    goToAddEstablishment() {
+        this._router.navigate(['/app/establishment-register']);
     }
 
     /**

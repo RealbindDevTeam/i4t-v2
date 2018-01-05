@@ -66,7 +66,7 @@ export class ItemEnableComponent implements OnInit, OnDestroy {
     }
     
     /**
-     * Opens dialog to enable/disable item in restaurants
+     * Opens dialog to enable/disable item in establishments
      */
     openDialog(_item: Item) {
         this._mdDialogRef = this._mdDialog.open(EnableConfirmComponent, {

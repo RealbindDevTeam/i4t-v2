@@ -5,11 +5,11 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../services/general/user-language.service';
-import { generateQRCode, createTableCode } from '../../../../../../both/methods/restaurant/restaurant.methods';
-import { Restaurant } from '../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../both/collections/restaurant/restaurant.collection';
-import { Table } from '../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../both/collections/restaurant/table.collection';
+import { generateQRCode, createTableCode } from '../../../../../../both/methods/establishment/establishment.methods';
+import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
+import { Table } from '../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../both/collections/establishment/table.collection';
 
 import * as QRious from 'qrious';
 let jsPDF = require('jspdf');
@@ -23,25 +23,24 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
 
   private _user = Meteor.userId();
   private tableForm: FormGroup;
-  private restaurantSub: Subscription;
+  private establishmentSub: Subscription;
   private tableSub: Subscription;
 
-  private restaurants: Observable<Restaurant[]>;
+  private establishments: Observable<Establishment[]>;
   private tables: Observable<Table[]>;
 
-  selectedRestaurantValue: string;
-  private restaurantCode: string = '';
+  private selectedEstablishmentValue: string;
   private tables_count: number = 0;
   private all_checked: boolean;
   private enable_print: boolean;
-  private restaurant_name: string = '';
+  private establishment_name: string = '';
 
   private tables_selected: Table[];
   private isChecked: false;
   private tooltip_msg: string = '';
   private show_cards: boolean;
   finalImg: any;
-  private _thereAreRestaurants: boolean = true;
+  private _thereAreEstablishments: boolean = true;
   private _thereAreTables: boolean = true;
 
   /**
@@ -57,7 +56,7 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
     private _userLanguageService: UserLanguageService) {
     translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     translate.setDefaultLang('en');
-    this.selectedRestaurantValue = "";
+    this.selectedEstablishmentValue = "";
     this.tables_selected = [];
     this.all_checked = false;
     this.enable_print = true;
@@ -70,16 +69,15 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.removeSubscriptions();
     this.tableForm = new FormGroup({
-      restaurant: new FormControl('', [Validators.required]),
       tables_number: new FormControl('', [Validators.required])
     });
-    this.restaurantSub = MeteorObservable.subscribe('getRestaurantByRestaurantWork', this._user).subscribe(() => {
+    this.establishmentSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).subscribe(() => {
       this._ngZone.run(() => {
-        this.restaurants = Restaurants.find({}).zone();
-        this.countRestaurants();
-        this.restaurants.subscribe(() => { this.countRestaurants(); });
-        Restaurants.find().fetch().forEach((res) => {
-          this.restaurant_name = res.name;
+        this.establishments = Establishments.find({}).zone();
+        this.countEstablishments();
+        this.establishments.subscribe(() => { this.countEstablishments(); });
+        Establishments.find().fetch().forEach((res) => {
+          this.establishment_name = res.name;
         });
         this.enable_print = false;
         this.tooltip_msg = "";
@@ -88,7 +86,7 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
         this.all_checked = false;
       });
     });
-    this.tableSub = MeteorObservable.subscribe('getTablesByRestaurantWork', this._user).subscribe(() => {
+    this.tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).subscribe(() => {
       this._ngZone.run(() => {
         this.tables = Tables.find({}).zone();
         this.countTables();
@@ -99,10 +97,10 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Verify if restaurants exists
+   * Verify if establishments exists
    */
-  countRestaurants(): void {
-    Restaurants.collection.find({}).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+  countEstablishments(): void {
+    Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
   }
 
   /**
@@ -116,12 +114,12 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this.restaurantSub) { this.restaurantSub.unsubscribe(); }
+    if (this.establishmentSub) { this.establishmentSub.unsubscribe(); }
     if (this.tableSub) { this.tableSub.unsubscribe(); }
   }
 
   cancel(): void {
-    if (this.selectedRestaurantValue !== "") { this.selectedRestaurantValue = ""; }
+    if (this.selectedEstablishmentValue !== "") { this.selectedEstablishmentValue = ""; }
     this.tableForm.controls['tables_number'].reset();
   }
 
@@ -176,7 +174,7 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
         });
       });
       this.tables_selected = [];
-      qr_pdf.output('save', this.restaurant_name.substr(0, 15) + '_' + file_name + '.pdf');
+      qr_pdf.output('save', this.establishment_name.substr(0, 15) + '_' + file_name + '.pdf');
     } else if (!this.all_checked && this.tables_selected.length > 0) {
       this.tables_selected.forEach(table2 => {
         auxStr = table2._number.toString();
@@ -195,7 +193,7 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
           qr_pdf.addPage();
         }
       });
-      qr_pdf.output('save', this.restaurant_name.substr(0, 15) + '_' + file_name + '.pdf');
+      qr_pdf.output('save', this.establishment_name.substr(0, 15) + '_' + file_name + '.pdf');
     }
     //qr_pdf.save('qr_codes.pdf');
   }

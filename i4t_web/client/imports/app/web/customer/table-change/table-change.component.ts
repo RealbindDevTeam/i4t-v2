@@ -9,8 +9,8 @@ import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../services/general/user-language.service';
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../both/models/auth/user-detail.model';
-import { Table } from '../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../both/collections/restaurant/table.collection';
+import { Table } from '../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../both/collections/establishment/table.collection';
 import { AlertConfirmComponent } from '../../../web/general/alert-confirm/alert-confirm.component';
 
 @Component({
@@ -83,7 +83,7 @@ export class TableChangeComponent implements OnInit, OnDestroy {
     /**
      * This function allow change user current table
      */
-    changeUserTable(_pCurrentRestaurant: string, _pCurrentQRCodeTable: string): void {
+    changeUserTable(_pCurrentEstablishment: string, _pCurrentQRCodeTable: string): void {
         if (!Meteor.userId()) {
             var error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
             this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
@@ -91,7 +91,7 @@ export class TableChangeComponent implements OnInit, OnDestroy {
         }
 
         if (this._changeTableForm.valid) {
-            MeteorObservable.call('changeCurrentTable', this._user, _pCurrentRestaurant, _pCurrentQRCodeTable, this._changeTableForm.value.qrCodeDestiny).subscribe(() => {
+            MeteorObservable.call('changeCurrentTable', this._user, _pCurrentEstablishment, _pCurrentQRCodeTable, this._changeTableForm.value.qrCodeDestiny).subscribe(() => {
                 this.openDialog(this.titleMsg, '', this.itemNameTraduction('CHANGE_TABLE.CHANGE_TABLE_OK'), '', this.btnAcceptLbl, false);
                 this._router.navigate(['/app/orders']);
             }, (error) => {
