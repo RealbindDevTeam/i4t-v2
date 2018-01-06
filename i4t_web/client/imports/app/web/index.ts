@@ -92,6 +92,7 @@ import { ScheduleDetailComponent } from './customer/establishment-profile-detail
 import { PaymentPlanInfo } from './auth/payment-plan-info/payment-plan-info.component';
 import { ImageService } from './services/general/image.service';
 import { PayuPaymentService } from './services/payment/payu-payment.service';
+import { Recommended } from './administrator/menu/items/item/recommended/recommended.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -186,7 +187,8 @@ export const MODAL_DIALOG_DECLARATIONS = [
     EstablishmentExitConfirmComponent,
     PenalizeCustomerComponent,
     ScheduleDetailComponent,
-    PaymentPlanInfo
+    PaymentPlanInfo,
+    Recommended
 ];
 
 export const SERVICES_DECLARATIONS = [

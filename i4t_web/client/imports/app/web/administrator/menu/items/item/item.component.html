@@ -45,7 +45,7 @@
 </mat-card>
 
 
-<div class="dpa" *ngIf="_thereAreRestaurants && _thereAreItems">
+<div class="dpa" *ngIf="_thereAreEstablishments && _thereAreItems">
     <div class="dcf">
         <div class="dc">
             <div class="dmpc">
@@ -67,7 +67,7 @@
                         <button mat-button (click)="confirmRemove(item)">{{'ITEMS.REMOVE' | translate}}</button>
                         <span class="app-flex-filler lh">
                             <button mat-icon-button>
-                                <mat-icon class="md-24" aria-label="Example icon-button with a heart icon">favorite</mat-icon>
+                                <mat-icon class="md-24" aria-label="" (click)="openRecommendDialog(item)">favorite</mat-icon>
                             </button>
                             <mat-slide-toggle [(checked)]="item.is_active" (change)="updateStatus(item)"></mat-slide-toggle>
                         </span>

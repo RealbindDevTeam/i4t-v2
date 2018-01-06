@@ -676,7 +676,10 @@
         "REMOVE_MSG" : "Deseas remover el item?",
         "ITEM_REMOVED" : "Item removido correctamente",
         "REWARD_LABEL":"Asignar puntos de recompensa",
-        "POINTS_PLACEHOLER": "Puntos"
+        "POINTS_PLACEHOLER": "Puntos",
+        "MENU_RECOMMENDED" : "Menú recomendado",
+        "ESTABLISHMENTS" : "Establecimientos",
+        "RECOMMENDED_CHANGED" : "Recomendación de item modificada"
     },
     "ROLE": {
         "ADMINISTRATOR": "Administrador",

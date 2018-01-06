@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>{{'ITEMS.MENU_RECOMMENDED' | translate}}</h1>
+
+<div mat-dialog-content>
+    <mat-list>
+        <h3 mat-subheader>{{'ITEMS.ESTABLISHMENTS' | translate}}</h3>
+        <mat-list-item *ngFor="let establishment of data.item.establishments">
+            <mat-icon mat-list-icon>store</mat-icon>
+            <h4 mat-line>{{getEstablishmentName(establishment.establishment_id)}}</h4>
+            <mat-slide-toggle [checked]="establishment.recommended" (change)="updateRecommendedFlag(establishment.establishment_id)"></mat-slide-toggle>
+        </mat-list-item>
+    </mat-list>
+</div>
+
+<mat-dialog-actions align="end" (click)="close()">
+    <button mat-button>{{'CLOSE' | translate}}</button>
+</mat-dialog-actions>
