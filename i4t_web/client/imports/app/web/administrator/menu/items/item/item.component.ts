@@ -157,6 +157,10 @@ export class ItemComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Show Recommended dialog
+     * @param _pItem 
+     */
     openRecommendDialog(_pItem: Item) {
         this._dialogRef = this._dialog.open(Recommended, {
             disableClose: true,

@@ -67,7 +67,7 @@
                         <button mat-button (click)="confirmRemove(item)">{{'ITEMS.REMOVE' | translate}}</button>
                         <span class="app-flex-filler lh">
                             <button mat-icon-button>
-                                <mat-icon class="md-24" aria-label="" (click)="openRecommendDialog(item)">favorite</mat-icon>
+                                <mat-icon class="md-24" aria-label="" (click)="openRecommendDialog(item)">start</mat-icon>
                             </button>
                             <mat-slide-toggle [(checked)]="item.is_active" (change)="updateStatus(item)"></mat-slide-toggle>
                         </span>
