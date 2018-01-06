@@ -76,8 +76,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private _lastMonthDay: Date;
     private titleMsg: string;
     private btnAcceptLbl: string;
-    //private _restaurantLegality: RestaurantLegality;
-    private _tipValue: number = 0;
 
     private max_table_number: number;
 
@@ -163,87 +161,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         if (this._additionsSub) { this._additionsSub.unsubscribe(); }
         if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
     }
-
-    /**
-     * This function get selectedIndex
-     
-    get selectedIndex(): number {
-        return this._selectedIndex;
-    }*/
-
-    /**
-     * This function set selectedIndex
-     * @param {number} _selectedIndex
-     
-    set selectedIndex(_selectedIndex: number) {
-        this._selectedIndex = _selectedIndex;
-    }*/
-
-    /**
-     * This fuction allow wizard to create restaurant
-     
-    canFinish(): boolean {
-        return this._restaurantForm.valid;
-    }*/
-
-    /**
-     * This function allow move in wizard tabs
-     * @param {number} _index
-     
-    canMove(_index: number): boolean {
-        switch (_index) {
-            case 0:
-                return true;
-            case 1:
-                let arrPay: any[] = Object.keys(this._restaurantForm.value.paymentMethods);
-                let _lPaymentMethods: string[] = [];
-                let _validNumber: boolean;
-
-                if (this._restaurantForm.value.tables_number <= this.max_table_number) {
-                    _validNumber = true;
-                } else {
-                    _validNumber = false;
-                }
-
-                arrPay.forEach((pay) => {
-                    if (this._restaurantForm.value.paymentMethods[pay]) {
-                        _lPaymentMethods.push(pay);
-                    }
-                });
-
-                if (this._restaurantForm.controls['country'].valid && this._restaurantForm.controls['city'].valid
-                    && this._restaurantForm.controls['name'].valid && this._restaurantForm.controls['address'].valid
-                    && this._restaurantForm.controls['phone'].valid && this._restaurantForm.controls['tables_number'].valid
-                    && _lPaymentMethods.length > 0 && _validNumber) {
-                    return true;
-                } else {
-                    return false;
-                }
-            default:
-                return true;
-        }
-    }*/
-
-    /**
-     * This function move to the next tab
-     
-    next(): void {
-        if (this.canMove(this.selectedIndex + 1)) {
-            this.selectedIndex++;
-        }
-    }*/
-
-    /**
-     * This function move to the previous tab
-     
-    previous(): void {
-        if (this.selectedIndex === 0) {
-            return;
-        }
-        if (this.canMove(this.selectedIndex - 1)) {
-            this.selectedIndex--;
-        }
-    }*/
 
     /**
      * Function to cancel add Establishment 
@@ -350,7 +267,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         phone: this._establishmentForm.value.phone,
                         establishment_code: this.generateEstablishmentCode(),
                         paymentMethods: _lPaymentMethodsToInsert,
-                        tip_percentage: this._tipValue,
                         image: this._establishmentImageToInsert,
                         tables_quantity: 0,
                         orderNumberCount: 0,
@@ -377,7 +293,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         phone: this._establishmentForm.value.phone,
                         establishment_code: this.generateEstablishmentCode(),
                         paymentMethods: _lPaymentMethodsToInsert,
-                        tip_percentage: this._tipValue,
                         tables_quantity: 0,
                         orderNumberCount: 0,
                         max_jobs: 5,
@@ -388,9 +303,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         is_beta_tester: false
                     });
                 }
-
-                //this._restaurantLegality.restaurant_id = _lNewEstablishment;
-                //RestaurantsLegality.insert(this._restaurantLegality);
 
                 //Insert tables
                 let _lEstabl: Establishment = Establishments.findOne({ _id: _lNewEstablishment });
@@ -572,15 +484,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Set establishment legality
-     * @param {RestaurantLegality} _event
-     
-    setRestaurantLegality(_event: RestaurantLegality): void {
-        this._restaurantLegality = _event;
-        this.addRestaurant();
-    }*/
-
-    /**
      * Set Restaurant Financial Information
      * @return {string} 
      */
@@ -596,23 +499,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         return _lCode;
     }
 
-    /**
-     * Run previous function
-     * @param {boolean} _event 
-     
-    runPrevious(_event: boolean): void {
-        if (_event) {
-            this.previous();
-        }
-    }*/
-
-    /**
-     * Set establishment tip value
-     * @param {number} _event
-     */
-    setTipValue(_event: number): void {
-        this._tipValue = _event;
-    }
 
     /**
     * This function open de error dialog according to parameters 

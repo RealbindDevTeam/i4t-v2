@@ -70,8 +70,6 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
     private btnAcceptLbl: string;
 
     private _showOtherCity: boolean;
-    //private _restaurantLegalityToEdit: RestaurantLegality;
-    private _tipValue: number = 0;
 
     /**
      * EstablishmentEditionComponent Constructor
@@ -196,7 +194,6 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
         this._establishmentPaymentMethods = this._establishmentToEdit.paymentMethods;
         this._countryIndicative = this._establishmentToEdit.indicative;
         this._queue = this._establishmentToEdit.queue;
-        this._tipValue = this._establishmentToEdit.tip_percentage;
     }
 
     /**
@@ -262,7 +259,6 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
                     address: this._establishmentEditionForm.value.address,
                     phone: this._establishmentEditionForm.value.phone,
                     paymentMethods: _lPaymentMethodsToInsert,
-                    tip_percentage: this._tipValue,
                     queue: this._queue,
                     image: this._establishmentImageToEdit
                 }
@@ -279,46 +275,10 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
                     address: this._establishmentEditionForm.value.address,
                     phone: this._establishmentEditionForm.value.phone,
                     paymentMethods: _lPaymentMethodsToInsert,
-                    tip_percentage: this._tipValue,
                     queue: this._queue
                 }
             });
         }
-
-        // Colombia
-        /*if (this._restaurantEditionForm.value.country === '1900') {
-            RestaurantsLegality.update({ _id: this._restaurantLegalityToEdit._id }, {
-                $set: {
-                    regime: this._restaurantLegalityToEdit.regime,
-                    forced_to_invoice: this._restaurantLegalityToEdit.forced_to_invoice === undefined || this._restaurantLegalityToEdit.forced_to_invoice === null ? false : this._restaurantLegalityToEdit.forced_to_invoice,
-                    forced_to_inc: this._restaurantLegalityToEdit.forced_to_inc === undefined || this._restaurantLegalityToEdit.forced_to_inc === null ? false : this._restaurantLegalityToEdit.forced_to_inc,
-                    business_name: this._restaurantLegalityToEdit.business_name === undefined || this._restaurantLegalityToEdit.business_name === null ? '' : this._restaurantLegalityToEdit.business_name,
-                    document: this._restaurantLegalityToEdit.document === undefined || this._restaurantLegalityToEdit.document === null ? '' : this._restaurantLegalityToEdit.document,
-                    invoice_resolution: this._restaurantLegalityToEdit.invoice_resolution === undefined || this._restaurantLegalityToEdit.invoice_resolution === null ? '' : this._restaurantLegalityToEdit.invoice_resolution,
-                    invoice_resolution_date: this._restaurantLegalityToEdit.invoice_resolution_date === undefined || this._restaurantLegalityToEdit.invoice_resolution_date === null ? '' : this._restaurantLegalityToEdit.invoice_resolution_date,
-                    prefix: this._restaurantLegalityToEdit.prefix === undefined || this._restaurantLegalityToEdit.prefix === null ? false : this._restaurantLegalityToEdit.prefix,
-                    prefix_name: this._restaurantLegalityToEdit.prefix_name === undefined || this._restaurantLegalityToEdit.prefix_name === null ? '' : this._restaurantLegalityToEdit.prefix_name,
-                    numeration_from: this._restaurantLegalityToEdit.numeration_from === undefined || this._restaurantLegalityToEdit.numeration_from === null ? '' : this._restaurantLegalityToEdit.numeration_from,
-                    numeration_to: this._restaurantLegalityToEdit.numeration_to === undefined || this._restaurantLegalityToEdit.numeration_to === null ? '' : this._restaurantLegalityToEdit.numeration_to,
-                    is_big_contributor: this._restaurantLegalityToEdit.is_big_contributor === undefined || this._restaurantLegalityToEdit.is_big_contributor === null ? false : this._restaurantLegalityToEdit.is_big_contributor,
-                    big_contributor_resolution: this._restaurantLegalityToEdit.big_contributor_resolution === undefined || this._restaurantLegalityToEdit.big_contributor_resolution === null ? '' : this._restaurantLegalityToEdit.big_contributor_resolution,
-                    big_contributor_date: this._restaurantLegalityToEdit.big_contributor_date === undefined || this._restaurantLegalityToEdit.big_contributor_date === null ? '' : this._restaurantLegalityToEdit.big_contributor_date,
-                    is_self_accepting: this._restaurantLegalityToEdit.is_self_accepting === undefined || this._restaurantLegalityToEdit.is_self_accepting === null ? false : this._restaurantLegalityToEdit.is_self_accepting,
-                    self_accepting_resolution: this._restaurantLegalityToEdit.self_accepting_resolution === undefined || this._restaurantLegalityToEdit.self_accepting_resolution === null ? '' : this._restaurantLegalityToEdit.self_accepting_resolution,
-                    self_accepting_date: this._restaurantLegalityToEdit.self_accepting_date === undefined || this._restaurantLegalityToEdit.self_accepting_date === null ? '' : this._restaurantLegalityToEdit.self_accepting_date,
-                    text_at_the_end: this._restaurantLegalityToEdit.text_at_the_end === undefined || this._restaurantLegalityToEdit.text_at_the_end === null ? '' : this._restaurantLegalityToEdit.text_at_the_end,
-                    //second resolution
-                    invoice_resolution2: this._restaurantLegalityToEdit.invoice_resolution2 === undefined || this._restaurantLegalityToEdit.invoice_resolution2 === null ? '' : this._restaurantLegalityToEdit.invoice_resolution2,
-                    invoice_resolution_date2: this._restaurantLegalityToEdit.invoice_resolution_date2 === undefined || this._restaurantLegalityToEdit.invoice_resolution_date2 === null ? '' : this._restaurantLegalityToEdit.invoice_resolution_date2,
-                    prefix2: this._restaurantLegalityToEdit.prefix2 === undefined || this._restaurantLegalityToEdit.prefix2 === null ? false : this._restaurantLegalityToEdit.prefix2,
-                    prefix_name2: this._restaurantLegalityToEdit.prefix_name2 === undefined || this._restaurantLegalityToEdit.prefix_name2 === null ? '' : this._restaurantLegalityToEdit.prefix_name2,
-                    numeration_from2: this._restaurantLegalityToEdit.numeration_from2 === undefined || this._restaurantLegalityToEdit.numeration_from2 === null ? '' : this._restaurantLegalityToEdit.numeration_from2,
-                    numeration_to2: this._restaurantLegalityToEdit.numeration_to2 === undefined || this._restaurantLegalityToEdit.numeration_to2 === null ? '' : this._restaurantLegalityToEdit.numeration_to2,
-                    //retaining agent
-                    is_retaining_agent: this._restaurantLegalityToEdit.is_retaining_agent === undefined || this._restaurantLegalityToEdit.is_retaining_agent === null ? false : this._restaurantLegalityToEdit.is_retaining_agent
-                }
-            });
-        }*/
         this.cancel();
     }
 
@@ -328,70 +288,6 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
     cancel(): void {
         this._router.navigate(['app/establishment']);
     }
-
-    /**
-     * This function get selectedIndex
-     
-    get selectedIndex(): number {
-        return this._selectedIndex;
-    }*/
-
-    /**
-     * This function set selectedIndex
-     * @param {number} _selectedIndex
-     
-    set selectedIndex(_selectedIndex: number) {
-        this._selectedIndex = _selectedIndex;
-    }*/
-
-    /**
-     * This fuction allow wizard to create establishment
-     
-    canFinish(): boolean {
-        return this._establishmentEditionForm.valid;
-    }*/
-
-    /**
-     * This function allow move in wizard tabs
-     * @param {number} _index
-     
-    canMove(_index: number): boolean {
-        switch (_index) {
-            case 0:
-                return true;
-            case 1:
-                if (this._establishmentEditionForm.controls['country'].valid && this._establishmentEditionForm.controls['city'].valid
-                    && this._establishmentEditionForm.controls['name'].valid && this._establishmentEditionForm.controls['address'].valid
-                    && this._establishmentEditionForm.controls['phone'].valid) {
-                    return true;
-                } else {
-                    return false;
-                }
-            default:
-                return true;
-        }
-    }*/
-
-    /**
-     * This function move to the next tab
-     
-    next(): void {
-        if (this.canMove(this.selectedIndex + 1)) {
-            this.selectedIndex++;
-        }
-    }*/
-
-    /**
-     * This function move to the previous tab
-     
-    previous(): void {
-        if (this.selectedIndex === 0) {
-            return;
-        }
-        if (this.canMove(this.selectedIndex - 1)) {
-            this.selectedIndex--;
-        }
-    }*/
 
     /**
      * Function to change country
@@ -456,43 +352,6 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
             _wordTraduced = res;
         });
         return _wordTraduced;
-    }
-
-    /**
-     * Set restaurant legality
-     * @param {RestaurantLegality} _event
-     
-    setRestaurantLegality(_event: RestaurantLegality): void {
-        this._restaurantLegalityToEdit = _event;
-        this.editRestaurant();
-    }*/
-
-    /**
-     * Run previous function
-     * @param {boolean} _event 
-     
-    runPrevious(_event: boolean): void {
-        if (_event) {
-            this.previous();
-        }
-    }*/
-
-    /**
-     * Run cancel function
-     * @param {boolean} _event
-     
-    runCancel(_event: boolean): void {
-        if (_event) {
-            this.cancel();
-        }
-    }*/
-
-    /**
-     * Set restaurant tip value
-     * @param {number} _event
-     */
-    setTipValue(_event: number): void {
-        this._tipValue = _event;
     }
 
     /**

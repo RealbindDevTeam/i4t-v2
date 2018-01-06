@@ -131,7 +131,9 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
      * @param {string} _pUserDetailId
      */
     changeUserState(_pUserDetail: UserDetail): void {
-        UserDetails.update({ _id: _pUserDetail._id }, { $set: { is_active: !_pUserDetail.is_active } });
+        if (_pUserDetail) {
+            UserDetails.update({ _id: _pUserDetail._id }, { $set: { is_active: !_pUserDetail.is_active } });
+        }
     }
 
     /**
