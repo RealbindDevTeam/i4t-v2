@@ -63,7 +63,7 @@ export class Recommended implements OnInit, OnDestroy {
     }
 
     /**
-     * Function to update de item establishments avalaibility
+     * Function to update de item establishments recommendation
      */
     updateRecommendedFlag(_establishmentId: string) {
         let snackMsg: string = this.itemNameTraduction('ITEMS.RECOMMENDED_CHANGED');
