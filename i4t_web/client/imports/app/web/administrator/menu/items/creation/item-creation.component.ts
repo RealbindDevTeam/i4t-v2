@@ -328,7 +328,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                     let find: Establishment[] = this._establishmentList.filter(r => r.currencyId === cur);
                     for (let es of find) {
                         if (this._itemForm.value.establishments[es._id]) {
-                            let _lItemEstablishment: ItemEstablishment = { establishment_id: '', price: 0, isAvailable: true };
+                            let _lItemEstablishment: ItemEstablishment = { establishment_id: '', price: 0, isAvailable: true, recommended: false };
 
                             _lItemEstablishment.establishment_id = es._id;
                             _lItemEstablishment.price = this._itemForm.value.currencies[cur];

@@ -49,6 +49,7 @@ export interface ItemEstablishment {
     price: number;
     itemTax?: number;
     isAvailable: boolean;
+    recommended: boolean;
     aply_reward?: boolean;
 }
 

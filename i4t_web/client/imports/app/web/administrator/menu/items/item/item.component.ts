@@ -17,6 +17,7 @@ import { Establishments } from '../../../../../../../../both/collections/establi
 import { AlertConfirmComponent } from '../../../../general/alert-confirm/alert-confirm.component';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
+import { Recommended } from "./recommended/recommended.component";
 
 @Component({
     selector: 'item',
@@ -152,6 +153,15 @@ export class ItemComponent implements OnInit, OnDestroy {
                 is_active: !_item.is_active,
                 modification_date: new Date(),
                 modification_user: Meteor.userId()
+            }
+        });
+    }
+
+    openRecommendDialog(_pItem: Item) {
+        this._dialogRef = this._dialog.open(Recommended, {
+            disableClose: true,
+            data: {
+                item: _pItem
             }
         });
     }
