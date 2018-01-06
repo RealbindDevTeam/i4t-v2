@@ -14,7 +14,6 @@ export interface Establishment extends CollectionObject {
     phone: string;
     establishment_code: string;
     paymentMethods: string[];
-    tip_percentage: number;
     tables_quantity: number;
     image?: EstablishmentImage;
     orderNumberCount: number;

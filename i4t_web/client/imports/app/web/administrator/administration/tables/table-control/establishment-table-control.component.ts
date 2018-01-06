@@ -94,17 +94,6 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Return establishment currency
-     * @param {string} _pEstablishmentCurrency 
-     */
-    getEstablishmentCurrency(_pEstablishmentCurrency: string): string {
-        let _lCurrency: Currency = Currencies.findOne({ _id: _pEstablishmentCurrency });
-        if (_lCurrency) {
-            return _lCurrency.code;
-        }
-    }
-
-    /**
      * Change Establishment Filter
      * @param {string} _pEstablishmentId 
      */
@@ -121,27 +110,6 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
      */
     countEstablishments(): void {
         Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
-    }
-
-    /**
-     * Return total payment account
-     * @param {string} _pEstablishmentId
-     * @param {string} _pTableId 
-     */
-    getPaymentAccount(_pEstablishmentId: string, _pTableId: string): number {
-        let _lAccount: Account = Accounts.findOne({ establishment_id: _pEstablishmentId, tableId: _pTableId });
-        if (_lAccount) {
-            return _lAccount.total_payment;
-        }
-    }
-
-    /**
-     * Return table orders count
-     * @param {string} _pEstablishmentId 
-     * @param {string} _pTableId 
-     */
-    getTableOrders(_pEstablishmentId: string, _pTableId: string): number {
-        return Orders.collection.find({ establishment_id: _pEstablishmentId, tableId: _pTableId }).count();
     }
 
     /**

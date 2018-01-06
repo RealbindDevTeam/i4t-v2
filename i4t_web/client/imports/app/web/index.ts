@@ -84,8 +84,6 @@ import { TableDetailComponent } from './administrator/administration/tables/tabl
 import { PenalizeCustomerComponent } from './administrator/administration/tables/table-control/table-detail/penalize-customer/penalize-customer.component';
 import { SupervisorEstablishmentTableControlComponent } from './supervisor/establishment-table-control/supervisor-establishment-table-control.component';
 //import { InvoicesDownloadPage } from './administrator/administration/invoices-download/invoices-download.component';
-//import { RestaurantLegalityComponent } from './administrator/administration/establishment/legality/establishment-legality.component';
-import { ColombiaLegalityComponent } from './administrator/administration/establishment/legality/country-legality/colombia-legality/colombia-legality.component';
 import { EstablishmentProfileComponent } from './administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { ScheduleDetailComponent } from './customer/establishment-profile-detail/schedule-detail/schedule-detail.component';
@@ -154,8 +152,6 @@ export const WEB_DECLARATIONS = [
     TableDetailComponent,
     SupervisorEstablishmentTableControlComponent,
     //InvoicesDownloadPage,
-    //EstablishmentLegalityComponent,
-    ColombiaLegalityComponent,
     EstablishmentProfileComponent,
     EstablishmentProFileDetailComponent
 ];
