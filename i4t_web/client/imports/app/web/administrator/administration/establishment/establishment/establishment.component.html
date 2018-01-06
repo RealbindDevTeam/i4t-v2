@@ -31,7 +31,7 @@
                     <img *ngIf="!establishment.image" src="/images/default-restaurant.png">
                     <span class="mat-card-title">{{establishment.name}}</span>
                     <span class="mat-card-subtitle">{{establishment.address}}</span>
-                    <button matTooltip="{{'RESTAURANT.EDIT_RESTAURANT' | translate}}" mat-fab class="btn-position-edition" (click)="openEstablishmentEdition(establishment)">
+                    <button mat-fab class="btn-position-edition" (click)="openEstablishmentEdition(establishment)">
                         <mat-icon style="color: white;" class="mat-24">create</mat-icon>
                     </button>
                 </div>
@@ -52,5 +52,5 @@
             </mat-card>
         </div>
     </div>
-    <button *ngIf="_thereAreEstablishments" matTooltip="{{'RESTAURANT.REGISTER_RESTAURANT' | translate}}" class="fixed-action-btn" mat-fab (click)="openEstablishmentRegister()"> <mat-icon style="color: white;">add</mat-icon></button>
+    <button *ngIf="_thereAreEstablishments" class="fixed-action-btn" mat-fab (click)="openEstablishmentRegister()"> <mat-icon style="color: white;">add</mat-icon></button>
 </div>

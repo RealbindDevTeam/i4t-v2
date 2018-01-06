@@ -28,7 +28,7 @@
         <mat-card-content>
             <mat-form-field style="width: 95%; margin-bottom: 30px">
                 <mat-select placeholder="{{'TABLES.SELECT_RESTAURANT' | translate}}">
-                    <mat-option *ngFor="let est of establishments | async" (click)="changeEstablishmentFilter(est._id);" value="{{est._id}}">{{est.name}}</mat-option>
+                    <mat-option *ngFor="let est of establishments | async" (click)="changeEstablishmentFilter(est._id);" value="{{est._id}}">{{est.name}} - {{est.address}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <div *ngIf="show_cards">

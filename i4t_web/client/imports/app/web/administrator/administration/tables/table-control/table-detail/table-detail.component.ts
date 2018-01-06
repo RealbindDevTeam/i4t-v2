@@ -11,9 +11,7 @@ import { Users } from '../../../../../../../../../both/collections/auth/user.col
 import { UserDetail, UserDetailImage } from '../../../../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../../../../both/collections/auth/user-detail.collection';
 import { Order } from '../../../../../../../../../both/models/establishment/order.model';
-import { Orders  } from '../../../../../../../../../both/collections/establishment/order.collection';
-import { Currency } from '../../../../../../../../../both/models/general/currency.model';
-import { Currencies } from '../../../../../../../../../both/collections/general/currency.collection';
+import { Orders } from '../../../../../../../../../both/collections/establishment/order.collection';
 import { PenalizeCustomerComponent } from './penalize-customer/penalize-customer.component';
 
 @Component({
@@ -28,13 +26,11 @@ export class TableDetailComponent implements OnInit, OnDestroy {
     private _tableId: string;
     private _tableNumber: string;
     private _currencyId: string;
-    private _currencyCode: string;
     private _role: string;
 
     private _usersSub: Subscription;
     private _userDetailsSub: Subscription;
     private _ordersSub: Subscription;
-    private _currenciesSub: Subscription;
 
     private _userDetails: Observable<UserDetail[]>;
     private _users: Observable<User[]>;
@@ -84,12 +80,6 @@ export class TableDetailComponent implements OnInit, OnDestroy {
             ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS',
                 'ORDER_STATUS.PREPARED', 'ORDER_STATUS.DELIVERED',
                 'ORDER_STATUS.PENDING_CONFIRM']).subscribe();
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._establishmentId]).subscribe(() => {
-            this._ngZone.run(() => {
-                let _lCurrency: Currency = Currencies.findOne({ _id: this._currencyId });
-                this._currencyCode = _lCurrency.code;
-            });
-        });
     }
 
     /**
@@ -99,7 +89,6 @@ export class TableDetailComponent implements OnInit, OnDestroy {
         if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
         if (this._usersSub) { this._usersSub.unsubscribe(); }
         if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
     }
 
     /**
@@ -124,19 +113,7 @@ export class TableDetailComponent implements OnInit, OnDestroy {
             }
         }
     }
-
-    /**
-     * Return Total Consumption
-     * @param {string} _pUserId 
-     */
-    getTotalConsumption(_pUserId: string): number {
-        let _lConsumption: number = 0;
-        Orders.collection.find({ creation_user: _pUserId, status: { $in: ['ORDER_STATUS.DELIVERED', 'ORDER_STATUS.PENDING_CONFIRM'] }, establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((order) => {
-            _lConsumption += order.totalPayment;
-        });
-        return _lConsumption;
-    }
-
+    
     /**
      * Return to Table Control
      */

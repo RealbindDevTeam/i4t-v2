@@ -12,7 +12,7 @@
                                 <td style="width: 50%">
                                     <mat-form-field style="width: 100%;">
                                         <mat-select required formControlName="establishment_work" placeholder="{{'COLLABORATORS_REGISTER.SELECT_RESTAURANT' | translate}}">
-                                            <mat-option *ngFor="let est of _establishments | async" value="{{est._id}}" (click)="validateEstablishmentSelection(est._id)">{{rest.name}}</mat-option>
+                                            <mat-option *ngFor="let est of _establishments | async" value="{{est._id}}" (click)="validateEstablishmentSelection(est._id)">{{est.name}} - {{est.address}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </td>

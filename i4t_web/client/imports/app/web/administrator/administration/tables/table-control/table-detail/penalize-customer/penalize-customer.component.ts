@@ -5,8 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { UserLanguageService } from '../../../../../../services/general/user-language.service';
-import { Order } from '../../../../../../../../../../both/models/establishment/order.model';
-import { Orders  } from '../../../../../../../../../../both/collections/establishment/order.collection';
 import { User } from '../../../../../../../../../../both/models/auth/user.model';
 
 @Component({
@@ -70,46 +68,6 @@ export class PenalizeCustomerComponent implements OnInit, OnDestroy {
                 }
             });
         }, 1500);
-    }
-
-    /**
-     * Return orders in registered status
-     * @param {string} _pUserId 
-     */
-    getOrdersRegisteredStatus(): number {
-        return Orders.collection.find({ creation_user: this._user._id, status: 'ORDER_STATUS.REGISTERED', establishment_id: this._establishmentId, tableId: this._tableId }).count();
-    }
-
-    /**
-     * Return orders in process status
-     * @param {status} _pUserId 
-     */
-    getOrdersInProcessStatus(): number {
-        return Orders.collection.find({ creation_user: this._user._id, status: 'ORDER_STATUS.IN_PROCESS', establishment_id: this._establishmentId, tableId: this._tableId }).count();
-    }
-
-    /**
-     * Return orders in prepared status
-     * @param {status} _pUserId 
-     */
-    getOrdersInPreparedStatus(): number {
-        return Orders.collection.find({ creation_user: this._user._id, status: 'ORDER_STATUS.PREPARED', establishment_id: this._establishmentId, tableId: this._tableId }).count();
-    }
-
-    /**
-     * Return orders in delivered status
-     * @param {status} _pUserId 
-     */
-    getOrdersDeliveredStatus(): number {
-        return Orders.collection.find({ creation_user: this._user._id, status: 'ORDER_STATUS.DELIVERED', establishment_id: this._establishmentId, tableId: this._tableId }).count();
-    }
-
-    /**
-     * Return orders in pending confirm status
-     * @param {status} _pUserId 
-     */
-    getOrdersPendingConfirmStatus(): number {
-        return Orders.collection.find({ creation_user: this._user._id, status: 'ORDER_STATUS.PENDING_CONFIRM', establishment_id: this._establishmentId, tableId: this._tableId }).count();
     }
 
     /**
