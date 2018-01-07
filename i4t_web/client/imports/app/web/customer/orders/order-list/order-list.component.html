@@ -89,34 +89,35 @@
                             </div>
                             <mat-icon>keyboard_arrow_right</mat-icon>
                         </mat-toolbar>
-                        <mat-card *ngIf="_orderCustomerIndex == i">
+                        <mat-card *ngIf="_orderCustomerIndex === i">
                             <mat-card-content style="margin-top: -1rem;">
-                                <mat-list *ngIf="(or.items.length > 0)">
-                                    <span *ngFor="let item of _items | async">
-                                        <span *ngFor="let it of or.items">
-                                            <ng-template [ngIf]="item._id === it.itemId">
-                                                <mat-list-item>
-                                                    <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
-                                                    <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
-                                                    <h4 mat-line>{{item.name}}</h4>
-                                                    <h5 mat-line>
-                                                        {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
-                                                        <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
-                                                        <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
-                                                    </h5>
-                                                    <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
-                                                    <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.REGISTERED'" (click)="showOrderItemDetail(it)">
-                                                        <mat-icon class="item-icon">mode_edit</mat-icon>
-                                                    </button>
-                                                    <button mat-icon-button *ngIf="or.status !== 'ORDER_STATUS.REGISTERED'" (click)="showOrderItemDetail(it)">
-                                                        <mat-icon class="item-icon">visibility</mat-icon>
-                                                    </button>
-                                                </mat-list-item>
-                                                <mat-divider class="divider"></mat-divider>
-                                            </ng-template>
+                                <mat-list>
+                                    <span *ngIf="(or.items.length > 0)">
+                                        <span *ngFor="let item of _items | async">
+                                            <span *ngFor="let it of or.items">
+                                                <ng-template [ngIf]="item._id === it.itemId">
+                                                    <mat-list-item>
+                                                        <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
+                                                        <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
+                                                        <h4 mat-line>{{item.name}}</h4>
+                                                        <h5 mat-line>
+                                                            {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
+                                                            <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
+                                                            <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
+                                                        </h5>
+                                                        <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
+                                                        <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.SELECTING'" (click)="showOrderItemDetail(it)">
+                                                            <mat-icon class="item-icon">mode_edit</mat-icon>
+                                                        </button>
+                                                        <button mat-icon-button *ngIf="or.status !== 'ORDER_STATUS.SELECTING'" (click)="showOrderItemDetail(it)">
+                                                            <mat-icon class="item-icon">visibility</mat-icon>
+                                                        </button>
+                                                    </mat-list-item>
+                                                    <mat-divider class="divider"></mat-divider>
+                                                </ng-template>
+                                            </span>
                                         </span>
                                     </span>
-                                    
                                     <span *ngIf="(or.additions.length > 0)">
                                         <span *ngFor="let addition of _additions | async">
                                             <span *ngFor="let ad of or.additions">
@@ -125,7 +126,7 @@
                                                         <img mat-list-avatar class="custom br" src="/images/default_addition.png">
                                                         <h4 mat-line>{{addition.name}} <div style="display: inline-block;font-size: smaller;">({{'ORDER_LIST.ADDITION' | translate}})</div></h4>
                                                         <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{ad.quantity}}</p>
-                                                        <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.REGISTERED'" (click)="showAdditionsDetail(ad)">
+                                                        <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.SELECTING'" (click)="showAdditionsDetail(ad)">
                                                             <mat-icon class="item-icon">mode_edit</mat-icon>
                                                         </button>
                                                     </mat-list-item>
@@ -233,7 +234,6 @@
                                     <div>{{setMaxGarnishFoodElements(item.garnishFoodQuantity)}}</div>
                                     <div>{{setUnitPrice(item)}}</div>
                                     <mat-card-subtitle class="price">{{'ORDER_LIST.UNIT_PRICE' | translate}}: {{ getItemPrice( item ) }} {{_currencyCode}}</mat-card-subtitle>
-                                    <mat-card-subtitle>{{'ORDER_LIST.COOKING_TIME' | translate}}: {{item.time}}</mat-card-subtitle>
                                     <p *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.ITEM_UNAVAILABLE' | translate}}</p>
                                     <div *ngIf="getItemAvailability(item._id)">
                                         <div>
@@ -324,4 +324,7 @@
             </div>
         </div>
     </div>
+</div>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
 </div>

@@ -122,7 +122,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 this._items = Items.find({}).zone();
             });
         });
-        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.REGISTERED']).subscribe(() => { });
+        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.SELECTING']).subscribe(() => { });
         this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFoodCol = GarnishFoodCol.find({}).zone();

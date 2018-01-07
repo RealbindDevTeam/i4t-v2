@@ -38,12 +38,11 @@
     "YES": "Sí",
     "NO": "No",
     "ORDER_STATUS": {
-        "REGISTERED": "Registrado",
-        "IN_PROCESS": "En proceso",
-        "PREPARED": "Preparado",
-        "CANCELED": "Cancelado",
-        "DELIVERED": "Entregado",
-        "PENDING_CONFIRM": "Confirmación pendiente para pago"
+        "SELECTING": "Seleccionando",
+        "CONFIRMED": "Confirmado",
+        "RECEIVED": "Recibido",
+        "ATTENDED": "Atendido",
+        "CANCELED": "Cancelado"
     },
     "DATE_VALIDATE": {
         "DAY_FORMAT": "Formato del día incorrecto",
@@ -845,7 +844,8 @@
         "DELETE_ITEM_DLG": "Eliminar item de la orden",
         "DELETE_ADITION_DLG": "Eliminar adición de la orden",
         "CANCEL_ORDER_DLG": "Cancelar orden",
-        "CONFIRM_ORDER_DLG": "Confirmar orden"
+        "CONFIRM_ORDER_DLG": "Confirmar orden",
+        "ORDER_CONFIRMED_MSG": "Orden confirmada"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "No te encuentras en un restaurante",

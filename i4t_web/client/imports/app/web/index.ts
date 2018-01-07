@@ -70,7 +70,7 @@ import { AlertConfirmComponent } from './general/alert-confirm/alert-confirm.com
 import { UserLanguageService } from './services/general/user-language.service';
 import { ItemEnableSupComponent } from './supervisor/items-enable/items-enable-sup.component';
 import { EnableConfirmComponent } from './administrator/menu/items/enable/enable-confirm/enable-confirm.component';
-import { MenuListComponent } from './chef/menu-list/menu-list.component';
+import { MenuListComponent } from './waiter/menu-list/menu-list.component';
 import { SupervisorCollaboratorsComponent } from './supervisor/collaborators/collaborators/supervisor-collaborators.component';
 import { SupervisorCollaboratorsEditionComponent } from './supervisor/collaborators/edition/supervisor-collaborators-edition.component';
 import { SupervisorCollaboratorsRegisterComponent } from './supervisor/collaborators/register/supervisor-collaborators-register.component';

@@ -87,6 +87,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _thereAreUserOrders: boolean = true;
     private _thereAreNotUserOrders: boolean = true;
     private _tableNumber: number;
+    private _loading: boolean = false;
 
     /**
      * OrdersListComponent Constructor
@@ -126,7 +127,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED']).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED']).subscribe(() => {
             this._ngZone.run(() => {
                 this.countUserOrders();
                 this._orders = Orders.find({ creation_user: this._user }).zone();
@@ -225,7 +226,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._showDetails = false;
         this.viewItemDetail('item-selected', true);
     }
-    
+
     /**
      * This function allow view item detail
      * @param _pDiv 
@@ -280,7 +281,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                         }
                     }
                 );
-                this._showOrderItemDetail = false;
+                
                 this._currentOrder = Orders.findOne({ _id: this._currentOrder._id });
                 if (this._currentOrder.items.length === 0 && this._currentOrder.additions.length === 0) {
                     Orders.update({ _id: this._currentOrder._id }, {
@@ -290,7 +291,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                         }
                     });
                 }
-                this.viewItemDetail('item-selected' ,true);
+                this.viewItemDetail('item-selected', true);
+                this._showOrderItemDetail = false;
                 let _lMessage: string = this.itemNameTraduction('ORDER_LIST.ITEM_DELETED');
                 this.snackBar.open(_lMessage, '', {
                     duration: 2500
@@ -367,7 +369,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._orderCustomerIndex = _pIndex;
         }
 
-        if (_pOrder.status === 'ORDER_STATUS.REGISTERED') {
+        if (_pOrder.status === 'ORDER_STATUS.SELECTING') {
             this._customerCanEdit = true;
             this._editOrderItemForm.controls['observations'].enable();
         } else {
@@ -785,7 +787,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._mdDialogRef.afterClosed().subscribe(result => {
             this._mdDialogRef = result;
             if (result.success) {
-                if (_pOrder.status === 'ORDER_STATUS.REGISTERED') {
+                if (_pOrder.status === 'ORDER_STATUS.SELECTING') {
                     Orders.update({ _id: _pOrder._id }, {
                         $set: {
                             status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
@@ -828,7 +830,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._mdDialogRef.afterClosed().subscribe(result => {
             this._mdDialogRef = result;
             if (result.success) {
-                if (_pOrder.status === 'ORDER_STATUS.REGISTERED') {
+                if (_pOrder.status === 'ORDER_STATUS.SELECTING') {
                     let _lOrderItems: OrderItem[] = _pOrder.items;
                     _lOrderItems.forEach((it) => {
                         let _lItem: Item = Items.findOne({ _id: it.itemId });
@@ -838,14 +840,28 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                         }
                     });
                     if (_lItemsIsAvailable) {
-                        Orders.update({ _id: _pOrder._id }, {
-                            $set: {
-                                status: 'ORDER_STATUS.IN_PROCESS', modification_user: this._user,
-                                modification_date: new Date()
-                            }
-                        }
-                        );
                         this._showDetails = false;
+                        var data: any = {
+                            establishments: _pOrder.establishment_id,
+                            tables: _pOrder.tableId,
+                            user: this._user,
+                            waiter_id: "",
+                            status: "waiting",
+                            type: "CUSTOMER_ORDER",
+                            order_id: _pOrder._id
+                        }
+                
+                        this._loading = true;
+                        setTimeout(() => {
+                            MeteorObservable.call('findQueueByEstablishment', data).subscribe(() => {
+                                Orders.update({ _id: _pOrder._id }, { $set: { status: 'ORDER_STATUS.CONFIRMED', modification_user: this._user, modification_date: new Date() } });
+                                this._loading = false;
+                                let _lMessage: string = this.itemNameTraduction('ORDER_LIST.ORDER_CONFIRMED_MSG');
+                                this.snackBar.open(_lMessage, '', { duration: 2500 });
+                            }, (error) => {
+                                this.openDialog(this.titleMsg, '', error.reason, '', this.btnAcceptLbl, false);
+                            });
+                        }, 1500);
                     } else {
                         this.openDialog(this.titleMsg, '', this.itemNameTraduction("ORDER_LIST.ORDER_ITEMS_UNAVAILABLE"), '', this.btnAcceptLbl, false);
                     }

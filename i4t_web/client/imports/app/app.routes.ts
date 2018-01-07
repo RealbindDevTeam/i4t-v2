@@ -46,7 +46,7 @@ import { TrnResponseConfirmComponent } from './web/administrator/payment/payu-pa
 import { CustomerPaymentsHistoryComponent } from './web/customer/payments-history/customer-payments-history.component';
 import { AdminSignupComponent } from './web/auth/admin-signup/admin-signup.component';
 import { ItemEnableSupComponent } from './web/supervisor/items-enable/items-enable-sup.component';
-import { MenuListComponent } from './web/chef/menu-list/menu-list.component';
+import { MenuListComponent } from './web/waiter/menu-list/menu-list.component';
 import { SupervisorCollaboratorsComponent } from './web/supervisor/collaborators/collaborators/supervisor-collaborators.component';
 import { SupervisorCollaboratorsRegisterComponent } from './web/supervisor/collaborators/register/supervisor-collaborators-register.component';
 import { SupervisorTableComponent } from './web/supervisor/tables/supervisor-tables.component';

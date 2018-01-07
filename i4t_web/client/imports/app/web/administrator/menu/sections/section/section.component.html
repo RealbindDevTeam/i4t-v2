@@ -39,7 +39,7 @@
         </p>
         <div *ngIf="_showEstablishments" formGroupName="establishments">
           <mat-checkbox *ngFor="let establishment of _establishments | async" [formControlName]="establishment._id" [class.invalid]="!_sectionForm.controls.establishments.valid"
-            class="checkbox">{{establishment.name}}</mat-checkbox>
+            class="checkbox">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
           <label></label>
         </div>
       </div>
