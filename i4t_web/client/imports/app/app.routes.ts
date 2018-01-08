@@ -30,7 +30,6 @@ import { ItemComponent } from './web/administrator/menu/items/item/item.componen
 import { EstablishmentEditionComponent } from './web/administrator/administration/establishment/edition/establishment-edition.component';
 import { ItemEnableComponent } from './web/administrator/menu/items/enable/items-enable.component';
 import { WaiterCallComponent } from './web/customer/waiter-call/waiter-call.component';
-import { OrderAttentionComponent } from './web/chef/order-attention/order-attention.component';
 import { CallsComponent } from './web/waiter/calls/calls/calls.component';
 import { NotFoundWebComponent } from './web/auth/notfound/notfound.web.component';
 //import { PaymentsComponent } from './web/customer/payments/payments/payments.component';
@@ -81,7 +80,6 @@ export const routes: Route[] = [
             { path: 'orders', component: OrdersComponent, canActivate: [CustomerGuard] },
             { path: 'items-enable', component: ItemEnableComponent, canActivate: [SupervisorGuard] },
             { path: 'waiter-call', component: WaiterCallComponent, canActivate: [CustomerGuard] },
-            { path: 'chef-orders', component: OrderAttentionComponent, canActivate: [ChefGuard] },
             { path: 'calls', component: CallsComponent, canActivate: [WaiterGuard] },
             //{ path: 'payments', component: PaymentsComponent, canActivate: [CustomerGuard] },
             { path: 'monthly-payment', component: MonthlyPaymentComponent, canActivate: [AdminGuard] },

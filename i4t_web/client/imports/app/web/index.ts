@@ -38,7 +38,6 @@ import { OrderCreateComponent } from './customer/orders/order-create/order-creat
 import { OrdersListComponent } from './customer/orders/order-list/order-list.component';
 import { ItemEnableComponent } from './administrator/menu/items/enable/items-enable.component';
 import { WaiterCallComponent } from './customer/waiter-call/waiter-call.component';
-import { OrderAttentionComponent } from './chef/order-attention/order-attention.component';
 import { CallsComponent } from './waiter/calls/calls/calls.component';
 import { CallCloseConfirmComponent } from './waiter/calls/call-close-confirm/call-close-confirm.component';
 import { NotFoundWebComponent } from './auth/notfound/notfound.web.component';
@@ -121,7 +120,6 @@ export const WEB_DECLARATIONS = [
     OrdersListComponent,
     ItemEnableComponent,
     WaiterCallComponent,
-    OrderAttentionComponent,
     CallsComponent,
     NotFoundWebComponent,
     IurestSliderComponent,

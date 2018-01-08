@@ -208,7 +208,7 @@ if (Meteor.isServer) {
             if (_lOrder.status === 'ORDER_STATUS.CONFIRMED') {
               Orders.update({ _id: _lOrder._id }, {
                 $set: {
-                  status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
+                  status: 'ORDER_STATUS.CANCELED', modification_user: _jobDetail.waiter_id,
                   modification_date: new Date()
                 }
               }

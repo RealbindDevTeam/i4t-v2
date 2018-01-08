@@ -281,7 +281,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                         }
                     }
                 );
-                
+
                 this._currentOrder = Orders.findOne({ _id: this._currentOrder._id });
                 if (this._currentOrder.items.length === 0 && this._currentOrder.additions.length === 0) {
                     Orders.update({ _id: this._currentOrder._id }, {
@@ -850,7 +850,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                             type: "CUSTOMER_ORDER",
                             order_id: _pOrder._id
                         }
-                
+
                         this._loading = true;
                         setTimeout(() => {
                             MeteorObservable.call('findQueueByEstablishment', data).subscribe(() => {
