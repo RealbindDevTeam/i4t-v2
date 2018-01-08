@@ -34,8 +34,8 @@
             <mat-card>
                 <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.ABOUT_RESTAURANT' | translate}}</mat-card-title>
                 <mat-card-content>
-                    <p *ngIf="!_showExtended">{{establishment.establishment_description.substring(0, 450)}}</p>
-                    <p *ngIf="_showExtended">{{establishment.establishment_description}}</p>
+                    <p *ngIf="!_showExtended">{{establishmentProfile.establishment_description.substring(0, 450)}}</p>
+                    <p *ngIf="_showExtended">{{establishmentProfile.establishment_description}}</p>
                     <button *ngIf="_showReadMore" mat-button color="primary" (click)="extendDescription()">{{_btnLabel}}</button>
                 </mat-card-content>
             </mat-card>
