@@ -1,4 +1,4 @@
-<mat-card mat-cell="12" class="demo-card demo-basic" style="width: 90%; margin: 0 auto" *ngIf="!_thereAreItems">
+<mat-card *ngIf="!_thereAreItems">
     <mat-card-content>
         <div class="card_initial">
             <div class="card_initial has-image">
@@ -15,19 +15,26 @@
     </mat-card-content>
 </mat-card>
 
-<div class="main" *ngIf="_thereAreItems">
-    <div class="main-overflow">
-        <mat-card class="custom-cards" *ngFor="let item of _items | async">
-            <div class="header-card">
-                <img *ngIf="item.image" src="{{ item.image.url }}">
-                <img *ngIf="!item.image" src="/images/default-plate.png">
-                <span class="mat-card-title">{{item.name}}</span>
-            </div>
-            <mat-card-content>
-                <p *ngIf="item.description.length > 50">{{item.description.substring(1, 50)}}...</p>
-                <p *ngIf="item.description.length <= 50">{{item.description}}</p>
-                <mat-slide-toggle [checked]="getItemAvailable(item)" (change)="updateAvailableFlag(item._id)">{{'ENABLE_DISABLED.BTN_TOGGLE_MSG' | translate}}</mat-slide-toggle>
-            </mat-card-content>
-        </mat-card>
+<mat-card *ngFor="let item of _items | async" class="item">
+    <div class="mdc-card__horizontal-block">
+        <section class="mdc-card__primary">
+            <mat-card-title>{{item.name}}</mat-card-title>
+            <p *ngIf="item.description.length > 50">{{item.description.substring(0, 50)}}...</p>
+            <p *ngIf="item.description.length <= 50">{{item.description}}</p>
+        </section>
+        <img class="mdc-card-media-item" *ngIf="item.image" src="{{ item.image.url }}" alt="{{item.name}}">
+        <img class="mdc-card-media-item" *ngIf="!item.image" src="/images/default-plate.png" alt="{{item.name}}">
     </div>
-</div>
+
+    <mat-card-actions align="end">
+        <span class="app-flex-filler lh">
+            <button *ngIf="getItemRecommendation(item)" mat-icon-button color="accent" (click)="updateRecommendedFlag(item._id)">
+                <mat-icon class="md-24">star</mat-icon>
+            </button>
+            <button *ngIf="!getItemRecommendation(item)" mat-icon-button (click)="updateRecommendedFlag(item._id)">
+                <mat-icon class="md-24">star_border</mat-icon>
+            </button>
+            <mat-slide-toggle [checked]="getItemAvailable(item)" (change)="updateAvailableFlag(item._id)"></mat-slide-toggle>
+        </span>
+    </mat-card-actions>
+</mat-card>
