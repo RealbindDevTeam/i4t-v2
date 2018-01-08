@@ -63,7 +63,6 @@
                         <div class="content">
                             <mat-card-subtitle class="description">{{itemDet.description}}</mat-card-subtitle>
                             <mat-card-subtitle class="price">{{'ORDER_CREATE.PRICE' | translate}}: {{ getItemPrice( itemDet ) }} {{_currencyCode}}</mat-card-subtitle>
-                            <mat-card-subtitle>{{'ORDER_CREATE.COOKING_TIME' | translate}}: {{itemDet.time}}</mat-card-subtitle>
                             <mat-tab-group *ngIf="(itemDet.garnishFood.length > 0) || (itemDet.additions.length > 0)">
                                 <mat-tab *ngIf="(itemDet.garnishFood.length > 0)" label="{{'ORDER_CREATE.GARNISH_FOOD' | translate}}">
                                     <p *ngFor="let garnish of _garnishFoodCol | async">

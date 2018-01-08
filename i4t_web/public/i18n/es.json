@@ -915,7 +915,7 @@
         "YES_ANSWER": "Sí",
         "TURN": "Turno",
         "TABLE": "Mesa",
-        "CALL_LABEL_SEND_ORDER": "Entrega de orden",
+        "CALL_LABEL_CUSTOMER_ORDER": "Orden de cliente",
         "CALL_LABEL_CUSTOMER": "Llamado de cliente",
         "CALL_LABEL_CUSTOMER_PAYMENT": "Pago de cliente",
         "BTN_CALL_WAITER": "Solicitar mesero",
@@ -1070,18 +1070,19 @@
         "TABLE_MODIFIED": "Mesa modificada",
         "NUMBER_TABLES": "Número de mesas, Máximo "
     },
-    "SEND_ORDER": {
+    "CUSTOMER_ORDER": {
         "ORDER": "Orden",
         "TABLE": "Mesa",
         "CODE": "Código: ",
         "CUSTOMER": "Cliente",
         "OBSERVATIONS": "Observaciones",
-        "NO_GARNISH_FOOD": "Sin guarniciones",
         "GARNISH_FOOD": "Guarniciones",
-        "NO_ADDITIONS": "Sin adiciones",
         "ADDITIONS": "Adiciones",
         "ADDITION": "Adición(es)",
-        "ORDER_DELIVERED": "Orden Entregada"
+        "RECEIVE_ORDER": "Rebibir orden",
+        "RECEIVE_ORDER_CONFIRM": "Orden Recibida",
+        "CANCEL_ORDER": "Cancelar Orden",
+        "CANCEL_ORDER_CONFIRM": "Orden Cancelada"
     },
     "PAYU_PAYMENT_FORM": {
         "TITLE": "Medio de pago",

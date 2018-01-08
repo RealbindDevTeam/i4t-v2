@@ -183,56 +183,6 @@ if (Meteor.isServer) {
                 }
             }
             UserDetails.update({ _id: _pUserDetailId }, { $set: { current_establishment: '', current_table: '' } });
-        },
-
-        establishmentExitWithOrdersInInvalidStatus: function (_pUserId: string, _pCurrentEstablishment: string, _pCurrentTable: string) {
-            let _orderIds: string[] = [];
-            Orders.collection.find({
-                creation_user: _pUserId, establishment_id: _pCurrentEstablishment, tableId: _pCurrentTable,
-                status: { $in: ['ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED'] }
-            }).fetch().forEach((order) => {
-                Orders.update({ _id: order._id }, { $set: { markedToCancel: true, modification_date: new Date() } });
-                _orderIds.push(order._id);
-            });
-            var data: any = {
-                establishments: _pCurrentEstablishment,
-                tables: _pCurrentTable,
-                user: _pUserId,
-                waiter_id: "",
-                status: "waiting",
-                type: 'USER_EXIT_TABLE',
-            }
-            let isWaiterCalls: number = WaiterCallDetails.find({
-                establishment_id: _pCurrentEstablishment, table_id: _pCurrentTable,
-                type: 'USER_EXIT_TABLE', status: { $in: ['waiting', 'completed'] }
-            }).fetch().length;
-            if (isWaiterCalls === 0) {
-                Meteor.call('findQueueByEstablishment', data);
-            }
-            WaiterCallDetails.collection.find({
-                establishment_id: _pCurrentEstablishment, table_id: _pCurrentTable,
-                type: 'SEND_ORDER', status: { $in: ['waiting', 'completed'] }, order_id: { $in: _orderIds }
-            }).fetch().forEach((call) => {
-                Meteor.call('closeWaiterCall', call );
-            });
-        },
-
-        cancelOrderToEstablishmentExit: function (_pOrder: Order, _pCall: WaiterCallDetail, _pWaiterId: string) {
-            if (_pOrder.status === 'ORDER_STATUS.PREPARED' && _pOrder.markedToCancel === true) {
-                Orders.update({ _id: _pOrder._id }, { $set: { status: 'ORDER_STATUS.CANCELED', modification_date: new Date(), markedToCancel: false } });
-            } else if (_pOrder.status === 'ORDER_STATUS.IN_PROCESS' && _pOrder.markedToCancel === true) {
-                Orders.update({ _id: _pOrder._id }, { $set: { status: 'ORDER_STATUS.CANCELED', modification_date: new Date() } });
-            } else {
-                throw new Meteor.Error('200');
-            }
-
-            let _lOrdersToCancel: number = Orders.find({
-                establishment_id: _pCall.establishment_id, tableId: _pCall.table_id,
-                markedToCancel: { $in: [true, false] }, status: { $in: ['ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED'] }
-            }).fetch().length;
-            if (_lOrdersToCancel === 0) {
-                Meteor.call('closeWaiterCall', _pCall);
-            }
         }
     });
 }

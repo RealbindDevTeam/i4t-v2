@@ -55,7 +55,7 @@ import { MonthlyConfigComponent } from './administrator/administration/establish
 import { EstablishmentListComponent } from './administrator/administration/establishment/monthly-config/establishment-list/establishment-list.component';
 import { EnableDisableComponent } from './administrator/administration/establishment/monthly-config/enable-disable/enable-disable.component';
 import { DisableConfirmComponent } from './administrator/administration/establishment//monthly-config/disable-confirm/disable-confirm.component';
-import { SendOrderConfirmComponent } from './waiter/calls/send-order-confirm/send-order-confirm.component';
+import { CustomerOrderConfirmComponent } from './waiter/calls/customer-order-confirm/customer-order-confirm.component';
 //import { ColombiaOrderInfoComponent } from './customer/payments/country-payment/colombia-payment/colombia-order-info/colombia-order-info.component';
 import { PayuPaymentFormComponent } from './administrator/payment/payu-payment-form/payu-payment-form.component';
 import { PaymentHistoryComponent } from './administrator/payment/payment-history/payment-history.component';
@@ -78,7 +78,6 @@ import { SupervisorTableComponent } from './supervisor/tables/supervisor-tables.
 import { RecoverConfirmComponent } from './auth/recover-password/recover-confirm/recover-confirm.component';
 import { TableChangeComponent } from './customer/table-change/table-change.component';
 import { EstablishmentExitComponent } from './customer/establishment-exit/establishment-exit.component';
-import { EstablishmentExitConfirmComponent } from './waiter/calls/establishment-exit-confirm/establishment-exit-confirm.component';
 import { EstablishmentTableControlComponent } from './administrator/administration/tables/table-control/establishment-table-control.component';
 import { TableDetailComponent } from './administrator/administration/tables/table-control/table-detail/table-detail.component';
 import { PenalizeCustomerComponent } from './administrator/administration/tables/table-control/table-detail/penalize-customer/penalize-customer.component';
@@ -172,7 +171,7 @@ export const MODAL_DIALOG_DECLARATIONS = [
     PaymentConfirmComponent,
     CollaboratorsEditionComponent,
     DisableConfirmComponent,
-    SendOrderConfirmComponent,
+    CustomerOrderConfirmComponent,
     CcPaymentConfirmComponent,
     TrnResponseConfirmComponent,
     VerifyResultComponent,
@@ -180,7 +179,6 @@ export const MODAL_DIALOG_DECLARATIONS = [
     EnableConfirmComponent,
     SupervisorCollaboratorsEditionComponent,
     RecoverConfirmComponent,
-    EstablishmentExitConfirmComponent,
     PenalizeCustomerComponent,
     ScheduleDetailComponent,
     PaymentPlanInfo,

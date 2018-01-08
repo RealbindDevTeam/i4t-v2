@@ -13,9 +13,8 @@ import { Users } from '../../../../../../../both/collections/auth/user.collectio
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 import { CallCloseConfirmComponent } from '../call-close-confirm/call-close-confirm.component';
-import { PaymentConfirmComponent } from '../payment-confirm/payment-confirm.component';
-import { SendOrderConfirmComponent } from '../send-order-confirm/send-order-confirm.component';
-import { EstablishmentExitConfirmComponent } from '../establishment-exit-confirm/establishment-exit-confirm.component';
+//import { PaymentConfirmComponent } from '../payment-confirm/payment-confirm.component';
+import { CustomerOrderConfirmComponent } from '../customer-order-confirm/customer-order-confirm.component';
 
 @Component({
     selector: 'calls',
@@ -63,7 +62,7 @@ export class CallsComponent implements OnInit, OnDestroy {
         this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
             this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
             if (this._userDetail) {
-                this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstabishmentById', this._userDetail.establishment_work).subscribe(() => {
+                this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).subscribe(() => {
                     this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
                 });
             }
@@ -122,7 +121,7 @@ export class CallsComponent implements OnInit, OnDestroy {
     /**
      * This function show modal dialog with payment information
      * @param {WaiterCallDetail} _call 
-     */
+     
     showPayment(_call: WaiterCallDetail) {
         this._mdDialogRef = this._mdDialog.open(PaymentConfirmComponent, {
             disableClose: true
@@ -131,27 +130,14 @@ export class CallsComponent implements OnInit, OnDestroy {
         this._mdDialogRef.afterClosed().subscribe(result => {
             this._mdDialogRef = null;
         });
-    }
+    }*/
 
     /**
-     * This function show modal dialog with order information
+     * This function show modal dialog with customer order information
      * @param {WaiterCallDetail} _call 
      */
-    showSendOrder(_call: WaiterCallDetail): void {
-        this._mdDialogRef = this._mdDialog.open(SendOrderConfirmComponent, {
-            disableClose: true
-        });
-        this._mdDialogRef.componentInstance.call = _call;
-        this._mdDialogRef.afterClosed().subscribe(result => {
-            this._mdDialogRef = null;
-        });
-    }
-
-    /**
-     * This function show modal dialog with exit user information
-     */
-    showUserExitTable(_call: WaiterCallDetail): void {
-        this._mdDialogRef = this._mdDialog.open(EstablishmentExitConfirmComponent, {
+    showCustomerOrder(_call: WaiterCallDetail): void {
+        this._mdDialogRef = this._mdDialog.open(CustomerOrderConfirmComponent, {
             disableClose: true
         });
         this._mdDialogRef.componentInstance.call = _call;

@@ -915,7 +915,7 @@
         "YES_ANSWER": "Yes",
         "TURN": "Turn",
         "TABLE": "Table",
-        "CALL_LABEL_SEND_ORDER": "Order to deliver",
+        "CALL_LABEL_CUSTOMER_ORDER": "Customer order",
         "CALL_LABEL_CUSTOMER": "Calls from customer",
         "CALL_LABEL_CUSTOMER_PAYMENT": "Payment from customer",
         "BTN_CALL_WAITER": "Request waiter/waitress",
@@ -1070,18 +1070,19 @@
         "TABLE_MODIFIED": "Table modified",
         "NUMBER_TABLES": "Number of tables, Max "
     },
-    "SEND_ORDER": {
+    "CUSTOMER_ORDER": {
         "ORDER": "Order",
         "TABLE": "Table",
         "CODE": "Code: ",
         "CUSTOMER": "Customer",
         "OBSERVATIONS": "Comments",
-        "NO_GARNISH_FOOD": "No side dishes",
         "GARNISH_FOOD": "Side dishes",
-        "NO_ADDITIONS": "No additions",
         "ADDITIONS": "additions",
         "ADDITION": "addition",
-        "ORDER_DELIVERED": "Order delivered"
+        "RECEIVE_ORDER": "Receive order",
+        "RECEIVE_ORDER_CONFIRM": "Order received",
+        "CANCEL_ORDER": "Cancel Order",
+        "CANCEL_ORDER_CONFIRM": "Order Canceled"
     },
     "PAYU_PAYMENT_FORM": {
         "TITLE": "Payment method",

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../services/general/user-language.service';
@@ -20,12 +20,12 @@ import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.
 import { GarnishFoodCol } from '../../../../../../../both/collections/menu/garnish-food.collection';
 
 @Component({
-    selector: 'send-order-confirm',
-    templateUrl: './send-order-confirm.component.html',
-    styleUrls: ['./send-order-confirm.component.scss'],
+    selector: 'customer-order-confirm',
+    templateUrl: './customer-order-confirm.component.html',
+    styleUrls: ['./customer-order-confirm.component.scss'],
     providers: [UserLanguageService]
 })
-export class SendOrderConfirmComponent implements OnInit, OnDestroy {
+export class CustomerOrderConfirmComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     public call: WaiterCallDetail;
@@ -47,16 +47,18 @@ export class SendOrderConfirmComponent implements OnInit, OnDestroy {
     private _loading: boolean = false;
 
     /**
-     * SendOrderConfirmComponent constructor
+     * CustomerOrderConfirmComponent constructor
      * @param {TranslateService} translate
      * @param {MatDialogRef<any>} _dialogRef
      * @param {NgZone} _ngZone
      * @param {UserLanguageService} _userLanguageService
+     * @param {MatSnackBar} _snackBar
      */
     constructor(private _translate: TranslateService,
         public _dialogRef: MatDialogRef<any>,
         private _ngZone: NgZone,
-        private _userLanguageService: UserLanguageService) {
+        private _userLanguageService: UserLanguageService,
+        public _snackBar: MatSnackBar) {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
     }
@@ -137,16 +139,45 @@ export class SendOrderConfirmComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Function set order status to delivered
+     * Function to receive order
      */
-    closeCall(): void {
+    receiveOrder(): void {
         this._loading = true;
         setTimeout(() => {
             MeteorObservable.call('closeCall', this.call, this._user).subscribe(() => {
                 this._loading = false;
+                let _lMessage: string = this.itemNameTraduction('CUSTOMER_ORDER.RECEIVE_ORDER_CONFIRM');
+                this._snackBar.open(_lMessage, '', { duration: 3000 });
                 this.close();
             });
         }, 1500);
+    }
+
+    /**
+     * Function to cancel order
+     */
+    cancelOrder(): void {
+        this._loading = true;
+        setTimeout(() => {
+            MeteorObservable.call('cancelOrderCall', this.call, this._user).subscribe(() => {
+                this._loading = false;
+                let _lMessage: string = this.itemNameTraduction('CUSTOMER_ORDER.CANCEL_ORDER_CONFIRM');
+                this._snackBar.open(_lMessage, '', { duration: 3000 });
+                this.close();
+            });
+        }, 1500);
+    }
+
+    /**
+     * Return traduction
+     * @param {string} itemName 
+     */
+    itemNameTraduction(itemName: string): string {
+        var wordTraduced: string;
+        this._translate.get(itemName).subscribe((res: string) => {
+            wordTraduced = res;
+        });
+        return wordTraduced;
     }
 
     /**

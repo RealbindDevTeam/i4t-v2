@@ -12,8 +12,6 @@ export interface Order extends CollectionObject{
     totalPayment: number;
     orderItemCount: number;
     additions: OrderAddition[];
-    markedToCancel?: boolean;
-    canceled_by_penalization?: boolean;
 }
 
 /**
