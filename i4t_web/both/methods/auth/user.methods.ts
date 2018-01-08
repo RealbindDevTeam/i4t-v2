@@ -2,11 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { User } from '../../models/auth/user.model';
 import { UserDetail, UserDetailPenalty } from '../../models/auth/user-detail.model';
 import { UserDetails } from '../../collections/auth/user-detail.collection';
-import { Account } from '../../models/establishment/account.model';
-import { Accounts } from '../../collections/establishment/account.collection';
-import {  Order, OrderTranslateInfo } from '../../models/establishment/order.model';
-import { Orders  } from '../../collections/establishment/order.collection';
-import { Payments } from '../../collections/establishment/payment.collection';
 import { WaiterCallDetails } from '../../collections/establishment/waiter-call-detail.collection';
 import { Table } from '../../models/establishment/table.model';
 import { Tables } from '../../collections/establishment/table.collection';
@@ -22,7 +17,7 @@ if (Meteor.isServer) {
             let _lCustomerTable: string = _lUserDetail.current_table;
 
             WaiterCallDetails.find({
-                establishment_id: _lCustomerEstablishment, table_id: _lCustomerTable, user_id: _pCustomerUser._id, type: { $in: ['SEND_ORDER', 'CALL_OF_CUSTOMER', 'USER_EXIT_TABLE', 'PAYMENT'] },
+                establishment_id: _lCustomerEstablishment, table_id: _lCustomerTable, user_id: _pCustomerUser._id, type: { $in: ['CUSTOMER_ORDER', 'CALL_OF_CUSTOMER'] },
                 status: { $in: ['waiting', 'completed'] }
             }).fetch().forEach((call) => {
                 WaiterCallDetails.update({ _id: call._id }, { $set: { status: 'cancel', modification_date: new Date() } });

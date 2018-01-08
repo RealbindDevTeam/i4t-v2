@@ -38,29 +38,21 @@ import { OrderCreateComponent } from './customer/orders/order-create/order-creat
 import { OrdersListComponent } from './customer/orders/order-list/order-list.component';
 import { ItemEnableComponent } from './administrator/menu/items/enable/items-enable.component';
 import { WaiterCallComponent } from './customer/waiter-call/waiter-call.component';
-import { OrderAttentionComponent } from './chef/order-attention/order-attention.component';
 import { CallsComponent } from './waiter/calls/calls/calls.component';
 import { CallCloseConfirmComponent } from './waiter/calls/call-close-confirm/call-close-confirm.component';
 import { NotFoundWebComponent } from './auth/notfound/notfound.web.component';
 import { IurestSliderComponent } from './general/slider/slider.component';
-//import { PaymentsComponent } from './customer/payments/payments/payments.component';
-//import { ColombiaPaymentComponent } from './customer/payments/country-payment/colombia-payment/colombia-payment.component';
-//import { OrderPaymentTranslateComponent } from './customer/payments/order-payment-translate/order-payment-translate.component';
-//import { OrderToTranslateComponent } from './customer/payments/order-payment-translate/order-to-translate/order-to-translate.component';
 import { CreateConfirmComponent } from './administrator/administration/establishment/register/create-confirm/create-confirm.component';
 import { MonthlyPaymentComponent } from './administrator/payment/monthly-payment/monthly-payment.component';
-import { PaymentConfirmComponent } from './waiter/calls/payment-confirm/payment-confirm.component';
 import { SupervisorDashboardComponent } from './supervisor/dashboard/supervisor-dashboard.component';
 import { MonthlyConfigComponent } from './administrator/administration/establishment/monthly-config/monthly-config/monthly-config.component';
 import { EstablishmentListComponent } from './administrator/administration/establishment/monthly-config/establishment-list/establishment-list.component';
 import { EnableDisableComponent } from './administrator/administration/establishment/monthly-config/enable-disable/enable-disable.component';
 import { DisableConfirmComponent } from './administrator/administration/establishment//monthly-config/disable-confirm/disable-confirm.component';
-import { SendOrderConfirmComponent } from './waiter/calls/send-order-confirm/send-order-confirm.component';
-//import { ColombiaOrderInfoComponent } from './customer/payments/country-payment/colombia-payment/colombia-order-info/colombia-order-info.component';
+import { CustomerOrderConfirmComponent } from './waiter/calls/customer-order-confirm/customer-order-confirm.component';
 import { PayuPaymentFormComponent } from './administrator/payment/payu-payment-form/payu-payment-form.component';
 import { PaymentHistoryComponent } from './administrator/payment/payment-history/payment-history.component';
 import { ReactivateEstablishmentComponent } from './administrator/payment/reactivate-establishment/reactivate-establishment.component';
-//import { ColombiaPayInfoComponent } from './customer/payments/country-payment/colombia-payment/colombia-pay-info/colombia-pay-info.component';
 import { CcPaymentConfirmComponent } from './administrator/payment/payu-payment-form/cc-payment-confirm/cc-payment-confirm.component';
 import { TrnResponseConfirmComponent } from './administrator/payment/payu-payment-form/transaction-response-confirm/trn-response-confirm.component';
 import { VerifyResultComponent } from './administrator/payment/payment-history/verify-result/verify-result.component';
@@ -70,7 +62,7 @@ import { AlertConfirmComponent } from './general/alert-confirm/alert-confirm.com
 import { UserLanguageService } from './services/general/user-language.service';
 import { ItemEnableSupComponent } from './supervisor/items-enable/items-enable-sup.component';
 import { EnableConfirmComponent } from './administrator/menu/items/enable/enable-confirm/enable-confirm.component';
-import { MenuListComponent } from './chef/menu-list/menu-list.component';
+import { MenuListComponent } from './waiter/menu-list/menu-list.component';
 import { SupervisorCollaboratorsComponent } from './supervisor/collaborators/collaborators/supervisor-collaborators.component';
 import { SupervisorCollaboratorsEditionComponent } from './supervisor/collaborators/edition/supervisor-collaborators-edition.component';
 import { SupervisorCollaboratorsRegisterComponent } from './supervisor/collaborators/register/supervisor-collaborators-register.component';
@@ -78,7 +70,6 @@ import { SupervisorTableComponent } from './supervisor/tables/supervisor-tables.
 import { RecoverConfirmComponent } from './auth/recover-password/recover-confirm/recover-confirm.component';
 import { TableChangeComponent } from './customer/table-change/table-change.component';
 import { EstablishmentExitComponent } from './customer/establishment-exit/establishment-exit.component';
-import { EstablishmentExitConfirmComponent } from './waiter/calls/establishment-exit-confirm/establishment-exit-confirm.component';
 import { EstablishmentTableControlComponent } from './administrator/administration/tables/table-control/establishment-table-control.component';
 import { TableDetailComponent } from './administrator/administration/tables/table-control/table-detail/table-detail.component';
 import { PenalizeCustomerComponent } from './administrator/administration/tables/table-control/table-detail/penalize-customer/penalize-customer.component';
@@ -122,24 +113,18 @@ export const WEB_DECLARATIONS = [
     OrdersListComponent,
     ItemEnableComponent,
     WaiterCallComponent,
-    OrderAttentionComponent,
     CallsComponent,
     NotFoundWebComponent,
     IurestSliderComponent,
-    //PaymentsComponent,
-    //ColombiaPaymentComponent,
-    //OrderPaymentTranslateComponent,
     MonthlyPaymentComponent,
     SupervisorDashboardComponent,
     MonthlyConfigComponent,
     EstablishmentListComponent,
     EnableDisableComponent,
-    //ColombiaOrderInfoComponent,
     PayuPaymentFormComponent,
     PaymentHistoryComponent,
     ReactivateEstablishmentComponent,
     CustomerPaymentsHistoryComponent,
-    //ColombiaPayInfoComponent,
     AdminSignupComponent,
     ItemEnableSupComponent,
     MenuListComponent,
@@ -167,12 +152,10 @@ export const MODAL_DIALOG_DECLARATIONS = [
     RecoverWebComponent,
     ItemEditionComponent,
     CallCloseConfirmComponent,
-    //OrderToTranslateComponent, 
     CreateConfirmComponent,
-    PaymentConfirmComponent,
     CollaboratorsEditionComponent,
     DisableConfirmComponent,
-    SendOrderConfirmComponent,
+    CustomerOrderConfirmComponent,
     CcPaymentConfirmComponent,
     TrnResponseConfirmComponent,
     VerifyResultComponent,
@@ -180,7 +163,6 @@ export const MODAL_DIALOG_DECLARATIONS = [
     EnableConfirmComponent,
     SupervisorCollaboratorsEditionComponent,
     RecoverConfirmComponent,
-    EstablishmentExitConfirmComponent,
     PenalizeCustomerComponent,
     ScheduleDetailComponent,
     PaymentPlanInfo,

@@ -10,8 +10,8 @@ import { UserDetail } from '../../../../../../both/models/auth/user-detail.model
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
 import { Tables } from '../../../../../../both/collections/establishment/table.collection';
 import { Items } from '../../../../../../both/collections/menu/item.collection';
-import { Payment } from '../../../../../../both/models/establishment/payment.model';
-import { Payments } from '../../../../../../both/collections/establishment/payment.collection';
+//import { Payment } from '../../../../../../both/models/establishment/payment.model';
+//import { Payments } from '../../../../../../both/collections/establishment/payment.collection';
 import { Order, OrderItem, OrderAddition } from '../../../../../../both/models/establishment/order.model';
 import { Orders } from '../../../../../../both/collections/establishment/order.collection';
 import { Currency } from '../../../../../../both/models/general/currency.model';
@@ -68,7 +68,7 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
                 });
                 this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', _lEstablishmentsId).subscribe();
                 this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentIds', _lEstablishmentsId).subscribe();
-                this._paymentsSub = MeteorObservable.subscribe('getPaymentsByEstablishmentIds', _lEstablishmentsId).subscribe();
+                //this._paymentsSub = MeteorObservable.subscribe('getPaymentsByEstablishmentIds', _lEstablishmentsId).subscribe();
                 this._ordersSub = MeteorObservable.subscribe('getOrdersByEstablishmentIds', _lEstablishmentsId, ['ORDER_STATUS.CLOSED']).subscribe();
                 this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).subscribe();
             });
@@ -135,9 +135,9 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
      */
     getDailySales(_pEstablishmentId: string): number {
         let _lTotalSale: number = 0;
-        Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             _lTotalSale += pay.totalToPayment;
-        });
+        });*/
         return _lTotalSale;
     }
 
@@ -147,7 +147,7 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
      */
     getItemsSold(_pEstablishmentId: string): number {
         let _lItemCount: number = 0;
-        Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             pay.orders.forEach((orderId) => {
                 let _lOrder: Order = Orders.findOne({ _id: orderId });
                 if (_lOrder) {
@@ -156,7 +156,7 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
                     });
                 }
             });
-        });
+        });*/
         return _lItemCount;
     }
 
@@ -166,7 +166,7 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
      */
     getGarnishFoodSold(_pEstablishmentId: string): number {
         let _lGarnishFoodCount: number = 0;
-        Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             pay.orders.forEach((orderId) => {
                 let _lOrder: Order = Orders.findOne({ _id: orderId });
                 if (_lOrder) {
@@ -175,7 +175,7 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
                     });
                 }
             });
-        });
+        });*/
         return _lGarnishFoodCount;
     }
 
@@ -185,7 +185,7 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
      */
     getAdditionsSold(_pEstablishmentId: string): number {
         let _lAdditions: number = 0;
-        Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             pay.orders.forEach((orderId) => {
                 let _lOrder: Order = Orders.findOne({ _id: orderId });
                 if (_lOrder) {
@@ -197,7 +197,7 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
                     });
                 }
             });
-        });
+        });*/
         return _lAdditions;
     }
 

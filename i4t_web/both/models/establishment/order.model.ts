@@ -8,15 +8,10 @@ export interface Order extends CollectionObject{
     tableId: string;
     code: number;
     status: string;
-    accountId: string;
     items: OrderItem[];
     totalPayment: number;
     orderItemCount: number;
-    translateInfo: OrderTranslateInfo;
-    toPay: boolean;
     additions: OrderAddition[];
-    markedToCancel?: boolean;
-    canceled_by_penalization?: boolean;
 }
 
 /**
@@ -30,16 +25,6 @@ export interface OrderItem{
     garnishFood: string[];
     additions: string[];
     paymentItem: number;
-}
-
-/**
- * Order Translate Information Model
- */
-export interface OrderTranslateInfo{
-    firstOrderOwner: string;
-    markedToTranslate: boolean;
-    lastOrderOwner: string;
-    confirmedToTranslate: false;
 }
 
 /**
