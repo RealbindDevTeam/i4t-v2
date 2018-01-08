@@ -3,21 +3,21 @@ import { LoadingController, NavController, NavParams, ToastController, AlertCont
 import { MeteorObservable } from "meteor-rxjs";
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from "rxjs";
-import { WaiterCallDetail } from 'i4t_web/both/models/restaurant/waiter-call-detail.model';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
-import { Order } from 'i4t_web/both/models/restaurant/order.model';
+import { WaiterCallDetail } from 'i4t_web/both/models/establishment/waiter-call-detail.model';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
+import { Order } from 'i4t_web/both/models/establishment/order.model';
 import { Users } from 'i4t_web/both/collections/auth/user.collection';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { Table } from 'i4t_web/both/models/restaurant/table.model';
+import { Table } from 'i4t_web/both/models/establishment/table.model';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
 
 @Component({
-    selector: 'restaurant-exit-confirm',
-    templateUrl: 'restaurant-exit-confirm.html'
+    selector: 'establishment-exit-confirm',
+    templateUrl: 'establishment-exit-confirm.html'
 })
 
-export class RestaurantExitConfirmPage implements OnInit, OnDestroy {
+export class EstablishmentExitConfirmPage implements OnInit, OnDestroy {
 
     private _orderSubscription: Subscription;
     private _usersSubscription: Subscription;
@@ -51,21 +51,21 @@ export class RestaurantExitConfirmPage implements OnInit, OnDestroy {
     ngOnInit() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         this.removeSubscriptions();
-        this._orderSubscription = MeteorObservable.subscribe('getOrdersByTableId', this._call.restaurant_id, this._call.table_id,
+        this._orderSubscription = MeteorObservable.subscribe('getOrdersByTableId', this._call.establishment_id, this._call.table_id,
             ['ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED']).subscribe(() => {
                 this._ngZone.run(() => {
                     this._orders = Orders.find({}).zone();
                 });
             });
-        this._usersSubscription = MeteorObservable.subscribe('getUserByTableId', this._call.restaurant_id, this._call.table_id).subscribe();
-        this._tablesSubscription = MeteorObservable.subscribe('getTablesByRestaurant', this._call.restaurant_id).subscribe(() => {
+        this._usersSubscription = MeteorObservable.subscribe('getUserByTableId', this._call.establishment_id, this._call.table_id).subscribe();
+        this._tablesSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._call.establishment_id).subscribe(() => {
             this._ngZone.run(() => {
                 let _lTable: Table = Tables.collection.find({ _id: this._call.table_id }).fetch()[0];
                 this._tableNumber = _lTable._number + '';
             });
         });
 
-        this._additionsSubscription = MeteorObservable.subscribe('additionsByRestaurant', this._call.restaurant_id).subscribe();
+        this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._call.establishment_id).subscribe();
     }
 
 
@@ -108,7 +108,7 @@ export class RestaurantExitConfirmPage implements OnInit, OnDestroy {
         });
         loader.present();
 
-        MeteorObservable.call('cancelOrderToRestaurantExit', _pOrder, this._call, this._user).subscribe(() => {
+        MeteorObservable.call('cancelOrderToEstablishmentExit', _pOrder, this._call, this._user).subscribe(() => {
             let toast = this._toastCtrl.create({
                 message: this.itemNameTraduction('MOBILE.CANCEL_ORDER.ORDER_CANCELED'),
                 duration: 2500
@@ -116,7 +116,7 @@ export class RestaurantExitConfirmPage implements OnInit, OnDestroy {
             toast.present();
 
             let _lOrdersToCancel: number = Orders.collection.find({
-                restaurantId: this._call.restaurant_id, tableId: this._call.table_id,
+                establishment_id: this._call.establishment_id, tableId: this._call.table_id,
                 markedToCancel: { $in: [true, false] }, status: { $in: ['ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED'] }
             }).count();
 

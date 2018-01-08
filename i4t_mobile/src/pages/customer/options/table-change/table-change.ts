@@ -8,7 +8,7 @@ import { TabsPage } from '../../tabs/tabs';
 import { AlphanumericCodeChangePage } from './alphanumeric-code-change/alphanumeric-code-change';
 
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 
 @Component({
     selector: 'table-change',

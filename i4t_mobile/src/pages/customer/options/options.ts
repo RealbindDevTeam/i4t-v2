@@ -6,11 +6,11 @@ import { Subscription } from 'rxjs';
 
 import { WaiterCallPage } from '../waiter-call/waiter-call';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
-import { WaiterCallDetails } from 'i4t_web/both/collections/restaurant/waiter-call-detail.collection';
+import { WaiterCallDetails } from 'i4t_web/both/collections/establishment/waiter-call-detail.collection';
 
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { ChangeTablePage } from './table-change/table-change';
-import { RestaurantExitPage } from './restaurant-exit/restaurant-exit';
+import { EstablishmentExitPage } from './establishment-exit/establishment-exit';
 
 @Component({
   selector: 'page-options',
@@ -70,7 +70,7 @@ export class OptionsPage implements OnInit, OnDestroy {
     });
     this._waiterCallDetailSubscription = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).subscribe( () => {
       this._ngZone.run( () => {
-        this._waiterCallsDetails = WaiterCallDetails.find( { user_id : Meteor.userId(), type: 'CALL_OF_CUSTOMER', restaurant_id: this._userDetail.current_restaurant, status : { $in : ["waiting", "completed"] } } ).zone();
+        this._waiterCallsDetails = WaiterCallDetails.find( { user_id : Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status : { $in : ["waiting", "completed"] } } ).zone();
         this.countWaiterCalls(); 
         this._waiterCallsDetails.subscribe( () => { this.countWaiterCalls(); } );
       });
@@ -81,7 +81,7 @@ export class OptionsPage implements OnInit, OnDestroy {
    * Count Waiter Calls
    */
   countWaiterCalls():void{
-    let _lWaiterCalls:number = WaiterCallDetails.collection.find( { user_id : Meteor.userId(), type: 'CALL_OF_CUSTOMER', restaurant_id: this._userDetail.current_restaurant, status : { $in : ["waiting", "completed"] } } ).count();    
+    let _lWaiterCalls:number = WaiterCallDetails.collection.find( { user_id : Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status : { $in : ["waiting", "completed"] } } ).count();    
     _lWaiterCalls > 0 ? this._showWaiterAlert = true : this._showWaiterAlert = false;
   }
 
@@ -98,15 +98,15 @@ export class OptionsPage implements OnInit, OnDestroy {
    */
   goToChangeTable() {
     //let userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-    this._navCtrl.push(ChangeTablePage, { res_id: this._userDetail.current_restaurant, table_id: this._userDetail.current_table });
+    this._navCtrl.push(ChangeTablePage, { res_id: this._userDetail.current_establishment, table_id: this._userDetail.current_table });
   }
 
   /**
-  * This method go to restaurant exit
+  * This method go to establishment exit
   */
-  goToRestaurantExit() {
+  goToEstablishmentExit() {
     //let userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-    this._navCtrl.push(RestaurantExitPage, { res_id: this._userDetail.current_restaurant, table_id: this._userDetail.current_table });
+    this._navCtrl.push(EstablishmentExitPage, { res_id: this._userDetail.current_establishment, table_id: this._userDetail.current_table });
   }
 
   /**

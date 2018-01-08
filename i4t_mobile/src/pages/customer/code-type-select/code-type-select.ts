@@ -3,8 +3,8 @@ import { App, AlertController, LoadingController, NavController, NavParams, View
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Restaurant } from 'i4t_web/both/models/restaurant/restaurant.model';
-import { Table } from 'i4t_web/both/models/restaurant/table.model';
+import { Establishment } from 'i4t_web/both/models/establishment/establishment.model';
+import { Table } from 'i4t_web/both/models/establishment/table.model';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { AlphanumericCodePage } from '../alphanumeric-code/alphanumeric-code';
@@ -81,10 +81,10 @@ export class CodeTypeSelectPage {
 
   forwardToSections(qr_code: string) {
     if (this._id_table) {
-      MeteorObservable.call('getRestaurantByQRCode', qr_code, Meteor.userId()).subscribe((restaurant: Restaurant) => {
+      MeteorObservable.call('getEstablishmentByQRCode', qr_code, Meteor.userId()).subscribe((establishment: Establishment) => {
 
-        if (restaurant) {
-          this._navCtrl.push(SectionsPage, { res_id: restaurant._id, table_id: this._id_table }).then(() => {
+        if (establishment) {
+          this._navCtrl.push(SectionsPage, { res_id: establishment._id, table_id: this._id_table }).then(() => {
             const index = this._viewCtrl.index;
             this._navCtrl.remove(index);
           });

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Order } from 'i4t_web/both/models/restaurant/order.model';
+import { Order } from 'i4t_web/both/models/establishment/order.model';
 
 @Component({
 	selector: 'order-detail',

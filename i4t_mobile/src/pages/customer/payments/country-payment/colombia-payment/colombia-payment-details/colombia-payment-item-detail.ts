@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { Order, OrderItem } from 'i4t_web/both/models/restaurant/order.model';
+import { Order, OrderItem } from 'i4t_web/both/models/establishment/order.model';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription } from 'rxjs';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
@@ -32,11 +32,11 @@ export class ColombiaPaymentItemDetailComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * ngOnInit Implementation. Find the items corresponding to RestaurantId
+     * ngOnInit Implementation. Find the items corresponding to establishment_id
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._itemsSub = MeteorObservable.subscribe('itemsByRestaurant', this.resCode).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.resCode).subscribe(() => {
             this._items = Items.find({_id: this.orderItem.itemId});
         });
     }

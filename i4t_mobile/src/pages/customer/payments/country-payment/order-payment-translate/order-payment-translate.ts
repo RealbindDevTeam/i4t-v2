@@ -3,10 +3,10 @@ import { AlertController, LoadingController, NavController, NavParams, ToastCont
 import { MeteorObservable } from 'meteor-rxjs'
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { AddOrderPaymentPage } from "./add-order-payment/add-order-payment";
 import { UserLanguageServiceProvider } from '../../../../../providers/user-language-service/user-language-service';
-import { OrderTranslateInfo } from 'i4t_web/both/models/restaurant/order.model';
+import { OrderTranslateInfo } from 'i4t_web/both/models/establishment/order.model';
 
 /*
   Generated class for the Order-Payment-Translate page.
@@ -25,7 +25,7 @@ export class OrderPaymentTranslatePage implements OnInit, OnDestroy {
 
   private _ordersToConfirm               : any;
   private _ordersWithPendingConfirmation : any;
-  private _restaurantId    : string;
+  private _establishmentId    : string;
   private _tableId         : string;
   private _currency        : string;
   private _currentUserId   : string;
@@ -46,7 +46,7 @@ export class OrderPaymentTranslatePage implements OnInit, OnDestroy {
               public _navCtrl: NavController,
               public _translate: TranslateService){
     _translate.setDefaultLang('en');
-    this._restaurantId = this._navParams.get("restaurant");
+    this._establishmentId = this._navParams.get("establishment");
     this._tableId      = this._navParams.get("table");
     this._currency     = this._navParams.get("currency");
     this._currentUserId = Meteor.userId();
@@ -58,7 +58,7 @@ export class OrderPaymentTranslatePage implements OnInit, OnDestroy {
   ngOnInit(){
     this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
     this.removeSubscriptions();
-    this._ordersSubscription = MeteorObservable.subscribe( 'getOrdersWithConfirmationPending', this._restaurantId, this._tableId ).subscribe( () => {
+    this._ordersSubscription = MeteorObservable.subscribe( 'getOrdersWithConfirmationPending', this._establishmentId, this._tableId ).subscribe( () => {
       this._ordersToConfirm = Orders.find( { status: 'ORDER_STATUS.PENDING_CONFIRM', 
                                             'translateInfo.firstOrderOwner': Meteor.userId(), 
                                             'translateInfo.lastOrderOwner': { $not: '' } } ).zone();
@@ -73,7 +73,7 @@ export class OrderPaymentTranslatePage implements OnInit, OnDestroy {
     ionViewWillEnter() {
       this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
       this.removeSubscriptions();
-      this._ordersSubscription = MeteorObservable.subscribe( 'getOrdersWithConfirmationPending', this._restaurantId, this._tableId ).subscribe( () => {
+      this._ordersSubscription = MeteorObservable.subscribe( 'getOrdersWithConfirmationPending', this._establishmentId, this._tableId ).subscribe( () => {
           this._ordersToConfirm = Orders.find( { status: 'ORDER_STATUS.PENDING_CONFIRM', 
                                                   'translateInfo.firstOrderOwner': Meteor.userId(), 
                                                   'translateInfo.lastOrderOwner': { $not: '' } } ).zone();
@@ -203,7 +203,7 @@ export class OrderPaymentTranslatePage implements OnInit, OnDestroy {
      * Go to add orders
      */
     goToAddOrders(){
-      this._navCtrl.push(AddOrderPaymentPage, { restaurant : this._restaurantId, table : this._tableId, currency : this._currency });
+      this._navCtrl.push(AddOrderPaymentPage, { establishment : this._establishmentId, table : this._tableId, currency : this._currency });
     }
 
     showDetail(i) {

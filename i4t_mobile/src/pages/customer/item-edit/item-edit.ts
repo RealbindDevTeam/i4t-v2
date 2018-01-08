@@ -9,7 +9,7 @@ import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
 import { GarnishFoodCol } from 'i4t_web/both/collections/menu/garnish-food.collection';
 import { GarnishFood } from 'i4t_web/both/models/menu/garnish-food.model';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Item } from 'i4t_web/both/models/menu/item.model';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { ModalObservationsEdit } from './modal-observations-edit';
@@ -99,7 +99,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   ngOnInit() {
     this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
-    this._itemsSub = MeteorObservable.subscribe('itemsByRestaurant', this._res_code).subscribe(() => {
+    this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).subscribe(() => {
       this._ngZone.run(() => {
         MeteorObservable.autorun().subscribe(() => {
           this._items = Items.find({ _id: this._item_code }).zone();
@@ -133,7 +133,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       }
     });
 
-    this._garnishSub = MeteorObservable.subscribe('garnishFoodByRestaurant', this._res_code).subscribe(() => {
+    this._garnishSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this._res_code).subscribe(() => {
 
       this._ngZone.run(() => {
         this._garnishes = GarnishFoodCol.find({});
@@ -179,7 +179,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       });
     });
 
-    this._additionSub = MeteorObservable.subscribe('additionsByRestaurant', this._res_code).subscribe(() => {
+    this._additionSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).subscribe(() => {
       this._ngZone.run(() => {
         this._additions = Additions.find({}).zone();
         this._createAdditions = Additions.collection.find({}).fetch();
@@ -232,7 +232,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
     });
     //
 
-    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this._res_code]).subscribe(() => {
+    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._res_code]).subscribe(() => {
       this._currencyCode = Currencies.collection.find({}).fetch()[0].code + ' ';
     });
   }
@@ -497,27 +497,27 @@ export class ItemEditPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Return Item price by current restaurant
+   * Return Item price by current establishment
    * @param {Item} _pItem 
    */
   getItemPrice(_pItem: Item): number {
-    return _pItem.restaurants.filter(r => r.restaurantId === this._res_code)[0].price;
+    return _pItem.establishments.filter(r => r.establishment_id === this._res_code)[0].price;
   }
 
   /**
-   * Return Addition price by current restaurant
+   * Return Addition price by current establishment
    * @param {Addition} _pAddition
    */
   getAdditionsPrice(_pAddition: Addition): number {
-    return _pAddition.restaurants.filter(r => r.restaurantId === this._res_code)[0].price;
+    return _pAddition.establishments.filter(r => r.establishment_id === this._res_code)[0].price;
   }
 
   /**
-   * Return Garnish food price by current restaurant
+   * Return Garnish food price by current establishment
    * @param {GarnishFood} _pGarnishFood
    */
   getGarnishFoodPrice(_pGarnishFood: GarnishFood): number {
-    return _pGarnishFood.restaurants.filter(r => r.restaurantId === this._res_code)[0].price;
+    return _pGarnishFood.establishments.filter(r => r.establishment_id === this._res_code)[0].price;
   }
 
   /**
@@ -534,7 +534,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   showActionsFooter(): boolean {
     let item = Items.collection.findOne({ _id: this._item_code });
     if (item) {
-      let aux = item.restaurants.find(element => element.restaurantId === this._res_code);
+      let aux = item.establishments.find(element => element.establishment_id === this._res_code);
       if (aux.isAvailable) {
         let orderAux = Orders.findOne({ _id: this._order_code, creation_user: this._creation_user });
         if (orderAux) {
@@ -554,8 +554,8 @@ export class ItemEditPage implements OnInit, OnDestroy {
 * Function to get item avalaibility 
 */
   getItemAvailability(): boolean {
-    let _itemRestaurant = this._item[0];
-    let aux = _itemRestaurant.restaurants.find(element => element.restaurantId === this._res_code);
+    let _itemEstablishment = this._item[0];
+    let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this._res_code);
     return aux.isAvailable;
   }
 

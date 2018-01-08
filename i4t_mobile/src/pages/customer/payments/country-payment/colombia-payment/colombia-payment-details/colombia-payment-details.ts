@@ -3,11 +3,11 @@ import { AlertController, LoadingController, ToastController, NavParams } from '
 import { MeteorObservable } from 'meteor-rxjs'
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { Order, OrderTranslateInfo } from 'i4t_web/both/models/restaurant/order.model';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Order, OrderTranslateInfo } from 'i4t_web/both/models/establishment/order.model';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Users } from 'i4t_web/both/collections/auth/user.collection';
 import { UserLanguageServiceProvider } from '../../../../../../providers/user-language-service/user-language-service';
-import { RestaurantsLegality } from 'i4t_web/both/collections/restaurant/restaurant.collection';
+//import { RestaurantsLegality } from 'i4t_web/both/collections/restaurant/restaurant.collection';
 
 /*
   Generated class for the ColombiaPaymentDetailsPage page.
@@ -29,7 +29,7 @@ export class ColombiaPaymentDetailsPage implements OnInit, OnDestroy {
     private customFooter: ElementRef;
 
     private _ordersSubscription: Subscription;
-    private _restaurantLegSub: Subscription;
+    //private _restaurantLegSub: Subscription;
 
     private _orders: any;
     private _totalValue: number = 0;
@@ -40,8 +40,8 @@ export class ColombiaPaymentDetailsPage implements OnInit, OnDestroy {
     private _ipoComBaseString: string;
     private _ipoComString: string;
     private _currency: string;
-    private _restaurantId: string;
-    private _restaurantLegality: any;
+    //private _restaurantId: string;
+    //private _restaurantLegality: any;
     private _showRegimeCoData: boolean = false;
     private _showRegimeSiData: boolean = false;
 
@@ -73,9 +73,9 @@ export class ColombiaPaymentDetailsPage implements OnInit, OnDestroy {
         this._ordersSubscription = MeteorObservable.subscribe('getOrdersByAccount', Meteor.userId()).subscribe(() => {
             MeteorObservable.autorun().subscribe(() => {
                 this._currency = this._navParams.get("currency");
-                this._restaurantId = this._navParams.get("restaurant");
+                //this._restaurantId = this._navParams.get("restaurant");
 
-                this._restaurantLegSub = MeteorObservable.subscribe('getRestaurantLegality', this._restaurantId).subscribe(() => {
+                /*this._restaurantLegSub = MeteorObservable.subscribe('getRestaurantLegality', this._restaurantId).subscribe(() => {
                     this._ngZone.run(() => {
                         this._restaurantLegality = RestaurantsLegality.findOne({ restaurant_id: this._restaurantId });
                         this._totalValue = 0;
@@ -97,7 +97,7 @@ export class ColombiaPaymentDetailsPage implements OnInit, OnDestroy {
                             this._showRegimeCoData = false;
                         }
                     });
-                });
+                });*/
             });
         });
     }
@@ -237,6 +237,6 @@ export class ColombiaPaymentDetailsPage implements OnInit, OnDestroy {
      */
     removeSubscriptions(): void {
         if (this._ordersSubscription) { this._ordersSubscription.unsubscribe(); }
-        if (this._restaurantLegSub) { this._restaurantLegSub.unsubscribe(); }
+        //if (this._restaurantLegSub) { this._restaurantLegSub.unsubscribe(); }
     }
 }

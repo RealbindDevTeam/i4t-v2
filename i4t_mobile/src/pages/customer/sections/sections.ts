@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { Cities } from 'i4t_web/both/collections/general/city.collection';
 import { Countries } from 'i4t_web/both/collections/general/country.collection';
 import { Sections } from 'i4t_web/both/collections/menu/section.collection';
@@ -13,7 +13,7 @@ import { Subcategories } from 'i4t_web/both/collections/menu/subcategory.collect
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { ItemDetailPage } from '../item-detail/item-detail';
 import { AdditionsPage } from './additions/additions';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 import { Storage } from '@ionic/storage';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 
@@ -28,8 +28,8 @@ export class SectionsPage implements OnInit, OnDestroy {
   private _userLang: string;
   private _sections;
   private _sectionsSub: Subscription;
-  private _restaurants: any;
-  private _restaurantSub: Subscription;
+  private _establishments: any;
+  private _establishmentSub: Subscription;
   private _cities;
   private _citySub: Subscription;
   private _countries;
@@ -66,30 +66,30 @@ export class SectionsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
     this.removeSubscriptions();
-    this._sectionsSub = MeteorObservable.subscribe('sectionsByRestaurant', this._res_code).subscribe(() => {
+    this._sectionsSub = MeteorObservable.subscribe('sectionsByEstablishment', this._res_code).subscribe(() => {
       this._sections = Sections.find({});
     });
-    this._restaurantSub = MeteorObservable.subscribe('getRestaurantByCurrentUser', Meteor.userId()).subscribe(() => {
+    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).subscribe(() => {
       this._ngZone.run(() => {
-        this._restaurants = Restaurants.findOne({});
+        this._establishments = Establishments.findOne({});
       });
     });
-    this._citySub = MeteorObservable.subscribe('getCityByRestaurantId', this._res_code).subscribe(() => {
+    this._citySub = MeteorObservable.subscribe('getCityByEstablishmentId', this._res_code).subscribe(() => {
       this._cities = Cities.find({});
     });
-    this._countrySub = MeteorObservable.subscribe('getCountryByRestaurantId', this._res_code).subscribe(() => {
+    this._countrySub = MeteorObservable.subscribe('getCountryByEstablishmentId', this._res_code).subscribe(() => {
       this._countries = Countries.find({});
     });
-    this._categorySub = MeteorObservable.subscribe('categoriesByRestaurant', this._res_code).subscribe(() => {
+    this._categorySub = MeteorObservable.subscribe('categoriesByEstablishment', this._res_code).subscribe(() => {
       this._categories = Categories.find({});
     });
-    this._subcategorySub = MeteorObservable.subscribe('subcategoriesByRestaurant', this._res_code).subscribe(() => {
+    this._subcategorySub = MeteorObservable.subscribe('subcategoriesByEstablishment', this._res_code).subscribe(() => {
       this._subcategories = Subcategories.find({});
     });
-    this._itemSub = MeteorObservable.subscribe('itemsByRestaurant', this._res_code).subscribe(() => {
+    this._itemSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).subscribe(() => {
       this._items = Items.find({});
     });
-    this._additionsSub = MeteorObservable.subscribe( 'additionsByRestaurant', this._res_code ).subscribe( () => {
+    this._additionsSub = MeteorObservable.subscribe( 'additionsByEstablishment', this._res_code ).subscribe( () => {
         this._additions = Additions.find({});
         this._additions.subscribe( () => { 
           let _lAdditions: number = Additions.collection.find( { } ).count();
@@ -143,7 +143,7 @@ export class SectionsPage implements OnInit, OnDestroy {
    */
   removeSubscriptions():void{
     if(this._sectionsSub){this._sectionsSub.unsubscribe();}
-    if(this._restaurantSub){this._restaurantSub.unsubscribe();}
+    if(this._establishmentSub){this._establishmentSub.unsubscribe();}
     if(this._citySub){this._citySub.unsubscribe();}
     if(this._countrySub){this._countrySub.unsubscribe();}
     if(this._categorySub){this._categorySub.unsubscribe();}

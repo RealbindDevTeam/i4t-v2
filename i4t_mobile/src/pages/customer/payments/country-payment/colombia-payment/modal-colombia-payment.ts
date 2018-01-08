@@ -3,7 +3,7 @@ import { ViewController, NavParams } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { PaymentMethods } from 'i4t_web/both/collections/general/paymentMethod.collection';
 import { UserLanguageServiceProvider } from '../../../../../providers/user-language-service/user-language-service';
 
@@ -14,7 +14,7 @@ import { UserLanguageServiceProvider } from '../../../../../providers/user-langu
 
 export class ModalColombiaPayment implements OnInit, OnDestroy {
 
-  private _restaurantsSubscription    : Subscription;
+  private _establishmentsSubscription    : Subscription;
   private _paymentMethodsSubscription : Subscription;
 
   private _paymentMethods : any;
@@ -64,12 +64,12 @@ export class ModalColombiaPayment implements OnInit, OnDestroy {
   ngOnInit(){
     this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
     this.removeSubscriptions();
-    this._restaurantsSubscription = MeteorObservable.subscribe( 'getRestaurantByCurrentUser', Meteor.userId() ).subscribe(()=>{
+    this._establishmentsSubscription = MeteorObservable.subscribe( 'getEstablishmentByCurrentUser', Meteor.userId() ).subscribe(()=>{
       this._ngZone.run( () => {
-        let _lRestaurant = Restaurants.find({}).zone();
-        _lRestaurant.subscribe(()=>{
+        let _lEstablishment = Establishments.find({}).zone();
+        _lEstablishment.subscribe(()=>{
           if( this._paymentMethodsSubscription ){ this._paymentMethodsSubscription.unsubscribe(); }
-          this._paymentMethodsSubscription = MeteorObservable.subscribe('getPaymentMethodsByUserCurrentRestaurant', Meteor.userId()).subscribe(()=>{
+          this._paymentMethodsSubscription = MeteorObservable.subscribe('getPaymentMethodsByUserCurrentEstablishment', Meteor.userId()).subscribe(()=>{
             this._paymentMethods = PaymentMethods.find({}).zone();
           });
           this.searchTipPercentage();
@@ -86,11 +86,11 @@ export class ModalColombiaPayment implements OnInit, OnDestroy {
    * @param _totalTipValue 
    */
   searchTipPercentage(){
-      let _lRestaurant   = Restaurants.findOne( {} );
-      if( _lRestaurant.tip_percentage > 0 ){
-          this._tipValue = _lRestaurant.tip_percentage;
-      }
-      this._tipTotal = this._totalValue * ( this._tipValue / 100 );
+      //let _lEstablishment   = Establishments.findOne( {} );
+      //if( _lEstablishment.tip_percentage > 0 ){
+      //    this._tipValue = _lEstablishment.tip_percentage;
+      //}
+      //this._tipTotal = this._totalValue * ( this._tipValue / 100 );
   }
 
   /**
@@ -151,7 +151,7 @@ export class ModalColombiaPayment implements OnInit, OnDestroy {
    */
   removeSubscriptions():void{
     if( this._paymentMethodsSubscription ){ this._paymentMethodsSubscription.unsubscribe(); }
-    if( this._restaurantsSubscription ){ this._restaurantsSubscription.unsubscribe(); }
+    if( this._establishmentsSubscription ){ this._establishmentsSubscription.unsubscribe(); }
   }
 
 }
