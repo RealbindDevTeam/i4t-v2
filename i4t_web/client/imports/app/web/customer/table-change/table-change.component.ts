@@ -101,10 +101,6 @@ export class TableChangeComponent implements OnInit, OnDestroy {
                     this.openDialog(this.titleMsg, '', this.itemNameTraduction('CHANGE_TABLE.TABLE_DESTINY_NO_ACTIVE'), '', this.btnAcceptLbl, false);
                 } else if (error.error === '202') {
                     this.openDialog(this.titleMsg, '', this.itemNameTraduction('CHANGE_TABLE.TABLE_DESTINY_NO_RESTAURANT'), '', this.btnAcceptLbl, false);
-                } else if (error.error === '203') {
-                    this.openDialog(this.titleMsg, '', this.itemNameTraduction('CHANGE_TABLE.PENDING_ORDERS'), '', this.btnAcceptLbl, false);
-                } else if (error.error === '204') {
-                    this.openDialog(this.titleMsg, '', this.itemNameTraduction('CHANGE_TABLE.ORDERS_PAY_PROCESS'), '', this.btnAcceptLbl, false);
                 } else if (error.error === '205') {
                     this.openDialog(this.titleMsg, '', this.itemNameTraduction('CHANGE_TABLE.WAITER_CALL_PENDING'), '', this.btnAcceptLbl, false);
                 } else if (error.error === '206') {

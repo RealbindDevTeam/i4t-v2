@@ -10,11 +10,6 @@ import { Establishments } from '../../../../../../../../both/collections/establi
 import { Table } from '../../../../../../../../both/models/establishment/table.model';
 import { Tables } from '../../../../../../../../both/collections/establishment/table.collection';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
-import { Orders } from '../../../../../../../../both/collections/establishment/order.collection';
-import { Account } from '../../../../../../../../both/models/establishment/account.model';
-import { Accounts } from '../../../../../../../../both/collections/establishment/account.collection';
-import { Currency } from '../../../../../../../../both/models/general/currency.model';
-import { Currencies } from '../../../../../../../../both/collections/general/currency.collection';
 import { Users } from '../../../../../../../../both/collections/auth/user.collection';
 import { TableDetailComponent } from './table-detail/table-detail.component';
 
@@ -30,9 +25,6 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
     private _establishmentsSub: Subscription;
     private _tablesSub: Subscription;
     private _userDetailsSub: Subscription;
-    private _accountsSub: Subscription;
-    private _ordersSub: Subscription;
-    private _currenciesSub: Subscription;
 
     private _establishments: Observable<Establishment[]>;
     private _establishmentsFilter: Observable<Establishment[]>;
@@ -73,11 +65,6 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
                 this._tables = Tables.find({}).zone();
             });
         });
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByAdminUser', this._user, ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS',
-            'ORDER_STATUS.PREPARED', 'ORDER_STATUS.DELIVERED',
-            'ORDER_STATUS.PENDING_CONFIRM']).subscribe();
-        this._accountsSub = MeteorObservable.subscribe('getAccountsByAdminUser', this._user).subscribe();
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByUserId', this._user).subscribe();
         this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByAdminUser', this._user).subscribe();
     }
 
@@ -88,9 +75,6 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
         if ( this._establishmentsSub) {  this._establishmentsSub.unsubscribe(); }
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
         if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._accountsSub) { this._accountsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
     }
 
     /**

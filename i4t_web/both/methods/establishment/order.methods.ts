@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Table } from '../../models/establishment/table.model';
 import { Tables } from '../../collections/establishment/table.collection';
-import { Account } from '../../models/establishment/account.model';
-import { Accounts } from '../../collections/establishment/account.collection';
 import { Order, OrderItem, OrderAddition } from '../../models/establishment/order.model';
 import { Orders } from '../../collections/establishment/order.collection';
 import { Establishment } from '../../models/establishment/establishment.model';

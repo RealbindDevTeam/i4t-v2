@@ -5,7 +5,6 @@ import { CustomerGuard } from './web/services/navigation/customer-guard.service'
 import { AdminGuard } from './web/services/navigation/admin-guard.service';
 import { WaiterGuard } from './web/services/navigation/waiter-guard.service';
 import { SupervisorGuard } from './web/services/navigation/supervisor-guard.service';
-import { ChefGuard } from './web/services/navigation/chef-guard.service';
 import { CashierGuard } from './web/services/navigation/cashier-guard.service';
 import { DashboardComponent } from './web/administrator/dashboard/dashboard.component';
 import { LandingPageComponent } from './web/landing-page/landing-page.component';
@@ -32,15 +31,12 @@ import { ItemEnableComponent } from './web/administrator/menu/items/enable/items
 import { WaiterCallComponent } from './web/customer/waiter-call/waiter-call.component';
 import { CallsComponent } from './web/waiter/calls/calls/calls.component';
 import { NotFoundWebComponent } from './web/auth/notfound/notfound.web.component';
-//import { PaymentsComponent } from './web/customer/payments/payments/payments.component';
-//import { OrderPaymentTranslateComponent } from './web/customer/payments/order-payment-translate/order-payment-translate.component';
 import { MonthlyPaymentComponent } from './web/administrator/payment/monthly-payment/monthly-payment.component';
 import { SupervisorDashboardComponent } from './web/supervisor/dashboard/supervisor-dashboard.component';
 import { MonthlyConfigComponent } from './web/administrator/administration/establishment/monthly-config/monthly-config/monthly-config.component';
 import { PayuPaymentFormComponent } from './web/administrator/payment/payu-payment-form/payu-payment-form.component';
 import { PaymentHistoryComponent } from './web/administrator/payment/payment-history/payment-history.component';
 import { ReactivateEstablishmentComponent } from './web/administrator/payment/reactivate-establishment/reactivate-establishment.component';
-//import { ColombiaPayInfoComponent } from './web/customer/payments/country-payment/colombia-payment/colombia-pay-info/colombia-pay-info.component';
 import { TrnResponseConfirmComponent } from './web/administrator/payment/payu-payment-form/transaction-response-confirm/trn-response-confirm.component';
 import { CustomerPaymentsHistoryComponent } from './web/customer/payments-history/customer-payments-history.component';
 import { AdminSignupComponent } from './web/auth/admin-signup/admin-signup.component';
@@ -57,7 +53,6 @@ import { SupervisorEstablishmentTableControlComponent } from './web/supervisor/e
 //import { InvoicesDownloadPage } from './web/administrator/administration/invoices-download/invoices-download.component';
 import { EstablishmentProfileComponent } from './web/administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './web/customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
-//import { ColombiaOrderInfoComponent } from './web/customer/payments/country-payment/colombia-payment/colombia-order-info/colombia-order-info.component';
 
 export const routes: Route[] = [
     {
@@ -81,16 +76,12 @@ export const routes: Route[] = [
             { path: 'items-enable', component: ItemEnableComponent, canActivate: [SupervisorGuard] },
             { path: 'waiter-call', component: WaiterCallComponent, canActivate: [CustomerGuard] },
             { path: 'calls', component: CallsComponent, canActivate: [WaiterGuard] },
-            //{ path: 'payments', component: PaymentsComponent, canActivate: [CustomerGuard] },
             { path: 'monthly-payment', component: MonthlyPaymentComponent, canActivate: [AdminGuard] },
             { path: 'dashboards', component: SupervisorDashboardComponent, canActivate: [SupervisorGuard] },
             { path: 'monthly-config', component: MonthlyConfigComponent, canActivate: [AdminGuard] },
-            //{ path: 'col-orders-info', component: ColombiaOrderInfoComponent, canActivate: [CustomerGuard] },
-            //{ path: 'orders-translate', component: OrderPaymentTranslateComponent, canActivate: [CustomerGuard] },
             { path: 'payment-form/:param1/:param2/:param3', component: PayuPaymentFormComponent, canActivate: [AdminGuard] },
             { path: 'payment-history', component: PaymentHistoryComponent, canActivate: [AdminGuard] },
             { path: 'reactivate-establishment', component: ReactivateEstablishmentComponent, canActivate: [AdminGuard] },
-            //{ path: 'col-pay-info', component: ColombiaPayInfoComponent, canActivate: [CustomerGuard] },
             { path: 'customer-payments-history', component: CustomerPaymentsHistoryComponent, canActivate: [CustomerGuard] },
             { path: 'items-enable-sup', component: ItemEnableSupComponent, canActivate: [SupervisorGuard] },
             { path: 'menu-list', component: MenuListComponent },

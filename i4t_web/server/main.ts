@@ -26,10 +26,8 @@ import './imports/publications/payment/invoice-info';
 import './imports/publications/payment/iurest-invoices';
 import './imports/publications/establishment/establishment';
 import './imports/publications/establishment/table';
-import './imports/publications/establishment/account';
 import './imports/publications/establishment/order';
 import './imports/publications/establishment/waiter-call';
-import './imports/publications/establishment/payment';
 import './imports/publications/establishment/invoice';
 
 import '../both/methods/menu/item.methods';
@@ -49,7 +47,6 @@ import '../both/methods/general/push-notifications.methods';
 import '../both/methods/establishment/establishment.methods';
 import '../both/methods/establishment/invoice.methods';
 import '../both/methods/establishment/order.methods';
-import '../both/methods/establishment/payment.methods';
 import '../both/methods/establishment/schedule.methods';
 import '../both/methods/establishment/table.method';
 import '../both/methods/establishment/waiter-queue/waiter-queue.methods';

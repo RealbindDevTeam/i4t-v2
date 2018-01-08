@@ -1365,8 +1365,6 @@
         "TABLE_DESTINY_NOT_EXISTS": "The code for the new table does not exist. Please try again.",
         "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the iurest service",
         "TABLE_DESTINY_NO_RESTAURANT": "The code of the table entered does not belong to the restaurant where you are located. Please try again.",
-        "PENDING_ORDERS": "You have orders pending to confirm affecting your payment. Please check and try again.",
-        "ORDERS_PAY_PROCESS": "You have orders in process of payment. It is not possible to change of table.",
         "WAITER_CALL_PENDING": "There are calls request to the waiter/waitress pending to be served. Once the call is attended you can change the table.",
         "TABLE_DESTINY_STATUS_ERROR": "An error has occurred while validating the status of the new table. Please try again.",
         "GENERAL_ERROR": "An error has occurred while changing the table. Please try again.",

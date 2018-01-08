@@ -8,10 +8,8 @@ import { Items } from '../../../both/collections/menu/item.collection';
 import { GarnishFoodCol } from '../../../both/collections/menu/garnish-food.collection';
 import { PaymentMethods } from '../../../both/collections/general/paymentMethod.collection';
 import { PaymentsHistory } from '../../../both/collections/payment/payment-history.collection';
-import { Accounts } from '../../../both/collections/establishment/account.collection';
 import { Orders } from '../../../both/collections/establishment/order.collection';
 import { Tables } from '../../../both/collections/establishment/table.collection';
-import { Payments } from '../../../both/collections/establishment/payment.collection';
 import { WaiterCallDetails } from '../../../both/collections/establishment/waiter-call-detail.collection';
 import { CcPaymentMethods } from '../../../both/collections/payment/cc-payment-methods.collection';
 import { PaymentTransactions } from '../../../both/collections/payment/payment-transaction.collection';
@@ -67,11 +65,6 @@ export function createdbindexes(){
     PaymentsHistory.collection._ensureIndex( { creation_user: 1 } );
     PaymentsHistory.collection._ensureIndex( { creation_date: 1 } );
 
-    // Accounts Collection Indexes
-    Accounts.collection._ensureIndex( { establishment_id: 1 } );
-    Accounts.collection._ensureIndex( { status: 1 } );
-    Accounts.collection._ensureIndex( { tableId: 1 } );
-
     // Tables Collection Indexes
     Tables.collection._ensureIndex( { QR_code: 1 } );
     Tables.collection._ensureIndex( { establishment_id: 1 } );    
@@ -81,10 +74,6 @@ export function createdbindexes(){
     Orders.collection._ensureIndex( { tableId: 1 } );
     Orders.collection._ensureIndex( { status: 1 } );
     Orders.collection._ensureIndex( { accountId: 1 } );
-
-    // Payments Collection Indexes
-    Payments.collection._ensureIndex( { creation_user: 1 } );
-    Payments.collection._ensureIndex( { establishment_id: 1, tableId: 1, status: 1 } );
     
     // WaiterCallDetails Collection Indexes
     WaiterCallDetails.collection._ensureIndex( { status: 1 } );

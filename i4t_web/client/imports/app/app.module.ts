@@ -22,7 +22,6 @@ import { CustomerGuard } from './web/services/navigation/customer-guard.service'
 import { AdminGuard } from './web/services/navigation/admin-guard.service';
 import { WaiterGuard } from './web/services/navigation/waiter-guard.service';
 import { SupervisorGuard } from './web/services/navigation/supervisor-guard.service';
-import { ChefGuard } from './web/services/navigation/chef-guard.service';
 import { CashierGuard } from './web/services/navigation/cashier-guard.service';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -85,7 +84,6 @@ export function createTranslateLoader(http: HttpClient) {
     AdminGuard,
     WaiterGuard,
     SupervisorGuard,
-    ChefGuard,
     CashierGuard
   ],
   bootstrap: [

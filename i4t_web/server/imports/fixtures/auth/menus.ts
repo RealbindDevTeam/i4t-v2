@@ -235,14 +235,6 @@ export function loadMenus() {
                 order: 4000
             },
             {
-                _id: "5000",
-                is_active: true,
-                name: "MENUS.PAYMENTS.PAYMENTS",
-                url: "/app/payments",
-                icon_name: "local_atm",
-                order: 5000
-            },
-            {
                 _id: "6000",
                 is_active: true,
                 name: "MENUS.WAITER_CALL",
