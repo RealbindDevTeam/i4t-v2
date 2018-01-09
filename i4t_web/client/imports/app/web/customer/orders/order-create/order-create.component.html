@@ -39,7 +39,7 @@
                 </mat-card>
 
                 <span *ngFor="let section of _sections | async">
-                    <h3 *ngIf="!(_items | async)?.length <= 0">{{section.name}}</h3>
+                    <h3>{{section.name}}</h3>
                     <span *ngFor="let item of _items | async">
                         <ng-template [ngIf]="item.sectionId === section._id && item.categoryId === '' && item.subcategoryId === ''">
                             <mat-card class="item-consumer">
@@ -68,6 +68,7 @@
                     </span>
                     <span *ngFor="let category of _categories | async">
                         <ng-template [ngIf]="category.section === section._id">
+                            <h3>{{category.name}}</h3>
                             <span *ngFor="let item of _items | async">
                                 <ng-template [ngIf]="item.sectionId === section._id && item.categoryId === category._id && item.subcategoryId === ''">
                                     <mat-card class="item-consumer">
@@ -96,6 +97,7 @@
                             </span>
                             <span *ngFor="let subcategory of _subcategories | async">
                                 <ng-template [ngIf]="subcategory.category === category._id">
+                                    <h3>{{subcategory.name}}</h3>
                                     <span *ngFor="let item of _items | async">
                                         <ng-template [ngIf]="item.sectionId === section._id && item.categoryId === category._id && item.subcategoryId === subcategory._id">
                                             <mat-card class="item-consumer">

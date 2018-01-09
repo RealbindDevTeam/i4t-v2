@@ -27,7 +27,7 @@
     "JOB": "Job title",
     "VALIDATE": "Validate",
     "TIP_PERCENTAGE": "Tip service",
-    "CLOSE": "Close",
+    "CLOSE": "CLOSE",
     "VIEW_DETAIL": "View Detail",
     "OTHER": "Other...",
     "SIGN_OUT": "Sign Out",
@@ -1338,9 +1338,10 @@
         "MESSAGE": "Register one to enable this option"
     },
     "ENABLE_DISABLED": {
-        "BTN_TOGGLE_MSG": "Enable/disable Item",
+        "TITLE_TOGGLE_MSG": "Enable/disable Item",
+        "BTN_TOGGLE_MSG": "ENABLE",
         "DIALOG_SUBTITLE": "Change the restaurant where you want to enable/disable the item",
-        "CLOSE_DIALOG": "Close",
+        "CLOSE_DIALOG": "CLOSE",
         "AVAILABILITY_CHANGED": "Item availability changed"
     },
     "NOT_FOUND": {
