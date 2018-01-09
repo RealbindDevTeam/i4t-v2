@@ -50,7 +50,7 @@
                                 </div>
                                 <div>
                                     <mat-form-field class="description">
-                                        <textarea matInput required formControlName="editDescription" placeholder="{{'DESCRIPTION' | translate}}" minlength="1" maxlength="200"
+                                        <textarea matInput formControlName="editDescription" placeholder="{{'DESCRIPTION' | translate}}" maxlength="200"
                                             #inputDesc></textarea>
                                         <mat-hint align="end">{{inputDesc.value.length}} / 200</mat-hint>
                                     </mat-form-field>
@@ -74,8 +74,8 @@
                                             <mat-checkbox formControlName="editAcceptReward" [(ngModel)]="_rewardEnable">{{'ITEMS.REWARD_LABEL' | translate}}</mat-checkbox>
                                             <span class="app-flex-filler"></span>
                                             <mat-form-field *ngIf="_rewardEnable" style="margin-left: 5%;">
-                                                <mat-select formControlName="editRewardValue" [(ngModel)]="_selectedTime">
-                                                    <mat-option *ngFor="let point of _rewardPointsArray" value="{{point.value.toString()}}">{{point.label}}</mat-option>
+                                                <mat-select formControlName="editRewardValue" placeholder="{{'ITEMS.POINTS_PLACEHOLER' | translate}}">
+                                                    <mat-option *ngFor="let point of _rewardPointsArray" value="{{point.value}}">{{point.label}}</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
@@ -84,16 +84,8 @@
                                     <div class="image">
                                         <mat-form-field style="width: 100%">
                                             <mat-select formControlName="editCookingTime" placeholder="{{'ITEMS.COOKING_TIME' | translate}}" [(ngModel)]="_selectedTime">
-                                                <mat-option value="5 min aprox">5 min aprox</mat-option>
-                                                <mat-option value="15 min aprox">15 min aprox</mat-option>
-                                                <mat-option value="30 min aprox">30 min aprox</mat-option>
-                                                <mat-option value="45 min aprox">45 min aprox</mat-option>
-                                                <mat-option value="1 h aprox">1 h aprox</mat-option>
-                                                <mat-option value="1 h 15 min aprox">1 h 15 min aprox</mat-option>
-                                                <mat-option value="1 h 30 min aprox">1 h 30 min aprox</mat-option>
-                                                <mat-option value="1 h 45 min aprox">1 h 45 min aprox</mat-option>
-                                                <mat-option value="2 h aprox">2 h aprox</mat-option>
-                                                <mat-option value="+ 2 h aprox">+ 2 h aprox</mat-option>
+                                                    <mat-option value="">{{'ITEMS.NO_TIME' | translate}}</mat-option>
+                                                <mat-option *ngFor="let time of _cookingTimeArray" value="{{time.value}}">{{time.label}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
