@@ -596,9 +596,9 @@ mat-ink-bar {
 }
 
 .dmpc {
-    padding-top: 12px;
-    margin: 20px auto;
-    width: 95%;
+    padding: 17px 20px 0;
+    margin: 23px auto;
+    width: calc(100% - 40px);
 }
 
 .item-detail {

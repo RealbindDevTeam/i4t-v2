@@ -47,6 +47,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
     private _categories: Observable<Category[]>;
     private _subcategories: Observable<Subcategory[]>;
     private _items: Observable<Item[]>;
+    private _itemsRecommended: Observable<Item[]>;
     private _itemDetail: Observable<Item[]>;
     private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
@@ -102,6 +103,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
         this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentWork', this._user).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
+                this._itemsRecommended = Items.find({'establishments.recommended': true}).zone();
             });
         });
         this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishmentWork', this._user).subscribe(() => {
@@ -157,6 +159,7 @@ export class MenuListComponent implements OnInit, OnDestroy {
      * Show All establishment items
      */
     showAllItems(): void {
+        this._itemsRecommended = Items.find({'establishments.recommended': true}).zone();
         this._sections = Sections.find({}).zone();
     }
 
@@ -165,7 +168,16 @@ export class MenuListComponent implements OnInit, OnDestroy {
      * @param {string} _pSectionId 
      */
     changeSection(_pSectionId: string): void {
+        this._itemsRecommended = null;
         this._sections = Sections.find({ _id: _pSectionId }).zone();
+    }
+
+    /**
+     * Show Items recommended
+     */
+    showItemsRecommended(){
+        this._sections = null;
+        this._itemsRecommended = Items.find({'establishments.recommended': true}).zone();
     }
 
     /**

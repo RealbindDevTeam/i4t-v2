@@ -1,4 +1,4 @@
-<mat-card mat-cell="12" class="demo-card demo-basic" style="width: 90%; margin: 0 auto" *ngIf="!_thereAreItems">
+<mat-card *ngIf="!_thereAreItems">
     <mat-card-content>
         <div class="card_initial">
             <div class="card_initial has-image">
@@ -15,23 +15,18 @@
     </mat-card-content>
 </mat-card>
 
-<div class="main" *ngIf="_thereAreItems">
-    <div class="main-overflow">
-        <mat-card class="custom-cards" *ngFor="let item of _items | async">
-            <div class="header-card">
-                <img *ngIf="item.image" src="{{item.image.url}}">
-                <img *ngIf="!item.image" src="/images/default-plate.png">
-                <span class="mat-card-title">{{item.name}}</span>
-            </div>
-            <mat-card-content style="margin-bottom: 0px">
-                <p *ngIf="item.description.length > 50">{{item.description.substring(1, 50)}}...</p>
-                <p *ngIf="item.description.length <= 50">{{item.description}}</p>
-            </mat-card-content>
-            <mat-card-actions>
-                <button mat-button class="primary-button" (click)="openDialog(item)" style="width: 100%">
-                    {{'ENABLE_DISABLED.BTN_TOGGLE_MSG' | translate}}
-                </button>
-            </mat-card-actions>
-        </mat-card>
+<mat-card *ngFor="let item of _items | async" class="item">
+    <div class="mdc-card__horizontal-block">
+        <section class="mdc-card__primary">
+            <mat-card-title>{{item.name}}</mat-card-title>
+            <p *ngIf="item.description.length > 50">{{item.description.substring(0, 50)}}...</p>
+            <p *ngIf="item.description.length <= 50">{{item.description}}</p>
+        </section>
+        <img class="mdc-card-media-item" *ngIf="item.image" src="{{ item.image.url }}" alt="{{item.name}}">
+        <img class="mdc-card-media-item" *ngIf="!item.image" src="/images/default-plate.png" alt="{{item.name}}">
     </div>
-</div>
+
+    <mat-card-actions>
+        <button mat-button (click)="openDialog(item)">{{'ENABLE_DISABLED.BTN_TOGGLE_MSG' | translate}}</button>
+    </mat-card-actions>
+</mat-card>

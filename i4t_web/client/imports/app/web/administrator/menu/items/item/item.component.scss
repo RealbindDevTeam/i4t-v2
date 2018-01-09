@@ -3,7 +3,7 @@
     mat-card.item {
         display: inline-block; 
         margin: 0 20px 20px 0 !important;
-        width: 280px;
+        width: 360px;
         vertical-align: top;
     }
 }
@@ -30,16 +30,18 @@
     box-sizing: border-box;
 }
 
-.mdc-card__primary {
-    padding: 0 24px 24px 0;
+section.mdc-card__primary {
+    width: calc(100% - 120px);
+    padding-right: 24px;
     overflow: hidden;
 }
 
-.mdc-card-media-item {
+img.mdc-card-media-item {
     display: inline-block;
     margin: -8px -8px 0 0;
-    width: 120px;
-    height: 120px;
+    width: 120px !important;
+    height: 120px !important;
+    height: auto;
     padding: 0;
 }
 

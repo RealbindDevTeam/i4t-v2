@@ -27,7 +27,7 @@
     "JOB": "Cargo",
     "VALIDATE": "Validar",
     "TIP_PERCENTAGE": "Porcentaje de propina",
-    "CLOSE": "Cerrar",
+    "CLOSE": "CERRAR",
     "VIEW_DETAIL": "Ver detalle",
     "OTHER": "Otro...",
     "VALUE": "Valor",
@@ -37,6 +37,7 @@
     "LOGIN_SYSTEM_OPERATIONS_MSG": "Por favor inicia sesión para realizar operaciones en el sistema",
     "YES": "Sí",
     "NO": "No",
+    "VIEW" : "VER",
     "ORDER_STATUS": {
         "SELECTING": "Seleccionando",
         "CONFIRMED": "Confirmado",
@@ -798,6 +799,7 @@
         "ITEM_AGGREGATED": "Item agregado correctamente",
         "ADDITON_AGGREGATED": "Adición agregada correctamente",
         "SEARCH_MENU": "Buscar Menú",
+        "RECOMMENDED" : "Recomendados",
         "REWARD": "Recompensa"
     },
     "ORDER_LIST": {
@@ -1338,9 +1340,10 @@
         "MESSAGE": "Regístra uno para habilitar esta opción"
     },
     "ENABLE_DISABLED": {
-        "BTN_TOGGLE_MSG": "Habilitar/Inhabilitar Item",
+        "TITLE_TOGGLE_MSG": "Habilitar/Inhabilitar Item",
+        "BTN_TOGGLE_MSG": "HABILITAR",
         "DIALOG_SUBTITLE": "Cambia el restaurante donde deseas habilitar o inhabilitar el item",
-        "CLOSE_DIALOG": "Cerrar",
+        "CLOSE_DIALOG": "CERRAR",
         "AVAILABILITY_CHANGED": "Disponiblidad de item modificada"
     },
     "NOT_FOUND": {
