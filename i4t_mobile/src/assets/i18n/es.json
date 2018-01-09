@@ -172,7 +172,7 @@
             "MSG_1": "Puedes ordenar lo que deseas",
             "NO_ORDERS": "Aún no tienes ordenes, puedes crear una orden nueva",
             "LOADING_MENU": "Cargando menú",
-            "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del ", 
+            "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del ",
             "ORDER_CONFIRM": "Confirmando tu orden",
             "ORDER_CONFIRMED_MSG": "Orden confirmada"
         },
@@ -306,7 +306,8 @@
             "TOAST_MSG": "Item agregado exitosamente",
             "WAIT_QR": "Espera por favor  ...",
             "TIME": "Tiempo de cocción:",
-            "ADDITION": "Adiciones"
+            "ADDITION": "Adiciones",
+            "RECOMMENDED": "Recomendados"
         },
         "ITEM_EDIT": {
             "MODIFY": "Modificar",
@@ -415,9 +416,9 @@
             "PAYMENTS_HISTORY": "Historial de Pagos",
             "SETTINGS": "Ajustes"
         },
-        "RESTAURANT_PROFILE" : {
-            "MENU_BTN" : "Menú",
-            "PAYMENT_METHODS" : "Métodos de pago"
+        "RESTAURANT_PROFILE": {
+            "MENU_BTN": "Menú",
+            "PAYMENT_METHODS": "Métodos de pago"
         },
         "SCHEDULE": {
             "SCHEDULE": "Horario de atención",

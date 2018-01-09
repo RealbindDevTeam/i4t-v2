@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
 import { NavController, NavParams, Content } from 'ionic-angular';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
@@ -10,6 +10,7 @@ import { Countries } from 'i4t_web/both/collections/general/country.collection';
 import { Sections } from 'i4t_web/both/collections/menu/section.collection';
 import { Categories } from 'i4t_web/both/collections/menu/category.collection';
 import { Subcategories } from 'i4t_web/both/collections/menu/subcategory.collection';
+import { Item } from 'i4t_web/both/models/menu/item.model';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { ItemDetailPage } from '../item-detail/item-detail';
 import { AdditionsPage } from './additions/additions';
@@ -39,6 +40,7 @@ export class SectionsPage implements OnInit, OnDestroy {
   private _subcategories;
   private _subcategorySub: Subscription;
   private _items;
+  private _itemsRecommended;
   private _itemSub: Subscription;
   private _additions;
   private _additionsSub: Subscription;
@@ -88,6 +90,7 @@ export class SectionsPage implements OnInit, OnDestroy {
     });
     this._itemSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).subscribe(() => {
       this._items = Items.find({});
+      this._itemsRecommended = Items.find({ 'establishments.establishment_id': this._res_code, 'establishments.recommended': true }).zone();
     });
     this._additionsSub = MeteorObservable.subscribe( 'additionsByEstablishment', this._res_code ).subscribe( () => {
         this._additions = Additions.find({});
