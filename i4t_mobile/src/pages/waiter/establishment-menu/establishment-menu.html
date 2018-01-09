@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-    <ion-list *ngFor="let _res of _restaurants | async" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
+    <ion-list *ngFor="let _res of _establishments | async" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
         <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
             <ion-thumbnail item-left>
                 <img *ngIf="_res.image" src="{{ _res.image.url }}">
@@ -42,7 +42,7 @@
             <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
                 <ion-card>
                     <ion-card-content>
-                        <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.restaurant_work"></item-card-waiter>
+                        <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
                     </ion-card-content>
                 </ion-card>
             </div>
@@ -55,7 +55,7 @@
                 <h2 style="text-align: center; font-weight: bold; margin-bottom: 13px;">{{category.name}}</h2>
                 <div *ngFor="let item of _items | async">
                     <div *ngIf="(item.categoryId == category._id) && item.subcategoryId == ''" (click)="goToDetail(item._id)">
-                        <item-card [itemIdIn]="item" [resCode]="_userDetail.restaurant_work"></item-card>
+                        <item-card [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card>
                     </div>
                 </div>
                 <div *ngFor="let subcategory of _subcategories | async">
@@ -63,7 +63,7 @@
                         <h2 style="font-weight: bold">{{subcategory.name}}</h2>
                         <div *ngFor="let item of _items | async">
                             <div *ngIf="item.subcategoryId == subcategory._id" (click)="goToDetail(item._id)">
-                                <item-card [itemIdIn]="item" [resCode]="_userDetail.restaurant_work"></item-card>
+                                <item-card [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card>
                             </div>
                         </div>
                     </div>

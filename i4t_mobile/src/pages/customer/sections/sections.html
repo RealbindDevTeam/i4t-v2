@@ -5,15 +5,15 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="_restaurants" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
+  <ion-list *ngIf="_establishments" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
       <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
           <ion-thumbnail item-left>
-              <img *ngIf="_restaurants.image" src="{{ _restaurants.image.url }}">
-              <img *ngIf="!_restaurants.image" src="assets/img/default-restaurant.png">
+              <img *ngIf="_establishments.image" src="{{ _establishments.image.url }}">
+              <img *ngIf="!_establishments.image" src="assets/img/default-restaurant.png">
           </ion-thumbnail>
-          <h2>{{_restaurants.name}}</h2>
+          <h2>{{_establishments.name}}</h2>
           <h2 *ngIf="_table">{{'MOBILE.ORDERS.TABLE' | translate}}: {{_table._number}}</h2>
-          <p>{{_restaurants.address}}</p>
+          <p>{{_establishments.address}}</p>
       </ion-item>
   </ion-list>
   <ion-card>

@@ -6,8 +6,8 @@ import { Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { Order, OrderAddition } from 'i4t_web/both/models/restaurant/order.model';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Order, OrderAddition } from 'i4t_web/both/models/establishment/order.model';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 
 @Component({
@@ -21,7 +21,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
     private _additionsDetailFormGroup: FormGroup = new FormGroup({});
     private _orderAddition: OrderAddition;
     private _currentOrder: Order;
-    private _restaurantId: string;
+    private _establishmentId: string;
     private _tableId: string;
     private _additionDetails: any;
 
@@ -51,7 +51,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
         _translate.setDefaultLang('en');
         this._orderAddition = this._navParams.get("order_addition");
         this._currentOrder = this._navParams.get("order");
-        this._restaurantId = this._navParams.get("restaurant");
+        this._establishmentId = this._navParams.get("establishment");
         this._tableId = this._navParams.get("table");
 
         this._statusArray = ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED', 'ORDER_STATUS.DELIVERED'];
@@ -63,11 +63,11 @@ export class AdditionEditPage implements OnInit, OnDestroy {
     ngOnInit() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         this.removeSubscriptions();
-        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentRestaurant', Meteor.userId()).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', Meteor.userId()).subscribe(() => {
             this._additionDetails = Additions.find({ _id: this._orderAddition.additionId }).zone();
         });
 
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._restaurantId, this._tableId, this._statusArray).subscribe();
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._establishmentId, this._tableId, this._statusArray).subscribe();
         this._additionsDetailFormGroup = this._formBuilder.group({
             control: new FormControl(this._orderAddition.quantity, [Validators.minLength(1), Validators.maxLength(2)])
         });
@@ -94,7 +94,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
      * @param {Addition} _pAddition
      */
     getAdditionInformation(_pAddition: Addition): string {
-        return _pAddition.name + ' - ' + _pAddition.restaurants.filter(r => r.restaurantId === this._restaurantId)[0].price + ' ';
+        return _pAddition.name + ' - ' + _pAddition.establishments.filter(r => r.establishment_id === this._establishmentId)[0].price + ' ';
     }
 
     /**
@@ -240,7 +240,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
      * @param {Addition} _pAddition 
      */
     getAdditionPrice(_pAddition: Addition): number {
-        return _pAddition.restaurants.filter(r => r.restaurantId === this._restaurantId)[0].price;
+        return _pAddition.establishments.filter(r => r.establishment_id === this._establishmentId)[0].price;
     }
 
     /**

@@ -6,7 +6,7 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription } from 'rxjs';
 import { InitialComponent } from '../../auth/initial/initial';
 import { CallsPage } from '../calls/calls';
-import { RestaurantMenuPage } from '../restaurant-menu/restaurant-menu';
+import { EstablishmentMenuPage } from '../establishment-menu/establishment-menu';
 import { SettingsPage } from '../../customer/options/settings/settings';
 import { Users } from 'i4t_web/both/collections/auth/user.collection';
 import { User } from 'i4t_web/both/models/auth/user.model';
@@ -47,7 +47,7 @@ export class Menu {
 
     this.pages = [
       { icon: 'hand', title: 'MOBILE.WAITER_OPTIONS.CALLS', component: CallsPage },
-      { icon: 'list-box', title: 'MOBILE.WAITER_OPTIONS.MENU', component: RestaurantMenuPage }
+      { icon: 'list-box', title: 'MOBILE.WAITER_OPTIONS.MENU', component: EstablishmentMenuPage }
     ];
 
   }

@@ -10,33 +10,33 @@ import { City } from 'i4t_web/both/models/general/city.model';
 import { Cities } from 'i4t_web/both/collections/general/city.collection';
 import { PaymentMethod } from 'i4t_web/both/models/general/paymentMethod.model';
 import { PaymentMethods } from 'i4t_web/both/collections/general/paymentMethod.collection';
-import { Restaurant, RestaurantProfile, RestaurantProfileImage } from 'i4t_web/both/models/restaurant/restaurant.model';
-import { Restaurants, RestaurantsProfile } from 'i4t_web/both/collections/restaurant/restaurant.collection';
+import { Establishment, EstablishmentProfile, EstablishmentProfileImage } from 'i4t_web/both/models/establishment/establishment.model';
+import { Establishments, EstablishmentsProfile } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { ModalSchedule } from './modal-schedule/modal-schedule';
 
 @Component({
-    selector: 'page-restaurant-profile',
-    templateUrl: 'restaurant-profile.html'
+    selector: 'page-establishment-profile',
+    templateUrl: 'establishment-profile.html'
 })
-export class RestaurantProfilePage implements OnInit, OnDestroy {
+export class EstablishmentProfilePage implements OnInit, OnDestroy {
 
     private _map: GoogleMap;
-    private _restaurantSubscription: Subscription;
+    private _establishmentSubscription: Subscription;
     private _countriesSubscription: Subscription;
     private _citiesSubscription: Subscription;
-    private _restaurantProfileSubscription: Subscription;
+    private _establishmentProfileSubscription: Subscription;
     private _paymentMethodsSubscription: Subscription;
 
-    private _restaurantsProfiles: Observable<RestaurantProfile[]>;
+    private _establishmentsProfiles: Observable<EstablishmentProfile[]>;
     private _paymentMethods: Observable<PaymentMethod[]>;
-    private _restaurants: Observable<Restaurant[]> = null;
-    private _restaurantParam: Restaurant = null;
-    private _restaurantProfile: RestaurantProfile = null;
+    private _establishments: Observable<Establishment[]> = null;
+    private _establishmentParam: Establishment = null;
+    private _establishmentProfile: EstablishmentProfile = null;
 
-    private _restaurantCountry: string;
-    private _restaurantCity: string;
+    private _establishmentCountry: string;
+    private _establishmentCity: string;
     private _showDescription: boolean = false;
-    private _profileImgs: RestaurantProfileImage[] = [];
+    private _profileImgs: EstablishmentProfileImage[] = [];
 
 
     /**
@@ -51,7 +51,7 @@ export class RestaurantProfilePage implements OnInit, OnDestroy {
         public _modalCtrl: ModalController,
         private googleMaps: GoogleMaps,
         private _ngZone: NgZone) {
-        this._restaurantParam = this._navParams.get("restaurant");
+        this._establishmentParam = this._navParams.get("establishment");
     }
 
     /**
@@ -59,36 +59,36 @@ export class RestaurantProfilePage implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSuscriptions();
-        this._restaurantSubscription = MeteorObservable.subscribe('getRestaurantById', this._restaurantParam._id).subscribe(() => {
+        this._establishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._establishmentParam._id).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({ _id: this._restaurantParam._id }).zone();
-                this._restaurants.subscribe(() => {
-                    let restaurant = Restaurants.findOne({ _id: this._restaurantParam._id });
-                    this._paymentMethodsSubscription = MeteorObservable.subscribe('getPaymentMethodsByrestaurantId', restaurant._id).subscribe(() => {
-                        this._paymentMethods = PaymentMethods.find({ _id: { $in: restaurant.paymentMethods }, isActive: true }).zone();
+                this._establishments = Establishments.find({ _id: this._establishmentParam._id }).zone();
+                this._establishments.subscribe(() => {
+                    let establishment = Establishments.findOne({ _id: this._establishmentParam._id });
+                    this._paymentMethodsSubscription = MeteorObservable.subscribe('getPaymentMethodsByEstablishmentId', establishment._id).subscribe(() => {
+                        this._paymentMethods = PaymentMethods.find({ _id: { $in: establishment.paymentMethods }, isActive: true }).zone();
                     });
                 });
             });
         });
 
-        this._countriesSubscription = MeteorObservable.subscribe('getCountryByRestaurantId', this._restaurantParam._id).subscribe(() => {
+        this._countriesSubscription = MeteorObservable.subscribe('getCountryByEstablishmentId', this._establishmentParam._id).subscribe(() => {
             this._ngZone.run(() => {
-                let _lCountry: Country = Countries.findOne({ _id: this._restaurantParam.countryId });
-                this._restaurantCountry = this.itemNameTraduction(_lCountry.name);
+                let _lCountry: Country = Countries.findOne({ _id: this._establishmentParam.countryId });
+                this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
             });
         });
 
-        this._citiesSubscription = MeteorObservable.subscribe('getCityByRestaurantId', this._restaurantParam._id).subscribe(() => {
+        this._citiesSubscription = MeteorObservable.subscribe('getCityByEstablishmentId', this._establishmentParam._id).subscribe(() => {
             this._ngZone.run(() => {
-                let _lCity: City = Cities.findOne({ _id: this._restaurantParam.cityId });
-                this._restaurantCity = this.itemNameTraduction(_lCity.name);
+                let _lCity: City = Cities.findOne({ _id: this._establishmentParam.cityId });
+                this._establishmentCity = this.itemNameTraduction(_lCity.name);
             });
         });
 
-        this._restaurantProfileSubscription = MeteorObservable.subscribe('getRestaurantProfile', this._restaurantParam._id).subscribe(() => {
+        this._establishmentProfileSubscription = MeteorObservable.subscribe('getEstablishmentProfile', this._establishmentParam._id).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurantsProfiles = RestaurantsProfile.find({ restaurant_id: this._restaurantParam._id }).zone();
-                this._restaurantProfile = RestaurantsProfile.findOne({ restaurant_id: this._restaurantParam._id });
+                this._establishmentsProfiles = EstablishmentsProfile.find({ establishment_id: this._establishmentParam._id }).zone();
+                this._establishmentProfile = EstablishmentsProfile.findOne({ establishment_id: this._establishmentParam._id });
                 this.loadMap();
             });
         });
@@ -107,16 +107,16 @@ export class RestaurantProfilePage implements OnInit, OnDestroy {
     }
 
     /**
-     * Load map whit restaurant location
+     * Load map whit establishment location
      */
     loadMap() {
-        if (this._restaurantProfile.location.lat && this._restaurantProfile.location.lng) {
+        if (this._establishmentProfile && this._establishmentProfile.location && this._establishmentProfile.location.lat && this._establishmentProfile.location.lng) {
 
             let mapOptions: GoogleMapOptions = {
                 camera: {
                     target: {
-                        lat: this._restaurantProfile.location.lat,
-                        lng: this._restaurantProfile.location.lng
+                        lat: this._establishmentProfile.location.lat,
+                        lng: this._establishmentProfile.location.lng
                     },
                     zoom: 18,
                     tilt: 30
@@ -125,12 +125,12 @@ export class RestaurantProfilePage implements OnInit, OnDestroy {
             this._map = GoogleMaps.create('map_canvas', mapOptions);
             this._map.one(GoogleMapsEvent.MAP_READY).then(() => {
                 this._map.addMarker({
-                    title: this._restaurantParam.name,
+                    title: this._establishmentParam.name,
                     icon: 'red',
                     animation: 'DROP',
                     position: {
-                        lat: this._restaurantProfile.location.lat,
-                        lng: this._restaurantProfile.location.lng
+                        lat: this._establishmentProfile.location.lat,
+                        lng: this._establishmentProfile.location.lng
                     }
                 })
             });
@@ -149,7 +149,7 @@ export class RestaurantProfilePage implements OnInit, OnDestroy {
      */
     openSchedule() {
         let contactModal = this._modalCtrl.create(ModalSchedule, {
-            restaurant: this._restaurantParam
+            establishment: this._establishmentParam
         });
         contactModal.present();
     }
@@ -158,10 +158,10 @@ export class RestaurantProfilePage implements OnInit, OnDestroy {
      * Remove all suscriptions
      */
     removeSuscriptions(): void {
-        if (this._restaurantSubscription) { this._restaurantSubscription };
+        if (this._establishmentSubscription) { this._establishmentSubscription };
         if (this._countriesSubscription) { this._countriesSubscription };
         if (this._citiesSubscription) { this._citiesSubscription };
-        if (this._restaurantProfileSubscription) { this._restaurantProfileSubscription };
+        if (this._establishmentProfileSubscription) { this._establishmentProfileSubscription };
         if (this._paymentMethodsSubscription) { this._paymentMethodsSubscription };
     }
 

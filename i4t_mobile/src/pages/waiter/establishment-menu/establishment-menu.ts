@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Subscription } from "rxjs";
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { Sections } from 'i4t_web/both/collections/menu/section.collection';
 import { Categories } from 'i4t_web/both/collections/menu/category.collection';
@@ -16,13 +16,13 @@ import { ItemDetailWaiterPage } from '../item-detail-waiter/item-detail-waiter';
 import { AdditionsWaiterPage } from './additions-waiter/additions-waiter';
 
 @Component({
-    selector: 'restaurant-menu-page',
-    templateUrl: 'restaurant-menu.html'
+    selector: 'establishment-menu-page',
+    templateUrl: 'establishment-menu.html'
 })
 
-export class RestaurantMenuPage implements OnInit, OnDestroy {
+export class EstablishmentMenuPage implements OnInit, OnDestroy {
 
-    private _userRestaurantSubscription: Subscription;
+    private _userEstablishmentSubscription: Subscription;
     private _userDetailSubscription: Subscription;
     private _sectionsSubscription: Subscription;
     private _categoriesSubscription: Subscription;
@@ -31,7 +31,7 @@ export class RestaurantMenuPage implements OnInit, OnDestroy {
     private _additionsSubscription: Subscription;
 
     private _userDetail: any;
-    private _restaurants: any;
+    private _establishments: any;
     private _sections: any;
     private _items: any;
     private _categories: any;
@@ -58,22 +58,22 @@ export class RestaurantMenuPage implements OnInit, OnDestroy {
             this._ngZone.run(() => {
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 if (this._userDetail) {
-                    this._userRestaurantSubscription = MeteorObservable.subscribe('getRestaurantById', this._userDetail.restaurant_work).subscribe(() => {
-                        this._restaurants = Restaurants.find({ _id: this._userDetail.restaurant_work });
+                    this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).subscribe(() => {
+                        this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
                     });
-                    this._sectionsSubscription = MeteorObservable.subscribe('sectionsByRestaurant', this._userDetail.restaurant_work).subscribe(() => {
+                    this._sectionsSubscription = MeteorObservable.subscribe('sectionsByEstablishment', this._userDetail.establishment_work).subscribe(() => {
                         this._sections = Sections.find({});
                     });
-                    this._categoriesSubscription = MeteorObservable.subscribe('categoriesByRestaurant', this._userDetail.restaurant_work).subscribe(() => {
+                    this._categoriesSubscription = MeteorObservable.subscribe('categoriesByEstablishment', this._userDetail.establishment_work).subscribe(() => {
                         this._categories = Categories.find({});
                     });
-                    this._subcategoriesSubscription = MeteorObservable.subscribe('subcategoriesByRestaurant', this._userDetail.restaurant_work).subscribe(() => {
+                    this._subcategoriesSubscription = MeteorObservable.subscribe('subcategoriesByEstablishment', this._userDetail.establishment_work).subscribe(() => {
                         this._subcategories = Subcategories.find({});
                     });
-                    this._itemsSubscription = MeteorObservable.subscribe('itemsByRestaurant', this._userDetail.restaurant_work).subscribe(() => {
+                    this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._userDetail.establishment_work).subscribe(() => {
                         this._items = Items.find({});
                     });
-                    this._additionsSubscription = MeteorObservable.subscribe('additionsByRestaurant', this._userDetail.restaurant_work).subscribe(() => {
+                    this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._userDetail.establishment_work).subscribe(() => {
                         this._additions = Additions.find({});
                         this._additions.subscribe(() => {
                             let _lAdditions: number = Additions.collection.find({}).count();
@@ -101,11 +101,11 @@ export class RestaurantMenuPage implements OnInit, OnDestroy {
     }
 
     goToDetail(_itemId) {
-        this._navCtrl.push(ItemDetailWaiterPage, { item_id: _itemId, res_id: this._userDetail.restaurant_work });
+        this._navCtrl.push(ItemDetailWaiterPage, { item_id: _itemId, res_id: this._userDetail.establishment_work });
     }
 
     goToAddAdditions() {
-        this._navCtrl.push(AdditionsWaiterPage, { res_id: this._userDetail.restaurant_work });
+        this._navCtrl.push(AdditionsWaiterPage, { res_id: this._userDetail.establishment_work });
     }
 
     ngOnDestroy() {
@@ -116,7 +116,7 @@ export class RestaurantMenuPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
     removeSubscriptions(): void {
-        if (this._userRestaurantSubscription) { this._userRestaurantSubscription.unsubscribe(); }
+        if (this._userEstablishmentSubscription) { this._userEstablishmentSubscription.unsubscribe(); }
         if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
         if (this._sectionsSubscription) { this._sectionsSubscription.unsubscribe(); }
         if (this._categoriesSubscription) { this._categoriesSubscription.unsubscribe(); }

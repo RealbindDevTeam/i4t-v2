@@ -4,20 +4,20 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { Order, OrderAddition } from 'i4t_web/both/models/restaurant/order.model';
+import { Order, OrderAddition } from 'i4t_web/both/models/establishment/order.model';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
-import { Restaurant } from 'i4t_web/both/models/restaurant/restaurant.model';
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Establishment } from 'i4t_web/both/models/establishment/establishment.model';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { Storage } from '@ionic/storage';
 import { CodeTypeSelectPage } from '../code-type-select/code-type-select';
 import { SectionsPage } from '../sections/sections';
 import { ItemEditPage } from '../item-edit/item-edit';
 import { AdditionEditPage } from '../addition-edit/addition-edit';
-import { RestaurantProfilePage } from '../restaurant-profile/restaurant-profile';
+import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.model';
 
@@ -28,7 +28,7 @@ import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.
 export class OrdersPage implements OnInit, OnDestroy {
 
     private _userDetailSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
     private _ordersSub: Subscription;
     private _additionsSub: Subscription;
@@ -44,8 +44,8 @@ export class OrdersPage implements OnInit, OnDestroy {
     private selected: string = "";
     private _currencyCode: string = "";
 
-    private _restaurants: any;
-    private _restaurant: any;
+    private _establishments: any;
+    private _establishment: any;
     private _table: any;
     private _additions: any;
     private _userDetail;
@@ -92,10 +92,10 @@ export class OrdersPage implements OnInit, OnDestroy {
                 this._userDetails.subscribe(() => { this.validateUser() });
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 if (this._userDetail) {
-                    this._res_code = this._userDetail.current_restaurant;
-                    this._restaurantSub = MeteorObservable.subscribe('getRestaurantByCurrentUser', Meteor.userId()).subscribe(() => {
+                    this._res_code = this._userDetail.current_establishment;
+                    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).subscribe(() => {
                         this._ngZone.run(() => {
-                            this._restaurants = Restaurants.find({ _id: this._userDetail.current_restaurant }).zone();
+                            this._establishments = Establishments.find({ _id: this._userDetail.current_establishment }).zone();
                         });
                     });
 
@@ -108,7 +108,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                     this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
                         this._ngZone.run(() => {
                             this.getOrders();
-                            this._orders = Orders.find({ restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
+                            this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
                             this._orders.subscribe(() => { this.getOrders() });
                         });
                     });
@@ -117,7 +117,7 @@ export class OrdersPage implements OnInit, OnDestroy {
         });
 
         this._itemsSub = MeteorObservable.subscribe('itemsByUser', Meteor.userId()).subscribe();
-        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentRestaurant', Meteor.userId()).subscribe();
+        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', Meteor.userId()).subscribe();
         this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', Meteor.userId()).subscribe(() => {
             this._ngZone.run(() => {
                 if (Currencies.find({}).fetch().length > 0) {
@@ -129,11 +129,11 @@ export class OrdersPage implements OnInit, OnDestroy {
 
     validateUser(): void {
         let _user: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-        _user.current_restaurant !== '' && _user.current_table !== '' ? this._thereIsUser = true : this._thereIsUser = false;
+        _user.current_establishment !== '' && _user.current_table !== '' ? this._thereIsUser = true : this._thereIsUser = false;
     }
 
     getOrders() {
-        Orders.collection.find({ restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).count() > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
+        Orders.collection.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).count() > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
     }
 
     goToNewOrder() {
@@ -144,8 +144,8 @@ export class OrdersPage implements OnInit, OnDestroy {
         if (this._userDetail.current_table == "") {
             this._navCtrl.push(CodeTypeSelectPage);
         } else {
-            MeteorObservable.call('getCurrentRestaurantByUser', this._userDetail.current_restaurant).subscribe((restaurant: Restaurant) => {
-                if (restaurant == null) {
+            MeteorObservable.call('getCurrentEstablishmentByUser', this._userDetail.current_establishment).subscribe((establishment: Establishment) => {
+                if (establishment == null) {
                     this._navCtrl.push(CodeTypeSelectPage);
 
                 } else {
@@ -155,7 +155,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 
                     loading.present();
                     setTimeout(() => {
-                        this._navCtrl.push(SectionsPage, { res_id: restaurant._id, table_id: this._userDetail.current_table });
+                        this._navCtrl.push(SectionsPage, { res_id: establishment._id, table_id: this._userDetail.current_table });
                         loading.dismiss();
                     }, 1500);
                 }
@@ -178,14 +178,14 @@ export class OrdersPage implements OnInit, OnDestroy {
 
     filterOrders(orders_selected) {
         if (orders_selected == 'all') {
-            this._orders = Orders.find({ restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
+            this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
             this._orderIndex = -1;
         } else if (orders_selected == 'me') {
-            this._orders = Orders.find({ creation_user: this._currentUserId, restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
+            this._orders = Orders.find({ creation_user: this._currentUserId, establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
             this._orderIndex = -1;
         } else if (orders_selected == 'other') {
             this._orderIndex = -1;
-            this._orders = Orders.find({ creation_user: { $nin: [this._currentUserId] }, restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
+            this._orders = Orders.find({ creation_user: { $nin: [this._currentUserId] }, establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
         }
     }
 
@@ -263,7 +263,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                             let _Items = _order.items;
                             _Items.forEach((item) => {
                                 let _lItem = Items.findOne({ _id: item.itemId });
-                                let aux = _lItem.restaurants.find(element => element.restaurantId === userDetailTmp.current_restaurant);
+                                let aux = _lItem.establishments.find(element => element.establishment_id === userDetailTmp.current_establishment);
                                 if (aux.isAvailable === false) {
                                     _lItemsIsAvailable = false
                                 }
@@ -297,8 +297,8 @@ export class OrdersPage implements OnInit, OnDestroy {
         loader.present();
         let _lUserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
 
-        if (_lUserDetail.current_restaurant && _lUserDetail.current_table) {
-            this._res_code = _lUserDetail.current_restaurant;
+        if (_lUserDetail.current_establishment && _lUserDetail.current_table) {
+            this._res_code = _lUserDetail.current_establishment;
             this._table_code = _lUserDetail.current_table;
         }
 
@@ -318,11 +318,11 @@ export class OrdersPage implements OnInit, OnDestroy {
      */
     showAdditionsDetail(_pAdition: OrderAddition, _pOrder: Order): void {
         let _lUserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-        if (_lUserDetail.current_restaurant && _lUserDetail.current_table) {
-            this._res_code = _lUserDetail.current_restaurant;
+        if (_lUserDetail.current_establishment && _lUserDetail.current_table) {
+            this._res_code = _lUserDetail.current_establishment;
             this._table_code = _lUserDetail.current_table;
         }
-        this._navCtrl.push(AdditionEditPage, { order_addition: _pAdition, order: _pOrder, restaurant: this._res_code, table: this._table_code });
+        this._navCtrl.push(AdditionEditPage, { order_addition: _pAdition, order: _pOrder, establishment: this._res_code, table: this._table_code });
     }
 
 
@@ -352,7 +352,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     getItemAvailability(itemId: string): boolean {
         let _item = Items.find().fetch().filter((i) => i._id === itemId)[0];
         if (_item) {
-            return (_item.restaurants.filter(r => r.restaurantId === this._res_code)[0]).isAvailable;
+            return (_item.establishments.filter(r => r.establishment_id === this._res_code)[0]).isAvailable;
         }
     }
 
@@ -383,18 +383,18 @@ export class OrdersPage implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to restaurant profile
-     * @param _pRestaurant 
+     * Go to establishment profile
+     * @param _pEstablishment 
      */
-    viewRestaurantProfile(_pRestaurant: any) {
-        this._navCtrl.push(RestaurantProfilePage, { restaurant: _pRestaurant });
+    viewEstablishmentProfile(_pEstablishment: any) {
+        this._navCtrl.push(EstablishmentProfilePage, { establishment: _pEstablishment });
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._ordersSub) { this._ordersSub.unsubscribe(); }
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
         if (this._itemsSub) { this._itemsSub.unsubscribe(); }

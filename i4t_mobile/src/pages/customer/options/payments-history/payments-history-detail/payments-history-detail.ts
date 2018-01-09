@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Invoice } from 'i4t_web/both/models/restaurant/invoice.model';
+import { Invoice } from 'i4t_web/both/models/establishment/invoice.model';
 import { UserLanguageServiceProvider } from '../../../../../providers/user-language-service/user-language-service';
 
 @Component({

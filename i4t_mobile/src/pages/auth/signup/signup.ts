@@ -79,9 +79,9 @@ export class SignupComponent implements OnInit {
                                 user_id: Meteor.userId(),
                                 role_id: '400',
                                 is_active: true,
-                                restaurant_work: '',
+                                establishment_work: '',
                                 penalties: [],
-                                current_restaurant: '',
+                                current_establishment: '',
                                 current_table: ''
                             });
                             confirmMsg = 'MOBILE.SIGNUP.SUCCESS';
@@ -146,9 +146,9 @@ export class SignupComponent implements OnInit {
                     user_id: Meteor.userId(),
                     role_id: '400',
                     is_active: true,
-                    restaurant_work: '',
+                    establishment_work: '',
                     penalties: [],
-                    current_restaurant: '',
+                    current_establishment: '',
                     current_table: ''
                 });
             }

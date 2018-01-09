@@ -33,7 +33,7 @@
                         </ion-row>
                         <div *ngIf="order">
                             <div *ngFor="let itemId of order?.items">
-                                <order-item-detail [order]="order" [orderItem]="itemId" [resCode]="_restaurantId" (gotoedititem)="goToItemEdit($event, order)"
+                                <order-item-detail [order]="order" [orderItem]="itemId" [resCode]="_establishmentId" (gotoedititem)="goToItemEdit($event, order)"
                                     [currency]="_currency"></order-item-detail>
                             </div>
 

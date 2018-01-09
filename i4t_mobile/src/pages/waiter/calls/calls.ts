@@ -3,14 +3,14 @@ import { AlertController, LoadingController, NavController, ToastController } fr
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Subscription } from "rxjs";
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
-import { WaiterCallDetail } from 'i4t_web/both/models/restaurant/waiter-call-detail.model';
-import { WaiterCallDetails } from 'i4t_web/both/collections/restaurant/waiter-call-detail.collection';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
+import { WaiterCallDetail } from 'i4t_web/both/models/establishment/waiter-call-detail.model';
+import { WaiterCallDetails } from 'i4t_web/both/collections/establishment/waiter-call-detail.collection';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { PaymentConfirmPage } from "./payment-confirm/payment-confirm";
 import { SendOrderDetailsPage } from './send-order-detail/send-order-detail';
-import { RestaurantExitConfirmPage } from './restaurant-exit-confirm/restaurant-exit-confirm';
+import { EstablishmentExitConfirmPage } from './establishment-exit-confirm/establishment-exit-confirm';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 
 @Component({
@@ -19,17 +19,17 @@ import { UserLanguageServiceProvider } from '../../../providers/user-language-se
 })
 export class CallsPage implements OnInit, OnDestroy {
 
-  private _userRestaurantSubscription: Subscription;
+  private _userEstablishmentSubscription: Subscription;
   private _userDetailSubscription: Subscription;
   private _callsDetailsSubscription: Subscription;
   private _tableSubscription: Subscription;
 
   private _userDetail: any;
-  private _restaurants: any;
+  private _establishments: any;
   private _waiterCallDetail: any;
   private _tables: any;
   private _waiterCallDetailCollection: any;
-  private _imgRestaurant: any;
+  private _imgEstablishment: any;
 
   private _userLang: string;
 
@@ -58,8 +58,8 @@ export class CallsPage implements OnInit, OnDestroy {
     this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
       this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
       if (this._userDetail) {
-        this._userRestaurantSubscription = MeteorObservable.subscribe('getRestaurantById', this._userDetail.restaurant_work).subscribe(() => {
-          this._restaurants = Restaurants.find({ _id: this._userDetail.restaurant_work });
+        this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).subscribe(() => {
+          this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
         });
       }
     });
@@ -69,7 +69,7 @@ export class CallsPage implements OnInit, OnDestroy {
       this._waiterCallDetailCollection = WaiterCallDetails.collection.find({}).fetch()[0];
     });
 
-    this._tableSubscription = MeteorObservable.subscribe('getTablesByRestaurantWork', Meteor.userId()).subscribe(() => {
+    this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', Meteor.userId()).subscribe(() => {
       this._tables = Tables.find({});
     });
 
@@ -174,7 +174,7 @@ export class CallsPage implements OnInit, OnDestroy {
    * Go to cancel order
    */
   goToCancelOrder(_call: WaiterCallDetail) {
-    this._navCtrl.push(RestaurantExitConfirmPage, { call: _call });
+    this._navCtrl.push(EstablishmentExitConfirmPage, { call: _call });
   }
 
   /**
@@ -189,7 +189,7 @@ export class CallsPage implements OnInit, OnDestroy {
    */
   removeSubscriptions(): void {
     if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-    if (this._userRestaurantSubscription) { this._userRestaurantSubscription.unsubscribe(); }
+    if (this._userEstablishmentSubscription) { this._userEstablishmentSubscription.unsubscribe(); }
     if (this._callsDetailsSubscription) { this._callsDetailsSubscription.unsubscribe(); }
     if (this._tableSubscription) { this._tableSubscription.unsubscribe(); }
   }

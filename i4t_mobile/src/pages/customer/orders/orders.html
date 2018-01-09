@@ -11,15 +11,15 @@
 
 <ion-content>
     <div *ngIf="_thereIsUser">
-        <ion-list style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap *ngFor="let restaurant of _restaurants | async;">
-            <button ion-item (click)="viewRestaurantProfile(restaurant)" style="background-image: url(assets/img/background_waiter.png);" class="img-header">
+        <ion-list style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap *ngFor="let establishment of _establishments | async;">
+            <button ion-item (click)="viewEstablishmentProfile(establishment)" style="background-image: url(assets/img/background_waiter.png);" class="img-header">
                 <ion-thumbnail item-left>
-                    <img *ngIf="restaurant.image" src="{{ restaurant.image.url }}">
-                    <img *ngIf="!restaurant.image" src="assets/img/default-restaurant.png">
+                    <img *ngIf="establishment.image" src="{{ establishment.image.url }}">
+                    <img *ngIf="!establishment.image" src="assets/img/default-restaurant.png">
                 </ion-thumbnail>
-                <h2>{{restaurant.name}}</h2>
+                <h2>{{establishment.name}}</h2>
                 <h2 *ngIf="_table">{{'MOBILE.ORDERS.TABLE' | translate}}: {{_table._number}}</h2>
-                <p>{{restaurant.address}}</p>
+                <p>{{establishment.address}}</p>
             </button>
         </ion-list>
         <ion-card>

@@ -46,16 +46,16 @@ import { PaymentsHistoryDetailPage } from '../pages/customer/options/payments-hi
 import { Menu } from '../pages/waiter/menu/menu';
 import { ChangeTablePage } from '../pages/customer/options/table-change/table-change';
 import { AlphanumericCodeChangePage } from '../pages/customer/options/table-change/alphanumeric-code-change/alphanumeric-code-change';
-import { RestaurantExitPage } from '../pages/customer/options/restaurant-exit/restaurant-exit';
+import { EstablishmentExitPage } from '../pages/customer/options/establishment-exit/establishment-exit';
 import { HomePage } from '../pages/customer/home/home';
 import { HomeMenu } from '../pages/customer/home-menu/home-menu';
-import { RestaurantMenuPage } from '../pages/waiter/restaurant-menu/restaurant-menu';
-import { ItemCardWaiterComponent } from '../pages/waiter/restaurant-menu/item-card-waiter';
+import { EstablishmentMenuPage } from '../pages/waiter/establishment-menu/establishment-menu';
+import { ItemCardWaiterComponent } from '../pages/waiter/establishment-menu/item-card-waiter';
 import { ItemDetailWaiterPage } from '../pages/waiter/item-detail-waiter/item-detail-waiter';
-import { AdditionsWaiterPage } from '../pages/waiter/restaurant-menu/additions-waiter/additions-waiter';
-import { RestaurantExitConfirmPage } from '../pages/waiter/calls/restaurant-exit-confirm/restaurant-exit-confirm';
-import { RestaurantProfilePage } from '../pages/customer/restaurant-profile/restaurant-profile';
-import { ModalSchedule } from '../pages/customer/restaurant-profile/modal-schedule/modal-schedule';
+import { AdditionsWaiterPage } from '../pages/waiter/establishment-menu/additions-waiter/additions-waiter';
+import { EstablishmentExitConfirmPage } from '../pages/waiter/calls/establishment-exit-confirm/establishment-exit-confirm';
+import { EstablishmentProfilePage } from '../pages/customer/establishment-profile/establishment-profile';
+import { ModalSchedule } from '../pages/customer/establishment-profile/modal-schedule/modal-schedule';
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -106,14 +106,14 @@ export const PAGES_DECLARATIONS = [
     Menu,
     ChangeTablePage,
     AlphanumericCodeChangePage,
-    RestaurantExitPage,
+    EstablishmentExitPage,
     HomePage,
     HomeMenu,
-    RestaurantMenuPage,
+    EstablishmentMenuPage,
     ItemCardWaiterComponent,
     ItemDetailWaiterPage,
     AdditionsWaiterPage,
-    RestaurantExitConfirmPage,
-    RestaurantProfilePage,
+    EstablishmentExitConfirmPage,
+    EstablishmentProfilePage,
     ModalSchedule
 ];

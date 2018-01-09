@@ -3,10 +3,10 @@ import { MeteorObservable } from 'meteor-rxjs'
 import { Subscription } from 'rxjs';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { GarnishFood } from 'i4t_web/both/models/menu/garnish-food.model';
 import { GarnishFoodCol } from 'i4t_web/both/collections/menu/garnish-food.collection';
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 
 /*
   Generated class for the OrderDetailPayInfo Page.
@@ -22,12 +22,12 @@ import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.coll
 export class OrderDetailPayInfoPage implements OnInit, OnDestroy {
 
   @Input() orderId      : string
-  @Input() restaurantId : string
+  @Input() establishmentId : string
   @Input() currency     : string
   private _ordersSubscription      : Subscription;
   private _additionsSubscription   : Subscription;
   private _garnishFoodSubscription : Subscription;
-  private _restaurantSubscription  : Subscription;
+  private _establishmentSubscription  : Subscription;
   private _currencyId  : string;
   private _order      : any;
   private _additions   : any;
@@ -43,15 +43,15 @@ export class OrderDetailPayInfoPage implements OnInit, OnDestroy {
         this._order = Orders.findOne({_id : this.orderId});
       });
     });
-    this._additionsSubscription = MeteorObservable.subscribe( 'additionsByRestaurant', this.restaurantId ).subscribe( () => {
+    this._additionsSubscription = MeteorObservable.subscribe( 'additionsByEstablishment', this.establishmentId ).subscribe( () => {
       this._additions = Additions.find({});
     });
-    this._garnishFoodSubscription = MeteorObservable.subscribe( 'garnishFoodByRestaurant', this.restaurantId ).subscribe( () => {
+    this._garnishFoodSubscription = MeteorObservable.subscribe( 'garnishFoodByEstablishment', this.establishmentId ).subscribe( () => {
       this._garnishFood = GarnishFoodCol.find({});
     });
-    this._restaurantSubscription = MeteorObservable.subscribe( 'getRestaurantByCurrentUser', Meteor.userId() ).subscribe( () => {
-      let _lRestaurant = Restaurants.collection.find( { _id: this.restaurantId } ).fetch()[0];
-      this._currencyId = _lRestaurant.currencyId;
+    this._establishmentSubscription = MeteorObservable.subscribe( 'getEstablishmentByCurrentUser', Meteor.userId() ).subscribe( () => {
+      let _lEstablishment = Establishments.collection.find( { _id: this.establishmentId } ).fetch()[0];
+      this._currencyId = _lEstablishment.currencyId;
     });
   }
 
@@ -71,7 +71,7 @@ export class OrderDetailPayInfoPage implements OnInit, OnDestroy {
    * Return Total Garnish Food Price
    */
   getGarnishFoodTotalPrice( _pGarnishFood: GarnishFood, _pOrderItemQuantity : number ): number {
-    return _pGarnishFood.restaurants.filter( g  => g.restaurantId === this.restaurantId )[0].price * _pOrderItemQuantity;
+    return _pGarnishFood.establishments.filter( g  => g.establishment_id === this.establishmentId )[0].price * _pOrderItemQuantity;
   }
 
   /**
@@ -91,7 +91,7 @@ export class OrderDetailPayInfoPage implements OnInit, OnDestroy {
    * @param {Addition} _pAddition 
    */
   getAdditionTotalPrice( _pAddition: Addition, _pOrderItemQuantity:number ): number {
-    return _pAddition.restaurants.filter( a => a.restaurantId === this.restaurantId )[0].price * _pOrderItemQuantity;
+    return _pAddition.establishments.filter( a => a.establishment_id === this.establishmentId )[0].price * _pOrderItemQuantity;
   }
 
   ngOnDestroy(){
@@ -105,7 +105,7 @@ export class OrderDetailPayInfoPage implements OnInit, OnDestroy {
     if( this._ordersSubscription ){ this._ordersSubscription.unsubscribe(); }
     if( this._additionsSubscription ){ this._additionsSubscription.unsubscribe(); }
     if( this._garnishFoodSubscription ){ this._garnishFoodSubscription.unsubscribe(); }
-    if( this._restaurantSubscription ){ this._restaurantSubscription.unsubscribe(); }
+    if( this._establishmentSubscription ){ this._establishmentSubscription.unsubscribe(); }
   }
 
 }

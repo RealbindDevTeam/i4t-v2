@@ -3,13 +3,13 @@ import { AlertController, LoadingController, NavParams, NavController, ToastCont
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Subscription } from "rxjs";
-import { Payment } from 'i4t_web/both/models/restaurant/payment.model';
-import { Payments } from 'i4t_web/both/collections/restaurant/payment.collection';
+import { Payment } from 'i4t_web/both/models/establishment/payment.model';
+import { Payments } from 'i4t_web/both/collections/establishment/payment.collection';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 import { Users } from 'i4t_web/both/collections/auth/user.collection';
-import { WaiterCallDetail } from 'i4t_web/both/models/restaurant/waiter-call-detail.model';
+import { WaiterCallDetail } from 'i4t_web/both/models/establishment/waiter-call-detail.model';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
 
 @Component({
@@ -28,7 +28,7 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
   private _orders: any;
   private _paymentsToPay: any;
   private _table: any;
-  private _restauranId: string;
+  private _establishmentId: string;
   private _tableId: string;
   private _currencyCode: string = '';
   private _totalPayment: number = 0;
@@ -53,7 +53,7 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
     private _userLanguageService: UserLanguageServiceProvider) {
     _translate.setDefaultLang('en');
     this._call = this._params.get('call');
-    this._restauranId = this._call.restaurant_id;
+    this._establishmentId = this._call.establishment_id;
     this._tableId = this._call.table_id;
   }
 
@@ -64,20 +64,20 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
     this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
     this._usersDetailSubscription = MeteorObservable.subscribe('getUsers').subscribe();
-    this._tablesSubscription = MeteorObservable.subscribe('getTablesByRestaurant', this._restauranId).subscribe();
-    this._currencySubscription = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this._restauranId]).subscribe();
+    this._tablesSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._establishmentId).subscribe();
+    this._currencySubscription = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._establishmentId]).subscribe();
 
-    this._ordersSubscription = MeteorObservable.subscribe('getOrdersByTableId', this._restauranId, this._tableId, ['ORDER_STATUS.DELIVERED']).subscribe(() => {
+    this._ordersSubscription = MeteorObservable.subscribe('getOrdersByTableId', this._establishmentId, this._tableId, ['ORDER_STATUS.DELIVERED']).subscribe(() => {
       this._orders = Orders.find({});
       this._orders.subscribe(() => {
         this.totalOrders();
       });
     });
 
-    this._paymentsSubscription = MeteorObservable.subscribe('getPaymentsToWaiter', this._restauranId, this._tableId).subscribe(() => {
-      this._payments = Payments.find({ restaurantId: this._restauranId, tableId: this._tableId });
+    this._paymentsSubscription = MeteorObservable.subscribe('getPaymentsToWaiter', this._establishmentId, this._tableId).subscribe(() => {
+      this._payments = Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId });
       this._paymentsToPay = Payments.collection.find({
-        restaurantId: this._restauranId,
+        establishment_id: this._establishmentId,
         tableId: this._tableId,
         status: 'PAYMENT.NO_PAID',
         received: true
@@ -119,7 +119,7 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
    */
   totalPayment() {
     this._totalPayment = 0;
-    Payments.find({ restaurantId: this._restauranId, tableId: this._tableId }).fetch().forEach((pay) => {
+    Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((pay) => {
       this._totalPayment += pay.totalToPayment;
     });
   }
@@ -214,7 +214,7 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
   closePay(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        MeteorObservable.call('closePay', this._restauranId, this._tableId, this._call).subscribe(() => {
+        MeteorObservable.call('closePay', this._establishmentId, this._tableId, this._call).subscribe(() => {
           resolve(true);
         }, (error) => {
           resolve(false);
@@ -258,7 +258,7 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
    * 
    */
   receivedAllPayments(event: any) {
-    Payments.find({ restaurantId: this._restauranId, tableId: this._tableId }).fetch().forEach((pay) => {
+    Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((pay) => {
       Payments.update({ _id: pay._id }, { $set: { received: event.checked } });
     });
   }
