@@ -6,7 +6,7 @@
                     <mat-select placeholder="{{'ORDER_CREATE.SEARCH_MENU' | translate}}">
                         <mat-option (click)="showAllItems()">{{'ORDER_CREATE.SHOW_ALL' | translate}}</mat-option>
                         <mat-optgroup *ngFor="let menu of _orderMenus" [label]="menu.title">
-                            <mat-option (click)="evaluateId(menu.iurestId)">{{menu.title}}</mat-option>                        
+                            <mat-option (click)="evaluateId(menu.iurestId)">{{menu.title}}</mat-option>
                             <mat-option *ngFor="let children of menu.children" [value]="children.iurestId" (click)="evaluateId(children.iurestId)">- {{ children.title }}</mat-option>
                         </mat-optgroup>
                         <mat-option *ngIf="_showAdditionsOption" (click)="evaluateId({'type':'Ad'})">{{'ORDER_CREATE.ADDITIONS' | translate}}</mat-option>
@@ -136,8 +136,17 @@
                             <img *ngIf="!itemDet.image" src="/images/default-plate.png">
                         </div>
                         <div class="content">
-                            <mat-card-subtitle class="description">{{itemDet.description}}</mat-card-subtitle>
+                            <mat-card-subtitle *ngIf='itemDet.description != ""' class="description">{{itemDet.description}}</mat-card-subtitle>
+                            <mat-card-subtitle *ngIf='itemDet.time != ""' class="description">{{'ORDER_CREATE.COOKING_TIME' | translate}} {{itemDet.time}}</mat-card-subtitle>
                             <mat-card-subtitle class="price">{{'ORDER_CREATE.PRICE' | translate}}: {{ getItemPrice( itemDet ) }} {{_currencyCode}}</mat-card-subtitle>
+                            <mat-card-subtitle class="price" *ngIf='itemDet.has_reward'>
+                                <p>Puntos por item: </p>
+                                <mat-chip-list>
+                                    <mat-chip>{{itemDet.reward_points}} pts
+                                        <mat-icon>star</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </mat-card-subtitle>
                             <p *ngIf="!getItemAvailability(itemDet._id)" class="available-button">{{'ORDER_CREATE.ITEM_UNAVAILABLE' | translate}}</p>
                             <div *ngIf="getItemAvailability(itemDet._id)">
                                 <div>
