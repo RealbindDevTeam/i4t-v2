@@ -3,8 +3,8 @@ import { AlertController, LoadingController, NavParams, NavController, ToastCont
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Subscription } from "rxjs";
-import { Payment } from 'i4t_web/both/models/establishment/payment.model';
-import { Payments } from 'i4t_web/both/collections/establishment/payment.collection';
+//import { Payment } from 'i4t_web/both/models/establishment/payment.model';
+//import { Payments } from 'i4t_web/both/collections/establishment/payment.collection';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
@@ -75,13 +75,13 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
     });
 
     this._paymentsSubscription = MeteorObservable.subscribe('getPaymentsToWaiter', this._establishmentId, this._tableId).subscribe(() => {
-      this._payments = Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId });
-      this._paymentsToPay = Payments.collection.find({
+      //this._payments = Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId });
+      /*this._paymentsToPay = Payments.collection.find({
         establishment_id: this._establishmentId,
         tableId: this._tableId,
         status: 'PAYMENT.NO_PAID',
         received: true
-      });
+      });*/
 
       this._payments.subscribe(() => {
         this.totalPayment();
@@ -119,9 +119,9 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
    */
   totalPayment() {
     this._totalPayment = 0;
-    Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((pay) => {
+    /*Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((pay) => {
       this._totalPayment += pay.totalToPayment;
-    });
+    });*/
   }
 
   /**
@@ -258,18 +258,18 @@ export class PaymentConfirmPage implements OnInit, OnDestroy {
    * 
    */
   receivedAllPayments(event: any) {
-    Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((pay) => {
+    /*Payments.find({ establishment_id: this._establishmentId, tableId: this._tableId }).fetch().forEach((pay) => {
       Payments.update({ _id: pay._id }, { $set: { received: event.checked } });
-    });
+    });*/
   }
 
   /**
    * Set to Payment received value
    * @param _pay 
    */
-  received(_pay: Payment) {
+  /*received(_pay: Payment) {
     Payments.update({ _id: _pay._id }, { $set: { received: !_pay.received } });
-  }
+  }*/
 
 
   /**

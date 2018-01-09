@@ -307,7 +307,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
 
         if (this._newOrderForm.valid) {
             let _lOrderItemIndex: number = 0;
-            let _lOrder: Order = Orders.collection.find({ creation_user: Meteor.userId() }).fetch()[0];
+            let _lOrder: Order = Orders.collection.find({ creation_user: Meteor.userId(), establishment_id: this.establishmentId }).fetch()[0];
 
             if (_lOrder) {
                 _lOrderItemIndex = _lOrder.orderItemCount + 1;

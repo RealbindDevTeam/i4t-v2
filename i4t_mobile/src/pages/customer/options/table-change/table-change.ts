@@ -4,7 +4,7 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import { TabsPage } from '../../tabs/tabs';
+import { OrdersPage } from '../../orders/orders';
 import { AlphanumericCodeChangePage } from './alphanumeric-code-change/alphanumeric-code-change';
 
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
@@ -76,7 +76,7 @@ export class ChangeTablePage implements OnInit, OnDestroy {
     goToSections(qr_code: string) {
         MeteorObservable.call('changeCurrentTable', Meteor.userId(), this._res_code, this._table.QR_code, qr_code).subscribe(() => {
             this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.CHANGE_TABLE_OK'));
-            this._navCtrl.setRoot(TabsPage);
+            this._navCtrl.setRoot(OrdersPage);
         }, (error) => {
             if (error.error === '200') {
                 this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.TABLE_DESTINY_NOT_EXISTS'));
@@ -84,10 +84,6 @@ export class ChangeTablePage implements OnInit, OnDestroy {
                 this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.TABLE_DESTINY_NO_ACTIVE'));
             } else if (error.error === '202') {
                 this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.TABLE_DESTINY_NO_RESTAURANT'));
-            } else if (error.error === '203') {
-                this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.PENDING_ORDERS'));
-            } else if (error.error === '204') {
-                this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.ORDERS_PAY_PROCESS'));
             } else if (error.error === '205') {
                 this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.WAITER_CALL_PENDING'));
             } else if (error.error === '206') {

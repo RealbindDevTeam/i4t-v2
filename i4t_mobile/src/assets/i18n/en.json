@@ -4,12 +4,11 @@
     "PAYMENT_METHODS.DEBIT_CARD": "Debit card",
     "PAYMENT_METHODS.ONLINE": "Online",
     "ORDER_STATUS": {
-        "REGISTERED": "Registered",
-        "IN_PROCESS": "In Process",
-        "PREPARED": "Cooked",
-        "CANCELED": "Canceled",
-        "DELIVERED": "Delivered",
-        "PENDING_CONFIRM": "Pending payment confirmation"
+        "SELECTING": "Selecting",
+        "CONFIRMED": "Confirmed",
+        "RECEIVED": "Received",
+        "ATTENDED": "Attended",
+        "CANCELED": "Canceled"
     },
     "MOBILE": {
         "CANCEL": "Cancel",
@@ -173,7 +172,9 @@
             "MSG_1": "You can order what you prefer",
             "NO_ORDERS": "You don't have any orders yet, you can create a new order",
             "LOADING_MENU": "Loading menu",
-            "PENALTY": "At the moment you don't have available the option to create orders. Try later"
+            "PENALTY": "At the moment you don't have available the option to create orders. Try later",
+            "ORDER_CONFIRM": "Confirmation in process",
+            "ORDER_CONFIRMED_MSG": "Order confirmed"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
@@ -370,29 +371,20 @@
             "NO_RESTAURANT": "You are not in a restaurant yet",
             "OPTION_LEAVE_RESTAURANT": "This option allows you to leave the current restaurant",
             "EXIT_MSG": "Exit",
-            "WAITER_ON_THE_WAY": "Waiter/waitress on the way",
-            "CANCEL_ORDERS_MSG": "Cancel call",
             "RESTAURANT_EXIT": "Restaurant exit",
             "RESTAURANT_EXIT_CONFIRM": "Are you sure you want to leave the restaurant?",
             "YES_CONFIRM": "Yes",
             "NO_CONFIRM": "No",
             "LEAVE_RESTAURANT_MSG": "You left the restaurant. See you later!",
-            "ORDERS_REGISTERED": "You have orders registered!",
+            "ORDERS_SELECTED": "You have orders selected!",
             "ORDERS_CANCEL_CONFIRM": "If you leave the restaurant the orders will be canceled. Are you sure to leave?",
-            "ORDERS_PENDING_CONFIRM": "Orders to be confirmed!",
-            "ORDERS_MUST_BE_ATTENDED": "Orders must be served to leave the restaurant",
             "ACCEPT": "Accept",
             "PENDING_WAITER_CALL": "Calls to the waiter/waitress are pending",
             "WAITER_CALLS_MSG": "The calls must be attended by the waiter/waitress or cancel by you before leaving",
-            "PENDING_PAYMENTS": "You have pending payments",
-            "PENDING_PAYMENTS_MSG": "A waiter/waitress will come to your table and receive your payment so you can leave",
-            "ORDERS_DELIVERED": "You have delivered orders",
-            "ORDERS_DELIVERED_MSG": "Pay the delivered orders so you can leave the restaurant",
             "INVALID_OPERATION": "Invalid operation",
-            "CALL_WAITER_MSG": "The status of your orders don't allow you to leave the restaurant. Do you want to call a waiter/waitress to manage your orders?",
-            "WAITER_ON_THE_WAY_CALL": "A waiter/waitress has received the request and is going to your table",
-            "CALLED_CANCELED": "Call canceled",
-            "GENERAL_ERROR": "An error has occurred. Try again."
+            "GENERAL_ERROR": "An error has occurred. Try again.",
+            "ORDERS_CONFIRMED": "You have orders confirmed!",
+            "ORDERS_CONFIRMED_MSG": "Tell a waiter/waitress that you will leave the establishment to cancel your orders"
         },
         "WAITER_OPTIONS": {
             "CALLS": "Calls",

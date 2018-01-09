@@ -1,6 +1,0 @@
-<div *ngFor="let item of _items | async">
-    <ion-item *ngIf="orderItem.itemId == item._id">
-        <h3 style="white-space: normal;">{{item.name}}</h3> 
-        <p item-right style="white-space: normal;">{{orderItem.paymentItem}} {{_currency}}</p>
-    </ion-item>
-</div>

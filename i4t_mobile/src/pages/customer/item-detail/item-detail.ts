@@ -73,7 +73,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
               private _userLanguageService: UserLanguageServiceProvider) {
     _translate.setDefaultLang('en');
     this._currentUserId = Meteor.userId();
-    this._statusArray = ['ORDER_STATUS.REGISTERED'];
+    this._statusArray = ['ORDER_STATUS.SELECTING'];
   }
 
   ionViewDidLoad() { }
@@ -231,7 +231,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       creation_user: this._currentUserId,
       establishment_id: this._res_code,
       tableId: this._table_code,
-      status: 'ORDER_STATUS.REGISTERED'
+      status: 'ORDER_STATUS.SELECTING'
     }).fetch()[0];
 
     if (_lOrder) {
