@@ -4,12 +4,11 @@
     "PAYMENT_METHODS.DEBIT_CARD": "Tarjeta débito",
     "PAYMENT_METHODS.ONLINE": "Pago en línea",
     "ORDER_STATUS": {
-        "REGISTERED": "Registrado",
-        "IN_PROCESS": "En proceso",
-        "PREPARED": "Preparado",
-        "CANCELED": "Cancelado",
-        "DELIVERED": "Entregado",
-        "PENDING_CONFIRM": "Confirmación pendiente para pago"
+        "SELECTING": "Seleccionando",
+        "CONFIRMED": "Confirmado",
+        "RECEIVED": "Recibido",
+        "ATTENDED": "Atendido",
+        "CANCELED": "Cancelado"
     },
     "MOBILE": {
         "CANCEL": "Cancelar",
@@ -173,7 +172,9 @@
             "MSG_1": "Puedes ordenar lo que deseas",
             "NO_ORDERS": "Aún no tienes ordenes, puedes crear una orden nueva",
             "LOADING_MENU": "Cargando menú",
-            "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del "
+            "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del ", 
+            "ORDER_CONFIRM": "Confirmando tu orden",
+            "ORDER_CONFIRMED_MSG": "Orden confirmada"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirma aquellas ordenes que otros usuarios desean pagar por ti.",
@@ -370,29 +371,20 @@
             "NO_RESTAURANT": "No estás en un restaurante",
             "OPTION_LEAVE_RESTAURANT": "Esta opción te permite salir del restaurante en el que te encuentras",
             "EXIT_MSG": "Salir",
-            "WAITER_ON_THE_WAY": "Mesero En Camino",
-            "CANCEL_ORDERS_MSG": "Cancelar llamada",
             "RESTAURANT_EXIT": "Salida del Restaurante",
             "RESTAURANT_EXIT_CONFIRM": "Seguro que deseas salir del restaurante?",
             "YES_CONFIRM": "Si",
             "NO_CONFIRM": "No",
             "LEAVE_RESTAURANT_MSG": "Has salido del Restaurante. Hasta Pronto!",
-            "ORDERS_REGISTERED": "Tienes Ordenes Registradas!",
+            "ORDERS_SELECTED": "Tienes Ordenes Seleccionadas!",
             "ORDERS_CANCEL_CONFIRM": "Si te vas del restaurante las ordenes se cancelan. Estas seguro de salir?",
-            "ORDERS_PENDING_CONFIRM": "Ordenes Pendientes por Confirmar!",
-            "ORDERS_MUST_BE_ATTENDED": "Las ordenes deben ser atendidas para salir del restaurante",
             "ACCEPT": "Aceptar",
             "PENDING_WAITER_CALL": "Llamados al Mesero Pendientes",
             "WAITER_CALLS_MSG": "Los llamados al mesero deben ser atendidos o los puedes cancelar para salir",
-            "PENDING_PAYMENTS": "Tienes Pagos Pendientes",
-            "PENDING_PAYMENTS_MSG": "Un mesero ya se acercará a tu mesa para recibir tus pagos y así poder salir",
-            "ORDERS_DELIVERED": "Tienes Ordenes Entregadas",
-            "ORDERS_DELIVERED_MSG": "Paga las órdenes que se te han entregado y así podrás salir del restaurante",
             "INVALID_OPERATION": "Operación Inválida",
-            "CALL_WAITER_MSG": "El estado de tus ordenes no te permite salir del restaurante. Deseas Llamar a un mesero para gestionar tus ordenes?",
-            "WAITER_ON_THE_WAY_CALL": "Un mesero ya recibió la solicitud y va para tu mesa",
-            "CALLED_CANCELED": "Llamado Cancelado",
-            "GENERAL_ERROR": "Se ha producido un error. Intenta nuevamente."
+            "GENERAL_ERROR": "Se ha producido un error. Intenta nuevamente.",
+            "ORDERS_CONFIRMED": "Tienes Ordenes Confirmadas!",
+            "ORDERS_CONFIRMED_MSG": "Informa a un mesero que saldras del establecimiento para que cancele tus órdenes"
         },
         "WAITER_OPTIONS": {
             "CALLS": "Llamadas",

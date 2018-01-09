@@ -54,7 +54,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
         this._establishmentId = this._navParams.get("establishment");
         this._tableId = this._navParams.get("table");
 
-        this._statusArray = ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED', 'ORDER_STATUS.DELIVERED'];
+        this._statusArray = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
     }
 
     /**
@@ -73,7 +73,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
         });
 
         if (this._currentOrder.creation_user === Meteor.userId()) {
-            if (this._currentOrder.status === "ORDER_STATUS.REGISTERED") {
+            if (this._currentOrder.status === "ORDER_STATUS.SELECTING") {
                 this._isUserAndCorrect = true;
                 let inputControl = this._additionsDetailFormGroup.get('control');
                 inputControl.enable();
@@ -154,7 +154,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
 
             if ((this._currentOrder.items.length == 0) &&
                 (this._currentOrder.additions.length == 0) &&
-                (this._currentOrder.status === 'ORDER_STATUS.REGISTERED')) {
+                (this._currentOrder.status === 'ORDER_STATUS.SELECTING')) {
                 Orders.update({ _id: this._currentOrder._id }, {
                     $set: {
                         status: 'ORDER_STATUS.CANCELED',

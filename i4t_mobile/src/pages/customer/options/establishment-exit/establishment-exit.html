@@ -1,6 +1,11 @@
 <ion-header>
     <ion-navbar>
-        <ion-title>{{'MOBILE.RESTAURANT_EXIT.TITLE' | translate}}</ion-title>
+        <button ion-button menuToggle icon-only>
+            <ion-icon name='menu'></ion-icon>
+        </button>
+        <ion-title class="logo">
+            <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
+        </ion-title>
     </ion-navbar>
 </ion-header>
 
@@ -24,20 +29,6 @@
                 <ion-card-content>
                     <h1>{{_establishment.name}}</h1>
                     <h2>{{'MOBILE.ORDERS.TABLE' | translate}} {{_table?._number}}</h2>
-                </ion-card-content>
-            </ion-card>
-
-            <ion-card *ngIf="_showWaiterCard">
-                <ion-card-content>
-                    <ion-list no-lines text-wrap>
-                        <button ion-item style="padding-left: 0;" (click)="cancelWaiterCall()">
-                            <ion-avatar item-start>
-                                    <img src="assets/img/payment-pending.png">
-                                  </ion-avatar>
-                                  <h2>{{'MOBILE.RESTAURANT_EXIT.WAITER_ON_THE_WAY' | translate}}</h2>
-                                  <h3>{{'MOBILE.RESTAURANT_EXIT.CANCEL_ORDERS_MSG' | translate}}</h3>
-                        </button>
-                    </ion-list>
                 </ion-card-content>
             </ion-card>
         </div>

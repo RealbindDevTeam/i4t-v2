@@ -6,7 +6,7 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageServiceProvider } from '../../../../../providers/user-language-service/user-language-service';
 import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
-import { TabsPage } from '../../../tabs/tabs';
+import { OrdersPage } from '../../../orders/orders';
 
 @Component({
     selector: 'alphanumeric-code-change',
@@ -61,7 +61,7 @@ export class AlphanumericCodeChangePage {
     validateQRCodeExists() {
         MeteorObservable.call('changeCurrentTable', Meteor.userId(), this._res_code, this._table.QR_code, this._ordersForm.value.qrCode.toString().toUpperCase()).subscribe(() => {
             this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.CHANGE_TABLE_OK'));
-            this._navCtrl.setRoot(TabsPage);
+            this._navCtrl.setRoot(OrdersPage);
         }, (error) => {
             if (error.error === '200') {
                 this.showConfirmMessage(this.itemNameTraduction('MOBILE.CHANGE_TABLE.TABLE_DESTINY_NOT_EXISTS'));

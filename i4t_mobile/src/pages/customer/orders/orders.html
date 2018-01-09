@@ -63,7 +63,7 @@
                             </button>
                         </ion-list>
                         <div *ngIf="_orderIndex == i">
-                            <ion-row *ngIf="order?.status === 'ORDER_STATUS.REGISTERED' && (order?.items?.length > 0 || order?.additions?.length > 0)" no-padding>
+                            <ion-row *ngIf="order?.status === 'ORDER_STATUS.SELECTING' && (order?.items?.length > 0 || order?.additions?.length > 0)" no-padding>
                                 <ion-col>
                                     <button ion-button small clear block text-left style="color: #5090ff" (click)="cancelOrder(order)">{{'MOBILE.ORDERS.CANCEL' | translate}}</button>
                                 </ion-col>
@@ -83,8 +83,8 @@
                                         <p style="white-space: normal;" *ngIf="!getItemAvailability(itemId.itemId)" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
                                         <p style="white-space: normal;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{itemId.quantity}}</p>
                                         <button *ngIf="order.creation_user === _currentUserId" ion-button icon-only clear item-right style="margin-right: 0px">
-                                            <ion-icon *ngIf="order.status === 'ORDER_STATUS.REGISTERED'" name="create"></ion-icon>
-                                            <ion-icon *ngIf="order.status !== 'ORDER_STATUS.REGISTERED'" name="eye"></ion-icon> 
+                                            <ion-icon *ngIf="order.status === 'ORDER_STATUS.SELECTING'" name="create"></ion-icon>
+                                            <ion-icon *ngIf="order.status !== 'ORDER_STATUS.SELECTING'" name="eye"></ion-icon> 
                                         </button>
                                         <button *ngIf="order.creation_user !== _currentUserId && order.status !== 'ORDER_STATUS.DELIVERED'" ion-button icon-only
                                         clear item-right style="margin-right: 0px">
@@ -104,8 +104,8 @@
                                             <p style="white-space: normal;">{{addition.paymentAddition}} {{_currencyCode}}</p>
                                             <p style="white-space: normal; margin-bottom: 11px;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{addition.quantity}}</p>
                                             <button *ngIf="order.creation_user === _currentUserId" ion-button icon-only clear item-right style="margin-right: 0px">
-                                                <ion-icon *ngIf="order.status === 'ORDER_STATUS.REGISTERED'" name="create"></ion-icon>
-                                                <ion-icon *ngIf="order.status !== 'ORDER_STATUS.REGISTERED'" name="eye"></ion-icon> 
+                                                <ion-icon *ngIf="order.status === 'ORDER_STATUS.SELECTING'" name="create"></ion-icon>
+                                                <ion-icon *ngIf="order.status !== 'ORDER_STATUS.SELECTING'" name="eye"></ion-icon> 
                                             </button>
                                             <button *ngIf="order.creation_user !== _currentUserId && order.status !== 'ORDER_STATUS.DELIVERED'" ion-button icon-only
                                                 clear item-right style="margin-right: 0px">
@@ -143,8 +143,8 @@
                                         <p style="white-space: normal;" *ngIf="!getItemAvailability(itemId.itemId)" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
                                         <p style="white-space: normal;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{itemId.quantity}}</p>
                                         <button *ngIf="order.creation_user === _currentUserId" ion-button icon-only clear item-right style="margin-right: 0px">
-                                            <ion-icon *ngIf="order.status === 'ORDER_STATUS.REGISTERED'" name="create"></ion-icon>
-                                            <ion-icon *ngIf="order.status !== 'ORDER_STATUS.REGISTERED'" name="eye"></ion-icon> 
+                                            <ion-icon *ngIf="order.status === 'ORDER_STATUS.SELECTING'" name="create"></ion-icon>
+                                            <ion-icon *ngIf="order.status !== 'ORDER_STATUS.SELECTING'" name="eye"></ion-icon> 
                                         </button>
                                         <button *ngIf="order.creation_user !== _currentUserId && order.status !== 'ORDER_STATUS.DELIVERED'" ion-button icon-only
                                             clear item-right style="margin-right: 0px">
@@ -164,8 +164,8 @@
                                             <p style="white-space: normal;">{{addition.paymentAddition}} {{_currencyCode}}</p>
                                             <p style="white-space: normal; margin-bottom: 11px;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{addition.quantity}}</p>
                                             <button *ngIf="order.creation_user === _currentUserId" ion-button icon-only clear item-right style="margin-right: 0px">
-                                                <ion-icon *ngIf="order.status === 'ORDER_STATUS.REGISTERED'" name="create"></ion-icon>
-                                                <ion-icon *ngIf="order.status !== 'ORDER_STATUS.REGISTERED'" name="eye"></ion-icon> 
+                                                <ion-icon *ngIf="order.status === 'ORDER_STATUS.SELECTING'" name="create"></ion-icon>
+                                                <ion-icon *ngIf="order.status !== 'ORDER_STATUS.SELECTING'" name="eye"></ion-icon> 
                                             </button>
                                             <button *ngIf="order.creation_user !== _currentUserId && order.status !== 'ORDER_STATUS.DELIVERED'" ion-button icon-only
                                                 clear item-right style="margin-right: 0px">
