@@ -40,22 +40,16 @@
     <mat-card *ngFor="let _call of _waiterCallDetail | async" class="cards">
         <mat-card-content>
             <div class="item-block">
-                <img *ngIf="_call.type === 'SEND_ORDER'" class="img-list" src="/images/chef.png"/>
+                <img *ngIf="_call.type === 'CUSTOMER_ORDER'" class="img-list" src="/images/chef.png"/>
                 <img *ngIf="_call.type === 'CALL_OF_CUSTOMER'" class="img-list" src="/images/waiter-call.png"/>
-                <img *ngIf="_call.type === 'PAYMENT'" class="img-list" src="/images/cash-payment.png"/>
-                <img *ngIf="_call.type === 'USER_EXIT_TABLE'" class="img-list" src="/images/exit.png"/>
                 <div class="header-title">
                     <div class="label">
                         <span>{{ 'TABLES.TABLE' | translate }} {{getTableNumber(_call.table_id)}}</span>
-                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'SEND_ORDER'">{{ 'WAITER_CALL.CALL_LABEL_SEND_ORDER' | translate }}</p>
+                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'CUSTOMER_ORDER'">{{ 'WAITER_CALL.CALL_LABEL_CUSTOMER_ORDER' | translate }}</p>
                         <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'CALL_OF_CUSTOMER'">{{ 'WAITER_CALL.CALL_LABEL_CUSTOMER' | translate }}</p>
-                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'PAYMENT'">{{ 'WAITER_CALL.CALL_LABEL_CUSTOMER_PAYMENT' | translate }}</p>
-                        <p style="margin-bottom: 0px; margin-top: 0px;" *ngIf="_call.type === 'USER_EXIT_TABLE'">{{ 'WAITER_CALL.CALL_LABEL_EXIT_TABLE' | translate }}</p>
                     </div>
                     <button mat-raised-button *ngIf="_call.type === 'CALL_OF_CUSTOMER'" (click)="showConfirm(_call)" class="active-button">{{ 'CLOSE' | translate }}</button>
-                    <button mat-raised-button *ngIf="_call.type === 'PAYMENT'" (click)="showPayment(_call)" class="active-button">{{ 'VIEW_DETAIL' | translate }}</button>
-                    <button mat-raised-button *ngIf="_call.type === 'SEND_ORDER'" (click)="showSendOrder(_call)" class="active-button">{{ 'VIEW_DETAIL' | translate }}</button>
-                    <button mat-raised-button *ngIf="_call.type === 'USER_EXIT_TABLE'" (click)="showUserExitTable(_call)" class="active-button">{{ 'VIEW_DETAIL' | translate }}</button>
+                    <button mat-raised-button *ngIf="_call.type === 'CUSTOMER_ORDER'" (click)="showCustomerOrder(_call)" class="active-button">{{ 'VIEW_DETAIL' | translate }}</button>
                 </div>
             </div>
         </mat-card-content>

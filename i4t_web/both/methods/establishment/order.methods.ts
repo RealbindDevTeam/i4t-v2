@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Table } from '../../models/establishment/table.model';
 import { Tables } from '../../collections/establishment/table.collection';
-import { Account } from '../../models/establishment/account.model';
-import { Accounts } from '../../collections/establishment/account.collection';
 import { Order, OrderItem, OrderAddition } from '../../models/establishment/order.model';
 import { Orders } from '../../collections/establishment/order.collection';
 import { Establishment } from '../../models/establishment/establishment.model';
@@ -18,19 +16,12 @@ if (Meteor.isServer) {
         AddItemToOrder: function (_itemToInsert: OrderItem, _establishmentId: string, _tableQRCode: string, _finalPrice: number) {
 
             let _lTable: Table = Tables.collection.findOne({ QR_code: _tableQRCode });
-            let _lAccount: Account = Accounts.collection.findOne({
-                establishment_id: _establishmentId,
-                tableId: _lTable._id,
-                status: 'OPEN'
-            });
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
                 establishment_id: _establishmentId,
                 tableId: _lTable._id,
-                accountId: _lAccount._id,
-                status: 'ORDER_STATUS.REGISTERED',
-                toPay: false
+                status: 'ORDER_STATUS.SELECTING'
             });
 
             if (_lOrder) {
@@ -39,8 +30,7 @@ if (Meteor.isServer) {
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
-                    accountId: _lAccount._id,
-                    status: 'ORDER_STATUS.REGISTERED'
+                    status: 'ORDER_STATUS.SELECTING'
                 },
                     { $push: { items: _itemToInsert } }
                 );
@@ -48,8 +38,7 @@ if (Meteor.isServer) {
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
-                    accountId: _lAccount._id,
-                    status: 'ORDER_STATUS.REGISTERED'
+                    status: 'ORDER_STATUS.SELECTING'
                 },
                     {
                         $set: {
@@ -72,18 +61,10 @@ if (Meteor.isServer) {
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
                     code: _orderCount,
-                    status: 'ORDER_STATUS.REGISTERED',
-                    accountId: _lAccount._id,
+                    status: 'ORDER_STATUS.SELECTING',
                     items: [_itemToInsert],
                     totalPayment: _finalPrice,
                     orderItemCount: 1,
-                    translateInfo: {
-                        firstOrderOwner: Meteor.userId(),
-                        markedToTranslate: false,
-                        lastOrderOwner: '',
-                        confirmedToTranslate: false
-                    },
-                    toPay: false,
                     additions: []
                 });
             }
@@ -92,19 +73,12 @@ if (Meteor.isServer) {
         AddItemToOrder2: function (_itemToInsert: OrderItem, _establishmentId: string, _idTable: string, _finalPrice: number) {
 
             let _lTable: Table = Tables.collection.findOne({ _id: _idTable });
-            let _lAccount: Account = Accounts.collection.findOne({
-                establishment_id: _establishmentId,
-                tableId: _lTable._id,
-                status: 'OPEN'
-            });
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
                 establishment_id: _establishmentId,
                 tableId: _lTable._id,
-                accountId: _lAccount._id,
-                status: 'ORDER_STATUS.REGISTERED',
-                toPay: false
+                status: 'ORDER_STATUS.SELECTING'
             });
 
             if (_lOrder) {
@@ -113,8 +87,7 @@ if (Meteor.isServer) {
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
-                    accountId: _lAccount._id,
-                    status: 'ORDER_STATUS.REGISTERED'
+                    status: 'ORDER_STATUS.SELECTING'
                 },
                     { $push: { items: _itemToInsert } }
                 );
@@ -122,8 +95,7 @@ if (Meteor.isServer) {
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
-                    accountId: _lAccount._id,
-                    status: 'ORDER_STATUS.REGISTERED'
+                    status: 'ORDER_STATUS.SELECTING'
                 },
                     {
                         $set: {
@@ -146,18 +118,10 @@ if (Meteor.isServer) {
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
                     code: _orderCount,
-                    status: 'ORDER_STATUS.REGISTERED',
-                    accountId: _lAccount._id,
+                    status: 'ORDER_STATUS.SELECTING',
                     items: [_itemToInsert],
                     totalPayment: _finalPrice,
                     orderItemCount: 1,
-                    translateInfo: {
-                        firstOrderOwner: Meteor.userId(),
-                        markedToTranslate: false,
-                        lastOrderOwner: '',
-                        confirmedToTranslate: false
-                    },
-                    toPay: false,
                     additions: []
                 });
             }
@@ -172,19 +136,12 @@ if (Meteor.isServer) {
          */
         AddAdditionsToOrder: function ( _additionsToInsert: OrderAddition[], _establishmentId: string, _tableQRCode: string, _AdditionsPrice: number ) {
             let _lTable: Table = Tables.collection.findOne({ QR_code: _tableQRCode });
-            let _lAccount: Account = Accounts.collection.findOne({
-                establishment_id: _establishmentId,
-                tableId: _lTable._id,
-                status: 'OPEN'
-            });
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
                 establishment_id: _establishmentId,
                 tableId: _lTable._id,
-                accountId: _lAccount._id,
-                status: 'ORDER_STATUS.REGISTERED',
-                toPay: false
+                status: 'ORDER_STATUS.SELECTING'
             });
             if ( _lOrder ) {
                 let _lTotalPaymentAux: number = Number.parseInt( _lOrder.totalPayment.toString() ) + Number.parseInt( _AdditionsPrice.toString() );
@@ -194,8 +151,7 @@ if (Meteor.isServer) {
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
-                    accountId: _lAccount._id,
-                    status: 'ORDER_STATUS.REGISTERED'
+                    status: 'ORDER_STATUS.SELECTING'
                 },
                     {
                         $set: {
@@ -218,18 +174,10 @@ if (Meteor.isServer) {
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
                     code: _orderCount,
-                    status: 'ORDER_STATUS.REGISTERED',
-                    accountId: _lAccount._id,
+                    status: 'ORDER_STATUS.SELECTING',
                     items: [],
                     totalPayment: _AdditionsPrice,
                     orderItemCount: 0,
-                    translateInfo: {
-                        firstOrderOwner: Meteor.userId(),
-                        markedToTranslate: false,
-                        lastOrderOwner: '',
-                        confirmedToTranslate: false
-                    },
-                    toPay: false,
                     additions: _additionsToInsert
                 });
             }
@@ -237,19 +185,12 @@ if (Meteor.isServer) {
         
         AddAdditionsToOrder2: function ( _additionsToInsert: OrderAddition[], _establishmentId: string, _tableId: string, _AdditionsPrice: number ) {
             let _lTable: Table = Tables.collection.findOne({ _id: _tableId });
-            let _lAccount: Account = Accounts.collection.findOne({
-                establishment_id: _establishmentId,
-                tableId: _lTable._id,
-                status: 'OPEN'
-            });
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
                 establishment_id: _establishmentId,
                 tableId: _lTable._id,
-                accountId: _lAccount._id,
-                status: 'ORDER_STATUS.REGISTERED',
-                toPay: false
+                status: 'ORDER_STATUS.SELECTING'
             });
             if ( _lOrder ) {
                 let _lTotalPaymentAux: number = Number.parseInt( _lOrder.totalPayment.toString() ) + Number.parseInt( _AdditionsPrice.toString() );
@@ -259,8 +200,7 @@ if (Meteor.isServer) {
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
-                    accountId: _lAccount._id,
-                    status: 'ORDER_STATUS.REGISTERED'
+                    status: 'ORDER_STATUS.SELECTING'
                 },
                     {
                         $set: {
@@ -283,18 +223,10 @@ if (Meteor.isServer) {
                     establishment_id: _establishmentId,
                     tableId: _lTable._id,
                     code: _orderCount,
-                    status: 'ORDER_STATUS.REGISTERED',
-                    accountId: _lAccount._id,
+                    status: 'ORDER_STATUS.SELECTING',
                     items: [],
                     totalPayment: _AdditionsPrice,
                     orderItemCount: 0,
-                    translateInfo: {
-                        firstOrderOwner: Meteor.userId(),
-                        markedToTranslate: false,
-                        lastOrderOwner: '',
-                        confirmedToTranslate: false
-                    },
-                    toPay: false,
                     additions: _additionsToInsert
                 });
             }

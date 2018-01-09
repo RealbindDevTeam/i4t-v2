@@ -38,12 +38,11 @@
     "YES": "Sí",
     "NO": "No",
     "ORDER_STATUS": {
-        "REGISTERED": "Registrado",
-        "IN_PROCESS": "En proceso",
-        "PREPARED": "Preparado",
-        "CANCELED": "Cancelado",
-        "DELIVERED": "Entregado",
-        "PENDING_CONFIRM": "Confirmación pendiente para pago"
+        "SELECTING": "Seleccionando",
+        "CONFIRMED": "Confirmado",
+        "RECEIVED": "Recibido",
+        "ATTENDED": "Atendido",
+        "CANCELED": "Cancelado"
     },
     "DATE_VALIDATE": {
         "DAY_FORMAT": "Formato del día incorrecto",
@@ -845,7 +844,8 @@
         "DELETE_ITEM_DLG": "Eliminar item de la orden",
         "DELETE_ADITION_DLG": "Eliminar adición de la orden",
         "CANCEL_ORDER_DLG": "Cancelar orden",
-        "CONFIRM_ORDER_DLG": "Confirmar orden"
+        "CONFIRM_ORDER_DLG": "Confirmar orden",
+        "ORDER_CONFIRMED_MSG": "Orden confirmada"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "No te encuentras en un restaurante",
@@ -915,7 +915,7 @@
         "YES_ANSWER": "Sí",
         "TURN": "Turno",
         "TABLE": "Mesa",
-        "CALL_LABEL_SEND_ORDER": "Entrega de orden",
+        "CALL_LABEL_CUSTOMER_ORDER": "Orden de cliente",
         "CALL_LABEL_CUSTOMER": "Llamado de cliente",
         "CALL_LABEL_CUSTOMER_PAYMENT": "Pago de cliente",
         "BTN_CALL_WAITER": "Solicitar mesero",
@@ -1070,18 +1070,19 @@
         "TABLE_MODIFIED": "Mesa modificada",
         "NUMBER_TABLES": "Número de mesas, Máximo "
     },
-    "SEND_ORDER": {
+    "CUSTOMER_ORDER": {
         "ORDER": "Orden",
         "TABLE": "Mesa",
         "CODE": "Código: ",
         "CUSTOMER": "Cliente",
         "OBSERVATIONS": "Observaciones",
-        "NO_GARNISH_FOOD": "Sin guarniciones",
         "GARNISH_FOOD": "Guarniciones",
-        "NO_ADDITIONS": "Sin adiciones",
         "ADDITIONS": "Adiciones",
         "ADDITION": "Adición(es)",
-        "ORDER_DELIVERED": "Orden Entregada"
+        "RECEIVE_ORDER": "Rebibir orden",
+        "RECEIVE_ORDER_CONFIRM": "Orden Recibida",
+        "CANCEL_ORDER": "Cancelar Orden",
+        "CANCEL_ORDER_CONFIRM": "Orden Cancelada"
     },
     "PAYU_PAYMENT_FORM": {
         "TITLE": "Medio de pago",
@@ -1364,42 +1365,28 @@
         "TABLE_DESTINY_NOT_EXISTS": "El código de la nueva mesa no existe. Por favor intenta nuevamente.",
         "TABLE_DESTINY_NO_ACTIVE": "La mesa ingresada no esta activa para el servicio de iurest",
         "TABLE_DESTINY_NO_RESTAURANT": "El código de la mesa ingresada no pertenece al restaurante en el que te encuentras en este momento. Por favor intenta nuevamente.",
-        "PENDING_ORDERS": "Tienes ordenes pendientes por confirmar que afectan tu pago. Por favor revisa e intenta nuevamente.",
-        "ORDERS_PAY_PROCESS": "Tienes ordenes en proceso de pago. No es posible realizar hacer el cambio de mesa.",
         "WAITER_CALL_PENDING": "Se encuentran llamados al mesero pendientes por atender. Una vez se atienda el llamado puedes realizar el cambio de mesa.",
         "TABLE_DESTINY_STATUS_ERROR": "Se ha producido un error validando el estado de la nueva mesa. Por favor intenta nuevamente.",
         "GENERAL_ERROR": "Se ha producido un error cambiando la mesa. Por favor intenta nuevamente.",
         "SAME_TABLE_ERROR": "No es posible realizar la operacion con el código de mesa actual. Por favor revisa e intenta nuevamente."
     },
     "EXIT_TABLE": {
-        "RESTAURANT_EXIT": "Salida del Restaurante",
-        "RESTAURANT_EXIT_CONFIRM": "Seguro que deseas salir del restaurante?",
-        "LEAVE_RESTAURANT_MSG": "Has salido del Restaurante. Hasta Pronto!",
-        "ORDERS_REGISTERED": "Tienes Ordenes Registradas!",
-        "ORDERS_CANCEL_CONFIRM": "Si te vas del restaurante las ordenes se cancelan. Estas seguro de salir?",
-        "ORDERS_PENDING_CONFIRM": "Ordenes Pendientes por Confirmar!",
-        "ORDERS_MUST_BE_ATTENDED": "Las ordenes deben ser atendidas para salir del restaurante",
+        "RESTAURANT_EXIT": "Salida del establecimiento",
+        "RESTAURANT_EXIT_CONFIRM": "Seguro que deseas salir del establecimiento?",
+        "LEAVE_RESTAURANT_MSG": "Has salido del establecimiento. Hasta Pronto!",
+        "ORDERS_SELECTED": "Tienes Ordenes Seleccionadas!",
+        "ORDERS_CANCEL_CONFIRM": "Si te vas del establecimiento las ordenes se cancelan. Estas seguro de salir?",
         "PENDING_WAITER_CALL": "Llamados al Mesero Pendientes",
         "WAITER_CALLS_MSG": "Los llamados al mesero deben ser atendidos o los puedes cancelar para salir",
-        "PENDING_PAYMENTS": "Tienes Pagos Pendientes",
-        "PENDING_PAYMENTS_MSG": "Un mesero ya se acercará a tu mesa para recibir tus pagos y así poder salir",
-        "ORDERS_DELIVERED": "Tienes Ordenes Entregadas",
-        "ORDERS_DELIVERED_MSG": "Paga las órdenes que se te han entregado y así podrás salir del restaurante",
-        "INVALID_OPERATION": "Operación Inválida",
-        "CALL_WAITER_MSG": "El estado de tus ordenes no te permite salir del restaurante. Deseas Llamar a un mesero para gestionar tus ordenes?",
-        "WAITER_HAS_BEEN_CALLED": "El mesero ha sido llamado",
-        "WAITER_ON_THE_WAY": "Mesero En Camino",
-        "WAITER_ON_THE_WAY_CALL": "Un mesero ya recibió la solicitud y va para tu mesa",
-        "CALLED_CANCELED": "Llamado Cancelado",
-        "CANCEL_ORDERS_MSG": "Cancelará tus ordenes Entregadas o En Proceso",
-        "CANCEL_CALL": "Cancelar Llamada",
-        "OPTION_LEAVE_RESTAURANT": "Esta opción te permite salir del restaurante en el que te encuentras",
+        "OPTION_LEAVE_RESTAURANT": "Esta opción te permite salir del establecimiento en el que te encuentras",
         "EXIT_MSG": "Salir",
-        "THERE_IS_NOT_REST": "No te encuentras en un restaurante",
+        "THERE_IS_NOT_REST": "No te encuentras en un establecimiento",
         "THERE_IS_NOT_REST_MSG": "Ve a la opción de ordenes e ingresa el código",
         "GO_TO_ORDERS": "Ir a ordenes",
         "ACCEPT": "Aceptar",
-        "GENERAL_ERROR": "Se ha producido un error. Intenta nuevamente."
+        "GENERAL_ERROR": "Se ha producido un error. Intenta nuevamente.",
+        "ORDERS_CONFIRMED": "Tienes Ordenes Confirmadas!",
+        "ORDERS_CONFIRMED_MSG": "Informa a un mesero que saldras del establecimiento para que cancele tus órdenes"
     },
     "EXIT_TABLE_CONFIRM": {
         "CUSTOMER": "Cliente",

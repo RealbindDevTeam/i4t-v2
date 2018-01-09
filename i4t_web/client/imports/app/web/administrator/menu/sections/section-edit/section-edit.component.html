@@ -12,7 +12,7 @@
       <div>
         <p>{{'SECTIONS.RESTAURANT_SECTION' | translate}}</p>
         <div formGroupName="editEstablishments">
-            <mat-checkbox *ngFor="let establishment of _establishments | async" [formControlName]="establishment._id" [class.invalid]="!_editForm.controls.editEstablishments.valid" class="checkbox">{{establishment.name}}</mat-checkbox>
+            <mat-checkbox *ngFor="let establishment of _establishments | async" [formControlName]="establishment._id" [class.invalid]="!_editForm.controls.editEstablishments.valid" class="checkbox">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
             <label></label>
         </div>
       </div>

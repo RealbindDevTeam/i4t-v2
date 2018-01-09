@@ -6,7 +6,7 @@ import { WaiterCallDetail } from '../../../models/establishment/waiter-call-deta
 import { WaiterCallDetails } from '../../../collections/establishment/waiter-call-detail.collection';
 import { Establishment, EstablishmentTurn } from '../../../models/establishment/establishment.model';
 import { Establishments, EstablishmentTurns } from '../../../collections/establishment/establishment.collection';
-import { Accounts } from '../../../collections/establishment/account.collection';
+import { Order } from '../../../models/establishment/order.model';
 import { Orders } from '../../../collections/establishment/order.collection';
 import { Tables } from '../../../collections/establishment/table.collection';
 
@@ -172,21 +172,47 @@ if (Meteor.isServer) {
             });
 
           let waiterDetail = WaiterCallDetails.findOne({ job_id: _jobDetail.job_id });
-          if (waiterDetail.type === "SEND_ORDER" && waiterDetail.order_id !== null) {
+          if (waiterDetail.type === "CUSTOMER_ORDER" && waiterDetail.order_id !== null) {
             Orders.update({ _id: waiterDetail.order_id },
               {
                 $set: {
-                  status: 'ORDER_STATUS.DELIVERED',
+                  status: 'ORDER_STATUS.RECEIVED',
                   modification_user: _waiter_id,
                   modification_date: new Date()
                 }
               }
             );
+          }
 
-            let order = Orders.findOne({ _id: waiterDetail.order_id });
-            if (order) {
-              let account = Accounts.findOne({ _id: order.accountId });
-              Accounts.update({ _id: account._id }, { $set: { total_payment: (account.total_payment + order.totalPayment) } });
+          let usr_detail: UserDetail = UserDetails.findOne({ user_id: _waiter_id });
+          if (usr_detail) {
+            let jobs = usr_detail.jobs - 1;
+            UserDetails.update({ _id: usr_detail._id }, { $set: { "enabled": true, "jobs": jobs } });
+          }
+        });
+      });
+      return;
+    },
+
+    cancelOrderCall: function (_jobDetail: WaiterCallDetail, _waiter_id: string) {
+      Job.getJob(_jobDetail.queue, _jobDetail.job_id, function (err, job) {
+        job.remove(function (err, result) {
+          WaiterCallDetails.update({ _id: _jobDetail._id },
+            {
+              $set: { "status": "closed", modification_user: _waiter_id, modification_date: new Date() }
+            });
+
+          let waiterDetail = WaiterCallDetails.findOne({ job_id: _jobDetail.job_id });
+          if (waiterDetail.type === "CUSTOMER_ORDER" && waiterDetail.order_id !== null) {
+            let _lOrder:Order = Orders.findOne( { _id: waiterDetail.order_id });
+            if (_lOrder.status === 'ORDER_STATUS.CONFIRMED') {
+              Orders.update({ _id: _lOrder._id }, {
+                $set: {
+                  status: 'ORDER_STATUS.CANCELED', modification_user: _jobDetail.waiter_id,
+                  modification_date: new Date()
+                }
+              }
+              );
             }
           }
 

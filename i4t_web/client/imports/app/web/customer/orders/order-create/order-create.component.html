@@ -21,7 +21,7 @@
                                     <img *ngIf="item.image" src="{{ item.image.url }}">
                                     <img *ngIf="!item.image" src="/images/default-plate.png">
                                     <span class="mat-card-title">{{item.name}}</span>
-                                    <button matTooltip="{{'ORDER_CREATE.VIEW_DETAIL' | translate}}" mat-fab class="btn-position-edition" (click)="showItemInformation(item)">
+                                    <button mat-fab class="btn-position-edition" (click)="showItemInformation(item)">
                                         <mat-icon style="color: white;" class="mat-24">search</mat-icon>
                                     </button>
                                 </div>
@@ -51,7 +51,7 @@
                                             <img *ngIf="item.image" src="{{ item.image.url }}">
                                             <img *ngIf="!item.image" src="/images/default-plate.png">
                                             <span class="mat-card-title">{{item.name}}</span>
-                                            <button matTooltip="{{'ORDER_CREATE.VIEW_DETAIL' | translate}}" mat-fab class="btn-position-edition" (click)="showItemInformation(item)">
+                                            <button mat-fab class="btn-position-edition" (click)="showItemInformation(item)">
                                                 <mat-icon style="color: white;" class="mat-24">search</mat-icon>
                                             </button>
                                         </div>
@@ -81,7 +81,7 @@
                                                     <img *ngIf="item.image" src="{{ item.image.url }}">
                                                     <img *ngIf="!item.image" src="/images/default-plate.png">
                                                     <span class="mat-card-title">{{item.name}}</span>
-                                                    <button matTooltip="{{'ORDER_CREATE.VIEW_DETAIL' | translate}}" mat-fab class="btn-position-edition" (click)="showItemInformation(item)">
+                                                    <button mat-fab class="btn-position-edition" (click)="showItemInformation(item)">
                                                         <mat-icon style="color: white;" class="mat-24">search</mat-icon>
                                                     </button>
                                                 </div>
@@ -138,7 +138,6 @@
                         <div class="content">
                             <mat-card-subtitle class="description">{{itemDet.description}}</mat-card-subtitle>
                             <mat-card-subtitle class="price">{{'ORDER_CREATE.PRICE' | translate}}: {{ getItemPrice( itemDet ) }} {{_currencyCode}}</mat-card-subtitle>
-                            <mat-card-subtitle>{{'ORDER_CREATE.COOKING_TIME' | translate}}: {{itemDet.time}}</mat-card-subtitle>
                             <p *ngIf="!getItemAvailability(itemDet._id)" class="available-button">{{'ORDER_CREATE.ITEM_UNAVAILABLE' | translate}}</p>
                             <div *ngIf="getItemAvailability(itemDet._id)">
                                 <div>

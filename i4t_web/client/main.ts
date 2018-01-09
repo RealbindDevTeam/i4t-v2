@@ -21,7 +21,6 @@ import '../both/methods/general/push-notifications.methods';
 import '../both/methods/establishment/establishment.methods';
 import '../both/methods/establishment/invoice.methods';
 import '../both/methods/establishment/order.methods';
-import '../both/methods/establishment/payment.methods';
 import '../both/methods/establishment/schedule.methods';
 import '../both/methods/establishment/table.method';
 import '../both/methods/establishment/waiter-queue/waiter-queue.methods';

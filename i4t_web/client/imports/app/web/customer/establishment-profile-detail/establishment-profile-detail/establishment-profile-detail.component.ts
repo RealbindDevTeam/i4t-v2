@@ -112,7 +112,7 @@ export class EstablishmentProFileDetailComponent implements OnInit, OnDestroy {
                                     this._establishmentCurrency = find.code + ' - ' + this.itemNameTraduction(find.name);
                                 });
                             });
-                            this._paymentMethodSub = MeteorObservable.subscribe('getPaymentMethodsByestablishmentId', this.establishmentId).subscribe(() => {
+                            this._paymentMethodSub = MeteorObservable.subscribe('getPaymentMethodsByEstablishmentId', this.establishmentId).subscribe(() => {
                                 this._ngZone.run(() => {
                                     this._establishmentPaymentMethods = PaymentMethods.find({ _id: { $in: _lEstablishment.paymentMethods }, isActive: true }).zone();
                                 });

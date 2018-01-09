@@ -38,12 +38,11 @@
     "YES": "Yes",
     "NO": "No",
     "ORDER_STATUS": {
-        "REGISTERED": "Registered",
-        "IN_PROCESS": "In Process",
-        "PREPARED": "Cooked",
-        "CANCELED": "Canceled",
-        "DELIVERED": "Delivered",
-        "PENDING_CONFIRM": "Pending payment confirmation"
+        "SELECTING": "Selecting",
+        "CONFIRMED": "Confirmed",
+        "RECEIVED": "Received",
+        "ATTENDED": "Attended",
+        "CANCELED": "Canceled"
     },
     "DATE_VALIDATE": {
         "DAY_FORMAT": "Wrong day format",
@@ -845,7 +844,8 @@
         "DELETE_ITEM_DLG": "Delete order item",
         "DELETE_ADITION_DLG": "Delete order addition",
         "CANCEL_ORDER_DLG": "Cancel order",
-        "CONFIRM_ORDER_DLG": "Confirm order"
+        "CONFIRM_ORDER_DLG": "Confirm order",
+        "ORDER_CONFIRMED_MSG": "Order confirmed"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "You are not in any restaurant",
@@ -915,7 +915,7 @@
         "YES_ANSWER": "Yes",
         "TURN": "Turn",
         "TABLE": "Table",
-        "CALL_LABEL_SEND_ORDER": "Order to deliver",
+        "CALL_LABEL_CUSTOMER_ORDER": "Customer order",
         "CALL_LABEL_CUSTOMER": "Calls from customer",
         "CALL_LABEL_CUSTOMER_PAYMENT": "Payment from customer",
         "BTN_CALL_WAITER": "Request waiter/waitress",
@@ -1070,18 +1070,19 @@
         "TABLE_MODIFIED": "Table modified",
         "NUMBER_TABLES": "Number of tables, Max "
     },
-    "SEND_ORDER": {
+    "CUSTOMER_ORDER": {
         "ORDER": "Order",
         "TABLE": "Table",
         "CODE": "Code: ",
         "CUSTOMER": "Customer",
         "OBSERVATIONS": "Comments",
-        "NO_GARNISH_FOOD": "No side dishes",
         "GARNISH_FOOD": "Side dishes",
-        "NO_ADDITIONS": "No additions",
         "ADDITIONS": "additions",
         "ADDITION": "addition",
-        "ORDER_DELIVERED": "Order delivered"
+        "RECEIVE_ORDER": "Receive order",
+        "RECEIVE_ORDER_CONFIRM": "Order received",
+        "CANCEL_ORDER": "Cancel Order",
+        "CANCEL_ORDER_CONFIRM": "Order Canceled"
     },
     "PAYU_PAYMENT_FORM": {
         "TITLE": "Payment method",
@@ -1364,42 +1365,28 @@
         "TABLE_DESTINY_NOT_EXISTS": "The code for the new table does not exist. Please try again.",
         "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the iurest service",
         "TABLE_DESTINY_NO_RESTAURANT": "The code of the table entered does not belong to the restaurant where you are located. Please try again.",
-        "PENDING_ORDERS": "You have orders pending to confirm affecting your payment. Please check and try again.",
-        "ORDERS_PAY_PROCESS": "You have orders in process of payment. It is not possible to change of table.",
         "WAITER_CALL_PENDING": "There are calls request to the waiter/waitress pending to be served. Once the call is attended you can change the table.",
         "TABLE_DESTINY_STATUS_ERROR": "An error has occurred while validating the status of the new table. Please try again.",
         "GENERAL_ERROR": "An error has occurred while changing the table. Please try again.",
         "SAME_TABLE_ERROR": "It is not possible to perform the operation with the actual table code. Please check and try again."
     },
     "EXIT_TABLE": {
-        "RESTAURANT_EXIT": "Restaurant exit",
-        "RESTAURANT_EXIT_CONFIRM": "Are you sure you want to leave the restaurant?",
-        "LEAVE_RESTAURANT_MSG": "You left the restaurant. See you later!",
-        "ORDERS_REGISTERED": "You have orders registered!",
-        "ORDERS_CANCEL_CONFIRM": "If you leave the restaurant the orders will be canceled. Are you sure to leave?",
-        "ORDERS_PENDING_CONFIRM": "Orders to be confirmed!",
-        "ORDERS_MUST_BE_ATTENDED": "Orders must be served to leave the restaurant",
+        "RESTAURANT_EXIT": "Establishment exit",
+        "RESTAURANT_EXIT_CONFIRM": "Are you sure you want to leave the establishment?",
+        "LEAVE_RESTAURANT_MSG": "You left the establishment. See you later!",
+        "ORDERS_SELECTED": "You have orders selected!",
+        "ORDERS_CANCEL_CONFIRM": "If you leave the establishment the orders will be canceled. Are you sure to leave?",
         "PENDING_WAITER_CALL": "Calls to the waiter/waitress are pending",
         "WAITER_CALLS_MSG": "The calls must be attended by the waiter/waitress or cancel by you before leaving",
-        "PENDING_PAYMENTS": "You have pending payments",
-        "PENDING_PAYMENTS_MSG": "A waiter/waitress will come to your table and receive your payment so you can leave",
-        "ORDERS_DELIVERED": "You have delivered orders",
-        "ORDERS_DELIVERED_MSG": "Pay the delivered orders so you can leave the restaurant",
-        "INVALID_OPERATION": "Invalid operation",
-        "CALL_WAITER_MSG": "The status of your orders don't allow you to leave the restaurant. Do you want to call a waiter/waitress to manage your orders?",
-        "WAITER_HAS_BEEN_CALLED": "The waiter/waitress has been called",
-        "WAITER_ON_THE_WAY": "Waiter/waitress on the way",
-        "WAITER_ON_THE_WAY_CALL": "A waiter/waitress has received the request and is going to your table",
-        "CALLED_CANCELED": "Call canceled",
-        "CANCEL_ORDERS_MSG": "Your orders delivered or in Process will be canceled ",
-        "CANCEL_CALL": "Cancel Call",
-        "OPTION_LEAVE_RESTAURANT": "This option allows you to leave the restaurant where you are",
+        "OPTION_LEAVE_RESTAURANT": "This option allows you to leave the establishment where you are",
         "EXIT_MSG": "Exit",
-        "THERE_IS_NOT_REST": "You are not in a restaurant",
+        "THERE_IS_NOT_REST": "You are not in a establishment",
         "THERE_IS_NOT_REST_MSG": "Go to the order option and enter the code",
         "GO_TO_ORDERS": "Go to Orders",
         "ACCEPT": "Accept",
-        "GENERAL_ERROR": "An error has occurred. Try again."
+        "GENERAL_ERROR": "An error has occurred. Try again.",
+        "ORDERS_CONFIRMED": "You have orders confirmed!",
+        "ORDERS_CONFIRMED_MSG": "Tell a waiter/waitress that you will leave the establishment to cancel your orders"
     },
     "EXIT_TABLE_CONFIRM": {
         "CUSTOMER": "Customer",
