@@ -35,10 +35,6 @@
     color: #D50000;
 }
 
-.price-button {
-    color: #3d4247;
-}
-
 .color-button-icon {
     color: white;
 }
@@ -47,14 +43,17 @@ mat-tab-group {
     width: 348px;
 }
 
-@media only screen and (max-width: 480px){
-    .custom-cards {
-        width: 80% !important;
-    }
-}
-
 @media only screen and (min-width: 481px){
     .custom-cards{
         width: 240px !important;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    mat-card.item-consumer {
+        display: inline-block; 
+        margin: 0 20px 20px 0 !important;
+        width: 230px;
+        vertical-align: top;
     }
 }

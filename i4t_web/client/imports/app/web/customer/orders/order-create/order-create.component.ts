@@ -56,6 +56,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     private _categories: Observable<Category[]>;
     private _subcategories: Observable<Subcategory[]>;
     private _items: Observable<Item[]>;
+    private _itemsRecommended: Observable<Item[]>;
     private _itemDetail: Observable<Item[]>;
     private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
@@ -120,6 +121,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
         this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
+                this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
             });
         });
         this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.SELECTING']).subscribe(() => { });
@@ -252,12 +254,16 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * @param {any} _any 
      */
     evaluateId(_any: any): void {
+        this._items = null;
+        this._itemsRecommended = null;
         if (_any.type === 'Se') {
             this._items = Items.find({ sectionId: { $in: ['' + _any.id + ''] } }).zone();
         } else if (_any.type === 'Ca') {
             this._items = Items.find({ categoryId: { $in: ['' + _any.id + ''] } }).zone();
         } else if (_any.type === 'Sub') {
             this._items = Items.find({ subcategoryId: { $in: ['' + _any.id + ''] } }).zone();
+        } else if (_any.type === 're') {
+            this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
         } else if (_any.type === 'Ad') {
             this.showAllItems();
             this._additionsDetailFormGroup.reset();
@@ -271,6 +277,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      */
     showAllItems(): void {
         this._items = Items.find({}).zone();
+        this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
     }
 
     /**

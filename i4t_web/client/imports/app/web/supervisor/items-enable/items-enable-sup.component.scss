@@ -30,6 +30,7 @@
 }
 
 .mdc-card__primary {
+    width: calc(100% - 120px);
     padding: 0 24px 24px 0;
     overflow: hidden;
 }
