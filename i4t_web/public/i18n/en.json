@@ -800,7 +800,8 @@
         "ADDITON_AGGREGATED": "Addition added succesfully",
         "SEARCH_MENU": "Search menu",
         "RECOMMENDED" : "Recommended",
-        "REWARD": "Reward"
+        "REWARD": "Reward",
+        "POINTS":"points"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Table Orders",
