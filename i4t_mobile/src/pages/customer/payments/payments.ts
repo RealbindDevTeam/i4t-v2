@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription, Observable } from 'rxjs';
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.model';
@@ -22,8 +22,8 @@ import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.
 export class PaymentsPage implements OnInit, OnDestroy {
 
   private _userDetailsSub: Subscription;
-  private _restaurantSub: Subscription;
-  private _currentRestaurant: any;
+  private _establishmentSub: Subscription;
+  private _currentEstablishment: any;
   private _userLang: string;
   private _currentTable: string;
   private _showPaymentInfo: boolean = false;
@@ -56,9 +56,9 @@ export class PaymentsPage implements OnInit, OnDestroy {
         this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
         this._lUserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
         if (this._lUserDetail) {
-          this._restaurantSub = MeteorObservable.subscribe('getRestaurantByCurrentUser', Meteor.userId()).subscribe(() => {
+          this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).subscribe(() => {
             this._ngZone.run(() => {
-              this._currentRestaurant = Restaurants.findOne({ _id: this._lUserDetail.current_restaurant });
+              this._currentEstablishment = Establishments.findOne({ _id: this._lUserDetail.current_establishment });
               this._currentTable = this._lUserDetail.current_table;
               this.validateUser();
               this._userDetails.subscribe(() => { this.validateUser() });
@@ -74,7 +74,7 @@ export class PaymentsPage implements OnInit, OnDestroy {
 
   validateUser(): void {
     let _user: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-    _user.current_restaurant !== '' && _user.current_table !== '' ? this._showPaymentInfo = true : this._showPaymentInfo = false;
+    _user.current_establishment !== '' && _user.current_table !== '' ? this._showPaymentInfo = true : this._showPaymentInfo = false;
   }
 
   /**
@@ -87,9 +87,9 @@ export class PaymentsPage implements OnInit, OnDestroy {
         this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
         this._lUserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
         if (this._lUserDetail) {
-          this._restaurantSub = MeteorObservable.subscribe('getRestaurantByCurrentUser', Meteor.userId()).subscribe(() => {
+          this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).subscribe(() => {
             this._ngZone.run(() => {
-              this._currentRestaurant = Restaurants.findOne({ _id: this._lUserDetail.current_restaurant });
+              this._currentEstablishment = Establishments.findOne({ _id: this._lUserDetail.current_establishment });
               this._currentTable = this._lUserDetail.current_table;
               this.validateUser();
               this._userDetails.subscribe(() => { this.validateUser() });
@@ -122,7 +122,7 @@ export class PaymentsPage implements OnInit, OnDestroy {
    */
   removeSubscriptions(): void {
     if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-    if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
+    if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
   }
 
 }

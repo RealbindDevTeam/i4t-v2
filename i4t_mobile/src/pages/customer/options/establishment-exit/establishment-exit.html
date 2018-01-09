@@ -15,14 +15,14 @@
     </div>
 
     <div *ngIf="_res_code !== '' && _table_code !== ''">
-        <div *ngIf="_restaurant">
+        <div *ngIf="_establishment">
             <div id="res-logo">
-                <img *ngIf="_restaurant.image" src="{{_restaurant.image.url}}">
-                <img *ngIf="!_restaurant.image" src="assets/img/default-restaurant.png">
+                <img *ngIf="_establishment.image" src="{{_establishment.image.url}}">
+                <img *ngIf="!_establishment.image" src="assets/img/default-restaurant.png">
             </div>
             <ion-card>
                 <ion-card-content>
-                    <h1>{{_restaurant.name}}</h1>
+                    <h1>{{_establishment.name}}</h1>
                     <h2>{{'MOBILE.ORDERS.TABLE' | translate}} {{_table?._number}}</h2>
                 </ion-card-content>
             </ion-card>
@@ -45,5 +45,5 @@
 </ion-content>
 
 <ion-footer padding>
-    <button *ngIf="_res_code !== '' && _table_code !== ''" ion-button block outline (click)="exitRestaurant()">{{'MOBILE.RESTAURANT_EXIT.EXIT_MSG' | translate}}</button>
+    <button *ngIf="_res_code !== '' && _table_code !== ''" ion-button block outline (click)="exitEstablishment()">{{'MOBILE.RESTAURANT_EXIT.EXIT_MSG' | translate}}</button>
 </ion-footer>

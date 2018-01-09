@@ -35,7 +35,7 @@ export class ItemCardWaiterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
     this.removeSubscriptions();
-    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this.resCode]).subscribe(() => {
+    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.resCode]).subscribe(() => {
       this._currencyCode = Currencies.collection.find({}).fetch()[0].code + ' ';
     });
   }
@@ -58,19 +58,19 @@ export class ItemCardWaiterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Return Item price by current restaurant
+   * Return Item price by current establishment
    * @param {Item} _pItem 
    */
   getItemPrice(_pItem: Item): number {
-    return _pItem.restaurants.filter(r => r.restaurantId === this.resCode)[0].price;
+    return _pItem.establishments.filter(r => r.establishment_id === this.resCode)[0].price;
   }
 
   /**
   * Function to get item avalaibility 
   */
   getItemAvailability(): boolean {
-    let _itemRestaurant = this.itemIdIn;
-    let aux = _itemRestaurant.restaurants.find(element => element.restaurantId === this.resCode);
+    let _itemEstablishment = this.itemIdIn;
+    let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this.resCode);
     return aux.isAvailable;
   }
 

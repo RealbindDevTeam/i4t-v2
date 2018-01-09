@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs'
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { Payments } from 'i4t_web/both/collections/restaurant/payment.collection';
+import { Payments } from 'i4t_web/both/collections/establishment/payment.collection';
 import { UserLanguageServiceProvider } from '../../../../../../providers/user-language-service/user-language-service';
 
 /*
@@ -21,7 +21,7 @@ export class ColombiaPayInfoPage implements OnInit, OnDestroy {
     
   private _paymentsSubscription : Subscription;
   private _payments             : any;
-  private _restaurantId         : string;
+  private _establishmentId         : string;
   private _tableId              : string;
   private _currency             : string;
 
@@ -37,7 +37,7 @@ export class ColombiaPayInfoPage implements OnInit, OnDestroy {
                public _translate   : TranslateService,
                private _userLanguageService: UserLanguageServiceProvider ){
     _translate.setDefaultLang('en');
-    this._restaurantId = this._navParams.get("restaurant");
+    this._establishmentId = this._navParams.get("establishment");
     this._tableId      = this._navParams.get("table");
     this._currency     = this._navParams.get("currency");
   }
@@ -48,7 +48,7 @@ export class ColombiaPayInfoPage implements OnInit, OnDestroy {
   ngOnInit(){
     this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
     this.removeSubscriptions();
-    this._paymentsSubscription = MeteorObservable.subscribe( 'getUserPaymentsByRestaurantAndTable', Meteor.userId(), this._restaurantId, this._tableId, ['PAYMENT.NO_PAID', 'PAYMENT.PAID'] ).subscribe( () => {
+    this._paymentsSubscription = MeteorObservable.subscribe( 'getUserPaymentsByEstablishmentAndTable', Meteor.userId(), this._establishmentId, this._tableId, ['PAYMENT.NO_PAID', 'PAYMENT.PAID'] ).subscribe( () => {
         this._payments = Payments.find({});
     });
   }

@@ -24,7 +24,7 @@
                     <h3 *ngIf="pay.status === 'PAYMENT.PAID'"    style="font-weight: bold; color: green;">{{'MOBILE.PAYMENTS.PAYED' | translate}}</h3>
                 </ion-item-divider>
                 
-                <order-detail-pay-info *ngFor="let orderId of pay.orders" [orderId]="orderId" [restaurantId]="_restaurantId" [currency]="_currency"></order-detail-pay-info>
+                <order-detail-pay-info *ngFor="let orderId of pay.orders" [orderId]="orderId" [establishmentId]="_establishmentId" [currency]="_currency"></order-detail-pay-info>
             </ion-card-content>
         </ion-card>
     </div>

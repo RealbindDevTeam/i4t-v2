@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageServiceProvider } from '../../../../../providers/user-language-service/user-language-service';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 import { TabsPage } from '../../../tabs/tabs';
 
 @Component({

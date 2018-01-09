@@ -4,10 +4,10 @@ import { MeteorObservable } from "meteor-rxjs";
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from "rxjs";
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
-import { Table } from 'i4t_web/both/models/restaurant/table.model';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
-import { WaiterCallDetail } from 'i4t_web/both/models/restaurant/waiter-call-detail.model';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
+import { Table } from 'i4t_web/both/models/establishment/table.model';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
+import { WaiterCallDetail } from 'i4t_web/both/models/establishment/waiter-call-detail.model';
 import { Users } from 'i4t_web/both/collections/auth/user.collection';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
 
@@ -50,13 +50,13 @@ export class SendOrderDetailsPage implements OnInit, OnDestroy {
         this._orderSubscription = MeteorObservable.subscribe( 'getOrderById', this._call.order_id ).subscribe( () => {
             this._orders = Orders.find({});
         });
-        this._usersSubscription = MeteorObservable.subscribe('getUserByTableId', this._call.restaurant_id, this._call.table_id ).subscribe();
-        this._tablesSubscription = MeteorObservable.subscribe( 'getTablesByRestaurant', this._call.restaurant_id ).subscribe( () => {
+        this._usersSubscription = MeteorObservable.subscribe('getUserByTableId', this._call.establishment_id, this._call.table_id ).subscribe();
+        this._tablesSubscription = MeteorObservable.subscribe( 'getTablesByEstablishment', this._call.establishment_id ).subscribe( () => {
             let _lTable : Table = Tables.collection.find( { _id : this._call.table_id } ).fetch()[0];
             this._tableNumber = _lTable._number + '';
             this._tableQRCode = _lTable.QR_code;
         });
-        this._additionsSubscription = MeteorObservable.subscribe('additionsByRestaurant', this._call.restaurant_id).subscribe();
+        this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._call.establishment_id).subscribe();
     }
 
     /**

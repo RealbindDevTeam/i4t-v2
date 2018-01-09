@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { Order, OrderItem } from 'i4t_web/both/models/restaurant/order.model';
+import { Order, OrderItem } from 'i4t_web/both/models/establishment/order.model';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription } from 'rxjs';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
-import { ItemRestaurant } from 'i4t_web/both/models/menu/item.model';
+import { ItemEstablishment } from 'i4t_web/both/models/menu/item.model';
 
 @Component({
     selector: 'order-item-detail',
@@ -53,7 +53,7 @@ export class OrderItemDetailComponent implements OnInit, OnDestroy {
     getItemAvailability(itemId: string): boolean {
         let _item = Items.find().fetch().filter((i) => i._id === itemId)[0];
         if( _item ){
-            return ( _item.restaurants.filter( r => r.restaurantId === this.resCode )[0] ).isAvailable;
+            return ( _item.establishments.filter( r => r.establishment_id === this.resCode )[0] ).isAvailable;
         }
     }
 

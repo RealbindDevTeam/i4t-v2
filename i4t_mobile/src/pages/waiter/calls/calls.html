@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-    <ion-list *ngFor="let _res of _restaurants | async" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
+    <ion-list *ngFor="let _res of _establishments | async" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
         <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
             <ion-thumbnail item-left>
                 <img *ngIf="_res.image" src="{{ _res.image.url }}">

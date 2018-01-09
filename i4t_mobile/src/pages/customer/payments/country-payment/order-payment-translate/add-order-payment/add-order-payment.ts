@@ -3,7 +3,7 @@ import { AlertController, LoadingController, NavParams, ToastController } from '
 import { MeteorObservable } from 'meteor-rxjs'
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { UserLanguageServiceProvider } from '../../../../../../providers/user-language-service/user-language-service';
 
@@ -24,7 +24,7 @@ export class AddOrderPaymentPage implements OnInit, OnDestroy {
   private _itemsSubscription            : Subscription;
   private _ordersTable   : any;
   private _items         : any;
-  private _restaurantId  : string;
+  private _establishmentId  : string;
   private _tableId       : string;
   private _currency      : string;
   private _currentUserId : string;
@@ -46,7 +46,7 @@ export class AddOrderPaymentPage implements OnInit, OnDestroy {
               private _toastCtrl  : ToastController,
               private _userLanguageService: UserLanguageServiceProvider) {
     _translate.setDefaultLang('en');
-    this._restaurantId = this._navParams.get("restaurant");
+    this._establishmentId = this._navParams.get("establishment");
     this._tableId      = this._navParams.get("table");
     this._currency     = this._navParams.get("currency");
     this._currentUserId = Meteor.userId();
@@ -58,12 +58,12 @@ export class AddOrderPaymentPage implements OnInit, OnDestroy {
   ngOnInit(){
     this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
     this.removeSubscriptions();
-    this._ordersSubscription = MeteorObservable.subscribe( 'getOrdersByTableId', this._restaurantId, this._tableId,[ 'ORDER_STATUS.DELIVERED' ] ).subscribe( () => {
+    this._ordersSubscription = MeteorObservable.subscribe( 'getOrdersByTableId', this._establishmentId, this._tableId,[ 'ORDER_STATUS.DELIVERED' ] ).subscribe( () => {
       this._ordersTable = Orders.find( { creation_user: { $not: Meteor.userId() }, status: 'ORDER_STATUS.DELIVERED', 'translateInfo.lastOrderOwner': '',
                                          'translateInfo.markedToTranslate': false, 'translateInfo.confirmedToTranslate': false, toPay : false } ).zone();
     });
 
-    this._itemsSubscription = MeteorObservable.subscribe( 'itemsByRestaurant', this._restaurantId ).subscribe( () => {
+    this._itemsSubscription = MeteorObservable.subscribe( 'itemsByEstablishment', this._establishmentId ).subscribe( () => {
       this._items = Items.find( { } ).zone();
     });
   }

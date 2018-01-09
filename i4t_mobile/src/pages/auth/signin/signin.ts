@@ -85,8 +85,8 @@ export class SigninComponent implements OnInit {
                                     this.insertUserInfo();
                                     this.navCtrl.push(HomeMenu);
                                 } else if (role == "200") {
-                                    MeteorObservable.call('validateRestaurantIsActive').subscribe((_restaruantActive) => {
-                                        if (_restaruantActive) {
+                                    MeteorObservable.call('validateEstablishmentIsActive').subscribe((_establishmenttActive) => {
+                                        if (_establishmenttActive) {
                                             MeteorObservable.call('validateUserIsActive').subscribe((active) => {
                                                 if (active) {
                                                     this.insertUserInfo();
@@ -168,9 +168,9 @@ export class SigninComponent implements OnInit {
                         user_id: Meteor.userId(),
                         role_id: '400',
                         is_active: true,
-                        restaurant_work: '',
+                        establishment_work: '',
                         penalties: [],
-                        current_restaurant: '',
+                        current_establishment: '',
                         current_table: ''
                     });
                 }

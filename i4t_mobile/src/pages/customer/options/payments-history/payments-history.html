@@ -27,7 +27,7 @@
                             <img *ngIf="invoice.pay_method == 'PAYMENT_METHODS.DEBIT_CARD'" src="assets/img/debit-card-payment.png">
                             <img *ngIf="invoice.pay_method == 'PAYMENT_METHODS.ONLINE'" src="assets/img/payment-online.png">
                         </ion-avatar>
-                        <h2>{{invoice.restaurant_name}}</h2>
+                        <h2>{{invoice.establishment_name}}</h2>
                     </ion-item>
                     <ion-item>
                         <p item-start>{{invoice.total_pay}} {{invoice.currency}}</p>
