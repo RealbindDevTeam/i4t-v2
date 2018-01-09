@@ -29,6 +29,7 @@ import './imports/publications/establishment/table';
 import './imports/publications/establishment/order';
 import './imports/publications/establishment/waiter-call';
 import './imports/publications/establishment/invoice';
+import './imports/publications/establishment/reward';
 
 import '../both/methods/menu/item.methods';
 import '../both/methods/auth/collaborators.methods';
