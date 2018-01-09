@@ -37,6 +37,7 @@
     "LOGIN_SYSTEM_OPERATIONS_MSG": "Por favor inicia sesión para realizar operaciones en el sistema",
     "YES": "Sí",
     "NO": "No",
+    "VIEW" : "VER",
     "ORDER_STATUS": {
         "SELECTING": "Seleccionando",
         "CONFIRMED": "Confirmado",
@@ -796,7 +797,8 @@
         "ADD_ADDITION_ORDER": "Agregar adición a la orden",
         "ITEM_AGGREGATED": "Item agregado correctamente",
         "ADDITON_AGGREGATED": "Adición agregada correctamente",
-        "SEARCH_MENU": "Buscar Menú"
+        "SEARCH_MENU": "Buscar Menú",
+        "RECOMMENDED" : "Recomendados"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",

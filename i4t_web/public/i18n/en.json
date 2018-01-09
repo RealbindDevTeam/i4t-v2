@@ -37,6 +37,7 @@
     "LOGIN_SYSTEM_OPERATIONS_MSG": "Please log in to manage system operations",
     "YES": "Yes",
     "NO": "No",
+    "VIEW" : "VIEW",
     "ORDER_STATUS": {
         "SELECTING": "Selecting",
         "CONFIRMED": "Confirmed",
@@ -796,7 +797,8 @@
         "ADD_ADDITION_ORDER": "Add additions to the order",
         "ITEM_AGGREGATED": "Item added successfully",
         "ADDITON_AGGREGATED": "Addition added succesfully",
-        "SEARCH_MENU": "Search menu"
+        "SEARCH_MENU": "Search menu",
+        "RECOMMENDED" : "Recommended"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Table Orders",
