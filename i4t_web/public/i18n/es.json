@@ -156,7 +156,7 @@
         "MODIFY": "Modificar",
         "ACTIVATE": "Activar",
         "INACTIVATE": "Inactivar",
-        "REMOVE" : "Remover",
+        "REMOVE": "Remover",
         "SECTION_CREATED": "Sección creada correctamente",
         "SECTION_EDITED": "Sección editada correctamente",
         "THERE_NOT_RESTAURANTS": "Aún no hay restaurantes registrados",
@@ -165,10 +165,10 @@
         "WARNING": "Advertencia: Tienes ",
         "WARNING_2": "usuarios activos en tus restaurantes",
         "WARNING_3": "Modificar la configuración de una sección podría afectar la experiencia de los usuarios",
-        "REMOVE_TITLE" : "Remover sección",
-        "REMOVE_MSG" : "Deseas remover la sección?",
-        "SECTION_REMOVED" : "Sección removida correctamente",
-        "SECTION_NOT_REMOVED" : "La sección tiene categorias o items, no se ha podido remover"
+        "REMOVE_TITLE": "Remover sección",
+        "REMOVE_MSG": "Deseas remover la sección?",
+        "SECTION_REMOVED": "Sección removida correctamente",
+        "SECTION_NOT_REMOVED": "La sección tiene categorias o items, no se ha podido remover"
     },
     "CATEGORIES": {
         "CATEGORIES_CREATION": "Creación de categorías",
@@ -184,10 +184,10 @@
         "WARNING": "Advertencia: Tienes ",
         "WARNING_2": "usuarios activos en tus restaurantes",
         "WARNING_3": "Modificar la configuración de una categoría podría afectar la experiencia de los usuarios",
-        "REMOVE_TITLE" : "Remover categoría",
-        "REMOVE_MSG" : "Deseas remover la categoría?",
-        "CATEGORY_REMOVED" : "Categoría removida correctamente",
-        "CATEGORY_NOT_REMOVED" : "La categoría tiene subcategorias o items, no se ha podido remover"
+        "REMOVE_TITLE": "Remover categoría",
+        "REMOVE_MSG": "Deseas remover la categoría?",
+        "CATEGORY_REMOVED": "Categoría removida correctamente",
+        "CATEGORY_NOT_REMOVED": "La categoría tiene subcategorias o items, no se ha podido remover"
     },
     "SUBCATEGORIES": {
         "SUBCATEGORY_CREATION": "Creación de subcategorías",
@@ -204,10 +204,10 @@
         "WARNING": "Advertencia: Tienes ",
         "WARNING_2": "usuarios activos en tus restaurantes",
         "WARNING_3": "Modificar la configuración de una subcategoría podría afectar la experiencia de los usuarios",
-        "REMOVE_TITLE" : "Remover subcategoría",
-        "REMOVE_MSG" : "Deseas remover la subcategoría?",
-        "SUBCATEGORY_REMOVED" : "Sucategoría removida correctamente",
-        "SUBCATEGORY_NOT_REMOVED" : "La subcategoría tiene items, no se ha podido remover"
+        "REMOVE_TITLE": "Remover subcategoría",
+        "REMOVE_MSG": "Deseas remover la subcategoría?",
+        "SUBCATEGORY_REMOVED": "Sucategoría removida correctamente",
+        "SUBCATEGORY_NOT_REMOVED": "La subcategoría tiene items, no se ha podido remover"
     },
     "ADDITIONS": {
         "ADDITION_CREATION": "Creación de adiciones",
@@ -230,9 +230,9 @@
         "WARNING": "Advertencia: Tienes ",
         "WARNING_2": "usuarios activos en tus restaurantes",
         "WARNING_3": "Modificar la configuración de una adición podría afectar la experiencia de los usuarios",
-        "REMOVE_TITLE" : "Remover adición",
-        "REMOVE_MSG" : "Deseas remover la adición?",
-        "ADDITION_REMOVED" : "Adición removida correctamente"
+        "REMOVE_TITLE": "Remover adición",
+        "REMOVE_MSG": "Deseas remover la adición?",
+        "ADDITION_REMOVED": "Adición removida correctamente"
     },
     "SETTINGS": {
         "TITTLE": "Ajustes",
@@ -335,9 +335,9 @@
         "WARNING": "Advertencia: Tienes ",
         "WARNING_2": "usuarios activos en tus restaurantes",
         "WARNING_3": "Modificar la configuración de una guarnición podría afectar la experiencia de los usuarios",
-        "REMOVE_TITLE" : "Remover guarnición",
-        "REMOVE_MSG" : "Deseas remover la guarnición?",
-        "GARNISHFOOD_REMOVED" : "Guarnición removida correctamente"
+        "REMOVE_TITLE": "Remover guarnición",
+        "REMOVE_MSG": "Deseas remover la guarnición?",
+        "GARNISHFOOD_REMOVED": "Guarnición removida correctamente"
     },
     "RESTAURANT_REGISTER": {
         "SELECT_COUNTRY": "Selecciona país",
@@ -670,15 +670,16 @@
         "WARNING_3": "Modificar la configuración de un item podría afectar la experiencia de los usuarios",
         "ITEM_CREATED": "Item creado correctamente",
         "CREATION_ERROR": "Se ha presentado un error creando el item. Por favor intenta nuevamente.",
-        "REMOVE" : "REMOVER",
-        "REMOVE_TITLE" : "Remover item",
-        "REMOVE_MSG" : "Deseas remover el item?",
-        "ITEM_REMOVED" : "Item removido correctamente",
-        "REWARD_LABEL":"Asignar puntos de recompensa",
+        "REMOVE": "REMOVER",
+        "REMOVE_TITLE": "Remover item",
+        "REMOVE_MSG": "Deseas remover el item?",
+        "ITEM_REMOVED": "Item removido correctamente",
+        "REWARD_LABEL": "Asignar puntos de recompensa",
         "POINTS_PLACEHOLER": "Puntos",
-        "MENU_RECOMMENDED" : "Menú recomendado",
-        "ESTABLISHMENTS" : "Establecimientos",
-        "RECOMMENDED_CHANGED" : "Recomendación de item modificada"
+        "MENU_RECOMMENDED": "Menú recomendado",
+        "ESTABLISHMENTS": "Establecimientos",
+        "RECOMMENDED_CHANGED": "Recomendación de item modificada",
+        "NO_TIME": "No hay tiempo"
     },
     "ROLE": {
         "ADMINISTRATOR": "Administrador",
@@ -796,7 +797,8 @@
         "ADD_ADDITION_ORDER": "Agregar adición a la orden",
         "ITEM_AGGREGATED": "Item agregado correctamente",
         "ADDITON_AGGREGATED": "Adición agregada correctamente",
-        "SEARCH_MENU": "Buscar Menú"
+        "SEARCH_MENU": "Buscar Menú",
+        "REWARD": "Recompensa"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",

@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog, MatChip } from '@angular/material';
 import { UserLanguageService } from '../../services/general/user-language.service';
 import { Section } from '../../../../../../both/models/menu/section.model';
 import { Sections } from '../../../../../../both/collections/menu/section.collection';
