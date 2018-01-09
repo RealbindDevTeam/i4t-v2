@@ -78,7 +78,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
     this._userLang = navigator.language.split('-')[0];
     _translate.setDefaultLang('en');
     this._currentUserId = Meteor.userId();
-    this._statusArray = ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED', 'ORDER_STATUS.DELIVERED'];
+    this._statusArray = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
 
     this._createdGarnishFood = [];
     this._createAdditions = [];
@@ -155,7 +155,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
               this._garnishFormGroup.controls[gar.name].setValue(true);
             } else {
               let control: FormControl;
-              if (_actualOrder.status !== 'ORDER_STATUS.REGISTERED' || this._orderAux.creation_user !== this._currentUserId) {
+              if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
                 control = new FormControl({ value: true, disabled: true });
               } else {
                 control = new FormControl({ value: true, disabled: false });
@@ -167,7 +167,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
               this._garnishFormGroup.controls[gar.name].setValue(false);
             } else {
               let control: FormControl;
-              if (_actualOrder.status !== 'ORDER_STATUS.REGISTERED' || this._orderAux.creation_user !== this._currentUserId) {
+              if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
                 control = new FormControl({ value: false, disabled: true });
               } else {
                 control = new FormControl({ value: false, disabled: false });
@@ -201,7 +201,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
               this._additionsFormGroup.controls[add.name].setValue(true);
             } else {
               let control: FormControl;
-              if (_actualOrder.status !== 'ORDER_STATUS.REGISTERED' || this._orderAux.creation_user !== this._currentUserId) {
+              if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
                 control = new FormControl({ value: true, disabled: true });
               } else {
                 control = new FormControl({ value: true, disabled: false });
@@ -213,7 +213,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
               this._additionsFormGroup.controls[add.name].setValue(false);
             } else {
               let control: FormControl;
-              if (_actualOrder.status !== 'ORDER_STATUS.REGISTERED' || this._orderAux.creation_user !== this._currentUserId) {
+              if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
                 control = new FormControl({ value: false, disabled: true });
               } else {
                 control = new FormControl({ value: false, disabled: false });
@@ -469,7 +469,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
 
             if ((_lOrder2.items.length == 0) &&
               (_lOrder2.additions.length == 0) &&
-              (_lOrder2.status === 'ORDER_STATUS.REGISTERED')) {
+              (_lOrder2.status === 'ORDER_STATUS.SELECTING')) {
               Orders.update({ _id: _lOrder2._id }, {
                 $set: {
                   status: 'ORDER_STATUS.CANCELED',
@@ -538,7 +538,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       if (aux.isAvailable) {
         let orderAux = Orders.findOne({ _id: this._order_code, creation_user: this._creation_user });
         if (orderAux) {
-          if (orderAux.status === 'ORDER_STATUS.REGISTERED' && orderAux.creation_user === this._currentUserId) {
+          if (orderAux.status === 'ORDER_STATUS.SELECTING' && orderAux.creation_user === this._currentUserId) {
             return true;
           } else {
             return false;

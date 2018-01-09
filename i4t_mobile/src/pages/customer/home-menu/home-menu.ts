@@ -3,17 +3,20 @@ import { App, AlertController, LoadingController, Nav, Platform } from 'ionic-an
 import { TranslateService } from '@ngx-translate/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { InitialComponent } from '../../auth/initial/initial';
 import { HomePage } from '../home/home';
 import { SettingsPage } from '../options/settings/settings';
 import { PaymentsHistoryPage } from '../options/payments-history/payments-history';
-import { TabsPage } from '../tabs/tabs';
 import { Users } from 'i4t_web/both/collections/auth/user.collection';
 import { User } from 'i4t_web/both/models/auth/user.model';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { UserDetail, UserDetailImage } from 'i4t_web/both/models/auth/user-detail.model';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
+import { OrdersPage } from '../orders/orders';
+import { WaiterCallPage } from '../waiter-call/waiter-call';
+import { ChangeTablePage } from '../options/table-change/table-change';
+import { EstablishmentExitPage } from '../options/establishment-exit/establishment-exit';
 
 @Component({
     templateUrl: 'home-menu.html'
@@ -24,9 +27,11 @@ export class HomeMenu implements OnInit, OnDestroy {
     private _userSubscription: Subscription;
     private _userDetailSubscription: Subscription;
     private _user: User;
+    private _userDetail: UserDetail;
+    private _userDetails: Observable<UserDetail[]>;
 
     rootPage: any = HomePage;
-    pages: Array<{ icon: string, title: string, component: any }>;
+    pages: Array<{ icon: string, title: string, component: any, params?: boolean }>;
 
     /**
     * Menu constructor
@@ -49,10 +54,16 @@ export class HomeMenu implements OnInit, OnDestroy {
         this.initializeApp();
         let _lHome = this.itemNameTraduction('MOBILE.HOME-MENU.HOME');
         let _lOrder = this.itemNameTraduction('MOBILE.HOME-MENU.ORDER_RESTAURANT');
+        let _lWaiterCall = this.itemNameTraduction('MOBILE.WAITER_CALL.TITTLE');
+        let _lChangeTable = this.itemNameTraduction('MOBILE.CHANGE_TABLE.TITLE');
+        let _lEstablishmentExit = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.TITLE');
         let _lHistory = this.itemNameTraduction('MOBILE.HOME-MENU.PAYMENTS_HISTORY');
         this.pages = [
             { icon: 'home', title: _lHome, component: HomePage },
-            { icon: 'restaurant', title: _lOrder, component: TabsPage },
+            { icon: 'restaurant', title: _lOrder, component: OrdersPage },
+            { icon: 'hand', title: _lWaiterCall, component: WaiterCallPage },
+            { icon: 'swap', title: _lChangeTable, component: ChangeTablePage, params: true },
+            { icon: 'exit', title: _lEstablishmentExit, component: EstablishmentExitPage, params: true },
             { icon: 'card', title: _lHistory, component: PaymentsHistoryPage }
         ];
     }
@@ -68,7 +79,17 @@ export class HomeMenu implements OnInit, OnDestroy {
                 this._user = Users.findOne({ _id: Meteor.userId() });
             });
         });
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe();
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+            this._ngZone.run(() => {
+                this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
+                this.setUserDetail();
+                this._userDetails.subscribe(() => { this.setUserDetail(); });
+            });
+        });
+    }
+
+    setUserDetail(): void {
+        this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
     }
 
     /**
@@ -138,7 +159,11 @@ export class HomeMenu implements OnInit, OnDestroy {
      * @param page 
      */
     openPage(page) {
-        this.nav.setRoot(page.component);
+        if (page.params) {
+            this.nav.setRoot(page.component, { res_id: this._userDetail.current_establishment, table_id: this._userDetail.current_table });
+        } else {
+            this.nav.setRoot(page.component);
+        }
     }
 
     /**

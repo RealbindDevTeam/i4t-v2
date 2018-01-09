@@ -60,7 +60,7 @@ if (Meteor.isServer) {
       let usr_id_enabled: UserDetail;
 
       data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
-      if (data_detail === undefined && data_detail === null) {
+      if (data_detail === undefined || data_detail === null) {
         Meteor.call('waiterCall', queueName, true, data);
         data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       }

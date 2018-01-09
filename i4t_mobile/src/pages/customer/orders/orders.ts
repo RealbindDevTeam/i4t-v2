@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { App, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { App, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -20,6 +20,7 @@ import { AdditionEditPage } from '../addition-edit/addition-edit';
 import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.model';
+import { Meteor } from 'meteor/meteor';
 
 @Component({
     selector: 'page-orders',
@@ -43,6 +44,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _orderIndex: number = -1;
     private selected: string = "";
     private _currencyCode: string = "";
+    private _toastMsg: string;
 
     private _establishments: any;
     private _establishment: any;
@@ -66,10 +68,11 @@ export class OrdersPage implements OnInit, OnDestroy {
         public alertCtrl: AlertController,
         public _loadingCtrl: LoadingController,
         private _userLanguageService: UserLanguageServiceProvider,
+        private toastCtrl: ToastController,
         private _ngZone: NgZone) {
         _translate.setDefaultLang('en');
         this._currentUserId = Meteor.userId();
-        this._statusArray = ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED'];
+        this._statusArray = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
         this.selected = "all";
     }
 
@@ -217,7 +220,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                 {
                     text: dialog_accept_btn,
                     handler: () => {
-                        if (_order.status === 'ORDER_STATUS.REGISTERED') {
+                        if (_order.status === 'ORDER_STATUS.SELECTING') {
                             Orders.update({ _id: _order._id }, {
                                 $set: {
                                     status: 'ORDER_STATUS.CANCELED', modification_user: Meteor.userId(),
@@ -242,6 +245,7 @@ export class OrdersPage implements OnInit, OnDestroy {
         let dialog_accept_btn = this.itemNameTraduction('MOBILE.ORDERS.YES_ANSWER');
         let alert_not = this.itemNameTraduction('MOBILE.ORDERS.IMPOSSIBLE_CONFIRM');
         let item_not = this.itemNameTraduction('MOBILE.ORDERS.NOT_ITEM_AVAILABLE');
+        let _loadingMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CONFIRM');
 
         let userDetailTmp = UserDetails.collection.findOne({ user_id: Meteor.userId() });
 
@@ -259,7 +263,10 @@ export class OrdersPage implements OnInit, OnDestroy {
                     text: dialog_accept_btn,
                     handler: () => {
                         let _lItemsIsAvailable: boolean = true;
-                        if (_order.status === 'ORDER_STATUS.REGISTERED') {
+                        let loading = this._loadingCtrl.create({
+                            content: _loadingMsg
+                          });
+                        if (_order.status === 'ORDER_STATUS.SELECTING') {
                             let _Items = _order.items;
                             _Items.forEach((item) => {
                                 let _lItem = Items.findOne({ _id: item.itemId });
@@ -269,13 +276,27 @@ export class OrdersPage implements OnInit, OnDestroy {
                                 }
                             });
                             if (_lItemsIsAvailable) {
-                                Orders.update({ _id: _order._id }, {
-                                    $set: {
-                                        status: 'ORDER_STATUS.IN_PROCESS', modification_user: Meteor.userId(),
-                                        modification_date: new Date()
-                                    }
+                                var data: any = {
+                                    establishments: _order.establishment_id,
+                                    tables: _order.tableId,
+                                    user: Meteor.userId(),
+                                    waiter_id: "",
+                                    status: "waiting",
+                                    type: "CUSTOMER_ORDER",
+                                    order_id: _order._id
                                 }
-                                );
+
+                                loading.present();
+
+                                setTimeout(() => {
+                                    MeteorObservable.call('findQueueByEstablishment', data).subscribe(() => {
+                                        Orders.update({ _id: _order._id }, { $set: { status: 'ORDER_STATUS.CONFIRMED', modification_user: Meteor.userId(), modification_date: new Date() } });
+                                        loading.dismiss();
+                                        this.presentToast();
+                                    }, (error) => {
+                                        alert(`Error: ${error}`);
+                                    });
+                                }, 1500);
                                 this._orderIndex = -1;
                             } else {
                                 alert(item_not);
@@ -289,6 +310,20 @@ export class OrdersPage implements OnInit, OnDestroy {
         });
         alertConfirm.present();
     }
+
+    presentToast() {
+        this._toastMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CONFIRMED_MSG');
+        let toast = this.toastCtrl.create({
+          message: this._toastMsg,
+          duration: 1500,
+          position: 'middle'
+        });
+    
+        toast.onDidDismiss(() => {
+        });
+    
+        toast.present();
+      }
 
     goToItemEdit(_itemId: string, _orderItemIndex: number, _order: Order) {
         let loader = this._loadingCtrl.create({

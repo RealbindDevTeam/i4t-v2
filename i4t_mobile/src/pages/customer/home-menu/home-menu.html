@@ -18,7 +18,7 @@
         <ion-list>
             <button menuClose ion-item text-wrap *ngFor="let p of pages" (click)="openPage(p)">
                 <ion-icon item-start [name]="p.icon" style="color: rgba(60, 60, 60, 0.7)"></ion-icon>
-                {{p.title}}
+                {{p.title|translate}}
             </button>
         </ion-list>
     </ion-content>
