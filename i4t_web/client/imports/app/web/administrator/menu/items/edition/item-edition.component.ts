@@ -96,6 +96,11 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
     private titleMsg: string;
     private btnAcceptLbl: string;
 
+    private _rewardEnable: boolean = false;
+    private _rewardPointsArray: any[];
+    private _cookingTimeArray: any[];
+    private _selectedPoints: number;
+
     /**
      * ItemEditionComponent constructor
      * @param {FormBuilder} _formBuilder
@@ -150,6 +155,8 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
             editGarnishFoodQuantity: [this._itemToEdit.garnishFoodQuantity],
             editGarnishFood: this._garnishFormGroup,
             editAdditions: this._additionsFormGroup,
+            editAcceptReward: [this._itemToEdit.has_reward],
+            editRewardValue: [this._itemToEdit.reward_points]
         });
 
         this._itemSection = this._itemToEdit.sectionId;
@@ -164,6 +171,9 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
         this._itemAdditions = this._itemToEdit.additions;
         this._garnishFoodQuantity = this._itemToEdit.garnishFoodQuantity;
         this._itemEstablishments = this._itemToEdit.establishments;
+
+        this._rewardEnable = this._itemToEdit.has_reward;
+        this._selectedPoints = this._itemToEdit.reward_points;
 
         this._establishmentsSelectedCount = this._itemToEdit.establishments.length;
         if (this._itemToEdit.establishments.length > 0) { this._showEstablishments = true }
@@ -275,6 +285,9 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                 if (this._additionList.length === 0) { this._showAddition = false; }
             });
         });
+
+        this._rewardPointsArray = [{ value: 1, label: "1 pt" }, { value: 2, label: "2 pts" }, { value: 3, label: "3 pts" }, { value: 4, label: "4 pts" }, { value: 5, label: "5 pts" },
+        { value: 6, label: "6 pts" }, { value: 7, label: "7 pts" }, { value: 8, label: "8 pts" }, { value: 9, label: "9 pts" }, { value: 10, label: "10 pts" }];
     }
 
     /**
