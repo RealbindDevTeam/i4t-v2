@@ -96,6 +96,11 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
     private titleMsg: string;
     private btnAcceptLbl: string;
 
+    private _rewardEnable: boolean = false;
+    private _rewardPointsArray: any[];
+    private _cookingTimeArray: any[];
+    private _selectedPoints: string;
+
     /**
      * ItemEditionComponent constructor
      * @param {FormBuilder} _formBuilder
@@ -150,6 +155,8 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
             editGarnishFoodQuantity: [this._itemToEdit.garnishFoodQuantity],
             editGarnishFood: this._garnishFormGroup,
             editAdditions: this._additionsFormGroup,
+            editAcceptReward: [this._itemToEdit.has_reward],
+            editRewardValue: [this._itemToEdit.reward_points]
         });
 
         this._itemSection = this._itemToEdit.sectionId;
@@ -164,6 +171,9 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
         this._itemAdditions = this._itemToEdit.additions;
         this._garnishFoodQuantity = this._itemToEdit.garnishFoodQuantity;
         this._itemEstablishments = this._itemToEdit.establishments;
+
+        this._rewardEnable = this._itemToEdit.has_reward;
+        this._selectedPoints = this._itemToEdit.reward_points;
 
         this._establishmentsSelectedCount = this._itemToEdit.establishments.length;
         if (this._itemToEdit.establishments.length > 0) { this._showEstablishments = true }
@@ -275,6 +285,19 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                 if (this._additionList.length === 0) { this._showAddition = false; }
             });
         });
+
+        this._cookingTimeArray = [{ value: "5 min aprox", label: "5 min aprox" }, { value: "15 min aprox", label: "15 min aprox" },
+        { value: "30 min aprox", label: "30 min aprox" }, { value: "45 min aprox", label: "45 min aprox" },
+        { value: "1 h aprox", label: "1 h aprox" }, { value: "1 h 15 min aprox", label: "1 h 15 min aprox" },
+        { value: "1 h 30 min aprox", label: "1 h 30 min aprox" }, { value: "1 h 45 min aprox", label: "1 h 45 min aprox" },
+        { value: "2 h aprox", label: "2 h aprox" }, { value: "+ 2 h aprox", label: "+ 2 h aprox" }];
+
+        this._rewardPointsArray = [{ value: "5", label: "5 pts" }, { value: "10", label: "10 pts" }, { value: "15", label: "15 pts" },
+        { value: "20", label: "20 pts" }, { value: "25", label: "25 pts" }, { value: "30", label: "30 pts" }, { value: "35", label: "35 pts" },
+        { value: "40", label: "40 pts" }, { value: "45", label: "45 pts" }, { value: "50", label: "50 pts" }, { value: "55", label: "55 pts" },
+        { value: "60", label: "60 pts" }, { value: "65", label: "65 pts" }, { value: "70", label: "70 pts" }, { value: "75", label: "75 pts" },
+        { value: "80", label: "80 pts" }, { value: "85", label: "85 pts" }, { value: "90", label: "90 pts" }, { value: "95", label: "95 pts" },
+        { value: "100", label: "100 pts" }];
     }
 
     /**
@@ -321,8 +344,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                     return false;
                 }
             case 2:
-                if (this._itemEditionForm.controls['editName'].valid && this._itemEditionForm.controls['editDescription'].valid
-                    && this._itemEditionForm.controls['editCookingTime'].valid && this._establishmentsSelectedCount > 0) {
+                if (this._itemEditionForm.controls['editName'].valid && this._establishmentsSelectedCount > 0) {
                     return true
                 } else {
                     return false;
@@ -649,6 +671,13 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                 }
             });
 
+            let rewardPointsAux: string;
+            if (this._itemEditionForm.value.editAcceptReward) {
+                rewardPointsAux = this._itemEditionForm.value.editRewardValue
+            } else {
+                rewardPointsAux = "0";
+            }
+
             if (this._editImage) {
                 /* let _lItemImage: ItemImage = Items.findOne({ _id: this._itemToEdit._id }).image;
                 if (_lItemImage) {
@@ -677,7 +706,9 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                         garnishFoodQuantity: this._itemEditionForm.value.editGarnishFoodQuantity,
                         garnishFood: this._edition_garnishFood,
                         additions: this._edition_addition,
-                        isAvailable: this._itemEditionForm.value.editIsAvailable
+                        isAvailable: this._itemEditionForm.value.editIsAvailable,
+                        has_reward: this._itemEditionForm.value.editAcceptReward,
+                        reward_points: rewardPointsAux
                     }
                 });
             } else {
@@ -698,7 +729,9 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                         garnishFoodQuantity: this._itemEditionForm.value.editGarnishFoodQuantity,
                         garnishFood: this._edition_garnishFood,
                         additions: this._edition_addition,
-                        isAvailable: this._itemEditionForm.value.editIsAvailable
+                        isAvailable: this._itemEditionForm.value.editIsAvailable,
+                        has_reward: this._itemEditionForm.value.editAcceptReward,
+                        reward_points: rewardPointsAux
                     }
                 });
             }

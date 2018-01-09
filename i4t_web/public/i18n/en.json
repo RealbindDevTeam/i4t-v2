@@ -679,7 +679,8 @@
         "POINTS_PLACEHOLER": "Points",
         "MENU_RECOMMENDED" : "Menu recommended",
         "ESTABLISHMENTS" : "Establishments",
-        "RECOMMENDED_CHANGED": "Item recommendation changed"
+        "RECOMMENDED_CHANGED": "Item recommendation changed",
+        "NO_TIME": "No time"
     },
     "ROLE": {
         "ADMINISTRATOR": "Administrator",
@@ -798,7 +799,8 @@
         "ITEM_AGGREGATED": "Item added successfully",
         "ADDITON_AGGREGATED": "Addition added succesfully",
         "SEARCH_MENU": "Search menu",
-        "RECOMMENDED" : "Recommended"
+        "RECOMMENDED" : "Recommended",
+        "REWARD": "Reward"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Table Orders",
