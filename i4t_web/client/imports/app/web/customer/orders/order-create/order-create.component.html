@@ -14,7 +14,7 @@
                     </mat-select>
                 </mat-form-field>
 
-                <h3 *ngIf="!(_itemsRecommended | async)?.length <= 0">{{'ORDER_CREATE.RECOMMENDED' | translate}}</h3>
+                <h3 *ngIf="(_itemsRecommended | async)?.length > 0">{{'ORDER_CREATE.RECOMMENDED' | translate}}</h3>
                 <mat-card class="item-consumer" *ngFor="let item of _itemsRecommended | async">
                     <img mat-card-image *ngIf="item.image" src="{{ item.image.url }}" alt="{{item.name}}">
                     <img mat-card-image *ngIf="!item.image" src="/images/default-plate.png" alt="{{item.name}}">
@@ -38,8 +38,8 @@
                     </mat-card-actions>
                 </mat-card>
 
+                <h3 *ngIf="(_items | async)?.length > 0">{{'ORDER_CREATE.MENU' | translate}}</h3>
                 <span *ngFor="let section of _sections | async">
-                    <h3>{{section.name}}</h3>
                     <span *ngFor="let item of _items | async">
                         <ng-template [ngIf]="item.sectionId === section._id && item.categoryId === '' && item.subcategoryId === ''">
                             <mat-card class="item-consumer">

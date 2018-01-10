@@ -25,6 +25,7 @@
           <ion-select [(ngModel)]="selected" interface="action-sheet" (ionChange)="validateSection(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
             class="custom-select">
             <ion-option value="all" selected="true">{{'MOBILE.SECTIONS.ALL' | translate}}</ion-option>
+            <ion-option value="recommended" selected="true">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-option>
             <ion-option *ngFor="let section of _sections | async" value="{{section._id}}">{{section.name}}</ion-option>
             <ion-option *ngIf="_additionsShow" value="addition">{{'MOBILE.SECTIONS.ADDITION' | translate}}</ion-option>
           </ion-select>
@@ -33,13 +34,16 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-label margin-start *ngIf="!(_itemsRecommended | async)?.length <= 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-label>
-  <ion-card *ngFor="let item of _itemsRecommended | async">
-    <ion-card-content>
-      <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
-    </ion-card-content>
-  </ion-card>
+  <ion-label margin-start *ngIf="(_itemsRecommended | async)?.length > 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-label>
+  <div *ngFor="let item of _itemsRecommended | async">
+    <ion-card (click)="goToDetail(item._id)">
+      <ion-card-content>
+        <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
+  <ion-label margin-start *ngIf="(_items | async)?.length > 0">{{'MOBILE.SECTIONS.MENU' | translate}}</ion-label>
   <div *ngFor="let section of _sections | async">
     <div *ngFor="let item of _items | async">
       <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
