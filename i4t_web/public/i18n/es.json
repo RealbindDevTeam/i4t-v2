@@ -800,7 +800,8 @@
         "ADDITON_AGGREGATED": "Adición agregada correctamente",
         "SEARCH_MENU": "Buscar Menú",
         "RECOMMENDED" : "Recomendados",
-        "REWARD": "Recompensa"
+        "REWARD": "Recompensa",
+        "MENU" : "Menú"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",
