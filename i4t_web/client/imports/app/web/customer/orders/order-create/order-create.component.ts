@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
-import { MatSnackBar, MatDialogRef, MatDialog } from '@angular/material';
+import { MatSnackBar, MatDialogRef, MatDialog, _MatListOptionMixinBase } from '@angular/material';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { Section } from '../../../../../../../both/models/menu/section.model';
 import { Sections } from '../../../../../../../both/collections/menu/section.collection';
@@ -76,6 +76,9 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
 
     private _orderMenus: OrderMenu[] = [];
     private orderMenuSetup: OrderMenu[] = [];
+
+    private _finalPoints: number = 0;
+    private _unitRewardPoints: number = 0;
 
     /**
      * OrderCreateComponent Constructor
@@ -291,6 +294,9 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
         this.resetItemDetailVariables();
         this.viewItemDetail('addition-detail', true);
         this.viewItemDetail('item-selected', false);
+        //reward points
+        this._finalPoints = this.getItemPoints(_pItem);
+        this._unitRewardPoints = this.getItemPoints(_pItem);
     }
 
     /**
@@ -299,6 +305,13 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      */
     getItemPrice(_pItem: Item): number {
         return _pItem.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
+    }
+
+    /**
+     * Return Item points by current establishment
+     */
+    getItemPoints(_pItem: Item): number {
+        return Number(_pItem.reward_points);
     }
 
     /**
@@ -347,9 +360,10 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 observations: this._newOrderForm.value.observations,
                 garnishFood: _lGarnishFoodToInsert,
                 additions: _lAdditionsToInsert,
-                paymentItem: this._finalPrice
+                paymentItem: this._finalPrice,
+                reward_points: this._finalPoints
             };
-            MeteorObservable.call('AddItemToOrder', _lOrderItem, this.establishmentId, this.tableQRCode, this.finalPrice).subscribe(() => {
+            MeteorObservable.call('AddItemToOrder', _lOrderItem, this.establishmentId, this.tableQRCode, this.finalPrice, this._finalPoints).subscribe(() => {
                 let _lMessage: string = this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
                 this.snackBar.open(_lMessage, '', {
                     duration: 2500
@@ -441,6 +455,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
         this._lastQuantity = this._quantityCount;
         this._quantityCount += 1;
         this.calculateFinalPriceQuantity();
+        this.calculateFinalPointsQuantity();
     }
 
     /**
@@ -452,6 +467,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             this._quantityCount -= 1;
         }
         this.calculateFinalPriceQuantity();
+        this.calculateFinalPointsQuantity();
     }
 
     /**
@@ -464,6 +480,15 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             this._garnishFormGroup.reset();
             this._additionsFormGroup.reset();
             this._showGarnishFoodError = false;
+        }
+    }
+
+    /**
+     * Calculate final points when item quantity is entered
+     */
+    calculateFinalPointsQuantity(): void {
+        if (Number.isFinite(this.quantityCount)) {
+            this._finalPoints = this._unitRewardPoints * this._quantityCount;
         }
     }
 

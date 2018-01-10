@@ -306,7 +306,8 @@
             "TOAST_MSG": "Item was added successfully",
             "WAIT_QR": "Please wait ...",
             "TIME": "Cooking time:",
-            "ADDITION": "Additions"
+            "ADDITION": "Additions",
+            "RECOMMENDED": "Recommended"
         },
         "ITEM_EDIT": {
             "MODIFY": "Modify",

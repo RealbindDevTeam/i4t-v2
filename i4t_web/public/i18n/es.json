@@ -37,7 +37,7 @@
     "LOGIN_SYSTEM_OPERATIONS_MSG": "Por favor inicia sesión para realizar operaciones en el sistema",
     "YES": "Sí",
     "NO": "No",
-    "VIEW" : "VER",
+    "VIEW": "VER",
     "ORDER_STATUS": {
         "SELECTING": "Seleccionando",
         "CONFIRMED": "Confirmado",
@@ -800,8 +800,11 @@
         "ITEM_AGGREGATED": "Item agregado correctamente",
         "ADDITON_AGGREGATED": "Adición agregada correctamente",
         "SEARCH_MENU": "Buscar Menú",
-        "RECOMMENDED" : "Recomendados",
-        "REWARD": "Recompensa"
+        "RECOMMENDED": "Recomendados",
+        "REWARD": "Recompensa",
+        "POINTS": "puntos",
+        "TOTAL_ITEM_POINTS": "Total",
+        "MENU": "Menú"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",
