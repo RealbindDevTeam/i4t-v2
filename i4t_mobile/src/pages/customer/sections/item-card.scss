@@ -1,4 +1,5 @@
 item-card {
+
     .custom-item-divider {
         color: #000;
         background: #fff;
@@ -21,15 +22,9 @@ item-card {
         margin-top: 10px;
         margin-bottom: 10px;
     }
-
-    .custom-select{
-        max-width: 80%;
-    }
     
     .unavailable-item{
-        color:#D50000; 
-        font-weight: bold; 
-        float: left
+        color: #ef5350;
     }
 
     .custom-fab-ios {
@@ -38,10 +33,19 @@ item-card {
         }
     }
 
-    .custom-paragraph{
-     white-space: normal;
-     height: 34px;
+    .custom-select{
+        max-width: 80%;
     }
 
+    p {
+        white-space: pre;
+    }
+
+    
+}
+
+ion-badge.pts {
+    background-color: #4CAF50;
+    float: right;
 }
 
