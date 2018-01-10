@@ -19,7 +19,7 @@
             </mat-list-item>
         </mat-list>
     </mat-card>
-    
+
     <mat-card mat-cell="12">
         <mat-card-content>
             <div class="card_initial">
@@ -83,7 +83,13 @@
                             <img class="order" src="/images/my-orders.png">
                             <div class="mt-div">
                                 <span class="order-code">{{'ORDER_LIST.ORDERS' | translate}} # {{or.code}}</span>
-                                <span>{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
+                                <span class="order-code">{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
+                                <span>
+                                    <mat-chip-list style="display: inline-block">
+                                        <mat-chip class="cust-color-chip">{{or.total_reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </span>
                                 <span class="app-flex-filler"></span>
                                 <span class="order-status">{{'ORDER_LIST.STATUS' | translate}}: {{or.status | translate}}</span>
                             </div>
@@ -105,6 +111,10 @@
                                                             <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
                                                             <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
                                                         </h5>
+                                                        <mat-chip-list mat-line>
+                                                            <mat-chip class="cust-color-chip">{{it.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                            </mat-chip>
+                                                        </mat-chip-list>
                                                         <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
                                                         <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.SELECTING'" (click)="showOrderItemDetail(it)">
                                                             <mat-icon class="item-icon">mode_edit</mat-icon>
@@ -124,8 +134,11 @@
                                                 <ng-template [ngIf]="addition._id === ad.additionId">
                                                     <mat-list-item>
                                                         <img mat-list-avatar class="custom br" src="/images/default_addition.png">
-                                                        <h4 mat-line>{{addition.name}} <div style="display: inline-block;font-size: smaller;">({{'ORDER_LIST.ADDITION' | translate}})</div></h4>
-                                                        <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{ad.quantity}}</p>
+                                                        <h4 mat-line>{{addition.name}}
+                                                            <div style="display: inline-block;font-size: smaller;">({{'ORDER_LIST.ADDITION' | translate}})</div>
+                                                        </h4>
+                                                        <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}}
+                                                            - {{'ORDER_LIST.QUANT' | translate}} {{ad.quantity}}</p>
                                                         <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.SELECTING'" (click)="showAdditionsDetail(ad)">
                                                             <mat-icon class="item-icon">mode_edit</mat-icon>
                                                         </button>
@@ -150,7 +163,13 @@
                             <img class="order" src="/images/others-orders.png">
                             <div class="mt-div">
                                 <span class="order-code">{{'ORDER_LIST.ORDERS' | translate}} # {{or.code}}</span>
-                                <span>{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
+                                <span class="order-code">{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
+                                <span>
+                                    <mat-chip-list style="display: inline-block">
+                                        <mat-chip class="cust-color-chip">{{or.total_reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </span>
                                 <span class="app-flex-filler"></span>
                                 <span class="order-status">{{'ORDER_LIST.STATUS' | translate}}: {{or.status | translate}}</span>
                             </div>
@@ -171,6 +190,10 @@
                                                         <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
                                                         <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
                                                     </h5>
+                                                    <mat-chip-list mat-line>
+                                                        <mat-chip class="cust-color-chip">{{it.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                        </mat-chip>
+                                                    </mat-chip-list>
                                                     <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
                                                     <button mat-icon-button (click)="showOrderItemDetail(it)">
                                                         <mat-icon class="item-icon">visibility</mat-icon>
@@ -186,8 +209,11 @@
                                                 <ng-template [ngIf]="addition._id === ad.additionId">
                                                     <mat-list-item>
                                                         <img mat-list-avatar class="custom br" src="/images/default_addition.png">
-                                                        <h4 mat-line>{{addition.name}} <div class="addition-message">({{'ORDER_LIST.ADDITION' | translate}})</div></h4>
-                                                        <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{ad.quantity}}</p>
+                                                        <h4 mat-line>{{addition.name}}
+                                                            <div class="addition-message">({{'ORDER_LIST.ADDITION' | translate}})</div>
+                                                        </h4>
+                                                        <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}}
+                                                            - {{'ORDER_LIST.QUANT' | translate}} {{ad.quantity}}</p>
                                                     </mat-list-item>
                                                     <mat-divider class="divider"></mat-divider>
                                                 </ng-template>
@@ -261,7 +287,10 @@
                                                         <p *ngFor="let garnish of _garnishFoodCol | async">
                                                             <span *ngFor="let gar of item.garnishFood">
                                                                 <ng-template [ngIf]="garnish._id === gar">
-                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="garnish._id" (change)="calculateFinalPriceGarnishFood($event, garnish)" [class.invalid]="!_editOrderItemForm.controls.garnishFood.valid">{{ getGarnishFoodInformation(garnish) }} {{_currencyCode}}<div class="inline-block"> x {{_quantityCount}}</div></mat-checkbox> 
+                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="garnish._id" (change)="calculateFinalPriceGarnishFood($event, garnish)"
+                                                                        [class.invalid]="!_editOrderItemForm.controls.garnishFood.valid">{{ getGarnishFoodInformation(garnish) }} {{_currencyCode}}
+                                                                        <div class="inline-block"> x {{_quantityCount}}</div>
+                                                                    </mat-checkbox>
                                                                 </ng-template>
                                                             </span>
                                                         </p>
@@ -275,7 +304,11 @@
                                                         <p *ngFor="let addition of _additions | async">
                                                             <span *ngFor="let add of item.additions">
                                                                 <ng-template [ngIf]="addition._id === add">
-                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="addition._id" (change)="calculateFinalPriceAddition($event, addition)" [class.invalid]="!_editOrderItemForm.controls.additions.valid">{{ getAdditionInformation(addition) }} {{_currencyCode}}<div class="inline-block"> x {{_quantityCount}}</div></mat-checkbox> 
+                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="addition._id" (change)="calculateFinalPriceAddition($event, addition)"
+                                                                        [class.invalid]="!_editOrderItemForm.controls.additions.valid">{{ getAdditionInformation(addition) }} {{_currencyCode}}
+                                                                        <div class="inline-block">
+                                                                            x {{_quantityCount}}</div>
+                                                                    </mat-checkbox>
                                                                 </ng-template>
                                                             </span>
                                                         </p>
