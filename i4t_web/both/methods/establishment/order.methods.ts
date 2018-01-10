@@ -13,7 +13,7 @@ if (Meteor.isServer) {
          * @param {OrderItem} _itemToInsert
          * @param {string} _tableQRCode
          */
-        AddItemToOrder: function (_itemToInsert: OrderItem, _establishmentId: string, _tableQRCode: string, _finalPrice: number) {
+        AddItemToOrder: function (_itemToInsert: OrderItem, _establishmentId: string, _tableQRCode: string, _finalPrice: number, _finalPoints: number) {
 
             let _lTable: Table = Tables.collection.findOne({ QR_code: _tableQRCode });
 
@@ -26,6 +26,7 @@ if (Meteor.isServer) {
 
             if (_lOrder) {
                 let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_itemToInsert.paymentItem.toString());
+                let _lTotalPointsAux: number = Number.parseInt(_lOrder.total_reward_points.toString()) + Number.parseInt(_itemToInsert.reward_points.toString());
                 Orders.update({
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
@@ -45,7 +46,8 @@ if (Meteor.isServer) {
                             modification_user: Meteor.userId(),
                             modification_date: new Date(),
                             totalPayment: _lTotalPaymentAux,
-                            orderItemCount: _lOrder.orderItemCount + 1
+                            orderItemCount: _lOrder.orderItemCount + 1,
+                            total_reward_points: _lTotalPointsAux
                         }
                     }
                 );
@@ -65,7 +67,8 @@ if (Meteor.isServer) {
                     items: [_itemToInsert],
                     totalPayment: _finalPrice,
                     orderItemCount: 1,
-                    additions: []
+                    additions: [],
+                    total_reward_points: _finalPoints
                 });
             }
         },
@@ -134,7 +137,7 @@ if (Meteor.isServer) {
          * @param {string} _tableQRCode
          * @param {number} _AdditionsPrice
          */
-        AddAdditionsToOrder: function ( _additionsToInsert: OrderAddition[], _establishmentId: string, _tableQRCode: string, _AdditionsPrice: number ) {
+        AddAdditionsToOrder: function (_additionsToInsert: OrderAddition[], _establishmentId: string, _tableQRCode: string, _AdditionsPrice: number) {
             let _lTable: Table = Tables.collection.findOne({ QR_code: _tableQRCode });
 
             let _lOrder: Order = Orders.collection.findOne({
@@ -143,9 +146,9 @@ if (Meteor.isServer) {
                 tableId: _lTable._id,
                 status: 'ORDER_STATUS.SELECTING'
             });
-            if ( _lOrder ) {
-                let _lTotalPaymentAux: number = Number.parseInt( _lOrder.totalPayment.toString() ) + Number.parseInt( _AdditionsPrice.toString() );
-                let _lAdditions:OrderAddition[] = Meteor.call('compareAdditionsToInsert', _additionsToInsert, _lOrder );
+            if (_lOrder) {
+                let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_AdditionsPrice.toString());
+                let _lAdditions: OrderAddition[] = Meteor.call('compareAdditionsToInsert', _additionsToInsert, _lOrder);
 
                 Orders.update({
                     creation_user: Meteor.userId(),
@@ -182,8 +185,8 @@ if (Meteor.isServer) {
                 });
             }
         },
-        
-        AddAdditionsToOrder2: function ( _additionsToInsert: OrderAddition[], _establishmentId: string, _tableId: string, _AdditionsPrice: number ) {
+
+        AddAdditionsToOrder2: function (_additionsToInsert: OrderAddition[], _establishmentId: string, _tableId: string, _AdditionsPrice: number) {
             let _lTable: Table = Tables.collection.findOne({ _id: _tableId });
 
             let _lOrder: Order = Orders.collection.findOne({
@@ -192,9 +195,9 @@ if (Meteor.isServer) {
                 tableId: _lTable._id,
                 status: 'ORDER_STATUS.SELECTING'
             });
-            if ( _lOrder ) {
-                let _lTotalPaymentAux: number = Number.parseInt( _lOrder.totalPayment.toString() ) + Number.parseInt( _AdditionsPrice.toString() );
-                let _lAdditions:OrderAddition[] = Meteor.call('compareAdditionsToInsert', _additionsToInsert, _lOrder );
+            if (_lOrder) {
+                let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_AdditionsPrice.toString());
+                let _lAdditions: OrderAddition[] = Meteor.call('compareAdditionsToInsert', _additionsToInsert, _lOrder);
 
                 Orders.update({
                     creation_user: Meteor.userId(),
@@ -235,21 +238,21 @@ if (Meteor.isServer) {
          * This function compare additions to insert and create new array
          * @param {OrderAddition[]} _pAdditionsToInsert 
          */
-        compareAdditionsToInsert: function( _pAdditionsToInsert:OrderAddition[], _pOrder:Order ):OrderAddition[]{
-            let _lAdditionsToReturn:OrderAddition[] = _pOrder.additions;
+        compareAdditionsToInsert: function (_pAdditionsToInsert: OrderAddition[], _pOrder: Order): OrderAddition[] {
+            let _lAdditionsToReturn: OrderAddition[] = _pOrder.additions;
 
-            _pAdditionsToInsert.forEach( ( addToInsert ) => {
-                _lAdditionsToReturn.forEach( ( addToReturn ) => {
-                    if( addToInsert.additionId === addToReturn.additionId ){
+            _pAdditionsToInsert.forEach((addToInsert) => {
+                _lAdditionsToReturn.forEach((addToReturn) => {
+                    if (addToInsert.additionId === addToReturn.additionId) {
                         addToReturn.quantity = addToReturn.quantity + addToInsert.quantity;
-                        addToReturn.paymentAddition = addToReturn.paymentAddition + addToInsert.paymentAddition;                
+                        addToReturn.paymentAddition = addToReturn.paymentAddition + addToInsert.paymentAddition;
                     }
                 });
-            });        
+            });
 
-            _pAdditionsToInsert.forEach( ( addToInsert ) => {
-                if( _lAdditionsToReturn.filter( ad => ad.additionId === addToInsert.additionId ).length === 0 ){
-                    _lAdditionsToReturn.push( addToInsert );
+            _pAdditionsToInsert.forEach((addToInsert) => {
+                if (_lAdditionsToReturn.filter(ad => ad.additionId === addToInsert.additionId).length === 0) {
+                    _lAdditionsToReturn.push(addToInsert);
                 }
             });
             return _lAdditionsToReturn;

@@ -229,6 +229,13 @@
                                 </form>
                             </div>
                             <h3>{{'ORDER_CREATE.TOTAL_PRICE' | translate}}: {{ _finalPrice }} {{_currencyCode}}</h3>
+                            <div>
+                                <mat-chip-list *ngIf="itemDet.has_reward" style="display: inline-block">
+                                    <mat-chip class="cust-color-chip">{{_finalPoints}} {{'ORDER_CREATE.POINTS' | translate}}
+                                        <mat-icon>star</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </div>
                             <button *ngIf="getItemAvailability(itemDet._id)" mat-button class="primary-button" [disabled]="!_newOrderForm.valid || _showGarnishFoodError"
                                 (click)="AddItemToOrder(itemDet._id)">{{'ORDER_CREATE.ADD_ITEM' | translate}}</button>
                         </div>

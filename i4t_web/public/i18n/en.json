@@ -801,7 +801,8 @@
         "SEARCH_MENU": "Search menu",
         "RECOMMENDED" : "Recommended",
         "REWARD": "Reward",
-        "POINTS":"points"
+        "POINTS":"points",
+        "TOTAL_ITEM_POINTS": "Total"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Table Orders",

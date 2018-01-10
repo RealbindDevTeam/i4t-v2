@@ -801,7 +801,8 @@
         "SEARCH_MENU": "Buscar Menú",
         "RECOMMENDED" : "Recomendados",
         "REWARD": "Recompensa",
-        "POINTS":"puntos"
+        "POINTS":"puntos",
+        "TOTAL_ITEM_POINTS": "Total"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",
