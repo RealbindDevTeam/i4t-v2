@@ -33,8 +33,14 @@
                             </mat-list-item>
                         </mat-list>
                     </mat-card-content>
-                    <mat-card-actions>
+                    <mat-card-actions align="end">
                         <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
+                        <span class="app-flex-filler"></span>
+                        <mat-chip-list *ngIf="item.has_reward">
+                            <mat-chip class="cust-color-chip">{{item.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                <mat-icon>star</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
                     </mat-card-actions>
                 </mat-card>
 
@@ -60,8 +66,14 @@
                                         </mat-list-item>
                                     </mat-list>
                                 </mat-card-content>
-                                <mat-card-actions>
+                                <mat-card-actions align="end">
                                     <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
+                                    <span class="app-flex-filler"></span>
+                                    <mat-chip-list *ngIf="item.has_reward">
+                                        <mat-chip class="cust-color-chip">{{item.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                            <mat-icon>star</mat-icon>
+                                        </mat-chip>
+                                    </mat-chip-list>
                                 </mat-card-actions>
                             </mat-card>
                         </ng-template>
@@ -158,7 +170,8 @@
                             <img *ngIf="!itemDet.image" src="/images/default-plate.png">
                         </div>
                         <div class="content">
-                            <mat-card-subtitle class="description">{{itemDet.description}}</mat-card-subtitle>
+                            <mat-card-subtitle *ngIf='itemDet.description != ""' class="description">{{itemDet.description}}</mat-card-subtitle>
+                            <mat-card-subtitle *ngIf='itemDet.time != ""' class="description">{{'ORDER_CREATE.COOKING_TIME' | translate}} {{itemDet.time}}</mat-card-subtitle>
                             <mat-card-subtitle class="price">{{'ORDER_CREATE.PRICE' | translate}}: {{ getItemPrice( itemDet ) }} {{_currencyCode}}</mat-card-subtitle>
                             <p *ngIf="!getItemAvailability(itemDet._id)" class="available-button">{{'ORDER_CREATE.ITEM_UNAVAILABLE' | translate}}</p>
                             <div *ngIf="getItemAvailability(itemDet._id)">
@@ -216,6 +229,13 @@
                                 </form>
                             </div>
                             <h3>{{'ORDER_CREATE.TOTAL_PRICE' | translate}}: {{ _finalPrice }} {{_currencyCode}}</h3>
+                            <div>
+                                <mat-chip-list *ngIf="itemDet.has_reward" style="display: inline-block">
+                                    <mat-chip class="cust-color-chip">{{_finalPoints}} {{'ORDER_CREATE.POINTS' | translate}}
+                                        <mat-icon>star</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </div>
                             <button *ngIf="getItemAvailability(itemDet._id)" mat-button class="primary-button" [disabled]="!_newOrderForm.valid || _showGarnishFoodError"
                                 (click)="AddItemToOrder(itemDet._id)">{{'ORDER_CREATE.ADD_ITEM' | translate}}</button>
                         </div>

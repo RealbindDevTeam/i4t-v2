@@ -3,7 +3,7 @@ import { CollectionObject } from '../collection-object.model';
 /**
  * Order Model
  */
-export interface Order extends CollectionObject{
+export interface Order extends CollectionObject {
     establishment_id: string;
     tableId: string;
     code: number;
@@ -12,12 +12,13 @@ export interface Order extends CollectionObject{
     totalPayment: number;
     orderItemCount: number;
     additions: OrderAddition[];
+    total_reward_points?: number;
 }
 
 /**
  * Order Item Model
  */
-export interface OrderItem{
+export interface OrderItem {
     index: number;
     itemId: string;
     quantity: number;
@@ -25,12 +26,13 @@ export interface OrderItem{
     garnishFood: string[];
     additions: string[];
     paymentItem: number;
+    reward_points?: number;
 }
 
 /**
  * Order Addition Model
  */
-export interface OrderAddition{
+export interface OrderAddition {
     additionId: string;
     quantity: number;
     paymentAddition: number;

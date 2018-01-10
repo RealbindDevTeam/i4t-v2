@@ -37,7 +37,7 @@
     "LOGIN_SYSTEM_OPERATIONS_MSG": "Please log in to manage system operations",
     "YES": "Yes",
     "NO": "No",
-    "VIEW" : "VIEW",
+    "VIEW": "VIEW",
     "ORDER_STATUS": {
         "SELECTING": "Selecting",
         "CONFIRMED": "Confirmed",
@@ -157,7 +157,7 @@
         "MODIFY": "Edit",
         "ACTIVATE": "Activate",
         "INACTIVATE": "Inactivate",
-        "REMOVE" : "Remove",
+        "REMOVE": "Remove",
         "SECTION_CREATED": "Section created correctly",
         "SECTION_EDITED": "Section edited correctly",
         "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
@@ -166,10 +166,10 @@
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
         "WARNING_3": "Changing the configuration of the sections could affect the experience of the users",
-        "REMOVE_TITLE" : "Section remove",
-        "REMOVE_MSG" : "Do you want to remove the section?",
-        "SECTION_REMOVED" : "Section removed correctly",
-        "SECTION_NOT_REMOVED" : "The section have categories or items, it could not be removed"
+        "REMOVE_TITLE": "Section remove",
+        "REMOVE_MSG": "Do you want to remove the section?",
+        "SECTION_REMOVED": "Section removed correctly",
+        "SECTION_NOT_REMOVED": "The section have categories or items, it could not be removed"
     },
     "CATEGORIES": {
         "CATEGORIES_CREATION": "Create Categories",
@@ -185,10 +185,10 @@
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
         "WARNING_3": "Changing the configuration of the categories could affect the experience of the users",
-        "REMOVE_TITLE" : "Category remove",
-        "REMOVE_MSG" : "Do you want to remove the category?",
-        "CATEGORY_REMOVED" : "Category removed correctly",
-        "CATEGORY_NOT_REMOVED" : "The category have subcategories or items, it could not be removed"
+        "REMOVE_TITLE": "Category remove",
+        "REMOVE_MSG": "Do you want to remove the category?",
+        "CATEGORY_REMOVED": "Category removed correctly",
+        "CATEGORY_NOT_REMOVED": "The category have subcategories or items, it could not be removed"
     },
     "SUBCATEGORIES": {
         "SUBCATEGORY_CREATION": "Create Subcategories",
@@ -205,10 +205,10 @@
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
         "WARNING_3": "Changing the configuration of the subcategories could affect the experience of the users",
-        "REMOVE_TITLE" : "Subcategory remove",
-        "REMOVE_MSG" : "Do you want to remove the subcategory?",
-        "SUBCATEGORY_REMOVED" : "Subcategory removed correctly",
-        "SUBCATEGORY_NOT_REMOVED" : "The subcategory have items, it could not be removed"
+        "REMOVE_TITLE": "Subcategory remove",
+        "REMOVE_MSG": "Do you want to remove the subcategory?",
+        "SUBCATEGORY_REMOVED": "Subcategory removed correctly",
+        "SUBCATEGORY_NOT_REMOVED": "The subcategory have items, it could not be removed"
     },
     "ADDITIONS": {
         "ADDITION_CREATION": "Create Additions",
@@ -231,9 +231,9 @@
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
         "WARNING_3": "Changing the configuration of the additions could affect the experience of the users",
-        "REMOVE_TITLE" : "Addition remove",
-        "REMOVE_MSG" : "Do you want to remove the addition?",
-        "ADDITION_REMOVED" : "Addition removed correctly"
+        "REMOVE_TITLE": "Addition remove",
+        "REMOVE_MSG": "Do you want to remove the addition?",
+        "ADDITION_REMOVED": "Addition removed correctly"
     },
     "SETTINGS": {
         "TITTLE": "Settings",
@@ -336,9 +336,9 @@
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
         "WARNING_3": "Changing the side dishes configuration could affect the experience of the users",
-        "REMOVE_TITLE" : "Garnishfood remove",
-        "REMOVE_MSG" : "Do you want to remove the garnishfood?",
-        "GARNISHFOOD_REMOVED" : "Garnishfood removed correctly"
+        "REMOVE_TITLE": "Garnishfood remove",
+        "REMOVE_MSG": "Do you want to remove the garnishfood?",
+        "GARNISHFOOD_REMOVED": "Garnishfood removed correctly"
     },
     "RESTAURANT_REGISTER": {
         "SELECT_COUNTRY": "Select Country",
@@ -671,14 +671,14 @@
         "WARNING_3": "Changing the item configuration could affect the experience of the users",
         "ITEM_CREATED": "Item created successfully",
         "CREATION_ERROR": "An error has occurred creating the item. Please try again.",
-        "REMOVE" : "REMOVE",
-        "REMOVE_TITLE" : "Item remove",
-        "REMOVE_MSG" : "Do you want to remove the item?",
-        "ITEM_REMOVED" : "Item removed correctly",
-        "REWARD_LABEL":"Assigning reward points",
+        "REMOVE": "REMOVE",
+        "REMOVE_TITLE": "Item remove",
+        "REMOVE_MSG": "Do you want to remove the item?",
+        "ITEM_REMOVED": "Item removed correctly",
+        "REWARD_LABEL": "Assigning reward points",
         "POINTS_PLACEHOLER": "Points",
-        "MENU_RECOMMENDED" : "Menu recommended",
-        "ESTABLISHMENTS" : "Establishments",
+        "MENU_RECOMMENDED": "Menu recommended",
+        "ESTABLISHMENTS": "Establishments",
         "RECOMMENDED_CHANGED": "Item recommendation changed",
         "NO_TIME": "No time"
     },
@@ -799,9 +799,11 @@
         "ITEM_AGGREGATED": "Item added successfully",
         "ADDITON_AGGREGATED": "Addition added succesfully",
         "SEARCH_MENU": "Search menu",
-        "RECOMMENDED" : "Recommended",
+        "RECOMMENDED": "Recommended",
         "REWARD": "Reward",
-        "MENU" : "Menu"
+        "POINTS": "points",
+        "TOTAL_ITEM_POINTS": "Total",
+        "MENU": "Menu"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Table Orders",
