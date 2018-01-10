@@ -93,10 +93,11 @@
         <ng-template [ngIf]="reward.item_id === item._id">
             <mat-card>
                 <mat-card-title-group>
-                    <mat-card-title>{{reward.item_quantity}} - {{item.name}}</mat-card-title>
-                    <mat-card-subtitle>Puntos necesarios: {{reward.points}} Puntos</mat-card-subtitle>
-                    <img mat-card-sm-image *ngIf="item.image" src="{{ item.image.url }}">
-                    <img mat-card-sm-image *ngIf="!item.image" src="/images/default-plate.png">
+                    <mat-card-title>{{item.name}}</mat-card-title>
+                    <mat-card-subtitle>Cantidad: {{reward.item_quantity}}</mat-card-subtitle>
+                    <mat-chip-list>
+                        <mat-chip style="background-color: #4caf50;color: #fff;">{{reward.points}} Puntos</mat-chip>
+                    </mat-chip-list>
                 </mat-card-title-group>
                 <mat-card-content>
                     <p *ngIf="reward.establishments.length === 0">No se encuentran establecimientos</p>
