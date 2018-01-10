@@ -12,6 +12,7 @@ export interface Order extends CollectionObject{
     totalPayment: number;
     orderItemCount: number;
     additions: OrderAddition[];
+    total_reward_points?: number;
 }
 
 /**
@@ -25,6 +26,7 @@ export interface OrderItem{
     garnishFood: string[];
     additions: string[];
     paymentItem: number;
+    reward_points?: number;
 }
 
 /**
