@@ -1563,5 +1563,29 @@
         "ADDRESS": "Address",
         "READ_MORE": "Read more",
         "READ_LESS": "Read less"
+    },
+    "REWARD": {
+        "THERE_NOT_ESTABLISHMENTS": "There are not establishment register yet",
+        "MESSAGE": "Register at least one establishment to enable this option",
+        "ESTABLISHMENT_REGISTER": "Register Establishment",
+        "MSG_INITIAL": "Make an orderly and easy way to view your menu",
+        "CREATE_NEW_ITEM": "Create new item",
+        "TITLE": "Rewards",
+        "SUBTITLE": "Create the rewards for your consumers. Enter the items you will to grant (units), the item and points needed to redeem the reward",
+        "QUANTITY": "Quantity",
+        "ESTABLISHMENTS": "Select the establishments where the reward is available",
+        "NO_ESTABLISHMENTS_CREATED": "There are not establishments created on the platform",
+        "POINTS": "Points",
+        "NO_ESTABLISHMENTS": "There are not establishments",
+        "MODIFY": "MODIFY",
+        "REMOVE": "REMOVE",
+        "SELECT_ITEM": "Select item",
+        "SELECT_POINTS": "Select points",
+        "REWARD_CREATED": "Reward created",
+        "REMOVE_TITLE": "Remove reward",
+        "REMOVE_MSG": "Do you want to remove the reward?",
+        "REWARD_REMOVED": "Reward removed",
+        "EDIT_REWARD": "Reward Edition",
+        "REWARD_EDITED": "Reward edited"
     }
 }

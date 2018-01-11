@@ -1,0 +1,26 @@
+<mat-card class="reward-edit">
+    <mat-card-title>{{'REWARD.EDIT_REWARD' | translate}}</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="_editRewardForm" (ngSubmit)="editReward();">
+            <p class="item">{{_itemName}} - {{'REWARD.QUANTITY' | translate}}: {{ _quantityCount }}</p>
+            <mat-form-field class="points">
+                <mat-select formControlName="points" placeholder="{{'REWARD.SELECT_POINTS' | translate}}">
+                    <mat-option *ngFor="let point of _points | async" value="{{point._id}}" ng-selected="_pointValue == point._id"> {{point.point}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-slide-toggle formControlName="isActive" class="active">{{'STATE' | translate}}</mat-slide-toggle>
+            <div>
+                <p>{{'REWARD.ESTABLISHMENTS' | translate}}</p>
+                <div formGroupName="establishments">
+                    <div *ngFor="let establishment of _establishments | async">
+                        <mat-checkbox [formControlName]="establishment._id" [class.invalid]="!_editRewardForm.controls.establishments.valid">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <button mat-raised-button class="secondary-button" type="button" (click)="_dialogRef.close()">{{'CANCEL' | translate}}</button>
+            <button mat-raised-button class="primary-button" [disabled]="!_editRewardForm.valid" type="submit">{{'UPDATE' | translate}}</button>
+        </form>
+    </mat-card-content>
+</mat-card>

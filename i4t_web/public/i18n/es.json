@@ -1563,5 +1563,29 @@
         "ADDRESS": "Dirección",
         "READ_MORE": "Leer más",
         "READ_LESS": "Leer menos"
+    },
+    "REWARD": {
+        "THERE_NOT_ESTABLISHMENTS": "Aún no hay restaurantes registrados",
+        "MESSAGE": "Registra uno para habilitar esta opción",
+        "ESTABLISHMENT_REGISTER": "Registrar restaurante",
+        "MSG_INITIAL": "Implementa una manera ordenada y fácil de visualizar tu menú",
+        "CREATE_NEW_ITEM": "Crear nuevo item",
+        "TITLE": "Recompensas",
+        "SUBTITLE": "Crea las recompensas para tus clientes. Ingresa cuantos items otorgaras (cantidad), el item y los puntos necesarios para redimir la recompensa",
+        "QUANTITY": "Cantidad",
+        "ESTABLISHMENTS": "Selecciona los establecimientos donde se encontrara disponible la recompensa",
+        "NO_ESTABLISHMENTS_CREATED": "No se encuentran establecimientos creados",
+        "POINTS": "Puntos",
+        "NO_ESTABLISHMENTS": "No se encuentran establecimientos",
+        "MODIFY": "MODIFICAR",
+        "REMOVE": "REMOVER",
+        "SELECT_ITEM": "Selecciona un ítem",
+        "SELECT_POINTS": "Selecciona los puntos",
+        "REWARD_CREATED": "Recompensa creada",
+        "REMOVE_TITLE": "Remover Recompensa",
+        "REMOVE_MSG": "Deseas remover la recompensa?",
+        "REWARD_REMOVED": "Recompensa removida",
+        "EDIT_REWARD": "Edición de la Recompensa",
+        "REWARD_EDITED": "Recompensa Editada"
     }
 }
