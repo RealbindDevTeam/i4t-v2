@@ -1,15 +1,7 @@
 page-item-edit {
-    //.toolbar-background {
-    //    background: rgba(255, 255, 255, 0) !important;
-    //}
 
     .card {
         margin: 0 !important;
-    }
-
-    .scroll-content {
-        //margin-top: 0 !important;
-        //margin-bottom: 100px !important;
     }
 
     .crop {
@@ -59,8 +51,6 @@ page-item-edit {
 
     .ion-footer-custom{
         box-shadow: 0 -2px 2px -2px #666 !important;
-        background: whitesmoke;
-        //min-height: 110px;
     }
 
     .item-md .item-button{
@@ -92,5 +82,23 @@ page-item-edit {
 
     .list-ios > .item-block:first-child{
         border-top: none;
+    }
+
+    ion-badge.tb{
+        margin: 12px 0;
+    }
+
+    h2.fc {
+        float: left;
+    }
+
+    div.action {
+        display: flex;
+        width: 100%;
+    }
+
+    button.action{
+        float: right; 
+        width: 50%
     }
 }
