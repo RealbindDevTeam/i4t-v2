@@ -79,7 +79,11 @@ page-orders {
         margin: 0 auto;
     }
 
-    //Portrait: 320x480px 
+    .fn {
+        float: none !important;
+    }
+
+    /*//Portrait: 320x480px 
     @media screen and (max-width: 320px) and (orientation:portrait) {
         .img{
             width: 65%;
@@ -168,6 +172,6 @@ page-orders {
             //    font-size: 6.7rem;
             //}
         }
-    }
+    }*/
 
 }

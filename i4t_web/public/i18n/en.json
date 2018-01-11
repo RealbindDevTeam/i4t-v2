@@ -117,7 +117,11 @@
         "USER_EMAIL_EXISTS": "The username/email already exists, please try again ",
         "ERROR": "An internal error has occurred registering the user",
         "ACCEPT": "Accept",
-        "SUCCESS": "The user has been created successfully"
+        "SUCCESS": "The user has been created successfully",
+        "MALE_GENDER": "Male",
+        "FEMALE_GENDER": "Female",
+        "OTHER_GENDER": "Other",
+        "GENDER_LBL": "Gender"
     },
     "SIGNIN": {
         "EMAIL_USERNAME": "Email/Username",

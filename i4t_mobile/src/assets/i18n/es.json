@@ -299,7 +299,7 @@
             "SAVE_OBS": "Guardar",
             "ITEM_UNAVAILABLE": "En este momento el item no se encuentra disponible para agregar a tu orden",
             "UNIT_PRICE": "Precio unitario: ",
-            "TOTAL": "Precio total: ",
+            "TOTAL": "Total:",
             "MAX_GARNISH": "Por favor selecciona máximo ",
             "SELECT_MAX_VALID": "Se han seleccionado más de ",
             "LOADING_MSG": "Agregando a tu orden ...",

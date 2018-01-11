@@ -75,7 +75,7 @@ img.order {
 
 
 .order-code {
-    margin-right: 1rem;
+    margin-right: 16px;
 }
 
 .order-status {
@@ -119,4 +119,9 @@ mat-tab-group {
 .order-item {
     display: inline-block;
     color: darkgoldenrod;
+}
+
+.cust-color-chip {
+    color: white;
+    background-color: #4CAF50;
 }

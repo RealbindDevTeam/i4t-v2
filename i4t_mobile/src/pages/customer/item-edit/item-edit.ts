@@ -63,6 +63,8 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _additionsFormGroup: FormGroup = new FormGroup({});
   private _currencyCode: string;
   private _currenciesSub: Subscription;
+  private _finalPoints: number = 0;
+  private _unitRewardPoints: number = 0;
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -106,6 +108,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
           this._item = Items.collection.find({ _id: this._item_code }).fetch();
           for (let item of this._item) {
             this._unitPrice = this.getItemPrice(item);
+            this._unitRewardPoints = item.reward_points;
           }
           this._showGarnishFoodError = false;
           this._maxGarnishFoodElements = 0;
@@ -124,6 +127,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
         if (itemOrder.itemId === this._item_code && itemOrder.index === this._item_order_index) {
           this._quantityCount = itemOrder.quantity;
           this._finalPrice = itemOrder.paymentItem;
+          this._finalPoints = itemOrder.reward_points;
           this._garnishFoodElementsCount = itemOrder.garnishFood.length;
 
           if (itemOrder.quantity > 1) {
@@ -281,6 +285,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
     this._letChange = false;
     this._disabledMinusBtn = false;
     this.calculateFinalPriceQuantity();
+    this.calculateFinalPointsQuantity();
   }
 
   removeCount() {
@@ -295,6 +300,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       }
     }
     this.calculateFinalPriceQuantity();
+    this.calculateFinalPointsQuantity();
   }
 
   calculateFinalPriceQuantity() {
@@ -305,6 +311,15 @@ export class ItemEditPage implements OnInit, OnDestroy {
       this._showGarnishFoodError = false;
       this._additionsFormGroup.reset();
       this._garnishFormGroup.reset();
+    }
+  }
+
+  /**
+  * Calculate final points when item quantity is entered
+  */
+  calculateFinalPointsQuantity(): void {
+    if (Number.isFinite(this._quantityCount)) {
+      this._finalPoints = this._unitRewardPoints * this._quantityCount;
     }
   }
 
@@ -380,18 +395,21 @@ export class ItemEditPage implements OnInit, OnDestroy {
       observations: this._observations,
       garnishFood: _lGarnishFoodToInsert,
       additions: _lAdditionsToInsert,
-      paymentItem: this._finalPrice
+      paymentItem: this._finalPrice,
+      reward_points: this._finalPoints
     };
 
     let _lOrder = Orders.findOne({ _id: this._order_code });
     let _lOrderItemToremove = _lOrder.items.filter(o => _lOrderItem.itemId === o.itemId && Number(_lOrderItem.index) === o.index)[0];
     let _lTotalPayment: number = _lOrder.totalPayment - _lOrderItemToremove.paymentItem;
+    let _lTotalPoints: number = _lOrder.total_reward_points - _lOrderItemToremove.reward_points;
 
     Orders.update({ _id: this._order_code }, { $pull: { items: { itemId: this._item_code, index: this._item_order_index } } });
     Orders.update({ _id: this._order_code },
       {
         $set: {
           totalPayment: _lTotalPayment,
+          total_reward_points: _lTotalPoints,
           modification_user: Meteor.userId(),
           modification_date: new Date()
         }
@@ -400,6 +418,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
 
     let _lNewOrder = Orders.findOne({ _id: this._order_code });
     let _lNewTotalPaymentAux: number = Number.parseInt(_lNewOrder.totalPayment.toString()) + Number.parseInt(_lOrderItem.paymentItem.toString());
+    let _lNewTotalPointsAux: number = Number.parseInt(_lNewOrder.total_reward_points.toString()) + Number.parseInt(_lOrderItem.reward_points.toString());
 
     Orders.update({ _id: _lNewOrder._id },
       { $push: { items: _lOrderItem } }
@@ -410,7 +429,8 @@ export class ItemEditPage implements OnInit, OnDestroy {
         $set: {
           modification_user: Meteor.userId(),
           modification_date: new Date(),
-          totalPayment: _lNewTotalPaymentAux
+          totalPayment: _lNewTotalPaymentAux,
+          total_reward_points: _lNewTotalPointsAux
         }
       }
     );
@@ -453,12 +473,14 @@ export class ItemEditPage implements OnInit, OnDestroy {
             let _lOrder = Orders.findOne({ _id: this._order_code });
             let _lOrderItemToremove = _lOrder.items.filter(o => this._item_code === o.itemId && Number(this._item_order_index) === o.index)[0];
             let _lNewTotalPayment: number = _lOrder.totalPayment - _lOrderItemToremove.paymentItem;
+            let _lNewTotalPoints: number = _lOrder.total_reward_points - _lOrderItemToremove.reward_points;
 
             Orders.update({ _id: _lOrder._id }, { $pull: { items: { itemId: this._item_code, index: this._item_order_index } } });
             Orders.update({ _id: _lOrder._id },
               {
                 $set: {
                   totalPayment: _lNewTotalPayment,
+                  total_reward_points: _lNewTotalPoints,
                   modification_user: Meteor.userId(),
                   modification_date: new Date()
                 }
