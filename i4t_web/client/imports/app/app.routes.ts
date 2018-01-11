@@ -53,6 +53,7 @@ import { SupervisorEstablishmentTableControlComponent } from './web/supervisor/e
 //import { InvoicesDownloadPage } from './web/administrator/administration/invoices-download/invoices-download.component';
 import { EstablishmentProfileComponent } from './web/administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './web/customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
+import { RewardComponent } from './web/administrator/rewards/reward/reward.component';
 
 export const routes: Route[] = [
     {
@@ -96,7 +97,8 @@ export const routes: Route[] = [
             //{ path: 'invoices-download', component: InvoicesDownloadPage, canActivate: [AdminGuard] },
             { path: 'establishment-profile', component: EstablishmentProfileComponent, canActivate: [AdminGuard] },
             { path: 'establishment-detail', component: EstablishmentProFileDetailComponent },
-            { path: 'establishment-detail/:param1', component: EstablishmentProFileDetailComponent }
+            { path: 'establishment-detail/:param1', component: EstablishmentProFileDetailComponent },
+            { path: 'rewards', component: RewardComponent, canActivate: [AdminGuard] }            
         ]
     },
     { path: '', component: LandingPageComponent },

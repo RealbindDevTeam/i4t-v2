@@ -82,6 +82,7 @@ import { PaymentPlanInfo } from './auth/payment-plan-info/payment-plan-info.comp
 import { ImageService } from './services/general/image.service';
 import { PayuPaymentService } from './services/payment/payu-payment.service';
 import { Recommended } from './administrator/menu/items/item/recommended/recommended.component';
+import { RewardComponent } from './administrator/rewards/reward/reward.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -138,7 +139,8 @@ export const WEB_DECLARATIONS = [
     SupervisorEstablishmentTableControlComponent,
     //InvoicesDownloadPage,
     EstablishmentProfileComponent,
-    EstablishmentProFileDetailComponent
+    EstablishmentProFileDetailComponent,
+    RewardComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [
