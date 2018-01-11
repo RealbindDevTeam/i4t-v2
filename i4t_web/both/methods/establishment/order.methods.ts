@@ -73,7 +73,7 @@ if (Meteor.isServer) {
             }
         },
 
-        AddItemToOrder2: function (_itemToInsert: OrderItem, _establishmentId: string, _idTable: string, _finalPrice: number) {
+        AddItemToOrder2: function (_itemToInsert: OrderItem, _establishmentId: string, _idTable: string, _finalPrice: number, _finalPoints: number) {
 
             let _lTable: Table = Tables.collection.findOne({ _id: _idTable });
 
@@ -86,6 +86,7 @@ if (Meteor.isServer) {
 
             if (_lOrder) {
                 let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_itemToInsert.paymentItem.toString());
+                let _lTotalPointsAux: number = Number.parseInt(_lOrder.total_reward_points.toString()) + Number.parseInt(_itemToInsert.reward_points.toString());
                 Orders.update({
                     creation_user: Meteor.userId(),
                     establishment_id: _establishmentId,
@@ -105,7 +106,8 @@ if (Meteor.isServer) {
                             modification_user: Meteor.userId(),
                             modification_date: new Date(),
                             totalPayment: _lTotalPaymentAux,
-                            orderItemCount: _lOrder.orderItemCount + 1
+                            orderItemCount: _lOrder.orderItemCount + 1,
+                            total_reward_points: _lTotalPointsAux
                         }
                     }
                 );
@@ -125,7 +127,8 @@ if (Meteor.isServer) {
                     items: [_itemToInsert],
                     totalPayment: _finalPrice,
                     orderItemCount: 1,
-                    additions: []
+                    additions: [],
+                    total_reward_points: _finalPoints
                 });
             }
         },

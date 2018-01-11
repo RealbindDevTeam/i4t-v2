@@ -58,19 +58,21 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   private _currentUserId: string;
   private _currenciesSub: Subscription;
   private _currencyCode: string;
+  private _finalPoints: number = 0;
+  private _unitRewardPoints: number = 0;
 
   private _newOrderForm: FormGroup;
   private _garnishFormGroup: FormGroup = new FormGroup({});
   private _additionsFormGroup: FormGroup = new FormGroup({});
 
-  constructor(public _navCtrl: NavController, 
-              public _navParams: NavParams, 
-              public _modalCtrl: ModalController,
-              public _translate: TranslateService, 
-              public _zone: NgZone, 
-              public _loadingCtrl: LoadingController, 
-              private toastCtrl: ToastController,
-              private _userLanguageService: UserLanguageServiceProvider) {
+  constructor(public _navCtrl: NavController,
+    public _navParams: NavParams,
+    public _modalCtrl: ModalController,
+    public _translate: TranslateService,
+    public _zone: NgZone,
+    public _loadingCtrl: LoadingController,
+    private toastCtrl: ToastController,
+    private _userLanguageService: UserLanguageServiceProvider) {
     _translate.setDefaultLang('en');
     this._currentUserId = Meteor.userId();
     this._statusArray = ['ORDER_STATUS.SELECTING'];
@@ -79,7 +81,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   ionViewDidLoad() { }
 
   ngOnInit() {
-    this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
+    this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
     this._item_code = this._navParams.get("item_id");
     this._res_code = this._navParams.get("res_id");
@@ -96,6 +98,8 @@ export class ItemDetailPage implements OnInit, OnDestroy {
             this._unitPrice = this.getItemPrice(item);
             let aux = item.establishments.find(element => element.establishment_id === this._res_code);
             this._showAddBtn = aux.isAvailable;
+            this._unitRewardPoints = item.reward_points;
+            this._finalPoints = this._unitRewardPoints;
           }
           this._garnishFoodElementsCount = 0;
           this._showGarnishFoodError = false;
@@ -158,6 +162,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
     this._letChange = false;
     this._disabledMinusBtn = false;
     this.calculateFinalPriceQuantity();
+    this.calculateFinalPointsQuantity();
   }
 
   removeCount() {
@@ -172,6 +177,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       }
     }
     this.calculateFinalPriceQuantity();
+    this.calculateFinalPointsQuantity();
   }
 
   calculateFinalPriceQuantity() {
@@ -182,6 +188,15 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       this._showGarnishFoodError = false;
       this._additionsFormGroup.reset();
       this._garnishFormGroup.reset();
+    }
+  }
+
+  /**
+  * Calculate final points when item quantity is entered
+  */
+  calculateFinalPointsQuantity(): void {
+    if (Number.isFinite(this._quantityCount)) {
+      this._finalPoints = this._unitRewardPoints * this._quantityCount;
     }
   }
 
@@ -267,7 +282,8 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       observations: this._observations,
       garnishFood: _lGarnishFoodToInsert,
       additions: _lAdditionsToInsert,
-      paymentItem: this._finalPrice
+      paymentItem: this._finalPrice,
+      reward_points: this._finalPoints
     };
 
     this._loadingMsg = this.itemNameTraduction('MOBILE.SECTIONS.LOADING_MSG');
@@ -280,7 +296,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
     loading.present();
 
     setTimeout(() => {
-      MeteorObservable.call('AddItemToOrder2', _lOrderItem, this._res_code, this._table_code, this._finalPrice).subscribe(() => {
+      MeteorObservable.call('AddItemToOrder2', _lOrderItem, this._res_code, this._table_code, this._finalPrice, this._finalPoints).subscribe(() => {
         loading.dismiss();
         this._navCtrl.pop();
         this.presentToast();
@@ -367,10 +383,10 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   /**
    * Remove all subscriptions
    */
-  removeSubscriptions():void{
-    if( this._itemSub ){ this._itemSub.unsubscribe(); }
-    if( this._additionSub ){ this._additionSub.unsubscribe(); }
-    if( this._garnishSub ){ this._garnishSub.unsubscribe(); }
-    if( this._currenciesSub ){ this._currenciesSub.unsubscribe(); }
+  removeSubscriptions(): void {
+    if (this._itemSub) { this._itemSub.unsubscribe(); }
+    if (this._additionSub) { this._additionSub.unsubscribe(); }
+    if (this._garnishSub) { this._garnishSub.unsubscribe(); }
+    if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
   }
 }

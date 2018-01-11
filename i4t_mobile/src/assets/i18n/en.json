@@ -299,7 +299,7 @@
             "SAVE_OBS": "Save",
             "ITEM_UNAVAILABLE": "At this time the item is not available to add to the order",
             "UNIT_PRICE": "Unit price: ",
-            "TOTAL": "Total price: ",
+            "TOTAL": "Total:",
             "MAX_GARNISH": "Please select max ",
             "SELECT_MAX_VALID": "You have selected more than ",
             "LOADING_MSG": "Adding to order ...",
