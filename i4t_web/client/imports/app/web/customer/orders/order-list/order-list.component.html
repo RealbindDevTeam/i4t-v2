@@ -111,7 +111,7 @@
                                                             <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
                                                             <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
                                                         </h5>
-                                                        <mat-chip-list mat-line>
+                                                        <mat-chip-list mat-line *ngIf="it.reward_points > 0">
                                                             <mat-chip class="cust-color-chip">{{it.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
                                                             </mat-chip>
                                                         </mat-chip-list>
@@ -190,7 +190,7 @@
                                                         <div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div>
                                                         <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
                                                     </h5>
-                                                    <mat-chip-list mat-line>
+                                                    <mat-chip-list mat-line *ngIf="it.reward_points > 0">
                                                         <mat-chip class="cust-color-chip">{{it.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
                                                         </mat-chip>
                                                     </mat-chip-list>
