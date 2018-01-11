@@ -12,7 +12,7 @@ import { AuthClass } from '../auth.class';
 @Component({
     selector: 'signup',
     templateUrl: './signup.web.component.html',
-    styleUrls: [ '../auth.component.scss' ]
+    styleUrls: ['../auth.component.scss']
 })
 export class SignupWebComponent extends AuthClass implements OnInit {
 
@@ -20,6 +20,8 @@ export class SignupWebComponent extends AuthClass implements OnInit {
     private showLoginPassword: boolean = true;
     private showConfirmError: boolean = false;
     private userProfile = new UserProfile();
+    private _genderArray: any[] = [];
+    private _selectedGender: string;
 
     /**
      * SignupWebComponent Constructor
@@ -41,8 +43,13 @@ export class SignupWebComponent extends AuthClass implements OnInit {
             username: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20), CustomValidators.noSpacesValidator]),
             email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(255), CustomValidators.emailValidator]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)])
+            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
+            gender: new FormControl('')
         });
+
+        this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+        { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+        { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
     }
 
     /**

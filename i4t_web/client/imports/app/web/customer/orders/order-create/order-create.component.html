@@ -101,8 +101,14 @@
                                                 </mat-list-item>
                                             </mat-list>
                                         </mat-card-content>
-                                        <mat-card-actions>
+                                        <mat-card-actions align="end">
                                             <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
+                                            <span class="app-flex-filler"></span>
+                                            <mat-chip-list *ngIf="item.has_reward">
+                                                <mat-chip class="cust-color-chip">{{item.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                    <mat-icon>star</mat-icon>
+                                                </mat-chip>
+                                            </mat-chip-list>
                                         </mat-card-actions>
                                     </mat-card>
                                 </ng-template>
@@ -130,8 +136,14 @@
                                                         </mat-list-item>
                                                     </mat-list>
                                                 </mat-card-content>
-                                                <mat-card-actions>
+                                                <mat-card-actions align="end">
                                                     <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
+                                                    <span class="app-flex-filler"></span>
+                                                    <mat-chip-list *ngIf="item.has_reward">
+                                                        <mat-chip class="cust-color-chip">{{item.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                            <mat-icon>star</mat-icon>
+                                                        </mat-chip>
+                                                    </mat-chip-list>
                                                 </mat-card-actions>
                                             </mat-card>
                                         </ng-template>
@@ -230,7 +242,7 @@
                             </div>
                             <h3>{{'ORDER_CREATE.TOTAL_PRICE' | translate}}: {{ _finalPrice }} {{_currencyCode}}</h3>
                             <div>
-                                <mat-chip-list *ngIf="itemDet.has_reward" style="display: inline-block">
+                                <mat-chip-list *ngIf="itemDet.has_reward" style="display: inline-block; margin-bottom: 19px">
                                     <mat-chip class="cust-color-chip">{{_finalPoints}} {{'ORDER_CREATE.POINTS' | translate}}
                                         <mat-icon>star</mat-icon>
                                     </mat-chip>

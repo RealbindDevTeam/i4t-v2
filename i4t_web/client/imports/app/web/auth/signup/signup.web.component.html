@@ -26,14 +26,21 @@
                         <div *ngIf="signupForm.controls['username'].hasError('required') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.REQUIRED_USERNAME' | translate}}</div>
                         <div *ngIf="signupForm.controls['username'].hasError('minlength') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_USERNAME' | translate}}</div>
                         <div *ngIf="signupForm.controls['username'].hasError('maxlength') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_USERNAME' | translate}}</div>
-                        <div *ngIf="signupForm.controls['username'].hasError('invalidNoSpacesValidator') && signupForm.controls['username'].touched" class="error-message">{{'SIGNUP.NO_SPACES' | translate}}</div>
-                        
+                        <div *ngIf="signupForm.controls['username'].hasError('invalidNoSpacesValidator') && signupForm.controls['username'].touched"
+                            class="error-message">{{'SIGNUP.NO_SPACES' | translate}}</div>
+
                         <mat-form-field style="width: 100%">
                             <input matInput formControlName="email" placeholder="{{'EMAIL' | translate}}" name="email" required>
                         </mat-form-field>
                         <div *ngIf="signupForm.controls['email'].hasError('invalidEmailAddress') && signupForm.controls['email'].touched" class="error-message">{{'SIGNUP.REQUIRED_EMAIL' | translate}}</div>
                         <div *ngIf="signupForm.controls['email'].hasError('minlength') && signupForm.controls['email'].touched" class="error-message">{{'SIGNUP.MIN_LENGTH_EMAIL' | translate}}</div>
                         <div *ngIf="signupForm.controls['email'].hasError('maxlength') && signupForm.controls['email'].touched" class="error-message">{{'SIGNUP.MAX_LENGTH_EMAIL' | translate}}</div>
+
+                        <mat-form-field style="width: 100%">
+                            <mat-select formControlName="gender" [(ngModel)]="_selectedGender" placeholder="{{'SIGNUP.GENDER_LBL' | translate}}">
+                                <mat-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                         <mat-form-field style="width: 100%">
                             <input matInput formControlName="password" placeholder="{{'PASSWORD' | translate}}" name="password" required type="password">
@@ -59,7 +66,10 @@
                     </form>
                 </div>
                 <div style="text-align: center; padding-top: 10px">
-                    {{'SIGNUP.ALREADY_ACCOUNT'| translate}} <span class="right-align"><a routerLink="/signin">{{'LANDING.SIGNIN' | translate}}</a></span>
+                    {{'SIGNUP.ALREADY_ACCOUNT'| translate}}
+                    <span class="right-align">
+                        <a routerLink="/signin">{{'LANDING.SIGNIN' | translate}}</a>
+                    </span>
                 </div>
                 <div class="label-legal">
                     {{'SIGNUP.LABEL_LEGAL' | translate}}
