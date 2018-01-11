@@ -282,7 +282,8 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       observations: this._observations,
       garnishFood: _lGarnishFoodToInsert,
       additions: _lAdditionsToInsert,
-      paymentItem: this._finalPrice
+      paymentItem: this._finalPrice,
+      reward_points: this._finalPoints
     };
 
     this._loadingMsg = this.itemNameTraduction('MOBILE.SECTIONS.LOADING_MSG');

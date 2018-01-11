@@ -98,7 +98,7 @@
 
 <ion-footer class="ion-footer-custom" padding align="end">
   <h2 class="fc">{{'MOBILE.SECTIONS.TOTAL' | translate}} {{_finalPrice}} {{_currencyCode}}</h2>
-  <ion-badge class="pts">{{_finalPoints}} pts
+  <ion-badge *ngIf="_finalPoints > 0" class="pts">{{_finalPoints}} pts
     <ion-icon name="star"></ion-icon>
   </ion-badge>
   <button *ngIf="_showAddBtn" ion-button block outline [disabled]="_disabledAddBtn" (click)="addItemToOrder()">{{'MOBILE.SECTIONS.ADD_TO_ORDER' | translate}}</button>

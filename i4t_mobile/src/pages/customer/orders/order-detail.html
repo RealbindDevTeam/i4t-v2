@@ -3,10 +3,12 @@
     <img class="img-cards" *ngIf="!isUser" src="assets/img/others-orders.png" style="width: 50px; height: 50px;">
     <div class="custom-header-title">
         <div class="custom-label">
+            <ion-badge class="pts" *ngIf="order.total_reward_points">{{order.total_reward_points}} pts
+                <ion-icon name="star"></ion-icon>
+            </ion-badge>
             <h2>{{'MOBILE.ORDERS.ORDER' | translate}}{{order.code}}</h2>
             <h2>{{'MOBILE.ORDERS.TOTAL' | translate}}{{order.totalPayment}} {{currencyCode}}</h2>
             <h2>{{'MOBILE.ORDERS.STATUS' | translate}}{{order.status | translate}}</h2>
         </div>
     </div>
-    <ion-icon showWhen="android" name="ios-arrow-forward" style="color: gray; float: right"></ion-icon>
 </div>
