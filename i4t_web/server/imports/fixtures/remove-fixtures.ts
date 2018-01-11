@@ -9,6 +9,8 @@ import { Languages } from '../../../both/collections/general/language.collection
 import { EmailContents } from '../../../both/collections/general/email-content.collection';
 import { Parameters } from '../../../both/collections/general/parameter.collection';
 import { CcPaymentMethods } from '../../../both/collections/payment/cc-payment-methods.collection'
+import { Points } from '../../../both/collections/general/point.collection';
+import { CookingTimes } from '../../../both/collections/general/cooking-time.collection';
 
 export function removeFixtures(){
     /**
@@ -65,4 +67,14 @@ export function removeFixtures(){
      * Remove CcPaymentMethods Collection
      */
     CcPaymentMethods.remove( { } );
+
+    /**
+     * Remove Points Collection
+     */
+    Points.remove( { } );
+
+    /**
+     * Remove CookingTimes Collection
+     */
+    CookingTimes.remove( { } );
 }

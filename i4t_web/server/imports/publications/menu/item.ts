@@ -14,6 +14,15 @@ Meteor.publish('items', function (_userId: string) {
 });
 
 /**
+ * Meteor publication admin active items
+ * @param {string} _userId
+ */
+Meteor.publish('getAdminActiveItems', function (_userId: string) {
+    check(_userId, String);
+    return Items.find({ creation_user: _userId, is_active: true });
+});
+
+/**
  * Meteor publication return items with establishment condition
  */
 Meteor.publish('itemsByEstablishment', function (_establishmentId: string) {

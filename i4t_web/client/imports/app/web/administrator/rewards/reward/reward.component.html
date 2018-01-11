@@ -1,0 +1,127 @@
+<mat-card *ngIf="!_thereAreEstablishments">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/item.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+                    </div>
+                    <div class="card_initial-additional-links">
+                        {{'SECTIONS.MESSAGE' | translate}}
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="_thereAreEstablishments && !_thereAreItems">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/items.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{ 'ITEMS.MSG_INITIAL' | translate }}
+                    </div>
+                    <div class="card_initial-additional-links">
+
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="goToItems()">{{'ITEMS.CREATE_NEW_ITEM' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="_thereAreEstablishments && _thereAreItems">
+    <mat-card-title>Recompensas</mat-card-title>
+    <mat-card-subtitle>Crea las recompensas para tus clientes. Ingresa cuantos items otorgaras (cantidad), el item y los puntos necesarios para
+        redimir la recompensa:</mat-card-subtitle>
+    <mat-card-content>
+        <form [formGroup]="_rewardForm" (ngSubmit)="addReward();">
+            <div style="display: inline-block;margin-right: 1rem;">
+                <button mat-button disabled style="color: black;">Cantidad: {{ _quantityCount }}</button>
+                <button mat-button class="quantity-button" style="display: inline-block" (click)="removeCount()">
+                    <mat-icon>remove</mat-icon>
+                </button>
+                <button mat-button class="quantity-button" style="display: inline-block" (click)="addCount()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+            <mat-form-field style="width: 25%;margin-right: 1rem;">
+                <mat-select formControlName="item" placeholder="Selecciona item">
+                    <mat-option *ngFor="let item of _items | async" value="{{item._id}}"> {{item.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field style="width: 25%;">
+                <mat-select formControlName="points" placeholder="Selecciona los puntos">
+                    <mat-option *ngFor="let point of _points | async" value="{{point._id}}"> {{point.point}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div>
+                <p>Selecciona los establecimientos donde se encontrara disponible la recompensa</p>
+                <p>
+                    <label *ngIf="!_showEstablishments" class="label-field-void">No se encuentran restaurantes creados</label>
+                </p>
+                <div *ngIf="_showEstablishments" formGroupName="establishments">
+                    <div *ngFor="let establishment of _establishments | async">
+                        <mat-checkbox [formControlName]="establishment._id" [class.invalid]="!_rewardForm.controls.establishments.valid">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <button mat-raised-button class="secondary-button" [disabled]="!_rewardForm.valid" type="button" (click)="cancel()">{{'CANCEL' | translate}}</button>
+            <button mat-raised-button class="primary-button" [disabled]="!_rewardForm.valid" type="submit">{{'CREATE' | translate}}</button>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<div *ngFor="let reward of _rewards | async" style="width: 49%;display: inline-block;vertical-align: top;margin-right: 1%;">
+    <div *ngFor="let item of _items | async">
+        <ng-template [ngIf]="reward.item_id === item._id">
+            <mat-card>
+                <mat-card-title-group>
+                    <mat-card-title>{{item.name}}</mat-card-title>
+                    <mat-card-subtitle>Cantidad: {{reward.item_quantity}}</mat-card-subtitle>
+                    <mat-chip-list>
+                        <mat-chip style="background-color: #4caf50;color: #fff;">{{reward.points}} Puntos</mat-chip>
+                    </mat-chip-list>
+                </mat-card-title-group>
+                <mat-card-content>
+                    <p *ngIf="reward.establishments.length === 0">No se encuentran establecimientos</p>
+                    <div *ngFor="let est of _establishments | async">
+                        <div *ngFor="let rewEst of reward.establishments">
+                            <div *ngIf="est._id === rewEst">
+                                <div>
+                                    <p mat-line style="font-size: 1rem;">
+                                        <mat-icon style="vertical-align: middle">store</mat-icon>
+                                        <span> {{est.name}} </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions align="end">
+                    <button mat-button (click)="open(reward)">{{'SECTIONS.MODIFY' | translate}}</button>
+                    <button mat-button (click)="removeReward(reward)">{{'SECTIONS.REMOVE' | translate}}</button>
+                    <span class="app-flex-filler lh">
+                        <mat-slide-toggle [(checked)]="reward.is_active" (change)="updateStatus(reward)"></mat-slide-toggle>
+                    </span>
+                </mat-card-actions>
+            </mat-card>
+        </ng-template>
+    </div>
+</div>

@@ -29,6 +29,9 @@ import './imports/publications/establishment/table';
 import './imports/publications/establishment/order';
 import './imports/publications/establishment/waiter-call';
 import './imports/publications/establishment/invoice';
+import './imports/publications/establishment/reward';
+import './imports/publications/general/point';
+import './imports/publications/general/cooking-time';
 
 import '../both/methods/menu/item.methods';
 import '../both/methods/auth/collaborators.methods';
@@ -67,6 +70,8 @@ import { loadEmailContents } from './imports/fixtures/general/email-contents';
 import { loadParameters } from './imports/fixtures/general/parameters';
 import { loadCcPaymentMethods } from './imports/fixtures/payments/cc-payment-methods';
 import { loadInvoicesInfo } from './imports/fixtures/payments/invoices-info';
+import { loadPoints } from './imports/fixtures/general/point';
+import { loadCookingTimes } from './imports/fixtures/general/cooking-time';
 import { createdbindexes } from './imports/indexes/indexdb';
 import { createCrons } from './cron';
 
@@ -85,5 +90,7 @@ Meteor.startup(() => {
     loadParameters();
     loadCcPaymentMethods();
     loadInvoicesInfo();
+    loadPoints();
+    loadCookingTimes();
     createCrons();
 });
