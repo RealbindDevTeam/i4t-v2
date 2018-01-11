@@ -7,14 +7,14 @@
                 </div>
                 <div class="card_initial-copy">
                     <div class="card_initial-tagline">
-                        {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+                        {{'REWARD.THERE_NOT_ESTABLISHMENTS' | translate}}
                     </div>
                     <div class="card_initial-additional-links">
-                        {{'SECTIONS.MESSAGE' | translate}}
+                        {{'REWARD.MESSAGE' | translate}}
                     </div>
                 </div>
                 <div class="card_initial-button">
-                    <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'REWARD.ESTABLISHMENT_REGISTER' | translate}}</button>
                 </div>
             </div>
         </div>
@@ -30,49 +30,48 @@
                 </div>
                 <div class="card_initial-copy">
                     <div class="card_initial-tagline">
-                        {{ 'ITEMS.MSG_INITIAL' | translate }}
+                        {{ 'REWARD.MSG_INITIAL' | translate }}
                     </div>
                     <div class="card_initial-additional-links">
 
                     </div>
                 </div>
                 <div class="card_initial-button">
-                    <button mat-raised-button (click)="goToItems()">{{'ITEMS.CREATE_NEW_ITEM' | translate}}</button>
+                    <button mat-raised-button (click)="goToItems()">{{'REWARD.CREATE_NEW_ITEM' | translate}}</button>
                 </div>
             </div>
         </div>
     </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="_thereAreEstablishments && _thereAreItems">
-    <mat-card-title>Recompensas</mat-card-title>
-    <mat-card-subtitle>Crea las recompensas para tus clientes. Ingresa cuantos items otorgaras (cantidad), el item y los puntos necesarios para
-        redimir la recompensa:</mat-card-subtitle>
+<mat-card *ngIf="_thereAreEstablishments && _thereAreItems" class="reward-main">
+    <mat-card-title>{{'REWARD.TITLE' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'REWARD.SUBTITLE' | translate}}:</mat-card-subtitle>
     <mat-card-content>
         <form [formGroup]="_rewardForm" (ngSubmit)="addReward();">
-            <div style="display: inline-block;margin-right: 1rem;">
-                <button mat-button disabled style="color: black;">Cantidad: {{ _quantityCount }}</button>
-                <button mat-button class="quantity-button" style="display: inline-block" (click)="removeCount()">
+            <div class="quantity">
+                <button mat-button disabled class="quantity-count">{{'REWARD.QUANTITY' | translate}}: {{ _quantityCount }}</button>
+                <button mat-button class="quantity-button" (click)="removeCount()">
                     <mat-icon>remove</mat-icon>
                 </button>
-                <button mat-button class="quantity-button" style="display: inline-block" (click)="addCount()">
+                <button mat-button class="quantity-button" (click)="addCount()">
                     <mat-icon>add</mat-icon>
                 </button>
             </div>
-            <mat-form-field style="width: 25%;margin-right: 1rem;">
-                <mat-select formControlName="item" placeholder="Selecciona item">
-                    <mat-option *ngFor="let item of _items | async" value="{{item._id}}"> {{item.name}}</mat-option>
+            <mat-form-field class="item">
+                <mat-select formControlName="item" placeholder="{{'REWARD.SELECT_ITEM' | translate}}">
+                    <mat-option *ngFor="let item of _items | async" value="{{item._id}}">{{item.name}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field style="width: 25%;">
-                <mat-select formControlName="points" placeholder="Selecciona los puntos">
-                    <mat-option *ngFor="let point of _points | async" value="{{point._id}}"> {{point.point}}</mat-option>
+            <mat-form-field class="point">
+                <mat-select formControlName="points" placeholder="{{'REWARD.SELECT_POINTS' | translate}}">
+                    <mat-option *ngFor="let point of _points | async" value="{{point._id}}">{{point.point}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <div>
-                <p>Selecciona los establecimientos donde se encontrara disponible la recompensa</p>
+                <p>{{'REWARD.ESTABLISHMENTS' | translate}}</p>
                 <p>
-                    <label *ngIf="!_showEstablishments" class="label-field-void">No se encuentran restaurantes creados</label>
+                    <label *ngIf="!_showEstablishments" class="label-field-void">{{'REWARD.NO_ESTABLISHMENTS_CREATED' | translate}}</label>
                 </p>
                 <div *ngIf="_showEstablishments" formGroupName="establishments">
                     <div *ngFor="let establishment of _establishments | async">
@@ -88,25 +87,25 @@
     </mat-card-content>
 </mat-card>
 
-<div *ngFor="let reward of _rewards | async" style="width: 49%;display: inline-block;vertical-align: top;margin-right: 1%;">
+<div *ngFor="let reward of _rewards | async" class="reward">
     <div *ngFor="let item of _items | async">
         <ng-template [ngIf]="reward.item_id === item._id">
             <mat-card>
                 <mat-card-title-group>
                     <mat-card-title>{{item.name}}</mat-card-title>
-                    <mat-card-subtitle>Cantidad: {{reward.item_quantity}}</mat-card-subtitle>
+                    <mat-card-subtitle>{{'REWARD.QUANTITY' | translate}}: {{reward.item_quantity}}</mat-card-subtitle>
                     <mat-chip-list>
-                        <mat-chip style="background-color: #4caf50;color: #fff;">{{reward.points}} Puntos</mat-chip>
+                        <mat-chip class="points">{{reward.points}} {{'REWARD.POINTS' | translate}}</mat-chip>
                     </mat-chip-list>
                 </mat-card-title-group>
                 <mat-card-content>
-                    <p *ngIf="reward.establishments.length === 0">No se encuentran establecimientos</p>
+                    <p *ngIf="reward.establishments.length === 0">{{'REWARD.NO_ESTABLISHMENTS' | translate}}</p>
                     <div *ngFor="let est of _establishments | async">
                         <div *ngFor="let rewEst of reward.establishments">
                             <div *ngIf="est._id === rewEst">
                                 <div>
-                                    <p mat-line style="font-size: 1rem;">
-                                        <mat-icon style="vertical-align: middle">store</mat-icon>
+                                    <p mat-line class="establishment">
+                                        <mat-icon class="icon">store</mat-icon>
                                         <span> {{est.name}} </span>
                                     </p>
                                 </div>
@@ -115,8 +114,8 @@
                     </div>
                 </mat-card-content>
                 <mat-card-actions align="end">
-                    <button mat-button (click)="open(reward)">{{'SECTIONS.MODIFY' | translate}}</button>
-                    <button mat-button (click)="removeReward(reward)">{{'SECTIONS.REMOVE' | translate}}</button>
+                    <button mat-button (click)="editReward(reward)">{{'REWARD.MODIFY' | translate}}</button>
+                    <button mat-button (click)="removeReward(reward)">{{'REWARD.REMOVE' | translate}}</button>
                     <span class="app-flex-filler lh">
                         <mat-slide-toggle [(checked)]="reward.is_active" (change)="updateStatus(reward)"></mat-slide-toggle>
                     </span>

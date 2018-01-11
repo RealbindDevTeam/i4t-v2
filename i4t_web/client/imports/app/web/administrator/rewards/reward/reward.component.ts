@@ -17,6 +17,7 @@ import { Items } from '../../../../../../../both/collections/menu/item.collectio
 import { Point } from '../../../../../../../both/models/general/point.model';
 import { Points } from '../../../../../../../both/collections/general/point.collection';
 import { AlertConfirmComponent } from '../../../general/alert-confirm/alert-confirm.component';
+import { RewardEditComponent } from '../reward-edit/reward-edit.component';
 
 @Component({
     selector: 'reward',
@@ -47,6 +48,7 @@ export class RewardComponent implements OnInit, OnDestroy {
     private titleMsg: string;
     private btnAcceptLbl: string;
     private btnCancelLbl: string;
+    public _dialogRef: MatDialogRef<any>;
 
     /**
      * RewardComponent constructor
@@ -185,7 +187,7 @@ export class RewardComponent implements OnInit, OnDestroy {
             });
 
             if (_lNewReward) {
-                let _lMessage: string = 'Recompensa Creada';//this.itemNameTraduction('SECTIONS.SECTION_CREATED');
+                let _lMessage: string = this.itemNameTraduction('REWARD.REWARD_CREATED');
                 this._snackBar.open(_lMessage, '', { duration: 2500 });
             }
             this.cancel();
@@ -217,8 +219,8 @@ export class RewardComponent implements OnInit, OnDestroy {
      * @param {Reward} _pReward 
      */
     removeReward(_pReward: Reward): void {
-        let _lDialogTitle = 'Remover Recompensa';//"SECTIONS.REMOVE_TITLE";
-        let _lDialogContent = 'Esta seguro de remover la recompensa?';//"SECTIONS.REMOVE_MSG";
+        let _lDialogTitle = "REWARD.REMOVE_TITLE";
+        let _lDialogContent = "REWARD.REMOVE_MSG";
         let _lError: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
 
         if (!Meteor.userId()) {
@@ -240,7 +242,7 @@ export class RewardComponent implements OnInit, OnDestroy {
             this._mdDialogRef = result;
             if (result.success) {
                 Rewards.remove(_pReward._id);
-                let _lMessage = 'Recompensa Eliminada';//this.itemNameTraduction('SECTIONS.SECTION_REMOVED');
+                let _lMessage = this.itemNameTraduction('REWARD.REWARD_REMOVED');
                 this._snackBar.open(_lMessage, '', { duration: 2500 });
             }
         });
@@ -268,6 +270,21 @@ export class RewardComponent implements OnInit, OnDestroy {
     cancel(): void {
         this._rewardForm.reset();
         this._quantityCount = 1;
+    }
+
+    /**
+     * When user wants edit reward, this function open dialog with reward information
+     * @param {Reward} _pReward
+     */
+    editReward(_pReward: Reward) {
+        this._dialogRef = this._dialog.open(RewardEditComponent, {
+            disableClose: true,
+            width: '50%'
+        });
+        this._dialogRef.componentInstance._rewardToEdit = _pReward;
+        this._dialogRef.afterClosed().subscribe(result => {
+            this._dialogRef = null;
+        });
     }
 
     /**
