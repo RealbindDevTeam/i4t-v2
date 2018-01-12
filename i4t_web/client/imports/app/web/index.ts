@@ -84,6 +84,7 @@ import { PayuPaymentService } from './services/payment/payu-payment.service';
 import { Recommended } from './administrator/menu/items/item/recommended/recommended.component';
 import { RewardComponent } from './administrator/rewards/reward/reward.component';
 import { RewardEditComponent } from './administrator/rewards/reward-edit/reward-edit.component';
+import { RewardsDetailComponent } from './customer/rewards-detail/rewards-detail.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -170,7 +171,8 @@ export const MODAL_DIALOG_DECLARATIONS = [
     ScheduleDetailComponent,
     PaymentPlanInfo,
     Recommended,
-    RewardEditComponent
+    RewardEditComponent,
+    RewardsDetailComponent
 ];
 
 export const SERVICES_DECLARATIONS = [

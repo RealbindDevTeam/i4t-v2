@@ -980,7 +980,8 @@
         "TABLE_NOT_EXISTS": "The table does not exist. Please check the code.",
         "IUREST_NO_ACTIVE": "The restaurant does not have the iurest service active. It is not possible to enter.",
         "RESTAURANT_NOT_EXISTS": "The restaurant does not exist. It is not possible to enter.",
-        "PENALTY": "At the moment you do not have available the option to create orders. Try later"
+        "PENALTY": "At the moment you do not have available the option to create orders. Try later",
+        "REDEEM_POINTS": "Redeem points"
     },
     "MONTHLY_PAYMENT": {
         "TITLE": "iurest services",

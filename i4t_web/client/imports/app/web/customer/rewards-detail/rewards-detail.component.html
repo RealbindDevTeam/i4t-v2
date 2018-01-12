@@ -1,0 +1,28 @@
+<mat-card>
+    <mat-card-title>Recompensas</mat-card-title>
+    <mat-card-subtitle>Selecciona las recompensas que desees redimir</mat-card-subtitle>
+    <mat-card-content>
+        <mat-list>
+            <span *ngFor="let reward of _rewards | async">
+                <span *ngFor="let item of _items | async">
+                    <ng-template [ngIf]="reward.item_id === item._id">
+                        <mat-list-item>
+                            <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
+                            <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
+                            <h4 mat-line>{{item.name}}</h4>
+                            <mat-chip-list mat-line>
+                                <mat-chip style="color: white;background-color: #4CAF50;">{{reward.points}} Points</mat-chip>
+                            </mat-chip-list>
+                            <p mat-line *ngIf="!getItemAvailability(item._id)" style="color: #D50000;font-weight: bold;">No Disponible</p>
+                            <button mat-button class="primary-button">Redimir</button>
+                        </mat-list-item>
+                        <mat-divider class="divider"></mat-divider>
+                    </ng-template>
+                </span>
+            </span>
+        </mat-list>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-raised-button class="secondary-button" type="button" (click)="_dialogRef.close()">{{'CLOSE' | translate}}</button>
+    </mat-card-actions>
+</mat-card>

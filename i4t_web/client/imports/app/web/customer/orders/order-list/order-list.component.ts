@@ -20,6 +20,9 @@ import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/ale
 import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { Reward } from '../../../../../../../both/models/establishment/reward.model';
+import { Rewards } from '../../../../../../../both/collections/establishment/reward.collection';
+import { RewardsDetailComponent } from '../../rewards-detail/rewards-detail.component';
 
 @Component({
     selector: 'order-list',
@@ -41,6 +44,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _currenciesSub: Subscription;
     private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
+    private _rewardsSub: Subscription;
     private _mdDialogRef: MatDialogRef<any>;
 
     private _orders: Observable<Order[]>;
@@ -51,6 +55,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _additions: Observable<Addition[]>;
     private _additionDetails: Observable<Addition[]>;
     private _establishments: Observable<Establishment[]>;
+    private _rewards: Observable<Reward[]>;
 
     private _showOrderItemDetail: boolean = false;
     private _currentOrder: Order;
@@ -88,6 +93,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _thereAreNotUserOrders: boolean = true;
     private _tableNumber: number;
     private _loading: boolean = false;
+    private _showReedemPoints: boolean = true;
 
     /**
      * OrdersListComponent Constructor
@@ -176,6 +182,13 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 this._tableNumber = Tables.collection.findOne({ QR_code: this.tableQRCode })._number;
             });
         });
+        this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this.establishmentId).subscribe(() => {
+            this._ngZone.run(() => {
+                this._rewards = Rewards.find({ establishments: { $in: [this.establishmentId] } }).zone();
+                this.countRewards();
+                this._rewards.subscribe(() => { this.countRewards(); });
+            });
+        });
     }
 
     /**
@@ -193,6 +206,13 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Validate if establishment rewards exists
+     */
+    countRewards(): void {
+        Rewards.collection.find({ establishments: { $in: [this.establishmentId] } }).count() > 0 ? this._showReedemPoints = true : this._showReedemPoints = false;
+    }
+
+    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
@@ -203,6 +223,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
         if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+        if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
     }
 
     /**
@@ -950,6 +971,21 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             if (result.success) {
 
             }
+        });
+    }
+
+    /**
+     * Function to open rewards detail component
+     */
+    reedemPoints(): void {
+        this._mdDialogRef = this._mdDialog.open(RewardsDetailComponent, {
+            disableClose: true,
+            width: '50%'
+        });
+        this._mdDialogRef.componentInstance._establishmentId = this.establishmentId;
+        this._mdDialogRef.componentInstance._tableQRCode = this.tableQRCode;
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = null;
         });
     }
 

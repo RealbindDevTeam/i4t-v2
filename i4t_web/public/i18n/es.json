@@ -980,7 +980,8 @@
         "TABLE_NOT_EXISTS": "La mesa no existe. Por favor verifíque el código.",
         "IUREST_NO_ACTIVE": "El restaurante no tiene el servicio de iurest activo. No es posible ingresar.",
         "RESTAURANT_NOT_EXISTS": "El restaurante no existe. No es posible ingresar.",
-        "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del "
+        "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del ",
+        "REDEEM_POINTS": "Redimir puntos"
     },
     "MONTHLY_PAYMENT": {
         "TITLE": "Pago del servicio mensual de iurest",
