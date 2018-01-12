@@ -18,7 +18,7 @@ import { AuthClass } from '../auth.class';
 @Component({
     selector: 'admin-signup',
     templateUrl: './admin-signup.component.html',
-    styleUrls: [ './admin-signup.component.scss' ]
+    styleUrls: ['./admin-signup.component.scss']
 })
 export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy {
 
@@ -34,6 +34,9 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
     private showLoginPassword: boolean = true;
     private showConfirmError: boolean = false;
     private userProfile = new UserProfile();
+
+    private _genderArray: any[] = [];
+
 
     /**
      * AdminSignupComponent Constructor
@@ -64,7 +67,8 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
             shippingAddress: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]),
             country: new FormControl('', [Validators.required]),
             city: new FormControl('', [Validators.required]),
-            otherCity: new FormControl()
+            otherCity: new FormControl(),
+            gender: new FormControl('', [Validators.required])
         });
 
         this._countrySub = MeteorObservable.subscribe('countries').subscribe(() => {
@@ -78,14 +82,18 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
                 this._cities = Cities.find({ country: '' }).zone();
             });
         });
+
+        this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+        { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+        { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
     }
 
     /**
      * Remove all subscriptions
      */
-    removeSubscriptions():void{
-        if( this._countrySub ){ this._countrySub.unsubscribe(); }
-        if( this._citySub ){ this._citySub.unsubscribe(); }
+    removeSubscriptions(): void {
+        if (this._countrySub) { this._countrySub.unsubscribe(); }
+        if (this._citySub) { this._citySub.unsubscribe(); }
     }
 
     /**
@@ -125,6 +133,7 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
             this.userProfile.first_name = this.signupForm.value.firstName;
             this.userProfile.last_name = this.signupForm.value.lastName;
             this.userProfile.language_code = this.getUserLang();
+            this.userProfile.gender = this.signupForm.value.gender;
 
             if (this.signupForm.valid) {
                 let confirmMsg: string;
@@ -176,9 +185,9 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
         }
     }
 
-    openPaymentPlanInfoDialog(){
+    openPaymentPlanInfoDialog() {
         this._mdDialogRef = this._mdDialog.open(PaymentPlanInfo, {
-            disableClose : true 
+            disableClose: true
         });
     }
 
