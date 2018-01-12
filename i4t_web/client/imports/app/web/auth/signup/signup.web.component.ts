@@ -44,7 +44,7 @@ export class SignupWebComponent extends AuthClass implements OnInit {
             email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(255), CustomValidators.emailValidator]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
             confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            gender: new FormControl('')
+            gender: new FormControl('', [Validators.required])
         });
 
         this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
@@ -61,6 +61,7 @@ export class SignupWebComponent extends AuthClass implements OnInit {
             this.userProfile.first_name = "";
             this.userProfile.last_name = "";
             this.userProfile.language_code = this.getUserLang();
+            this.userProfile.gender = this.signupForm.value.gender;
 
             if (this.signupForm.valid) {
                 let confirmMsg: string;
