@@ -131,7 +131,7 @@
                 <ion-card>
                     <ion-card-content>
                         <ion-list no-lines style="margin: 0 -16px;">
-                            <button ion-item (click)="showDetail(i)">
+                            <button ion-item detail-none (click)="showDetail(i)">
                                 <order-detail [order]="order" [isUser]="false" [currencyCode]="_currencyCode"></order-detail>
                             </button>
                         </ion-list>
