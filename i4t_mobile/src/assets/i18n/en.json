@@ -10,6 +10,11 @@
         "ATTENDED": "Attended",
         "CANCELED": "Canceled"
     },
+    "SIGNUP": {
+        "MALE_GENDER": "Male",
+        "FEMALE_GENDER": "Female",
+        "OTHER_GENDER": "Other",
+    },
     "MOBILE": {
         "CANCEL": "Cancel",
         "CATEGORY": "Category",
@@ -64,7 +69,11 @@
             "USER_EMAIL_EXISTS": "The username/email already exists, please try again ",
             "ERROR": "An error has occurred registering the user",
             "ACCEPT": "Accept",
-            "SUCCESS": "The user has been created succesfully"
+            "SUCCESS": "The user has been created succesfully",
+            "GENDER": "Gender",
+            "FEMALE_GENDER": "Female",
+            "OTHER_GENDER": "Other",
+            "GENDER_LBL": "Gender"
         },
         "SIGNIN": {
             "EMAIL_USERNAME": "Email/Username",
@@ -416,9 +425,9 @@
             "PAYMENTS_HISTORY": "Payments history",
             "SETTINGS": "Settings"
         },
-        "RESTAURANT_PROFILE" : {
-            "MENU_BTN" : "Menu",
-            "PAYMENT_METHODS" : "Payment methods"
+        "RESTAURANT_PROFILE": {
+            "MENU_BTN": "Menu",
+            "PAYMENT_METHODS": "Payment methods"
         },
         "SCHEDULE": {
             "SCHEDULE": "Schedule",

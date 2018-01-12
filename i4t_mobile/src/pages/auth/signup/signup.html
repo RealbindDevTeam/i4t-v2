@@ -9,7 +9,7 @@
   </div>
 
   <button ion-button block class="btn-facebook button-social" (click)="loginWithFacebook()">
-      <i class="fa fa-facebook icon-social" aria-hidden="true"></i>Facebook
+    <i class="fa fa-facebook icon-social" aria-hidden="true"></i>Facebook
   </button>
 
   <div class="divider">
@@ -28,7 +28,7 @@
     <ion-list>
       <ion-item>
         <ion-label floating>
-          <ion-icon name="person"></ion-icon> 
+          <ion-icon name="person"></ion-icon>
           {{'MOBILE.USERNAME' | translate}}
         </ion-label>
         <ion-input type="text" formControlName="username"></ion-input>
@@ -42,9 +42,21 @@
       <div *ngIf="signupForm.controls['username'].hasError('maxlength') && signupForm.controls['username'].touched" class="error-message">
         <p class="error-message">{{'MOBILE.SIGNUP.MAX_LENGTH_USERNAME' | translate}}</p>
       </div>
+
+
       <ion-item>
         <ion-label floating>
-          <ion-icon name="mail"></ion-icon> 
+          <ion-icon name="gender"></ion-icon>
+          {{'MOBILE.SIGNUP.GENDER' | translate}}
+        </ion-label>
+        <ion-select formControlName="gender" [(ngModel)]="_selectedGender">
+          <ion-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="mail"></ion-icon>
           {{'MOBILE.EMAIL' | translate}}
         </ion-label>
         <ion-input type="text" formControlName="email"></ion-input>
@@ -60,7 +72,7 @@
       </div>
       <ion-item>
         <ion-label floating>
-          <ion-icon name="lock"></ion-icon> 
+          <ion-icon name="lock"></ion-icon>
           {{'MOBILE.PASSWORD' | translate}}
         </ion-label>
         <ion-input type="password" formControlName="password"></ion-input>
@@ -76,7 +88,7 @@
       </div>
       <ion-item>
         <ion-label floating>
-          <ion-icon name="done-all"></ion-icon> 
+          <ion-icon name="done-all"></ion-icon>
           {{'MOBILE.CONFIRM_PASSWORD' | translate}}
         </ion-label>
         <ion-input type="password" formControlName="confirmPassword"></ion-input>
@@ -99,7 +111,7 @@
     </ion-list>
     <div>
       <button ion-button block class="button-primary button-social" type="submit" [disabled]="!signupForm.valid">{{'MOBILE.INITIAL.SIGNUP' | translate}}
-        </button>
+      </button>
     </div>
   </form>
   <!--/div-->

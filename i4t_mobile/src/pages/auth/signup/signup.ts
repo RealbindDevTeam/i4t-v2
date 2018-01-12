@@ -27,6 +27,9 @@ export class SignupComponent implements OnInit {
     userLang: string;
     userProfile = new UserProfile();
 
+    private _genderArray: any[] = [];
+    private _selectedGender: string;
+
     constructor(public zone: NgZone,
         public _alertCtrl: AlertController,
         public formBuilder: FormBuilder,
@@ -45,9 +48,14 @@ export class SignupComponent implements OnInit {
             username: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]),
             email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(40), CustomValidators.emailValidator]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)])
+            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
+            gender: new FormControl('', [Validators.required])
         });
         this.error = '';
+
+        this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+        { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+        { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
     }
 
     register() {
@@ -57,6 +65,7 @@ export class SignupComponent implements OnInit {
             this.userProfile.first_name = "";
             this.userProfile.last_name = "";
             this.userProfile.language_code = this.userLang;
+            this.userProfile.gender = this.signupForm.value.gender;
 
             if (this.signupForm.valid) {
                 let confirmMsg: string;
