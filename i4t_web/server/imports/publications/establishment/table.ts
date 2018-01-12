@@ -29,7 +29,7 @@ Meteor.publish('getTableByCurrentTable', function (_userId: string) {
     check(_userId, String);
 
     var user_detail = UserDetails.findOne({ user_id: _userId });
-    if( user_detail ){
+    if (user_detail) {
         return Tables.find({ _id: user_detail.current_table });
     } else {
         return;
@@ -39,28 +39,28 @@ Meteor.publish('getTableByCurrentTable', function (_userId: string) {
 /**
  * Meteor publication return all tables
  */
-Meteor.publish( 'getAllTables', function( ){
-    return Tables.find( { } );
+Meteor.publish('getAllTables', function () {
+    return Tables.find({});
 });
 
 /**
  * Meteor publication return tables with establishment condition
  * @param {string} _establishmentId
  */
-Meteor.publish( 'getTablesByEstablishment', function( _establishmentId:string ) {
-    check( _establishmentId, String );
-    return Tables.find( { establishment_id: _establishmentId } );
+Meteor.publish('getTablesByEstablishment', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return Tables.find({ establishment_id: _establishmentId, is_active: true });
 });
 
 /**
  * Meteor publication return tables by establishment Work
  * @param {string} _userId
  */
-Meteor.publish( 'getTablesByEstablishmentWork', function( _userId: string ){
-    check( _userId, String );
-    let _lUserDetail: UserDetail = UserDetails.findOne( { user_id: _userId } );
-    if( _lUserDetail ){
-        return Tables.find( { establishment_id: _lUserDetail.establishment_work } );
+Meteor.publish('getTablesByEstablishmentWork', function (_userId: string) {
+    check(_userId, String);
+    let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
+    if (_lUserDetail) {
+        return Tables.find({ establishment_id: _lUserDetail.establishment_work, is_active: true });
     } else {
         return;
     }
@@ -70,7 +70,7 @@ Meteor.publish( 'getTablesByEstablishmentWork', function( _userId: string ){
  * Meteor publication tables by QR Code
  * @param {string} _lQRCode
  */
-Meteor.publish('getTableByQRCode', function ( _lQRCode: string ){
+Meteor.publish('getTableByQRCode', function (_lQRCode: string) {
     check(_lQRCode, String);
-    return Tables.find( { QR_code: _lQRCode } );
+    return Tables.find({ QR_code: _lQRCode });
 });
