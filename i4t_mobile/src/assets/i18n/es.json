@@ -261,7 +261,7 @@
             "NO_ORDERS": "Aún no tienes ordenes realizadas"
         },
         "WAITER_CALL": {
-            "TITTLE": "Solicitar mesero",
+            "TITLE": "Solicitar mesero",
             "CONTENT": "Oprime el botón para llamar al mesero",
             "THERE_IS_NOT_CODE_REST": "¡Ups! No estas en ningún restaurante",
             "THERE_IS_NOT_CODE_REST_INS": "Ve a la opción de ordenes e ingresa el código para llamar al mesero",
@@ -281,6 +281,17 @@
             "NO_WAITERS": "No hay meseros asignados en el restaurante",
             "ALPHANUMERIC_CODE": "Código",
             "CALL_LABEL_EXIT_CUSTOMER": "Salida de usuario"
+        },
+        "CUSTOMER_ORDER": {
+            "TITLE": "Detalle de la orden",
+            "ORDER": "Orden",
+            "TABLE": "Mesa",
+            "ALPHANUMERIC_CODE": "Código",
+            "CONSUMMER": "Cliente",
+            "CANCEL": "Cancelar",
+            "RECEIVE": "Recibir",
+            "CONTENT_PROMPT": "Deseas cancelar la orden del cliente?",
+            "RECEIVE_CONTENT_PROMPT": "Deseas recibir la orden del cliente?"
         },
         "SECTIONS": {
             "MENU": "Menú",

@@ -28,8 +28,10 @@ import { Addition, AdditionPrice, AdditionEstablishment } from '../../../../../.
 import { GarnishFood, GarnishFoodPrice, GarnishFoodEstablishment } from '../../../../../../../../both/models/menu/garnish-food.model';
 import { Additions } from '../../../../../../../../both/collections/menu/addition.collection';
 import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/garnish-food.collection';
+import { AfterEstablishmentCreationComponent } from './after-establishment-creation/after-establishment-creation.component';
 
 import * as QRious from 'qrious';
+import { UserDetails } from 'both/collections/auth/user-detail.collection';
 
 @Component({
     selector: 'establishment-register',
@@ -49,6 +51,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private _paymentMethodsSub: Subscription;
     private _additionsSub: Subscription;
     private _garnishFoodSub: Subscription;
+    private _usrDetailSubscription: Subscription;
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
@@ -78,6 +81,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private btnAcceptLbl: string;
 
     private max_table_number: number;
+    private showRestCreation: boolean;
 
     /**
      * EstablishmentRegisterComponent constructor
@@ -147,6 +151,13 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
 
         this._establishmentForm.get('tables_number').disable();
+
+        this._usrDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+            let _lUsrDetail = UserDetails.findOne({ user_id: this._user });
+            if (_lUsrDetail) {
+                this.showRestCreation = _lUsrDetail.show_after_rest_creation;
+            }
+        });
     }
 
     /**
@@ -160,6 +171,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         if (this._paymentMethodsSub) { this._paymentMethodsSub.unsubscribe(); }
         if (this._additionsSub) { this._additionsSub.unsubscribe(); }
         if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
+        if (this._usrDetailSubscription) { this._usrDetailSubscription.unsubscribe(); }
     }
 
     /**
@@ -391,10 +403,20 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 }
 
                 resolve(_lNewEstablishment);
+                if (this.showRestCreation) {
+                    this.openDialogAfterRestaurantRegister();
+                }
             } catch (e) {
                 reject(e);
             }
         });
+    }
+
+    /**
+     * Show AfterEstablishmentCreationComponent dialog
+     */
+    openDialogAfterRestaurantRegister() {
+        this._mdDialogRef = this._mdDialog.open(AfterEstablishmentCreationComponent);
     }
 
     /**

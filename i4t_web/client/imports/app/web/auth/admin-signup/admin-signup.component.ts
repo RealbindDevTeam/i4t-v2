@@ -18,7 +18,7 @@ import { AuthClass } from '../auth.class';
 @Component({
     selector: 'admin-signup',
     templateUrl: './admin-signup.component.html',
-    styleUrls: [ './admin-signup.component.scss' ]
+    styleUrls: ['./admin-signup.component.scss']
 })
 export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy {
 
@@ -83,9 +83,9 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
     /**
      * Remove all subscriptions
      */
-    removeSubscriptions():void{
-        if( this._countrySub ){ this._countrySub.unsubscribe(); }
-        if( this._citySub ){ this._citySub.unsubscribe(); }
+    removeSubscriptions(): void {
+        if (this._countrySub) { this._countrySub.unsubscribe(); }
+        if (this._citySub) { this._citySub.unsubscribe(); }
     }
 
     /**
@@ -161,7 +161,8 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
                                 address: this.signupForm.value.shippingAddress,
                                 country_id: this._selectedCountry,
                                 city_id: cityIdAux,
-                                other_city: cityAux
+                                other_city: cityAux,
+                                show_after_rest_creation: true,
                             });
                             this.openDialog(this.titleMsg, '', confirmMsg, '', this.btnAcceptLbl, false);
                             Meteor.logout();
@@ -176,9 +177,9 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
         }
     }
 
-    openPaymentPlanInfoDialog(){
+    openPaymentPlanInfoDialog() {
         this._mdDialogRef = this._mdDialog.open(PaymentPlanInfo, {
-            disableClose : true 
+            disableClose: true
         });
     }
 

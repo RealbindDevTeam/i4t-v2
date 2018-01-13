@@ -261,7 +261,7 @@
             "NO_ORDERS": "You have no orders yet"
         },
         "WAITER_CALL": {
-            "TITTLE": "Call waiter/waitress",
+            "TITLE": "Call waiter/waitress",
             "CONTENT": "Press the button to call the waiter/waitress",
             "THERE_IS_NOT_CODE_REST": "!Ups¡ You are not in any restaurant",
             "THERE_IS_NOT_CODE_REST_INS": "Go to the order option and enter the code",
@@ -281,6 +281,17 @@
             "NO_WAITERS": "There are no assigned waiter/waitress in the restaurant",
             "ALPHANUMERIC_CODE": "Code",
             "CALL_LABEL_EXIT_CUSTOMER": "User output"
+        },
+        "CUSTOMER_ORDER": {
+            "TITLE": "Order detail",
+            "ORDER": "Order",
+            "TABLE": "Table",
+            "ALPHANUMERIC_CODE": "Alphanumeric code",
+            "CONSUMMER": "Costumer",
+            "CANCEL": "Cancel",
+            "RECEIVE": "Receive",
+            "CONTENT_PROMPT": "¿Do you want to cancel the customer order?",
+            "RECEIVE_CONTENT_PROMPT": "¿Do you want to receive the customer order?"
         },
         "SECTIONS": {
             "MENU": "Menu",

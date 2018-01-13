@@ -29,8 +29,6 @@
                     <div class="item-block">
                         <img *ngIf="_call.type == 'CUSTOMER_ORDER'" class="img-cards" src="assets/img/chef.png">
                         <img *ngIf="_call.type == 'CALL_OF_CUSTOMER'" class="img-cards" src="assets/img/waiter-call.png">
-                        <!--img *ngIf="_call.type == 'SEND_ORDER'" class="img-cards" src="assets/img/chef.png">
-                        <img *ngIf="_call.type == 'PAYMENT'" class="img-cards" src="assets/img/cash-payment.png"-->
                         <img *ngIf="_call.type == 'USER_EXIT_TABLE'" class="img-cards" src="assets/img/exit.png">
                         <div class="header-title">
                             <div class="label">
@@ -49,16 +47,8 @@
                             </button>
                             <button ion-button small clear text-left *ngIf="_call.type == 'CUSTOMER_ORDER'" style="color: #5090ff; height: 36px; font-size: 1.2rem;"
                                 (click)="goToOrderCall(_call)">
-                                {{'MOBILE.CLOSE' | translate}}
-                            </button>
-                            <!--button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="goToPaymentConfirm(_call)"
-                                *ngIf="_call.type == 'PAYMENT'">
                                 {{'MOBILE.VIEW' | translate}}
                             </button>
-                            <button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="goToViewOrderDetailSend(_call)"
-                                *ngIf="_call.type == 'SEND_ORDER'">
-                                {{'MOBILE.VIEW' | translate}}
-                            </button-->
                             <button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="goToCancelOrder(_call)"
                                 *ngIf="_call.type == 'USER_EXIT_TABLE'">
                                 {{'MOBILE.VIEW' | translate}}

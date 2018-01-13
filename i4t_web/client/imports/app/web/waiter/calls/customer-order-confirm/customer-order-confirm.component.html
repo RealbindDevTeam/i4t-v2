@@ -1,5 +1,5 @@
 <div *ngFor="let order of _orders | async">
-    <mat-card-title>{{ 'CUSTOMER_ORDER.ORDER' | translate }} # {{order.code}} - {{ 'CUSTOMER_ORDER.TABLE' | translate }} {{_tableNumber}} ( {{ 'CUSTOMER_ORDER.CODE' | translate }} {{_tableQRCode}} )</mat-card-title>
+    <mat-card-title>{{ 'CUSTOMER_ORDER.ORDER' | translate }}: {{order.code}} - {{ 'CUSTOMER_ORDER.TABLE' | translate }} {{_tableNumber}} ( {{ 'CUSTOMER_ORDER.CODE' | translate }} {{_tableQRCode}} )</mat-card-title>
     <mat-card-subtitle>{{ 'CUSTOMER_ORDER.CUSTOMER' | translate }}: {{ getUserName(order.creation_user) }}</mat-card-subtitle>
     <mat-card-content>
         <mat-divider></mat-divider>

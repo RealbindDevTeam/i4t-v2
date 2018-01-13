@@ -41,7 +41,7 @@ import { AdditionsWaiterPage } from '../pages/waiter/establishment-menu/addition
 import { EstablishmentExitConfirmPage } from '../pages/waiter/calls/establishment-exit-confirm/establishment-exit-confirm';
 import { EstablishmentProfilePage } from '../pages/customer/establishment-profile/establishment-profile';
 import { ModalSchedule } from '../pages/customer/establishment-profile/modal-schedule/modal-schedule';
-import { OrderCallPage } from "../pages/waiter/calls/order-call/order-call";
+import { CustomerOrderConfirm } from "../pages/waiter/calls/customer-order-confirm/customer-order-confirm";
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -87,5 +87,5 @@ export const PAGES_DECLARATIONS = [
     EstablishmentExitConfirmPage,
     EstablishmentProfilePage,
     ModalSchedule,
-    OrderCallPage
+    CustomerOrderConfirm
 ];
