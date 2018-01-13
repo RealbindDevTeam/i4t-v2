@@ -89,7 +89,9 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
             this._ngZone.run(() => {
                 this._establishmentsProfiles = EstablishmentsProfile.find({ establishment_id: this._establishmentParam._id }).zone();
                 this._establishmentProfile = EstablishmentsProfile.findOne({ establishment_id: this._establishmentParam._id });
-                this.loadMap();
+                if (this._establishmentProfile) {
+                    this.loadMap();
+                }
             });
         });
     }
