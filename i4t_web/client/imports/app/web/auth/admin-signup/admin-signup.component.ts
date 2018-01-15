@@ -170,7 +170,8 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
                                 address: this.signupForm.value.shippingAddress,
                                 country_id: this._selectedCountry,
                                 city_id: cityIdAux,
-                                other_city: cityAux
+                                other_city: cityAux,
+                                show_after_rest_creation: true,
                             });
                             this.openDialog(this.titleMsg, '', confirmMsg, '', this.btnAcceptLbl, false);
                             Meteor.logout();

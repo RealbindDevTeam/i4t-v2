@@ -1,0 +1,51 @@
+.di {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.di img {
+    width: 100px;
+}
+
+.mat-step-icon-cust {
+    background-color: #114b5f;
+    color: white;
+    position: absolute;
+    top: 75px;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+}
+
+mat-dialog-actions{
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+mat-checkbox {
+    margin-right: 10px;
+}
+
+@media only screen and (min-width: 600px) {
+    .df {
+        display: flex;
+    }
+
+    .di {
+        width: 33.3%;
+        margin: 0 20px;
+    }
+
+    .pa {
+        position: absolute;
+        top: 85px;
+        left: 160px;
+        right: -15px;
+    }
+}

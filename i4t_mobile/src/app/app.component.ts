@@ -45,7 +45,7 @@ export class MyApp {
           this.insertUserInfo();
           this.rootPage = HomeMenu;
         } else if (role == "200") {
-          MeteorObservable.call('validateRestaurantIsActive').subscribe((_restaruantActive) => {
+          MeteorObservable.call('validateEstablishmentIsActive').subscribe((_restaruantActive) => {
             if (_restaruantActive) {
               MeteorObservable.call('validateUserIsActive').subscribe((active) => {
                 if (active) {

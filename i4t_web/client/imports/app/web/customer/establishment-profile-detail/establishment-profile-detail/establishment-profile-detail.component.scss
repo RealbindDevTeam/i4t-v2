@@ -14,63 +14,39 @@ agm-map {
 
 .location {
     font-size: 1rem;
-
-    .location-icon {
-        vertical-align: middle;
-        color: #EF5350
-    }
 }
 
-.font-info {
-    font-size: 1rem;
-}
-
-.icon {
+.location-icon {
     vertical-align: middle;
     color: #EF5350
 }
 
-.schedule-social-networks {
-    color: #EF5350;
-    .social-networks{
-        display: inline;
-    }
+.social-networks{
+    display: inline;
 }
 
-.all-payments {
-    text-align: center;
-
-    .payment-meth {
-        display: inline-block;
-
-        .payment-info {
-            font-size: 1rem;
-
-            .payment-thumb {
-                width: 25px; 
-                height: 25px;
-            }
-
-            .payment-name {
-                font-size: 1rem;
-            }
-        }
-    }
+.payment-thumb {
+    width: 25px; 
+    height: 25px;
 }
 
 .photos {
     height: 150px;
+}
 
-    .content {
-        overflow: auto;
-        white-space: nowrap;
-    }
+.content {
+    overflow: auto;
+    white-space: nowrap;
+}
 
-    .img-thumb {
-        margin-right: 1%;
-        width: 100px;
-        height: 100px;
-    }
+button.img-wp {
+    padding: 1px 7px 2px;
+}
+
+.img-thumb {
+    margin-right: 1%;
+    width: 100px;
+    height: 100px;
 }
 
 
@@ -94,11 +70,6 @@ button i.cust-instagram {
     text-align: center;
 }
 
-.cust-margin{
-    margin-top: 14px;
-}
-
-
 @media only screen and (min-width: 600px){
     .cust-width {
         width: 50%;
@@ -117,70 +88,8 @@ button i.cust-instagram {
     }
 }
 
-
-
-
+.schedule-social-networks {
+    text-align: -webkit-center; 
+    color: #EF5350;
+}
 //
-
-.main {
-    width: 80%; 
-    margin: 0 auto;
-
-
-    .no-restaurant-info {
-        margin: 0 auto;
-    }
-
-    .about-photos-panel{
-        width: 50%;
-        display: inline-block;
-
-        .about {
-            height: 182px;
-            overflow: scroll;
-            word-wrap: break-word;
-        }
-
-        .photos {
-            height: 150px;
-
-            .content {
-                overflow: auto;
-                white-space: nowrap;
-            }
-
-            .img-thumb {
-                margin-right: 1%;
-                width: 100px;
-                height: 100px;
-            }
-        }
-    }
-
-    .contact-payments-panel {
-        width: 47%;
-        display: inline-block;
-        vertical-align: top;
-        margin-left: 2.4%;
-
-        .contact {
-            height: 182px;
-
-
-            .schedule-social-networks {
-                text-align: -webkit-center; 
-                color: #EF5350;
-                
-                .social-networks{
-                    display: inline;
-                }
-            }
-        }
-
-        .payment-methods {
-            height: 150px;
-
-            
-            }
-        }
-    }

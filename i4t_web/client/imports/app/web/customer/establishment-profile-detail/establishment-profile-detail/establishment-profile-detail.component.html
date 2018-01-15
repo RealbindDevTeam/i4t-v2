@@ -40,11 +40,12 @@
                 </mat-card-content>
             </mat-card>
             <mat-card class="photos">
-                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.PHOTOS' | translate}}</mat-card-title>
-                <div *ngIf="establishmentProfile.images">
+                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.PHOTOS' | translate}}</mat-card-title><div *ngIf="establishmentProfile.images">
                     <p *ngIf="establishmentProfile.images.length <= 0">{{'RESTAURANT_PROFILE_DETAIL.NO_PHOTOS' | translate}}</p>
                     <mat-card-content class="content">
-                        <img *ngFor="let restProfileImgeThumb of establishmentProfile.images" md-card-image class="img-thumb" src="{{restProfileImgeThumb.url}}">
+                        <button *ngFor="let restProfileImgeThumb of establishmentProfile.images; let i = index" mat-button class="img-wp">
+                            <img md-card-image class="img-thumb" src="{{restProfileImgeThumb.url}}" (click)="openLightBoxComponent(establishmentProfile.images, i)">
+                        </button>
                     </mat-card-content>
                 </div>
                 <p *ngIf="!establishmentProfile.images">{{'RESTAURANT_PROFILE_DETAIL.NO_PHOTOS' | translate}}</p>
@@ -127,7 +128,8 @@
                 <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.LOCATION' | translate}}</mat-card-title>
                 <mat-card-content>
                     <p>{{'RESTAURANT_PROFILE_DETAIL.ADDRESS' | translate}}: {{establishment.address}}</p>
-                    <agm-map [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng" [mapDraggable]="false" [minZoom]="19" [maxZoom]="19" [zoomControl]="false">
+                    <agm-map [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng" [mapDraggable]="false"
+                        [minZoom]="19" [maxZoom]="19" [zoomControl]="false">
                         <agm-marker [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng"></agm-marker>
                     </agm-map>
                 </mat-card-content>

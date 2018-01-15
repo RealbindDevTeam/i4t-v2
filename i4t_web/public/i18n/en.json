@@ -1568,6 +1568,12 @@
         "READ_MORE": "Read more",
         "READ_LESS": "Read less"
     },
+    "AFTER_RESTAURANT_CREATION" : {
+        "A" : "Go to Administrator/collaborators option, and create the employees of the restaurant",
+        "B" : "Go to Administrator/Tables/Search tables, to select and print the QR code of the tables",
+        "C" : "Charge the information of your menu from the menu option, in order to the users can see it from their devices",
+        "NOT_SHOW" : "Do not show again"
+    },
     "REWARD": {
         "THERE_NOT_ESTABLISHMENTS": "There are not establishment register yet",
         "MESSAGE": "Register at least one establishment to enable this option",

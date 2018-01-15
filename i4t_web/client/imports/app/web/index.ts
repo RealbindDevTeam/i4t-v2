@@ -84,6 +84,8 @@ import { PayuPaymentService } from './services/payment/payu-payment.service';
 import { Recommended } from './administrator/menu/items/item/recommended/recommended.component';
 import { RewardComponent } from './administrator/rewards/reward/reward.component';
 import { RewardEditComponent } from './administrator/rewards/reward-edit/reward-edit.component';
+import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
+import { LightBoxComponent } from './general/lightbox/lightbox.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -170,7 +172,9 @@ export const MODAL_DIALOG_DECLARATIONS = [
     ScheduleDetailComponent,
     PaymentPlanInfo,
     Recommended,
-    RewardEditComponent
+    RewardEditComponent,
+    AfterEstablishmentCreationComponent,
+    LightBoxComponent
 ];
 
 export const SERVICES_DECLARATIONS = [

@@ -12,6 +12,7 @@ export interface UserDetail extends CollectionObject {
     country_id?: string;
     city_id?: string;
     other_city?: string;
+    show_after_rest_creation?: boolean;
     //
 
     establishment_work?: string;
