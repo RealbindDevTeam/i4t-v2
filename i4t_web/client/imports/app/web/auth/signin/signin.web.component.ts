@@ -81,10 +81,6 @@ export class SigninWebComponent extends AuthClass implements OnInit {
                                     this.router.navigate(['app/orders']);
                                     break;
                                 }
-                                case '500': {
-                                    this.validateUserIsActive('app/chef-orders');
-                                    break;
-                                }
                                 case '600': {
                                     if(this.devicesValidate()){
                                         this.validateUserIsActive('app/dashboards');

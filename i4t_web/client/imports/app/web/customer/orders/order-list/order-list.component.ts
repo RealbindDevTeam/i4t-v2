@@ -23,6 +23,8 @@ import { Tables } from '../../../../../../../both/collections/establishment/tabl
 import { Reward } from '../../../../../../../both/models/establishment/reward.model';
 import { Rewards } from '../../../../../../../both/collections/establishment/reward.collection';
 import { RewardsDetailComponent } from '../../rewards-detail/rewards-detail.component';
+import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
+import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 
 @Component({
     selector: 'order-list',
@@ -45,6 +47,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
     private _rewardsSub: Subscription;
+    private _userDetailsSub: Subscription;
     private _mdDialogRef: MatDialogRef<any>;
 
     private _orders: Observable<Order[]>;
@@ -56,6 +59,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _additionDetails: Observable<Addition[]>;
     private _establishments: Observable<Establishment[]>;
     private _rewards: Observable<Reward[]>;
+    private _userDetails: Observable<UserDetail[]>;
 
     private _showOrderItemDetail: boolean = false;
     private _currentOrder: Order;
@@ -94,6 +98,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _tableNumber: number;
     private _loading: boolean = false;
     private _showReedemPoints: boolean = true;
+    private _userRewardPoints: number;
 
     /**
      * OrdersListComponent Constructor
@@ -189,6 +194,13 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 this._rewards.subscribe(() => { this.countRewards(); });
             });
         });
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+            this._ngZone.run(() => {
+                this._userDetails = UserDetails.find({}).zone();
+                this.verifyUserRewardPoints();
+                this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
+            });
+        });
     }
 
     /**
@@ -213,6 +225,13 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Verify user reward points
+     */
+    verifyUserRewardPoints(): void {
+        this._userRewardPoints = UserDetails.findOne({ user_id: this._user }).reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+    }
+
+    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
@@ -224,6 +243,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
         if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
+        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
     }
 
     /**
@@ -984,6 +1004,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         });
         this._mdDialogRef.componentInstance._establishmentId = this.establishmentId;
         this._mdDialogRef.componentInstance._tableQRCode = this.tableQRCode;
+        this._mdDialogRef.componentInstance._userRewardPoints = this._userRewardPoints;
         this._mdDialogRef.afterClosed().subscribe(result => {
             this._mdDialogRef = null;
         });

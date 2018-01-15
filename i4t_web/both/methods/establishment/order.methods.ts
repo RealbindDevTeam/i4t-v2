@@ -5,6 +5,8 @@ import { Order, OrderItem, OrderAddition } from '../../models/establishment/orde
 import { Orders } from '../../collections/establishment/order.collection';
 import { Establishment } from '../../models/establishment/establishment.model';
 import { Establishments } from '../../collections/establishment/establishment.collection';
+import { UserDetail, UserRewardPoints } from '../../models/auth/user-detail.model';
+import { UserDetails } from '../../collections/auth/user-detail.collection';
 
 if (Meteor.isServer) {
     Meteor.methods({
@@ -71,6 +73,12 @@ if (Meteor.isServer) {
                     total_reward_points: _finalPoints
                 });
             }
+            if (_itemToInsert.is_reward) {
+                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
+                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
+                    { $set: { 'reward_points.$.points': (_lPoints.points - _itemToInsert.redeemed_points) } });
+            }
         },
 
         AddItemToOrder2: function (_itemToInsert: OrderItem, _establishmentId: string, _idTable: string, _finalPrice: number, _finalPoints: number) {
@@ -130,6 +138,12 @@ if (Meteor.isServer) {
                     additions: [],
                     total_reward_points: _finalPoints
                 });
+            }
+            if (_itemToInsert.is_reward) {
+                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
+                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
+                    { $set: { 'reward_points.$.points': (_lPoints.points - _itemToInsert.redeemed_points) } });
             }
         },
 

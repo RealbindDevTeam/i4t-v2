@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Job, JobCollection } from 'meteor/vsivsi:job-collection';
-import { UserDetail } from '../../../models/auth/user-detail.model';
+import { UserDetail, UserRewardPoints } from '../../../models/auth/user-detail.model';
 import { UserDetails } from '../../../collections/auth/user-detail.collection';
 import { WaiterCallDetail } from '../../../models/establishment/waiter-call-detail.model';
 import { WaiterCallDetails } from '../../../collections/establishment/waiter-call-detail.collection';
@@ -9,6 +9,7 @@ import { Establishments, EstablishmentTurns } from '../../../collections/establi
 import { Order } from '../../../models/establishment/order.model';
 import { Orders } from '../../../collections/establishment/order.collection';
 import { Tables } from '../../../collections/establishment/table.collection';
+import { _localeFactory } from '@angular/core/src/application_module';
 
 if (Meteor.isServer) {
 
@@ -173,6 +174,18 @@ if (Meteor.isServer) {
 
           let waiterDetail = WaiterCallDetails.findOne({ job_id: _jobDetail.job_id });
           if (waiterDetail.type === "CUSTOMER_ORDER" && waiterDetail.order_id !== null) {
+            let _lOrder: Order = Orders.findOne({ _id: waiterDetail.order_id });
+            let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
+            if (_lOrder.total_reward_points > 0) {
+              if (_lConsumerDetail.reward_points === null || _lConsumerDetail.reward_points === undefined) {
+                let _lUserReward: UserRewardPoints = { establishment_id: _lOrder.establishment_id, points: _lOrder.total_reward_points }
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $set: { reward_points: [_lUserReward] } });
+              } else {
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
+                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
+                  { $set: { 'reward_points.$.points': (_lPoints.points + _lOrder.total_reward_points) } });
+              }
+            }
             Orders.update({ _id: waiterDetail.order_id },
               {
                 $set: {
@@ -204,7 +217,7 @@ if (Meteor.isServer) {
 
           let waiterDetail = WaiterCallDetails.findOne({ job_id: _jobDetail.job_id });
           if (waiterDetail.type === "CUSTOMER_ORDER" && waiterDetail.order_id !== null) {
-            let _lOrder:Order = Orders.findOne( { _id: waiterDetail.order_id });
+            let _lOrder: Order = Orders.findOne({ _id: waiterDetail.order_id });
             if (_lOrder.status === 'ORDER_STATUS.CONFIRMED') {
               Orders.update({ _id: _lOrder._id }, {
                 $set: {

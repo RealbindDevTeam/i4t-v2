@@ -23,10 +23,7 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
     private _establishmentId: string;
     private _tableQRCode: string;
-
-    private _rewardsSub: Subscription;
-    private _ordersSub: Subscription;
-    private _itemsSub: Subscription;
+    private _userRewardPoints: number;
 
     private _rewards: Observable<Reward[]>;
     private _items: Observable<Item[]>;
@@ -55,31 +52,9 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
      * ngOnInit implementation
      */
     ngOnInit() {
-        this.removeSubscriptions();
-        this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._establishmentId).subscribe(() => {
-            this._ngZone.run(() => {
-                this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }).zone();
-            });
-        });
-        this._ordersSub = MeteorObservable.subscribe('getOrders', this._establishmentId, this._tableQRCode, ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED']).subscribe(() => {
-            this._ngZone.run(() => {
-                this._orders = Orders.find({ creation_user: this._user }).zone();
-            });
-        });
-        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this._establishmentId).subscribe(() => {
-            this._ngZone.run(() => {
-                this._items = Items.find({}).zone();
-            });
-        });
-    }
-
-    /**
-     * Remove all subscriptions
-     */
-    removeSubscriptions(): void {
-        if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
+        this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }).zone();
+        this._orders = Orders.find({ creation_user: this._user }).zone();
+        this._items = Items.find({}).zone();
     }
 
     /**
@@ -92,9 +67,60 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Add reward in order with SELECTING state
+     * @param {string} _pItemToInsert
+     * @param {number} _pItemQuantiy
+     * @param {number} _pRewardPoints
+     */
+    AddRewardToOrder(_pItemToInsert: string, _pItemQuantiy:number, _pRewardPoints: number): void {
+        let _lOrderItemIndex: number = 0;
+        let _lOrder: Order = Orders.collection.find({ creation_user: this._user, establishment_id: this._establishmentId }).fetch()[0];
+
+        if (_lOrder) {
+            _lOrderItemIndex = _lOrder.orderItemCount + 1;
+        } else {
+            _lOrderItemIndex = 1;
+        }
+
+        let _lOrderItem: OrderItem = {
+            index: _lOrderItemIndex,
+            itemId: _pItemToInsert,
+            quantity: _pItemQuantiy,
+            observations: '',
+            garnishFood: [],
+            additions: [],
+            paymentItem: 0,
+            reward_points: 0,
+            is_reward: true,
+            redeemed_points: _pRewardPoints
+        };
+        MeteorObservable.call('AddItemToOrder', _lOrderItem, this._establishmentId, this._tableQRCode, 0, 0).subscribe(() => {
+            let _lMessage: string = 'Recompensa Añadida';//this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
+            this._snackBar.open(_lMessage, '', { duration: 3000 });
+            this._dialogRef.close();
+        }, (error) => {
+            let _lMessage: string = 'Error. Intenta nuevamente!';//this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
+            this._snackBar.open(_lMessage, '', { duration: 3000 });
+            this._dialogRef.close();
+        });
+    }
+
+    /**
+     * Return traduction
+     * @param {string} itemName 
+     */
+    itemNameTraduction(itemName: string): string {
+        var wordTraduced: string;
+        this._translate.get(itemName).subscribe((res: string) => {
+            wordTraduced = res;
+        });
+        return wordTraduced;
+    }
+
+    /**
      * ngOnDestroy implementation
      */
     ngOnDestroy() {
-        this.removeSubscriptions();
+
     }
 }

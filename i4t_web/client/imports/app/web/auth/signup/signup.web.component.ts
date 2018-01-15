@@ -85,7 +85,6 @@ export class SignupWebComponent extends AuthClass implements OnInit {
                                 user_id: Meteor.userId(),
                                 role_id: '400',
                                 is_active: true,
-                                establishment_work: '',
                                 penalties: [],
                                 current_establishment: '',
                                 current_table: ''
