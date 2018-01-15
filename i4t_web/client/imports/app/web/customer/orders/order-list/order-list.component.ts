@@ -89,6 +89,9 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _tableNumber: number;
     private _loading: boolean = false;
 
+    private _finalPoints: number = 0;
+    private _unitRewardPoints: number = 0;
+
     /**
      * OrdersListComponent Constructor
      * @param {TranslateService} _translate 
@@ -270,12 +273,14 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             if (result.success) {
                 let _lOrderItemToremove: OrderItem = this._currentOrder.items.filter(o => _pItemId === o.itemId && o.index === this._orderItemIndex)[0];
                 let _lNewTotalPayment: number = this._currentOrder.totalPayment - _lOrderItemToremove.paymentItem;
+                let _lNewTotalPoints: number = Number.parseInt(this._currentOrder.total_reward_points.toString()) - Number.parseInt(_lOrderItemToremove.reward_points.toString());
 
                 Orders.update({ _id: this._currentOrder._id }, { $pull: { items: { itemId: _pItemId, index: this._orderItemIndex } } });
                 Orders.update({ _id: this._currentOrder._id },
                     {
                         $set: {
                             totalPayment: _lNewTotalPayment,
+                            total_reward_points: _lNewTotalPoints,
                             modification_user: this._user,
                             modification_date: new Date()
                         }
@@ -422,6 +427,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._orderItemGarnishFood = _pOrderItem.garnishFood;
         this._orderItemAdditions = _pOrderItem.additions;
         this._finalPrice = _pOrderItem.paymentItem;
+        this._finalPoints = _pOrderItem.reward_points;
 
         this._itemsToShowDetail = Items.find({ _id: _pOrderItem.itemId }).zone();
         this.prepareGarnishFoodToEdit();
@@ -528,6 +534,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      */
     setUnitPrice(_pItemPrice: Item): void {
         this._unitPrice = this.getItemPrice(_pItemPrice);
+        this._unitRewardPoints = this.getItemRewardPoints(_pItemPrice);
     }
 
     /**
@@ -556,6 +563,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._lastQuantity = this._quantityCount;
         this._quantityCount += 1;
         this.calculateFinalPriceQuantity();
+        this.calculateFinalPointsQuantity();
     }
 
     /**
@@ -567,6 +575,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._quantityCount -= 1;
         }
         this.calculateFinalPriceQuantity();
+        this.calculateFinalPointsQuantity();
     }
 
     /**
@@ -579,6 +588,15 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._garnishFormGroup.reset();
             this._additionsFormGroup.reset();
             this._showGarnishFoodError = false;
+        }
+    }
+
+    /**
+     * Calculate final points when item quantity is entered
+     */
+    calculateFinalPointsQuantity(): void {
+        if (Number.isFinite(this._quantityCount)) {
+            this._finalPoints = this._unitRewardPoints * this._quantityCount;
         }
     }
 
@@ -651,18 +669,21 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 observations: this._editOrderItemForm.value.observations,
                 garnishFood: _lGarnishFoodToInsert,
                 additions: _lAdditionsToInsert,
-                paymentItem: this._finalPrice
+                paymentItem: this._finalPrice,
+                reward_points: this._finalPoints
             };
 
 
             let _lOrderItemToremove: OrderItem = this._currentOrder.items.filter(o => _lOrderItem.itemId === o.itemId && _lOrderItem.index === o.index)[0];
-            let _lNewTotalPayment: number = this._currentOrder.totalPayment - _lOrderItemToremove.paymentItem;
+            let _lNewTotalPayment: number = Number.parseInt(this._currentOrder.totalPayment.toString()) - Number.parseInt(_lOrderItemToremove.paymentItem.toString());
+            let _lNewTotalPoints: number = Number.parseInt(this._currentOrder.total_reward_points.toString()) - Number.parseInt(_lOrderItemToremove.reward_points.toString());
 
             Orders.update({ _id: this._currentOrder._id }, { $pull: { items: { itemId: _lOrderItem.itemId, index: _lOrderItem.index } } });
             Orders.update({ _id: this._currentOrder._id },
                 {
                     $set: {
                         totalPayment: _lNewTotalPayment,
+                        total_reward_points: _lNewTotalPoints,
                         modification_user: this._user,
                         modification_date: new Date()
                     }
@@ -671,6 +692,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
             let _lOrder = Orders.findOne({ _id: this._currentOrder._id });
             let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_lOrderItem.paymentItem.toString());
+            let _lTotalPointsAux: number = Number.parseInt(_lOrder.total_reward_points.toString()) + Number.parseInt(_lOrderItem.reward_points.toString());
 
             Orders.update({ _id: _lOrder._id },
                 { $push: { items: _lOrderItem } }
@@ -680,7 +702,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                     $set: {
                         modification_user: this._user,
                         modification_date: new Date(),
-                        totalPayment: _lTotalPaymentAux
+                        totalPayment: _lTotalPaymentAux,
+                        total_reward_points: _lTotalPointsAux
                     }
                 }
             );
@@ -892,6 +915,14 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      */
     getItemPrice(_pItem: Item): number {
         return _pItem.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
+    }
+
+    /**
+     * Return Item rewardPoints
+     * @param {Item} _pItem
+     */
+    getItemRewardPoints(_pItem: Item): number {
+        return Number.parseInt(_pItem.reward_points.toString());
     }
 
     /**
