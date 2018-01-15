@@ -85,6 +85,8 @@ import { Recommended } from './administrator/menu/items/item/recommended/recomme
 import { RewardComponent } from './administrator/rewards/reward/reward.component';
 import { RewardEditComponent } from './administrator/rewards/reward-edit/reward-edit.component';
 import { RewardsDetailComponent } from './customer/rewards-detail/rewards-detail.component';
+import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
+import { LightBoxComponent } from './general/lightbox/lightbox.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -172,7 +174,9 @@ export const MODAL_DIALOG_DECLARATIONS = [
     PaymentPlanInfo,
     Recommended,
     RewardEditComponent,
-    RewardsDetailComponent
+    RewardsDetailComponent,
+    AfterEstablishmentCreationComponent,
+    LightBoxComponent
 ];
 
 export const SERVICES_DECLARATIONS = [

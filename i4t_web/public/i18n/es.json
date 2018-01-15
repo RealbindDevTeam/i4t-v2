@@ -1573,6 +1573,12 @@
         "READ_MORE": "Leer más",
         "READ_LESS": "Leer menos"
     },
+    "AFTER_RESTAURANT_CREATION" : {
+        "A" : "Ingresa a la opción Administración/colaboradores, y crea los empleados del restaurante",
+        "B" : "Ve a la opción Administración/Mesas/Buscar mesas, para seleccionar e imprimir los Códigos QR de tus mesas",
+        "C" : "Carga la información de tu menú desde la opción Menú, así los usuarios podrán verlo desde sus dispositivos",
+        "NOT_SHOW" : "No volver a mostrar"
+    },
     "REWARD": {
         "THERE_NOT_ESTABLISHMENTS": "Aún no hay restaurantes registrados",
         "MESSAGE": "Registra uno para habilitar esta opción",

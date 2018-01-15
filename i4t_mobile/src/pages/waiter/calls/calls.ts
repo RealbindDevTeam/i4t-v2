@@ -12,6 +12,7 @@ import { PaymentConfirmPage } from "./payment-confirm/payment-confirm";
 import { SendOrderDetailsPage } from './send-order-detail/send-order-detail';
 import { EstablishmentExitConfirmPage } from './establishment-exit-confirm/establishment-exit-confirm';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
+import { CustomerOrderConfirm } from "./customer-order-confirm/customer-order-confirm";
 
 @Component({
   selector: 'calls-page',
@@ -175,6 +176,13 @@ export class CallsPage implements OnInit, OnDestroy {
    */
   goToCancelOrder(_call: WaiterCallDetail) {
     this._navCtrl.push(EstablishmentExitConfirmPage, { call: _call });
+  }
+
+  /**
+   * Go to order call
+   */
+  goToOrderCall(_call: WaiterCallDetail) {
+    this._navCtrl.push(CustomerOrderConfirm, { call: _call });
   }
 
   /**

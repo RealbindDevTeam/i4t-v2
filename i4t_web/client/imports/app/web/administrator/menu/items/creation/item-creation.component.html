@@ -69,7 +69,7 @@
                                         <span class="app-flex-filler"></span>
                                         <mat-form-field *ngIf="_rewardEnable" style="margin-left: 5%;">
                                             <mat-select formControlName="rewardValue" placeholder="{{'ITEMS.POINTS_PLACEHOLER' | translate}}">
-                                                <mat-option *ngFor="let point of _rewardPointsArray" value="{{point.value}}">{{point.label}}</mat-option>
+                                                <mat-option *ngFor="let point of _points | async" value="{{point._id}}">{{point.point}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
@@ -78,7 +78,7 @@
                                     <mat-form-field style="width: 100%">
                                         <mat-select formControlName="cookingTime" placeholder="{{'ITEMS.COOKING_TIME' | translate}}">
                                             <mat-option value="">{{'ITEMS.NO_TIME' | translate}}</mat-option>
-                                            <mat-option *ngFor="let time of _cookingTimeArray" value="{{time.value}}">{{time.label}}</mat-option>
+                                            <mat-option *ngFor="let time of _cookingTimes | async" value="{{time.cooking_time}}">{{time.cooking_time}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
