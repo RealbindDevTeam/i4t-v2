@@ -50,8 +50,7 @@
                                 </div>
                                 <div>
                                     <mat-form-field class="description">
-                                        <textarea matInput formControlName="editDescription" placeholder="{{'DESCRIPTION' | translate}}" maxlength="200"
-                                            #inputDesc></textarea>
+                                        <textarea matInput formControlName="editDescription" placeholder="{{'DESCRIPTION' | translate}}" maxlength="200" #inputDesc></textarea>
                                         <mat-hint align="end">{{inputDesc.value.length}} / 200</mat-hint>
                                     </mat-form-field>
                                     <div class="image">
@@ -75,7 +74,7 @@
                                             <span class="app-flex-filler"></span>
                                             <mat-form-field *ngIf="_rewardEnable" style="margin-left: 5%;">
                                                 <mat-select formControlName="editRewardValue" placeholder="{{'ITEMS.POINTS_PLACEHOLER' | translate}}">
-                                                    <mat-option *ngFor="let point of _rewardPointsArray" value="{{point.value}}">{{point.label}}</mat-option>
+                                                    <mat-option *ngFor="let point of _points | async" value="{{point._id}}">{{point.point}}</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
@@ -84,8 +83,8 @@
                                     <div class="image">
                                         <mat-form-field style="width: 100%">
                                             <mat-select formControlName="editCookingTime" placeholder="{{'ITEMS.COOKING_TIME' | translate}}" [(ngModel)]="_selectedTime">
-                                                    <mat-option value="">{{'ITEMS.NO_TIME' | translate}}</mat-option>
-                                                <mat-option *ngFor="let time of _cookingTimeArray" value="{{time.value}}">{{time.label}}</mat-option>
+                                                <mat-option value="">{{'ITEMS.NO_TIME' | translate}}</mat-option>
+                                                <mat-option *ngFor="let time of _cookingTimes | async" value="{{time.cooking_time}}">{{time.cooking_time}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
