@@ -38,6 +38,12 @@
                             <div *ngIf="signupForm.controls['lastName'].hasError('maxlength') && signupForm.controls['lastName'].touched" class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_LASTNAME' | translate}}</div>
     
                             <mat-form-field style="width: 100%">
+                                <mat-select formControlName="gender" placeholder="{{'SIGNUP.GENDER_LBL' | translate}}">
+                                    <mat-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field style="width: 100%">
                                 <input matInput formControlName="dniNumber" placeholder="{{'ADMIN_SIGNUP.DNI_NUMBER' | translate}}" name="dniNumber" required>
                             </mat-form-field>
                             <div *ngIf="signupForm.controls['dniNumber'].hasError('required') && signupForm.controls['dniNumber'].touched" class="error-message">{{'ADMIN_SIGNUP.REQUIRED_DNI' | translate}}</div>

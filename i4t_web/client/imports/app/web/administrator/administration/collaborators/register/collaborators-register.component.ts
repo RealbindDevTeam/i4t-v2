@@ -50,6 +50,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
     private _showTablesSelect: boolean = false;
     private _showTablesSelectByRest: boolean = false;
     private _disabledTablesAssignment: boolean = true;
+    private _genderArray: any[] = [];
 
     /**
      * CollaboratorsRegisterComponent constructor
@@ -91,6 +92,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
             confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
             table_init: new FormControl(0),
             table_end: new FormControl(0),
+            gender: new FormControl('', [Validators.required])
         });
         this._establishments = Establishments.find({}).zone();
         this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe();
@@ -99,6 +101,10 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
         this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).subscribe(() => {
             this._tables = Tables.find({});
         });
+
+        this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+        { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+        { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
     }
 
     /**
@@ -219,6 +225,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
                     this._userProfile.first_name = this._collaboratorRegisterForm.value.name;
                     this._userProfile.last_name = this._collaboratorRegisterForm.value.last_name;
                     this._userProfile.language_code = this._userLang;
+                    this._userProfile.gender = this._collaboratorRegisterForm.value.gender;
 
                     if (this._collaboratorRegisterForm.valid) {
 
@@ -240,7 +247,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
                             "email": this._collaboratorRegisterForm.value.email,
                             "password": this._collaboratorRegisterForm.value.password,
                             "username": this._userPrefix + this._collaboratorRegisterForm.value.username,
-                            "profile": this._userProfile,
+                            "profile": this._userProfile
                         });
 
                         MeteorObservable.call('createCollaboratorUser', info).subscribe((result) => {

@@ -10,6 +10,11 @@
         "ATTENDED": "Atendido",
         "CANCELED": "Cancelado"
     },
+    "SIGNUP": {
+        "MALE_GENDER": "Hombre",
+        "FEMALE_GENDER": "Mujer",
+        "OTHER_GENDER": "Otro"
+    },
     "MOBILE": {
         "CANCEL": "Cancelar",
         "CATEGORY": "Categoría",
@@ -64,7 +69,11 @@
             "USER_EMAIL_EXISTS": "El usuario y/o correo ya existe, por favor revisa los datos ingresados e intenta de nuevo",
             "ERROR": "Se ha presentado un error registrando el usuario",
             "ACCEPT": "Aceptar",
-            "SUCCESS": "El usuario ha sido creado con éxito"
+            "SUCCESS": "El usuario ha sido creado con éxito",
+            "GENDER": "Género",
+            "FEMALE_GENDER": "Mujer",
+            "OTHER_GENDER": "Otro",
+            "GENDER_LBL": "Género"
         },
         "SIGNIN": {
             "EMAIL_USERNAME": "Correo electrónico/Nombre usuario",
