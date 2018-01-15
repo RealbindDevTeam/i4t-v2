@@ -95,11 +95,11 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
             redeemed_points: _pRewardPoints
         };
         MeteorObservable.call('AddItemToOrder', _lOrderItem, this._establishmentId, this._tableQRCode, 0, 0).subscribe(() => {
-            let _lMessage: string = 'Recompensa Añadida';//this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
+            let _lMessage: string = this.itemNameTraduction('REWARD_DETAIL.REWARD_AGGREGATED');
             this._snackBar.open(_lMessage, '', { duration: 3000 });
             this._dialogRef.close();
         }, (error) => {
-            let _lMessage: string = 'Error. Intenta nuevamente!';//this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
+            let _lMessage: string = this.itemNameTraduction('REWARD_DETAIL.ERROR');
             this._snackBar.open(_lMessage, '', { duration: 3000 });
             this._dialogRef.close();
         });

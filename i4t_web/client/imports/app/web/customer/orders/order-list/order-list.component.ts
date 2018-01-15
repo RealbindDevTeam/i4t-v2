@@ -23,7 +23,7 @@ import { Tables } from '../../../../../../../both/collections/establishment/tabl
 import { Reward } from '../../../../../../../both/models/establishment/reward.model';
 import { Rewards } from '../../../../../../../both/collections/establishment/reward.collection';
 import { RewardsDetailComponent } from '../../rewards-detail/rewards-detail.component';
-import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
+import { UserDetail, UserRewardPoints } from '../../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 
 @Component({
@@ -228,7 +228,10 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * Verify user reward points
      */
     verifyUserRewardPoints(): void {
-        this._userRewardPoints = UserDetails.findOne({ user_id: this._user }).reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+        let _lRewardPoints: UserRewardPoints[] = UserDetails.findOne({ user_id: this._user }).reward_points;
+        if (_lRewardPoints.length > 0) {
+            this._userRewardPoints = UserDetails.findOne({ user_id: this._user }).reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+        }
     }
 
     /**
@@ -829,6 +832,16 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._mdDialogRef = result;
             if (result.success) {
                 if (_pOrder.status === 'ORDER_STATUS.SELECTING') {
+                    _pOrder.items.forEach((it) => {
+                        if (it.is_reward) {
+                            let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _pOrder.creation_user });
+                            let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _pOrder.establishment_id)[0];
+                            let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(it.redeemed_points.toString());
+
+                            UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
+                            UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+                        }
+                    });
                     Orders.update({ _id: _pOrder._id }, {
                         $set: {
                             status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
@@ -837,6 +850,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                     }
                     );
                     this._showDetails = false;
+                    let _lMessage: string = this.itemNameTraduction('ORDER_LIST.CANCEL_ORDER_MSG');
+                    this.snackBar.open(_lMessage, '', { duration: 2500 });
                 } else {
                     this.openDialog(this.titleMsg, '', this.itemNameTraduction("ORDER_LIST.ORDER_CANT_CANCEL"), '', this.btnAcceptLbl, false);
                 }
@@ -1007,6 +1022,65 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._mdDialogRef.componentInstance._userRewardPoints = this._userRewardPoints;
         this._mdDialogRef.afterClosed().subscribe(result => {
             this._mdDialogRef = null;
+        });
+    }
+
+    /**
+     * Function to remove reward from consumer order
+     * @param {Order} _pOrder 
+     * @param {string} _pItemId 
+     * @param {number} _pIndex 
+     */
+    removeReward(_pOrder: Order, _pItemId: string, _pIndex: number): void {
+        this._mdDialogRef = this._mdDialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: this.itemNameTraduction('ORDER_LIST.REMOVE_REWARD'),
+                subtitle: '',
+                content: this.itemNameTraduction("ORDER_LIST.REMOVE_REWARD_MSG"),
+                buttonCancel: this.itemNameTraduction('NO'),
+                buttonAccept: this.itemNameTraduction('YES'),
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                let _lOrderItemToremove: OrderItem = _pOrder.items.filter(o => _pItemId === o.itemId && o.index === _pIndex && o.is_reward)[0];
+                let _lNewTotalPayment: number = _pOrder.totalPayment - _lOrderItemToremove.paymentItem;
+
+                Orders.update({ _id: _pOrder._id }, { $pull: { items: { itemId: _pItemId, index: _pIndex } } });
+                Orders.update({ _id: _pOrder._id },
+                    {
+                        $set: {
+                            totalPayment: _lNewTotalPayment,
+                            modification_user: this._user,
+                            modification_date: new Date()
+                        }
+                    }
+                );
+
+                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _pOrder.creation_user });
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _pOrder.establishment_id)[0];
+                let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(_lOrderItemToremove.redeemed_points.toString());
+
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+
+                this._currentOrder = Orders.findOne({ _id: _pOrder._id });
+                if (this._currentOrder.items.length === 0 && this._currentOrder.additions.length === 0) {
+                    Orders.update({ _id: this._currentOrder._id }, {
+                        $set: {
+                            status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
+                            modification_date: new Date()
+                        }
+                    });
+                }
+                this.viewItemDetail('item-selected', true);
+                this._showOrderItemDetail = false;
+                let _lMessage: string = this.itemNameTraduction('ORDER_LIST.REWARD_DELETED');
+                this.snackBar.open(_lMessage, '', { duration: 2500 });
+            }
         });
     }
 

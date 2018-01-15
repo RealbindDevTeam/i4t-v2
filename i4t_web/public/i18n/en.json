@@ -857,7 +857,11 @@
         "DELETE_ADITION_DLG": "Delete order addition",
         "CANCEL_ORDER_DLG": "Cancel order",
         "CONFIRM_ORDER_DLG": "Confirm order",
-        "ORDER_CONFIRMED_MSG": "Order confirmed"
+        "ORDER_CONFIRMED_MSG": "Order confirmed",
+        "CANCEL_ORDER_MSG": "Order canceled",
+        "REMOVE_REWARD": "Delete Reward",
+        "REMOVE_REWARD_MSG": "Do you want to delete this reward from the order?",
+        "REWARD_DELETED": "Reward deleted from order"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "You are not in any restaurant",
@@ -1592,5 +1596,15 @@
         "REWARD_REMOVED": "Reward removed",
         "EDIT_REWARD": "Reward Edition",
         "REWARD_EDITED": "Reward edited"
+    },
+    "REWARD_DETAIL": {
+        "REWARD_TITLE": "Rewards",
+        "POINTS_TO_REDEEM": "Available points to redeem",
+        "POINTS": "Points",
+        "UNAVAILABLE": "Unavailable",
+        "REDEEM": "Redeem",
+        "GET_POINTS": "Get points",
+        "REWARD_AGGREGATED": "Reward aggregated",
+        "ERROR": "Error aggregating reward. Try again"
     }
 }

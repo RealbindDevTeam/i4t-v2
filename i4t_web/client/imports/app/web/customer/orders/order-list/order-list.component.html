@@ -114,7 +114,7 @@
                                                             {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
                                                         </h5>
                                                         <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
-                                                        <button mat-icon-button>
+                                                        <button mat-icon-button (click)="removeReward(or, it.itemId, it.index)">
                                                             <mat-icon class="item-icon">clear</mat-icon>
                                                         </button>
                                                     </mat-list-item>

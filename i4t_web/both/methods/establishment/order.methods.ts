@@ -18,6 +18,7 @@ if (Meteor.isServer) {
         AddItemToOrder: function (_itemToInsert: OrderItem, _establishmentId: string, _tableQRCode: string, _finalPrice: number, _finalPoints: number) {
 
             let _lTable: Table = Tables.collection.findOne({ QR_code: _tableQRCode });
+            let _lEstablishment: Establishment = Establishments.collection.findOne({ _id: _establishmentId });
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
@@ -54,7 +55,6 @@ if (Meteor.isServer) {
                     }
                 );
             } else {
-                let _lEstablishment: Establishment = Establishments.collection.findOne({ _id: _establishmentId });
                 let _orderCount: number = _lEstablishment.orderNumberCount + 1;
                 _lEstablishment.orderNumberCount = _orderCount;
 
@@ -74,9 +74,9 @@ if (Meteor.isServer) {
                 });
             }
             if (_itemToInsert.is_reward) {
-                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
-                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
-                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
+                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lEstablishment._id)[0];
+                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lEstablishment._id },
                     { $set: { 'reward_points.$.points': (_lPoints.points - _itemToInsert.redeemed_points) } });
             }
         },
@@ -84,6 +84,7 @@ if (Meteor.isServer) {
         AddItemToOrder2: function (_itemToInsert: OrderItem, _establishmentId: string, _idTable: string, _finalPrice: number, _finalPoints: number) {
 
             let _lTable: Table = Tables.collection.findOne({ _id: _idTable });
+            let _lEstablishment: Establishment = Establishments.collection.findOne({ _id: _establishmentId });
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
@@ -120,7 +121,6 @@ if (Meteor.isServer) {
                     }
                 );
             } else {
-                let _lEstablishment: Establishment = Establishments.collection.findOne({ _id: _establishmentId });
                 let _orderCount: number = _lEstablishment.orderNumberCount + 1;
                 _lEstablishment.orderNumberCount = _orderCount;
 
@@ -140,9 +140,9 @@ if (Meteor.isServer) {
                 });
             }
             if (_itemToInsert.is_reward) {
-                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
-                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
-                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
+                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lEstablishment._id)[0];
+                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lEstablishment._id },
                     { $set: { 'reward_points.$.points': (_lPoints.points - _itemToInsert.redeemed_points) } });
             }
         },
