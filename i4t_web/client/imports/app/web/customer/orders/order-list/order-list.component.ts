@@ -201,7 +201,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({}).zone();
                 this.verifyUserRewardPoints();
-                this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
+                this._userDetails.subscribe(() => { this.verifyUserRewardPoints(); });
             });
         });
     }
@@ -234,6 +234,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         let _lRewardPoints: UserRewardPoints[] = UserDetails.findOne({ user_id: this._user }).reward_points;
         if (_lRewardPoints.length > 0) {
             this._userRewardPoints = UserDetails.findOne({ user_id: this._user }).reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+        } else {
+            this._userRewardPoints = 0;
         }
     }
 

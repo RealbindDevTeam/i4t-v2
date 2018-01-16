@@ -62,6 +62,7 @@ if (Meteor.isServer) {
 
       data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       if (data_detail === undefined || data_detail === null) {
+        data.job_id = job._doc._id;
         Meteor.call('waiterCall', queueName, true, data);
         data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       }
@@ -219,6 +220,15 @@ if (Meteor.isServer) {
           if (waiterDetail.type === "CUSTOMER_ORDER" && waiterDetail.order_id !== null) {
             let _lOrder: Order = Orders.findOne({ _id: waiterDetail.order_id });
             if (_lOrder.status === 'ORDER_STATUS.CONFIRMED') {
+              _lOrder.items.forEach((it) => {
+                if (it.is_reward) {
+                  let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
+                  let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
+
+                  UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
+                    { $set: { 'reward_points.$.points': (Number.parseInt(_lPoints.points.toString()) + Number.parseInt(it.redeemed_points.toString())) } });
+                }
+              });
               Orders.update({ _id: _lOrder._id }, {
                 $set: {
                   status: 'ORDER_STATUS.CANCELED', modification_user: _jobDetail.waiter_id,
