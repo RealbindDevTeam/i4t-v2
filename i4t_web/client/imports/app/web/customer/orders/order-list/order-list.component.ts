@@ -231,11 +231,14 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * Verify user reward points
      */
     verifyUserRewardPoints(): void {
-        let _lRewardPoints: UserRewardPoints[] = UserDetails.findOne({ user_id: this._user }).reward_points;
-        if (_lRewardPoints.length > 0) {
-            this._userRewardPoints = UserDetails.findOne({ user_id: this._user }).reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
-        } else {
-            this._userRewardPoints = 0;
+        let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: this._user });
+        if (_lUserDetail) {
+            let _lRewardPoints: UserRewardPoints[] = _lUserDetail.reward_points;
+            if (_lRewardPoints.length > 0) {
+                this._userRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+            } else {
+                this._userRewardPoints = 0;
+            }
         }
     }
 
