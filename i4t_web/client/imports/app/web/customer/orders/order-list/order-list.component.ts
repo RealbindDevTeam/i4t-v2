@@ -20,6 +20,11 @@ import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/ale
 import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { Reward } from '../../../../../../../both/models/establishment/reward.model';
+import { Rewards } from '../../../../../../../both/collections/establishment/reward.collection';
+import { RewardsDetailComponent } from '../../rewards-detail/rewards-detail.component';
+import { UserDetail, UserRewardPoints } from '../../../../../../../both/models/auth/user-detail.model';
+import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 
 @Component({
     selector: 'order-list',
@@ -41,6 +46,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _currenciesSub: Subscription;
     private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
+    private _rewardsSub: Subscription;
+    private _userDetailsSub: Subscription;
     private _mdDialogRef: MatDialogRef<any>;
 
     private _orders: Observable<Order[]>;
@@ -51,6 +58,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _additions: Observable<Addition[]>;
     private _additionDetails: Observable<Addition[]>;
     private _establishments: Observable<Establishment[]>;
+    private _rewards: Observable<Reward[]>;
+    private _userDetails: Observable<UserDetail[]>;
 
     private _showOrderItemDetail: boolean = false;
     private _currentOrder: Order;
@@ -88,6 +97,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _thereAreNotUserOrders: boolean = true;
     private _tableNumber: number;
     private _loading: boolean = false;
+    private _showReedemPoints: boolean = true;
+    private _userRewardPoints: number;
 
     private _finalPoints: number = 0;
     private _unitRewardPoints: number = 0;
@@ -179,6 +190,20 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 this._tableNumber = Tables.collection.findOne({ QR_code: this.tableQRCode })._number;
             });
         });
+        this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this.establishmentId).subscribe(() => {
+            this._ngZone.run(() => {
+                this._rewards = Rewards.find({ establishments: { $in: [this.establishmentId] } }).zone();
+                this.countRewards();
+                this._rewards.subscribe(() => { this.countRewards(); });
+            });
+        });
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+            this._ngZone.run(() => {
+                this._userDetails = UserDetails.find({}).zone();
+                this.verifyUserRewardPoints();
+                this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
+            });
+        });
     }
 
     /**
@@ -196,6 +221,23 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Validate if establishment rewards exists
+     */
+    countRewards(): void {
+        Rewards.collection.find({ establishments: { $in: [this.establishmentId] } }).count() > 0 ? this._showReedemPoints = true : this._showReedemPoints = false;
+    }
+
+    /**
+     * Verify user reward points
+     */
+    verifyUserRewardPoints(): void {
+        let _lRewardPoints: UserRewardPoints[] = UserDetails.findOne({ user_id: this._user }).reward_points;
+        if (_lRewardPoints.length > 0) {
+            this._userRewardPoints = UserDetails.findOne({ user_id: this._user }).reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+        }
+    }
+
+    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
@@ -206,6 +248,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
         if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+        if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
+        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
     }
 
     /**
@@ -811,6 +855,16 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._mdDialogRef = result;
             if (result.success) {
                 if (_pOrder.status === 'ORDER_STATUS.SELECTING') {
+                    _pOrder.items.forEach((it) => {
+                        if (it.is_reward) {
+                            let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _pOrder.creation_user });
+                            let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _pOrder.establishment_id)[0];
+                            let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(it.redeemed_points.toString());
+
+                            UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
+                            UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+                        }
+                    });
                     Orders.update({ _id: _pOrder._id }, {
                         $set: {
                             status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
@@ -819,6 +873,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                     }
                     );
                     this._showDetails = false;
+                    let _lMessage: string = this.itemNameTraduction('ORDER_LIST.CANCEL_ORDER_MSG');
+                    this.snackBar.open(_lMessage, '', { duration: 2500 });
                 } else {
                     this.openDialog(this.titleMsg, '', this.itemNameTraduction("ORDER_LIST.ORDER_CANT_CANCEL"), '', this.btnAcceptLbl, false);
                 }
@@ -980,6 +1036,81 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._mdDialogRef = result;
             if (result.success) {
 
+            }
+        });
+    }
+
+    /**
+     * Function to open rewards detail component
+     */
+    reedemPoints(): void {
+        this._mdDialogRef = this._mdDialog.open(RewardsDetailComponent, {
+            disableClose: true,
+            width: '50%'
+        });
+        this._mdDialogRef.componentInstance._establishmentId = this.establishmentId;
+        this._mdDialogRef.componentInstance._tableQRCode = this.tableQRCode;
+        this._mdDialogRef.componentInstance._userRewardPoints = this._userRewardPoints;
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = null;
+        });
+    }
+
+    /**
+     * Function to remove reward from consumer order
+     * @param {Order} _pOrder 
+     * @param {string} _pItemId 
+     * @param {number} _pIndex 
+     */
+    removeReward(_pOrder: Order, _pItemId: string, _pIndex: number): void {
+        this._mdDialogRef = this._mdDialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: this.itemNameTraduction('ORDER_LIST.REMOVE_REWARD'),
+                subtitle: '',
+                content: this.itemNameTraduction("ORDER_LIST.REMOVE_REWARD_MSG"),
+                buttonCancel: this.itemNameTraduction('NO'),
+                buttonAccept: this.itemNameTraduction('YES'),
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                let _lOrderItemToremove: OrderItem = _pOrder.items.filter(o => _pItemId === o.itemId && o.index === _pIndex && o.is_reward)[0];
+                let _lNewTotalPayment: number = _pOrder.totalPayment - _lOrderItemToremove.paymentItem;
+
+                Orders.update({ _id: _pOrder._id }, { $pull: { items: { itemId: _pItemId, index: _pIndex } } });
+                Orders.update({ _id: _pOrder._id },
+                    {
+                        $set: {
+                            totalPayment: _lNewTotalPayment,
+                            modification_user: this._user,
+                            modification_date: new Date()
+                        }
+                    }
+                );
+
+                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _pOrder.creation_user });
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _pOrder.establishment_id)[0];
+                let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(_lOrderItemToremove.redeemed_points.toString());
+
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+
+                this._currentOrder = Orders.findOne({ _id: _pOrder._id });
+                if (this._currentOrder.items.length === 0 && this._currentOrder.additions.length === 0) {
+                    Orders.update({ _id: this._currentOrder._id }, {
+                        $set: {
+                            status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
+                            modification_date: new Date()
+                        }
+                    });
+                }
+                this.viewItemDetail('item-selected', true);
+                this._showOrderItemDetail = false;
+                let _lMessage: string = this.itemNameTraduction('ORDER_LIST.REWARD_DELETED');
+                this.snackBar.open(_lMessage, '', { duration: 2500 });
             }
         });
     }

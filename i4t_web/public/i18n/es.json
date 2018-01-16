@@ -857,7 +857,11 @@
         "DELETE_ADITION_DLG": "Eliminar adición de la orden",
         "CANCEL_ORDER_DLG": "Cancelar orden",
         "CONFIRM_ORDER_DLG": "Confirmar orden",
-        "ORDER_CONFIRMED_MSG": "Orden confirmada"
+        "ORDER_CONFIRMED_MSG": "Orden confirmada",
+        "CANCEL_ORDER_MSG": "Orden cancelada",
+        "REMOVE_REWARD": "Eliminar Recompensa",
+        "REMOVE_REWARD_MSG": "Esta seguro de eliminar la recompensa de la orden?",
+        "REWARD_DELETED": "Recompensa eliminada de la orden"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "No te encuentras en un restaurante",
@@ -980,7 +984,8 @@
         "TABLE_NOT_EXISTS": "La mesa no existe. Por favor verifíque el código.",
         "IUREST_NO_ACTIVE": "El restaurante no tiene el servicio de iurest activo. No es posible ingresar.",
         "RESTAURANT_NOT_EXISTS": "El restaurante no existe. No es posible ingresar.",
-        "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del "
+        "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del ",
+        "REDEEM_POINTS": "Redimir puntos"
     },
     "MONTHLY_PAYMENT": {
         "TITLE": "Pago del servicio mensual de iurest",
@@ -1597,5 +1602,15 @@
         "REWARD_REMOVED": "Recompensa removida",
         "EDIT_REWARD": "Edición de la Recompensa",
         "REWARD_EDITED": "Recompensa Editada"
+    },
+    "REWARD_DETAIL": {
+        "REWARD_TITLE": "Recompensas",
+        "POINTS_TO_REDEEM": "Puntos disponibles para redimir",
+        "POINTS": "Puntos",
+        "UNAVAILABLE": "No disponible",
+        "REDEEM": "Redimir",
+        "GET_POINTS": "Obtén puntos",
+        "REWARD_AGGREGATED": "Recompensa agregada",
+        "ERROR": "Error agregando la recompensa. Intenta nuevamente"
     }
 }

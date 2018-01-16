@@ -27,6 +27,8 @@ export interface OrderItem {
     additions: string[];
     paymentItem: number;
     reward_points?: number;
+    is_reward?: boolean;
+    redeemed_points?: number;
 }
 
 /**

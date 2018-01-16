@@ -37,6 +37,7 @@
                     </div>
                     <div class="card_initial-button">
                         <button mat-raised-button (click)="createNewOrderEvent()">{{'ORDERS.ORDER' | translate}}</button>
+                        <button mat-raised-button *ngIf="_showReedemPoints" (click)="reedemPoints()">{{'ORDERS.REDEEM_POINTS' | translate}}</button>
                     </div>
                 </div>
             </div>
@@ -70,13 +71,16 @@
                         </mat-list>
                     </mat-card-content>
                 </mat-card>
-                <mat-form-field class="orders-bar">
-                    <mat-select placeholder="{{'ORDER_LIST.TABLE_ORDERS' | translate}}" [(ngModel)]="_initialValue">
-                        <mat-option (click)="changeOrderFilter('all')" value="all">{{'ORDER_LIST.ALL_ORDERS' | translate}}</mat-option>
-                        <mat-option (click)="changeOrderFilter('customer')" value="customer">{{'ORDER_LIST.MY_ORDERS' | translate}}</mat-option>
-                        <mat-option (click)="changeOrderFilter('other')" value="other">{{'ORDER_LIST.OTHER_ORDERS' | translate}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <div>
+                    <mat-form-field class="orders-bar">
+                        <mat-select placeholder="{{'ORDER_LIST.TABLE_ORDERS' | translate}}" [(ngModel)]="_initialValue">
+                            <mat-option (click)="changeOrderFilter('all')" value="all">{{'ORDER_LIST.ALL_ORDERS' | translate}}</mat-option>
+                            <mat-option (click)="changeOrderFilter('customer')" value="customer">{{'ORDER_LIST.MY_ORDERS' | translate}}</mat-option>
+                            <mat-option (click)="changeOrderFilter('other')" value="other">{{'ORDER_LIST.OTHER_ORDERS' | translate}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button mat-button class="primary-button" *ngIf="_showReedemPoints" (click)="reedemPoints()">{{'ORDERS.REDEEM_POINTS' | translate}}</button>
+                </div>
                 <div *ngIf="_showCustomerOrders || _showAllOrders">
                     <div *ngFor="let or of _orders | async; let i = index">
                         <mat-toolbar class="customer-order" (click)="showCustomerOrderDetail(or,i)">
@@ -102,7 +106,19 @@
                                         <span *ngFor="let item of _items | async">
                                             <span *ngFor="let it of or.items">
                                                 <ng-template [ngIf]="item._id === it.itemId">
-                                                    <mat-list-item>
+                                                    <mat-list-item *ngIf="it.is_reward">
+                                                        <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
+                                                        <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
+                                                        <h4 mat-line>{{item.name}}</h4>
+                                                        <h5 mat-line>
+                                                            {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
+                                                        </h5>
+                                                        <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
+                                                        <button mat-icon-button (click)="removeReward(or, it.itemId, it.index)">
+                                                            <mat-icon class="item-icon">clear</mat-icon>
+                                                        </button>
+                                                    </mat-list-item>
+                                                    <mat-list-item *ngIf="!it.is_reward">
                                                         <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
                                                         <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
                                                         <h4 mat-line>{{item.name}}</h4>

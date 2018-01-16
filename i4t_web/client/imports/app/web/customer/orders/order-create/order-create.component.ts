@@ -361,7 +361,8 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 garnishFood: _lGarnishFoodToInsert,
                 additions: _lAdditionsToInsert,
                 paymentItem: this._finalPrice,
-                reward_points: this._finalPoints
+                reward_points: this._finalPoints,
+                is_reward: false
             };
             MeteorObservable.call('AddItemToOrder', _lOrderItem, this.establishmentId, this.tableQRCode, this.finalPrice, this._finalPoints).subscribe(() => {
                 let _lMessage: string = this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
