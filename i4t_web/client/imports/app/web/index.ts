@@ -87,6 +87,9 @@ import { RewardEditComponent } from './administrator/rewards/reward-edit/reward-
 import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
 import { LightBoxComponent } from './general/lightbox/lightbox.component';
 
+import { BarChartDemoComponent } from './administrator/dashboard/charts/bar-chart-demo';
+import { BarChartItemsComponent } from "./administrator/dashboard/charts/bar-chart-items.component";
+
 export const WEB_DECLARATIONS = [
     AppComponent,
     DashboardComponent,
@@ -182,4 +185,9 @@ export const SERVICES_DECLARATIONS = [
     UserLanguageService,
     ImageService,
     PayuPaymentService
-]; 
+];
+
+export const CHART_DECLARATIONS = [
+    BarChartDemoComponent,
+    BarChartItemsComponent
+];

@@ -10,10 +10,11 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AgmCoreModule } from '@agm/core';
 import { NgxPageScrollModule } from 'ngx-page-scroll';
+import { ChartsModule } from 'ng2-charts';
 
 import { routes } from './app.routes';
 import { AppComponent } from './web/app.component';
-import { WEB_DECLARATIONS, MODAL_DIALOG_DECLARATIONS, SERVICES_DECLARATIONS } from './web/index';
+import { CHART_DECLARATIONS, WEB_DECLARATIONS, MODAL_DIALOG_DECLARATIONS, SERVICES_DECLARATIONS } from './web/index';
 
 import { NavigationModule } from './web/navigation/navigation.module';
 
@@ -31,6 +32,7 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   imports: [
     BrowserModule,
+    ChartsModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
@@ -77,7 +79,8 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   declarations: [
     ...WEB_DECLARATIONS,
-    ...MODAL_DIALOG_DECLARATIONS
+    ...MODAL_DIALOG_DECLARATIONS,
+    ...CHART_DECLARATIONS
   ],
   providers: [
     RouteGuard,

@@ -31,6 +31,9 @@
     </mat-card-content>
 </mat-card>
 
+<!--bar-chart-demo></bar-chart-demo-->
+<bar-chart-items [establishmentId]="'mP3nELgx5xxGyTpE5'" ></bar-chart-items>
+
 <mat-card *ngFor="let establishment of _establishments | async" class="custom-cards">
     <div>
         <span class="mat-card-title title">{{establishment.name}}</span>
