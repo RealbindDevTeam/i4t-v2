@@ -488,7 +488,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * Calculate final points when item quantity is entered
      */
     calculateFinalPointsQuantity(): void {
-        if (Number.isFinite(this.quantityCount)) {
+        if (Number.isFinite(this._quantityCount)) {
             this._finalPoints = this._unitRewardPoints * this._quantityCount;
         }
     }
