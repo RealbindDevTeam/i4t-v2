@@ -14,20 +14,21 @@ import { Orders } from '../../../../../../../both/collections/establishment/orde
 export class BarChartItemsComponent implements OnInit, OnDestroy {
     @Input() establishmentId: string;
     public barChartOptions: any = {
-        //scaleShowVerticalLines: false,
-        //responsive: true
+        scaleShowHorizontalLines: false,
+        responsive: true,
+        scales: {
+            yAxes: [{
+                stacked: true,
+                barPercentage: 0.5
+            }]
+        }
     }
 
     public barChartLabels: string[] = [];
     public barChartType: string = 'horizontalBar';
-    public barChartLegend: boolean = true;
+    public barChartLegend: boolean = false;
+
     public barChartData: any[] = [{ data: [] }];
-
-    //public barChartData: any[] = [
-    //    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-    //    { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-    //];
-
     private _itemsSubscription: Subscription;
     private _ordersSubscription: Subscription;
 
@@ -50,9 +51,10 @@ export class BarChartItemsComponent implements OnInit, OnDestroy {
 
         this._ordersSubscription = MeteorObservable.subscribe('getOrdersByEstablishmentId', this.establishmentId, ['ORDER_STATUS.RECEIVED']).subscribe(() => {
             this._ngZone.run(() => {
+                let todayDate = new Date();
                 this._orders = Orders.find({}).zone();
                 this._orders.subscribe(() => {
-                    this.setBarCharLabels();
+                    this.setBarChartData();
                 });
             });
         })
@@ -60,21 +62,27 @@ export class BarChartItemsComponent implements OnInit, OnDestroy {
 
     setBarCharLabels() {
         this.barChartLabels = [];
-        this.barChartData = [];
-        let _lData: number[] = [];
         Items.collection.find({}).fetch().forEach((item) => {
             this.barChartLabels.push(item.name);
-            //    let count = Orders.collection.find({ 'items.itemId': item._id }).count();
-            //    _lData.push(count * 10);
         });
-        //
-        //this.barChartData = [{ data: _lData, label: 'Hola' }];
-        this.barChartData = [
-            { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-            { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-        ];
-        console.log(this.barChartLabels);
-        console.log(this.barChartData);
+    }
+
+    setBarChartData() {
+        this.barChartData = [];
+        let _lData: number[] = [];
+        Items.collection.find().fetch().forEach((item) => {
+            let _lAggregate: number = 0;
+            let todayDate = new Date();
+            Orders.collection.find({ 'items.itemId': item._id, 'creation_date': { $gte : new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate())} }).fetch().forEach(order => {
+                order.items.forEach((itemObject) => {
+                    if (itemObject.itemId === item._id) {
+                        _lAggregate = _lAggregate + itemObject.quantity;
+                    }
+                });
+            });
+            _lData.push(_lAggregate);
+        });
+        this.barChartData = [{ data: _lData, label: 'Cant.' }];
     }
 
     /**
