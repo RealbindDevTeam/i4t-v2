@@ -36,9 +36,16 @@ export class BarChartItemsComponent implements OnInit, OnDestroy {
     private _orders: Observable<Order[]>;
 
 
+    /**
+     * BarChartItemsComponent constructor
+     * @param {NgZone} _ngZone 
+     */
     constructor(private _ngZone: NgZone) {
     }
 
+    /**
+     * NgOnInit Implementation
+     */
     ngOnInit() {
         this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
@@ -60,6 +67,9 @@ export class BarChartItemsComponent implements OnInit, OnDestroy {
         })
     }
 
+    /**
+     * Set the chart labels
+     */
     setBarCharLabels() {
         this.barChartLabels = [];
         Items.collection.find({}).fetch().forEach((item) => {
@@ -67,13 +77,16 @@ export class BarChartItemsComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Set chart data 
+     */
     setBarChartData() {
         this.barChartData = [];
         let _lData: number[] = [];
         Items.collection.find().fetch().forEach((item) => {
             let _lAggregate: number = 0;
             let todayDate = new Date();
-            Orders.collection.find({ 'items.itemId': item._id, 'creation_date': { $gte : new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate())} }).fetch().forEach(order => {
+            Orders.collection.find({ 'items.itemId': item._id, 'creation_date': { $gte: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()) } }).fetch().forEach(order => {
                 order.items.forEach((itemObject) => {
                     if (itemObject.itemId === item._id) {
                         _lAggregate = _lAggregate + itemObject.quantity;
@@ -93,6 +106,9 @@ export class BarChartItemsComponent implements OnInit, OnDestroy {
         if (this._ordersSubscription) { this._ordersSubscription.unsubscribe(); }
     }
 
+    /**
+     * NgOnDestroy implementation
+     */
     ngOnDestroy() {
         this.removeSubscriptions();
     }
