@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Establishments, EstablishmentsProfile } from '../../../../both/collections/establishment/establishment.collection';
 import { UserDetails } from '../../../../both/collections/auth/user-detail.collection';
 import { check } from 'meteor/check';
-import { Accounts } from '../../../../both/collections/establishment/account.collection';
 import { UserDetail } from '../../../../both/models/auth/user-detail.model';
 import { PaymentsHistory } from '../../../../both/collections/payment/payment-history.collection';
 import { Establishment } from '../../../../both/models/establishment/establishment.model';
@@ -109,4 +108,12 @@ Meteor.publish('getEstablishmentById', function (_pId: string) {
 Meteor.publish('getEstablishmentProfile', function (_establishmentId: string) {
     check(_establishmentId, String);
     return EstablishmentsProfile.find({ establishment_id: _establishmentId });
+});
+
+/**
+ * Meteor publication return establishments by ids
+ * @param {string[]} _pId
+ */
+Meteor.publish('getEstablishmentsByIds', function (_pIds: string[]) {
+    return Establishments.find({ _id: { $in: _pIds } });
 });
