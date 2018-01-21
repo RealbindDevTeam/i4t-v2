@@ -38,7 +38,7 @@ import { PayuPaymentFormComponent } from './web/administrator/payment/payu-payme
 import { PaymentHistoryComponent } from './web/administrator/payment/payment-history/payment-history.component';
 import { ReactivateEstablishmentComponent } from './web/administrator/payment/reactivate-establishment/reactivate-establishment.component';
 import { TrnResponseConfirmComponent } from './web/administrator/payment/payu-payment-form/transaction-response-confirm/trn-response-confirm.component';
-import { CustomerPaymentsHistoryComponent } from './web/customer/payments-history/customer-payments-history.component';
+//import { CustomerPaymentsHistoryComponent } from './web/customer/payments-history/customer-payments-history.component';
 import { AdminSignupComponent } from './web/auth/admin-signup/admin-signup.component';
 import { ItemEnableSupComponent } from './web/supervisor/items-enable/items-enable-sup.component';
 import { MenuListComponent } from './web/waiter/menu-list/menu-list.component';
@@ -54,6 +54,7 @@ import { SupervisorEstablishmentTableControlComponent } from './web/supervisor/e
 import { EstablishmentProfileComponent } from './web/administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './web/customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { RewardComponent } from './web/administrator/rewards/reward/reward.component';
+import { CustomerPointsComponent } from './web/customer/points/customer-points.component';
 
 export const routes: Route[] = [
     {
@@ -83,7 +84,7 @@ export const routes: Route[] = [
             { path: 'payment-form/:param1/:param2/:param3', component: PayuPaymentFormComponent, canActivate: [AdminGuard] },
             { path: 'payment-history', component: PaymentHistoryComponent, canActivate: [AdminGuard] },
             { path: 'reactivate-establishment', component: ReactivateEstablishmentComponent, canActivate: [AdminGuard] },
-            { path: 'customer-payments-history', component: CustomerPaymentsHistoryComponent, canActivate: [CustomerGuard] },
+            //{ path: 'customer-payments-history', component: CustomerPaymentsHistoryComponent, canActivate: [CustomerGuard] },
             { path: 'items-enable-sup', component: ItemEnableSupComponent, canActivate: [SupervisorGuard] },
             { path: 'menu-list', component: MenuListComponent },
             { path: 'supervisor-collaborators', component: SupervisorCollaboratorsComponent, canActivate: [SupervisorGuard] },
@@ -98,7 +99,8 @@ export const routes: Route[] = [
             { path: 'establishment-profile', component: EstablishmentProfileComponent, canActivate: [AdminGuard] },
             { path: 'establishment-detail', component: EstablishmentProFileDetailComponent },
             { path: 'establishment-detail/:param1', component: EstablishmentProFileDetailComponent },
-            { path: 'rewards', component: RewardComponent, canActivate: [AdminGuard] }            
+            { path: 'rewards', component: RewardComponent, canActivate: [AdminGuard] },
+            { path: 'points', component: CustomerPointsComponent, canActivate: [CustomerGuard] }
         ]
     },
     { path: '', component: LandingPageComponent },
