@@ -87,7 +87,7 @@ import { RewardEditComponent } from './administrator/rewards/reward-edit/reward-
 import { RewardsDetailComponent } from './customer/rewards-detail/rewards-detail.component';
 import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
 import { LightBoxComponent } from './general/lightbox/lightbox.component';
-import { CustomerPointsComponent } from './customer/points/customer-points.component';
+import { CustomerPointsComponent } from './customer/points/points/customer-points.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,

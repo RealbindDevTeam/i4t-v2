@@ -3,11 +3,11 @@ import { MeteorObservable } from "meteor-rxjs";
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { Router } from "@angular/router";
-import { UserLanguageService } from '../../services/general/user-language.service';
-import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
-import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
-import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
-import { UserDetail } from '../../../../../../both/models/auth/user-detail.model';
+import { UserLanguageService } from '../../../services/general/user-language.service';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
+import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
+import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
 
 @Component({
     selector: 'customer-points',

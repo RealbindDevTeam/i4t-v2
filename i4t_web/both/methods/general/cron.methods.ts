@@ -155,7 +155,7 @@ if (Meteor.isServer) {
          * @param {string} _countryId
          */
         validateActiveRestaurants: function (_countryId: string) {
-            let currentDate: Date = new Date(2018,1,6);
+            let currentDate: Date = new Date();
             let currentMonth: string = (currentDate.getMonth() + 1).toString();
             let currentYear: string = currentDate.getFullYear().toString();
 

@@ -54,7 +54,7 @@ import { SupervisorEstablishmentTableControlComponent } from './web/supervisor/e
 import { EstablishmentProfileComponent } from './web/administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './web/customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { RewardComponent } from './web/administrator/rewards/reward/reward.component';
-import { CustomerPointsComponent } from './web/customer/points/customer-points.component';
+import { CustomerPointsComponent } from './web/customer/points/points/customer-points.component';
 
 export const routes: Route[] = [
     {

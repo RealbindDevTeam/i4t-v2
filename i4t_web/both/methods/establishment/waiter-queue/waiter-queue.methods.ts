@@ -10,6 +10,8 @@ import { Order } from '../../../models/establishment/order.model';
 import { Orders } from '../../../collections/establishment/order.collection';
 import { Tables } from '../../../collections/establishment/table.collection';
 import { _localeFactory } from '@angular/core/src/application_module';
+import { RewardPoint } from '../../../models/establishment/reward-point.model';
+import { RewardPoints } from '../../../collections/establishment/reward-point.collection';
 
 if (Meteor.isServer) {
 
@@ -62,8 +64,12 @@ if (Meteor.isServer) {
 
       data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       if (data_detail === undefined || data_detail === null) {
-        data.job_id = job._doc._id;
-        Meteor.call('waiterCall', queueName, true, data);
+        let dt:any = {
+          job_id: job._doc._id,
+          waiter_id: data.waiter_id,
+          waiter_call_id: data.waiter_call_id
+        }
+        Meteor.call('waiterCall', queueName, true, dt);
         data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       }
 
@@ -178,6 +184,17 @@ if (Meteor.isServer) {
             let _lOrder: Order = Orders.findOne({ _id: waiterDetail.order_id });
             let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
             if (_lOrder.total_reward_points > 0) {
+              let _lExpireDate = new Date();
+              RewardPoints.insert({
+                id_user: _lOrder.creation_user,
+                establishment_id: _lOrder.establishment_id,
+                points: _lOrder.total_reward_points,
+                days_to_expire: 30,
+                gain_date: new Date(),
+                expire_date: new Date(_lExpireDate.setDate(_lExpireDate.getDate() + 30)),
+                is_active: true
+              });
+
               if (_lConsumerDetail.reward_points === null || _lConsumerDetail.reward_points === undefined) {
                 let _lUserReward: UserRewardPoints = { establishment_id: _lOrder.establishment_id, points: _lOrder.total_reward_points }
                 UserDetails.update({ _id: _lConsumerDetail._id }, { $set: { reward_points: [_lUserReward] } });
@@ -187,6 +204,7 @@ if (Meteor.isServer) {
                   { $set: { 'reward_points.$.points': (_lPoints.points + _lOrder.total_reward_points) } });
               }
             }
+
             Orders.update({ _id: waiterDetail.order_id },
               {
                 $set: {
