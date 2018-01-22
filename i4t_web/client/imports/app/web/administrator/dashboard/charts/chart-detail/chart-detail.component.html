@@ -1,0 +1,15 @@
+<div align="end">
+    <mat-icon class="ic">date_range</mat-icon>
+    <mat-form-field>
+        <mat-select [(value)]="_selected" placeholder="">
+            <mat-option *ngFor="let option of _dataSelect" [value]="option.value" (click)="changeDateRange(option.value)">
+                {{ option.viewValue }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<mat-card class="bar_chart">
+    <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
+        [chartType]="barChartType" (chartHover)="chartHovered($event)"></canvas>
+</mat-card>

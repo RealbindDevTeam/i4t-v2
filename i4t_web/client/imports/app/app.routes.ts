@@ -54,6 +54,7 @@ import { SupervisorEstablishmentTableControlComponent } from './web/supervisor/e
 import { EstablishmentProfileComponent } from './web/administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './web/customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { RewardComponent } from './web/administrator/rewards/reward/reward.component';
+import { ChartDetailComponent } from "./web/administrator/dashboard/charts/chart-detail/chart-detail.component";
 
 export const routes: Route[] = [
     {
@@ -98,7 +99,8 @@ export const routes: Route[] = [
             { path: 'establishment-profile', component: EstablishmentProfileComponent, canActivate: [AdminGuard] },
             { path: 'establishment-detail', component: EstablishmentProFileDetailComponent },
             { path: 'establishment-detail/:param1', component: EstablishmentProFileDetailComponent },
-            { path: 'rewards', component: RewardComponent, canActivate: [AdminGuard] }            
+            { path: 'rewards', component: RewardComponent, canActivate: [AdminGuard] },
+            { path: 'chart-detail/:param1', component: ChartDetailComponent, canActivate: [AdminGuard] }
         ]
     },
     { path: '', component: LandingPageComponent },

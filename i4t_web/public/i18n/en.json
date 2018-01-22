@@ -1334,7 +1334,7 @@
         },
         "SALES": "Sales ",
         "USERS": "Active users",
-        "ITEMS": "Items sold",
+        "ITEMS": "Items sold today",
         "SOLD": "Sold",
         "ADDITIONS": "Additions",
         "GARNISHFOOD": "Side dishes",
@@ -1346,6 +1346,10 @@
         "THERE_NOT_RESTAURANTS": "No restaurants registered yet",
         "RESTAURANT_REGISTER": "Restaurant registration",
         "MESSAGE": "Register one to enable this option"
+    },
+    "CHART_DETAIL": {
+        "TODAY": "Today",
+        "YESTERDAY": "Yesterday"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Enable/disable Item",

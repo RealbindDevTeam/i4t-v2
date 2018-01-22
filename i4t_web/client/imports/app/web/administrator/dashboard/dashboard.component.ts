@@ -231,6 +231,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this._router.navigate(['/app/establishment-register']);
   }
 
+  goToCharts(_pEstablishmentId: string) {
+    this._router.navigate(['/app/chart-detail', _pEstablishmentId]);
+  }
+
   /**
    * ngOnDestroy Implementation
    */

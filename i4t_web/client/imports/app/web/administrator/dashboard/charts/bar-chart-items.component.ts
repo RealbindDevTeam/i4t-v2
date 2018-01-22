@@ -13,6 +13,9 @@ import { Orders } from '../../../../../../../both/collections/establishment/orde
 })
 export class BarChartItemsComponent implements OnInit, OnDestroy {
     @Input() establishmentId: string;
+    @Input() dateIni: Date;
+    @Input() dateEnd: Date;
+
     public barChartOptions: any = {
         scaleShowHorizontalLines: false,
         responsive: true,
@@ -85,8 +88,8 @@ export class BarChartItemsComponent implements OnInit, OnDestroy {
         let _lData: number[] = [];
         Items.collection.find().fetch().forEach((item) => {
             let _lAggregate: number = 0;
-            let todayDate = new Date();
-            Orders.collection.find({ 'items.itemId': item._id, 'creation_date': { $gte: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()) } }).fetch().forEach(order => {
+            //let todayDate = new Date();
+            Orders.collection.find({ 'items.itemId': item._id, 'creation_date': { $gte: new Date(this.dateIni.getFullYear(), this.dateIni.getMonth(), this.dateIni.getDate()) } }).fetch().forEach(order => {
                 order.items.forEach((itemObject) => {
                     if (itemObject.itemId === item._id) {
                         _lAggregate = _lAggregate + itemObject.quantity;
