@@ -25,6 +25,7 @@ import { Rewards } from '../../../../../../../both/collections/establishment/rew
 import { RewardsDetailComponent } from '../../rewards-detail/rewards-detail.component';
 import { UserDetail, UserRewardPoints } from '../../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
+import { RewardPoints } from '../../../../../../../both/collections/establishment/reward-point.collection';
 
 @Component({
     selector: 'order-list',
@@ -48,6 +49,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _tablesSub: Subscription;
     private _rewardsSub: Subscription;
     private _userDetailsSub: Subscription;
+    private _rewardPointsSub: Subscription;
     private _mdDialogRef: MatDialogRef<any>;
 
     private _orders: Observable<Order[]>;
@@ -204,6 +206,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 this._userDetails.subscribe(() => { this.verifyUserRewardPoints(); });
             });
         });
+        this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).subscribe();
     }
 
     /**
@@ -235,7 +238,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         if (_lUserDetail) {
             let _lRewardPoints: UserRewardPoints[] = _lUserDetail.reward_points;
 
-            if(_lRewardPoints){
+            if (_lRewardPoints) {
                 if (_lRewardPoints.length > 0) {
                     this._userRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
                 } else {
@@ -258,6 +261,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
         if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
         if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
     }
 
     /**
@@ -871,8 +875,27 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
                             UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
                             UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+
+                            let _lRedeemedPoints: number = it.redeemed_points;
+                            let _lValidatePoints: boolean = true;
+                            RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: _pOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                                if (_lValidatePoints) {
+                                    if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                                        let aux: number = pnt.points - pnt.difference;
+                                        _lRedeemedPoints = _lRedeemedPoints - aux;
+                                        RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                                    } else if (!pnt.is_active) {
+                                        _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                                        RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                                        if (_lRedeemedPoints === 0) {
+                                            _lValidatePoints = false;
+                                        }
+                                    }
+                                }
+                            });
                         }
                     });
+
                     Orders.update({ _id: _pOrder._id }, {
                         $set: {
                             status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
@@ -1105,6 +1128,24 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
                 UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
                 UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+
+                let _lRedeemedPoints: number = _lOrderItemToremove.redeemed_points;
+                let _lValidatePoints: boolean = true;
+                RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: _pOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                    if (_lValidatePoints) {
+                        if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                            let aux: number = pnt.points - pnt.difference;
+                            _lRedeemedPoints = _lRedeemedPoints - aux;
+                            RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                        } else if (!pnt.is_active) {
+                            _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                            RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                            if (_lRedeemedPoints === 0) {
+                                _lValidatePoints = false;
+                            }
+                        }
+                    }
+                });
 
                 this._currentOrder = Orders.findOne({ _id: _pOrder._id });
                 if (this._currentOrder.items.length === 0 && this._currentOrder.additions.length === 0) {

@@ -64,18 +64,18 @@ if (Meteor.isServer) {
 
       data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       if (data_detail === undefined || data_detail === null) {
-        let dt:any = {
+        let dt: any = {
           job_id: job._doc._id,
           waiter_id: data.waiter_id,
           waiter_call_id: data.waiter_call_id
         }
-        Meteor.call('waiterCall', queueName, true, dt);
+        Meteor.call('waiterCall', queueName, true, dt);       
         data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       }
-
+      
       let establishment = Establishments.findOne({ _id: data_detail.establishment_id });
       usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
-      if (!usr_id_enabled) {
+      if (usr_id_enabled === undefined || usr_id_enabled === null) {
         Meteor.call('jobRemove', queueName, job._doc._id, data_detail);
         usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
       }
@@ -205,6 +205,27 @@ if (Meteor.isServer) {
               }
             }
 
+            _lOrder.items.forEach((it) => {
+              if (it.is_reward) {
+                  let _lRedeemedPoints: number = it.redeemed_points;
+                  let _lValidatePoints: boolean = true;
+                  RewardPoints.collection.find({ id_user: _lOrder.creation_user, establishment_id: _lOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                      if (_lValidatePoints) {
+                          if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                              let aux: number = pnt.points - pnt.difference;
+                              _lRedeemedPoints = _lRedeemedPoints - aux;
+                              RewardPoints.update({ _id: pnt._id }, { $set: { points: pnt.difference, difference: 0 } });
+                          } else if (!pnt.is_active) {
+                              _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                              if (_lRedeemedPoints === 0) {
+                                  _lValidatePoints = false;
+                              }
+                          }
+                      }
+                  });
+              }
+          });
+
             Orders.update({ _id: waiterDetail.order_id },
               {
                 $set: {
@@ -245,8 +266,27 @@ if (Meteor.isServer) {
 
                   UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
                     { $set: { 'reward_points.$.points': (Number.parseInt(_lPoints.points.toString()) + Number.parseInt(it.redeemed_points.toString())) } });
+
+                  let _lRedeemedPoints: number = it.redeemed_points;
+                  let _lValidatePoints: boolean = true;
+                  RewardPoints.collection.find({ id_user: _lOrder.creation_user, establishment_id: _lOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                    if (_lValidatePoints) {
+                      if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                        let aux: number = pnt.points - pnt.difference;
+                        _lRedeemedPoints = _lRedeemedPoints - aux;
+                        RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                      } else if (!pnt.is_active) {
+                        _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                        RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                        if (_lRedeemedPoints === 0) {
+                          _lValidatePoints = false;
+                        }
+                      }
+                    }
+                  });
                 }
               });
+
               Orders.update({ _id: _lOrder._id }, {
                 $set: {
                   status: 'ORDER_STATUS.CANCELED', modification_user: _jobDetail.waiter_id,
