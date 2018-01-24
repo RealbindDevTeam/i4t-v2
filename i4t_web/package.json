@@ -8,7 +8,8 @@
     "start": "meteor --settings settings.json",
     "start-production": "meteor --settings settings.json --production",
     "compile_@agm_core": "babel node_modules/@agm/core -d node_modules/@agm/core --presets es2015",
-    "compile_ngx-page-scroll": "babel node_modules/ngx-page-scroll -d node_modules/ngx-page-scroll --presets es2015"
+    "compile_ngx-page-scroll": "babel node_modules/ngx-page-scroll -d node_modules/ngx-page-scroll --presets es2015",
+    "compile_charts": "babel node_modules/ng2-charts -d node_modules/ng2-charts --presets es2015 --compact false"
   },
   "dependencies": {
     "@agm/core": "1.0.0-beta.2",

@@ -17,9 +17,7 @@
             [chartType]="barChartType" (chartHover)="chartHovered($event)"></canvas>
     </mat-card>
 
-    <mat-card>
-        <div style="display: block">
-            <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType"></canvas>
-        </div>
+    <mat-card *ngIf="_showDoughnutChart">
+        <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType"></canvas>
     </mat-card>
 </div>

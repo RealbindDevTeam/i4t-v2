@@ -98,6 +98,7 @@ export class ChartDetailComponent implements OnInit, OnDestroy {
                 this._orders.subscribe(() => {
                     this.setBarChartData();
                     this.setDoughnutBarChart();
+                    this._showDoughnutChart = true;
                 });
             });
         })
@@ -164,24 +165,23 @@ export class ChartDetailComponent implements OnInit, OnDestroy {
         this.barChartData = [{ data: _lData, label: 'Cant.' }];
     }
 
-    //public doughnutChartLabels: string[] = ['Download Sales', 'In-Store Sales'];
-    //public doughnutChartData: number[] = [2, 6, 5];
     public doughnutChartLabels: string[] = [];
-    public doughnutChartData: number[] = [0]
+    public doughnutChartData: number[] = [];
     public doughnutChartType: string = 'doughnut';
+    private _showDoughnutChart: boolean = false;
 
     setDoughnutBarChart() {
         let _lCurrentMax: any = { index: 0, value: 0 };
         let _lCurrentMin: any = { index: 0, value: 0 };
-        let _lDoughnutChartLabels : string[] = [];
-        let _lDoughnutChartData : number[] = [];
+
+        let _doughnutChartLabels: string[] = [];
 
         Items.collection.find().fetch().forEach((item) => {
             let _lAggregate: number = 0;
             Orders.collection.find({
                 'items.itemId': item._id,
                 'creation_date': {
-                    $gte: new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate() - 1)
+                    $gte: new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate())
                 }
             }).fetch().forEach((order) => {
                 order.items.forEach((itemObject) => {
@@ -190,28 +190,30 @@ export class ChartDetailComponent implements OnInit, OnDestroy {
                     }
                 });
             });
-            _lDoughnutChartLabels.push(item.name);
-            _lDoughnutChartData.push(_lAggregate);
+            _doughnutChartLabels.push(item.name);
+            this.doughnutChartData.push(_lAggregate);
         });
 
-        
-        let _lTemp: number = Math.max.apply(null, _lDoughnutChartData);
-        for (let i = 0; i < _lDoughnutChartData.length; i++) {
-            if (_lDoughnutChartData[i] > 0) {
+
+        let _lTemp: number = Math.max.apply(null, this.doughnutChartData);
+        for (let i = 0; i < this.doughnutChartData.length; i++) {
+            if (this.doughnutChartData[i] > 0) {
                 let afterTemp: number = _lTemp;
-                _lTemp = _lDoughnutChartData[i];
+                _lTemp = this.doughnutChartData[i];
                 if (_lTemp < afterTemp) {
-                    _lCurrentMin = { index: i, label: _lDoughnutChartLabels[i], value: _lDoughnutChartData[i] };
+                    _lCurrentMin = { index: i, label: _doughnutChartLabels[i], value: this.doughnutChartData[i] };
                 }
             }
-            if (_lDoughnutChartData[i] > _lCurrentMax.value) {
-                _lCurrentMax = { index: i, label: _lDoughnutChartLabels[i], value: _lDoughnutChartData[i] };
+            if (this.doughnutChartData[i] > _lCurrentMax.value) {
+                _lCurrentMax = { index: i, label: _doughnutChartLabels[i], value: this.doughnutChartData[i] };
             }
         }
 
-        //this.doughnutChartLabels.pop();
-        this.doughnutChartLabels = ['_lCurrentMax.label', '_lCurrentMin.label'];
-        this.doughnutChartData = [_lCurrentMax.value, _lCurrentMin.value];
+        this.doughnutChartLabels = [];
+        this.doughnutChartLabels.push(_lCurrentMax.label, _lCurrentMin.label);
+
+        this.doughnutChartData = [];
+        this.doughnutChartData.push(_lCurrentMax.value, _lCurrentMin.value);
 
         console.log(this.doughnutChartLabels);
         console.log(this.doughnutChartData);
