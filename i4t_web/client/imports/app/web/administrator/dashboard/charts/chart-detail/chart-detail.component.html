@@ -1,4 +1,4 @@
-<div class="header">
+<!--div class="header">
     <h2>{{_establishment.name}}</h2>
     <span class="app-flex-filler"></span>
     <mat-icon class="ic">date_range</mat-icon>
@@ -11,9 +11,9 @@
             </mat-optgroup>
         </mat-select>
     </mat-form-field>
-</div>
+</div-->
 
-<div class="g_charts">
+<!--div class="g_charts">
     <mat-card class="bar_chart">
         <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
             [chartType]="barChartType" (chartHover)="chartHovered($event)"></canvas>
@@ -23,4 +23,9 @@
         <p>{{'CHART_DETAIL.ITEMS_SOLD' | translate}}</p>
         <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType"></canvas>
     </mat-card>
-</div>
+</div-->
+
+<ngx-charts-bar-horizontal [view]="view" [scheme]="colorScheme" [results]="single" [gradient]="gradient" [xAxis]="showXAxis"
+    [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+    [yAxisLabel]="yAxisLabel" (select)="onSelect($event)">
+</ngx-charts-bar-horizontal>
