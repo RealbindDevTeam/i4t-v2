@@ -31,6 +31,7 @@ import './imports/publications/establishment/waiter-call';
 import './imports/publications/establishment/invoice';
 import './imports/publications/establishment/reward';
 import './imports/publications/establishment/reward-point';
+import './imports/publications/establishment/order-history';
 import './imports/publications/general/point';
 import './imports/publications/general/cooking-time';
 

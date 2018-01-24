@@ -5,8 +5,8 @@ import { Subscription, Observable } from 'rxjs';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Order } from '../../../../../../../both/models/establishment/order.model';
-import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
+import { OrderHistory } from '../../../../../../../both/models/establishment/order-history.model';
+import { OrderHistories } from '../../../../../../../both/collections/establishment/order-history.collection';
 
 @Component({
     selector: 'points-detail',
@@ -16,10 +16,10 @@ import { Orders } from '../../../../../../../both/collections/establishment/orde
 export class PointsDetailComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
-    private _ordersSub: Subscription;
+    private _orderHistorySub: Subscription;
 
-    private _orders: Observable<Order[]>;
-    private establishmentId: string;
+    private _orderHistories: Observable<OrderHistory[]>;
+    private _establishmentId: string;
 
     /**
      * PointsDetailComponent constructor
@@ -39,7 +39,7 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
         this._activatedRoute.params.forEach((params: Params) => {
-            this.establishmentId = params['param1'];
+            this._establishmentId = params['param1'];
         });
     }
 
@@ -49,10 +49,10 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this._location.replaceState("/app/establishment-points");
         this.removeSubscriptions();
-        if (this.establishmentId !== null && this.establishmentId !== undefined) {
-            this._ordersSub = MeteorObservable.subscribe('getOrdersHistoryByUserId', this._user).subscribe(() => {
+        if (this._establishmentId !== null && this._establishmentId !== undefined) {
+            this._orderHistorySub = MeteorObservable.subscribe('getOrdersHistoryByUserId', this._user, this._establishmentId).subscribe(() => {
                 this._ngZone.run(() => {
-                    this._orders = Orders.find({ creation_user: this._user, establishment_id: this.establishmentId, status: 'ORDER_STATUS.RECEIVED' }).zone();
+                    this._orderHistories = OrderHistories.find({ customer_id: this._user, establishment_id: this._establishmentId }).zone();
                 });
             });
         } else {
@@ -68,7 +68,7 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
+        if (this._orderHistorySub) { this._orderHistorySub.unsubscribe(); }
     }
 
     /**
