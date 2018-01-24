@@ -55,6 +55,7 @@ import { EstablishmentProfileComponent } from './web/administrator/administratio
 import { EstablishmentProFileDetailComponent } from './web/customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { RewardComponent } from './web/administrator/rewards/reward/reward.component';
 import { CustomerPointsComponent } from './web/customer/points/points/customer-points.component';
+import { PointsDetailComponent } from './web/customer/points/points-detail/points-detail.component';
 
 export const routes: Route[] = [
     {
@@ -100,7 +101,9 @@ export const routes: Route[] = [
             { path: 'establishment-detail', component: EstablishmentProFileDetailComponent },
             { path: 'establishment-detail/:param1', component: EstablishmentProFileDetailComponent },
             { path: 'rewards', component: RewardComponent, canActivate: [AdminGuard] },
-            { path: 'points', component: CustomerPointsComponent, canActivate: [CustomerGuard] }
+            { path: 'points', component: CustomerPointsComponent, canActivate: [CustomerGuard] },
+            { path: 'establishment-points', component: PointsDetailComponent, canActivate: [CustomerGuard] },
+            { path: 'establishment-points/:param1', component: PointsDetailComponent, canActivate: [CustomerGuard] }
         ]
     },
     { path: '', component: LandingPageComponent },

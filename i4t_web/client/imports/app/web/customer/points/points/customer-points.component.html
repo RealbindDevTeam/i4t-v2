@@ -31,6 +31,7 @@
                             <img mat-list-avatar class="image" *ngIf="!_establishment.image" src="/images/default-restaurant.png">
                             <h2 mat-line class="card-title">{{_establishment.name}}</h2>
                             <p mat-line class="customer-points">Puntos Acumulados: {{_points.points}} Puntos</p>
+                            <p mat-line class="expiration-points" *ngIf="validateEstablishmentExpirePoints(_establishment._id)">Tienes {{getEstablishmentExpirePoints(_establishment._id)}} puntos por vencer el dia {{getEstablishmentExpirePointsDate(_establishment._id) | date:'dd/MM/yyyy'}}</p>
                             <button mat-raised-button class="primary-button card-button detail-button" (click)="openEstablishmentDetail(_establishment._id)">Detalle</button>
                         </mat-list-item>
                     </mat-list>

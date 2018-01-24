@@ -88,6 +88,7 @@ import { RewardsDetailComponent } from './customer/rewards-detail/rewards-detail
 import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
 import { LightBoxComponent } from './general/lightbox/lightbox.component';
 import { CustomerPointsComponent } from './customer/points/points/customer-points.component';
+import { PointsDetailComponent } from './customer/points/points-detail/points-detail.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -146,7 +147,8 @@ export const WEB_DECLARATIONS = [
     EstablishmentProfileComponent,
     EstablishmentProFileDetailComponent,
     RewardComponent,
-    CustomerPointsComponent
+    CustomerPointsComponent,
+    PointsDetailComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [
