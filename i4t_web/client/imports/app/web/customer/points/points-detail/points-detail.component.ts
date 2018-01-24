@@ -10,7 +10,7 @@ import { OrderHistories } from '../../../../../../../both/collections/establishm
 
 @Component({
     selector: 'points-detail',
-    templateUrl: './points-detail.component.hmtl',
+    templateUrl: './points-detail.component.html',
     styleUrls: ['./points-detail.component.scss']
 })
 export class PointsDetailComponent implements OnInit, OnDestroy {
