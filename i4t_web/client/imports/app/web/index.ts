@@ -89,6 +89,7 @@ import { AfterEstablishmentCreationComponent } from './administrator/administrat
 import { LightBoxComponent } from './general/lightbox/lightbox.component';
 import { ChartDetailComponent } from "./administrator/dashboard/charts/chart-detail/chart-detail.component";
 import { CustomerPointsComponent } from './customer/points/points/customer-points.component';
+import { PointsDetailComponent } from './customer/points/points-detail/points-detail.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -148,7 +149,8 @@ export const WEB_DECLARATIONS = [
     EstablishmentProFileDetailComponent,
     RewardComponent,
     ChartDetailComponent,
-    CustomerPointsComponent
+    CustomerPointsComponent,
+    PointsDetailComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [

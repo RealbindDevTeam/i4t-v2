@@ -235,6 +235,7 @@ if (Meteor.isServer) {
                 }
               }
             );
+            Meteor.call('generateOrderHistory', _lOrder);
           }
 
           let usr_detail: UserDetail = UserDetails.findOne({ user_id: _waiter_id });

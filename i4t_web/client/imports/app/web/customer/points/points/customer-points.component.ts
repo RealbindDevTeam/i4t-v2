@@ -8,6 +8,7 @@ import { Establishment } from '../../../../../../../both/models/establishment/es
 import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
+import { RewardPoints } from '../../../../../../../both/collections/establishment/reward-point.collection';
 
 @Component({
     selector: 'customer-points',
@@ -19,6 +20,7 @@ export class CustomerPointsComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
     private _userDetailsSub: Subscription;
     private _establishmentsSub: Subscription;
+    private _rewardPointsSub: Subscription;
 
     private _userDetails: Observable<UserDetail[]>;
     private _establishments: Observable<Establishment[]>;
@@ -52,6 +54,7 @@ export class CustomerPointsComponent implements OnInit, OnDestroy {
                 this._userDetails.subscribe(() => { this.validateUserEstablishments(); });
             });
         });
+        this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).subscribe();
     }
 
     /**
@@ -60,6 +63,7 @@ export class CustomerPointsComponent implements OnInit, OnDestroy {
     removeSubscriptions(): void {
         if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
         if (this._establishmentsSub) { this._establishmentsSub.unsubscribe(); }
+        if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
     }
 
     /**
@@ -88,11 +92,41 @@ export class CustomerPointsComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Validate if user have points in a especific establishment
+     * @param {string} _pEstablishmentId 
+     */
+    validateEstablishmentExpirePoints(_pEstablishmentId: string): boolean {
+        let _points: number = 0;
+        _points = RewardPoints.collection.find({ id_user: this._user, is_active: true }).fetch()[0].points;
+        if (_points <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Return points to expire
+     * @param {string} _pEstablishmentId 
+     */
+    getEstablishmentExpirePoints(_pEstablishmentId: string): number {
+        return RewardPoints.collection.find({ id_user: this._user, is_active: true }).fetch()[0].points;
+    }
+
+    /**
+     * Return expiration points date
+     * @param {string} _pEstablishmentId 
+     */
+    getEstablishmentExpirePointsDate(_pEstablishmentId: string): Date {
+        return RewardPoints.collection.find({ id_user: this._user, is_active: true }).fetch()[0].expire_date;
+    }
+
+    /**
      * Open establishment detail
      * @param {string} _establishmentId 
      */
     openEstablishmentDetail(_establishmentId: string): void {
-        
+        this._router.navigate(['app/establishment-points', _establishmentId]);
     }
 
     /**

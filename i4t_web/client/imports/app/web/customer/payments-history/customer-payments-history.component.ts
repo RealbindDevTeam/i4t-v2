@@ -4,8 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { UserLanguageService } from '../../services/general/user-language.service';
-import { Invoice, InvoiceLegalInformation } from '../../../../../../both/models/establishment/invoice.model';
-import { Invoices } from '../../../../../../both/collections/establishment/invoice.collection';
+//import { Invoice, InvoiceLegalInformation } from '../../../../../../both/models/establishment/invoice.model';
+//import { Invoices } from '../../../../../../both/collections/establishment/invoice.collection';
 import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
@@ -55,7 +55,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
         this.removeSubscriptions();
         this._invoicesHistorySubscription = MeteorObservable.subscribe('getInvoicesByUserId', Meteor.userId()).subscribe(() => {
             this._ngZone.run(() => {
-                this._invoices = Invoices.find({}).zone();
+                //this._invoices = Invoices.find({}).zone();
                 this.countInvoices();
                 this._invoices.subscribe(() => { this.countInvoices(); });
             });
@@ -66,7 +66,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
      * Validate if Invoices exists
      */
     countInvoices(): void {
-        Invoices.collection.find({}).count() > 0 ? this._showPayments = true : this._showPayments = false;
+        //Invoices.collection.find({}).count() > 0 ? this._showPayments = true : this._showPayments = false;
     }
 
     /**
@@ -81,7 +81,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
      * @param { Invoice } _pInvoice 
      * @param {string} _pCountryId
      */
-    invoiceGenerate(_pInvoice: Invoice, _pCountryId: string) {
+    invoiceGenerate(_pInvoice, _pCountryId: string) {
         if (!Meteor.userId()) {
             var error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
             this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
@@ -435,7 +435,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
      * @param { Invoice } _pInvoice 
      * @param { string } _pCountryId
      */
-    calculateHeight(_pInvoice: Invoice, _pCountryId: string): number {
+    calculateHeight(_pInvoice, _pCountryId: string): number {
         let quantRows: number = 0;
         let heightPage: number = 220;
 
@@ -562,7 +562,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
      * This function gets the numeratio label 
      * @param {InvoiceLegalInformation} _pInvoiceLegal
      */
-    getNumerationLabel(_pInvoiceLegal: InvoiceLegalInformation): string {
+    getNumerationLabel(_pInvoiceLegal): string {
         let auxNumeration: string;
         if (_pInvoiceLegal.prefix) {
             auxNumeration = 'HABILITA FAC: ' + _pInvoiceLegal.prefix_name + '-' + _pInvoiceLegal.numeration_from + ' al ' + _pInvoiceLegal.prefix_name + '-' + _pInvoiceLegal.numeration_to;
@@ -576,7 +576,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
      * This function gets the big contributor label
      * @param {InvoiceLegalInformation} _pInvoiceLegal
      */
-    getBigContributorLabel(_pInvoiceLegal: InvoiceLegalInformation): string {
+    getBigContributorLabel(_pInvoiceLegal): string {
         let auxBigContributor: string;
         if (_pInvoiceLegal.is_big_contributor) {
             auxBigContributor = 'Grandes contribuyentes según Res.No. ' + _pInvoiceLegal.big_contributor_resolution + ' de ' + this.dateFormater(_pInvoiceLegal.big_contributor_date, false);
@@ -590,7 +590,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
      * This function gets self accepting label
      * @param {InvoiceLegalInformation} _pInvoiceLegal
      */
-    getSelfAcceptingLabel(_pInvoiceLegal: InvoiceLegalInformation): string {
+    getSelfAcceptingLabel(_pInvoiceLegal): string {
         let auxSelfAccepting: string;
         if (_pInvoiceLegal.is_self_accepting) {
             auxSelfAccepting = 'Autorretenedores según Res.No. ' + _pInvoiceLegal.self_accepting_resolution + ' de ' + this.dateFormater(_pInvoiceLegal.self_accepting_date, false);
@@ -633,7 +633,7 @@ export class CustomerPaymentsHistoryComponent implements OnInit, OnDestroy {
      * @param {Invoice} _pInvoice 
      * @param {string} _pCountryId 
      */
-    isInvoiceCanDownload(_pInvoice: Invoice, _pCountryId: string): boolean {
+    isInvoiceCanDownload(_pInvoice, _pCountryId: string): boolean {
         if (_pCountryId === '1900') {
             if (_pInvoice.legal_information.regime === 'regime_co') {
                 return true;
