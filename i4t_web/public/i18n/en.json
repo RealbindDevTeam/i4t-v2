@@ -1359,7 +1359,8 @@
         "SEVEN_DAYS": "Last 7 days",
         "THIRTY_DAYS": "Last 30 days",
         "FROM" : "From",
-        "TO" : "to"
+        "TO" : "to",
+        "ITEMS_SOLD": "Items sold for day"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Enable/disable Item",
