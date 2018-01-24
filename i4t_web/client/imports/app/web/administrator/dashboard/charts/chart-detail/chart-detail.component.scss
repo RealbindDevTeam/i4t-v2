@@ -2,7 +2,11 @@
     margin: 8px 8px 0;
 }
 
-.bar_chart{
-    width: 60%;
+.g_charts {
     display: flex;
+    justify-content: space-between;
+}
+
+.bar_chart{
+    width: calc(60% - 20px);
 }

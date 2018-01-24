@@ -1349,7 +1349,12 @@
     },
     "CHART_DETAIL": {
         "TODAY": "Hoy",
-        "YESTERDAY": "Ayer"
+        "YESTERDAY": "Ayer",
+        "THIS_WEEK": "Esta semana",
+        "SEVEN_DAYS": "Últimos 7 días",
+        "THIRTY_DAYS": "Últimos 30 días",
+        "FROM" : "De",
+        "TO" : "a"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Habilitar/Inhabilitar Item",
