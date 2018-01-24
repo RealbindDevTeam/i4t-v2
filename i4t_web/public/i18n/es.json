@@ -1339,7 +1339,7 @@
         },
         "SALES": "Ventas ",
         "USERS": "Usuarios activos",
-        "ITEMS": "Items vendidos",
+        "ITEMS": "Items vendidos diariamente",
         "SOLD": "Vendidos",
         "ADDITIONS": "Adiciones",
         "GARNISHFOOD": "Guarniciones",
@@ -1351,6 +1351,15 @@
         "THERE_NOT_RESTAURANTS": "Aún no hay restaurantes registrados",
         "RESTAURANT_REGISTER": "Registrar restaurante",
         "MESSAGE": "Regístra uno para habilitar esta opción"
+    },
+    "CHART_DETAIL": {
+        "TODAY": "Hoy",
+        "YESTERDAY": "Ayer",
+        "THIS_WEEK": "Esta semana",
+        "SEVEN_DAYS": "Últimos 7 días",
+        "THIRTY_DAYS": "Últimos 30 días",
+        "FROM" : "De",
+        "TO" : "a"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Habilitar/Inhabilitar Item",
@@ -1573,11 +1582,11 @@
         "READ_MORE": "Leer más",
         "READ_LESS": "Leer menos"
     },
-    "AFTER_RESTAURANT_CREATION" : {
-        "A" : "Ingresa a la opción Administración/colaboradores, y crea los empleados del restaurante",
-        "B" : "Ve a la opción Administración/Mesas/Buscar mesas, para seleccionar e imprimir los Códigos QR de tus mesas",
-        "C" : "Carga la información de tu menú desde la opción Menú, así los usuarios podrán verlo desde sus dispositivos",
-        "NOT_SHOW" : "No volver a mostrar"
+    "AFTER_RESTAURANT_CREATION": {
+        "A": "Ingresa a la opción Administración/colaboradores, y crea los empleados del restaurante",
+        "B": "Ve a la opción Administración/Mesas/Buscar mesas, para seleccionar e imprimir los Códigos QR de tus mesas",
+        "C": "Carga la información de tu menú desde la opción Menú, así los usuarios podrán verlo desde sus dispositivos",
+        "NOT_SHOW": "No volver a mostrar"
     },
     "REWARD": {
         "THERE_NOT_ESTABLISHMENTS": "Aún no hay restaurantes registrados",
