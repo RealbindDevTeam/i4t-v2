@@ -4,16 +4,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatListModule, MatCardModule, MatButtonModule, MatInputModule, MatSelectModule, MatSlideToggleModule, MatTabsModule, MatCheckboxModule, MatSliderModule, MatProgressSpinnerModule, MatTooltipModule, MatIconModule, MatToolbarModule, MatMenuModule, MatButtonToggleModule, MatRadioModule, MatExpansionModule, MatStepperModule, MatChipsModule } from '@angular/material';
+import { MatGridListModule , MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatListModule, MatCardModule, MatButtonModule, MatInputModule, MatSelectModule, MatSlideToggleModule, MatTabsModule, MatCheckboxModule, MatSliderModule, MatProgressSpinnerModule, MatTooltipModule, MatIconModule, MatToolbarModule, MatMenuModule, MatButtonToggleModule, MatRadioModule, MatExpansionModule, MatStepperModule, MatChipsModule } from '@angular/material';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AgmCoreModule } from '@agm/core';
 import { NgxPageScrollModule } from 'ngx-page-scroll';
+import { ChartsModule } from 'ng2-charts';
 
 import { routes } from './app.routes';
 import { AppComponent } from './web/app.component';
-import { WEB_DECLARATIONS, MODAL_DIALOG_DECLARATIONS, SERVICES_DECLARATIONS } from './web/index';
+import { CHART_DECLARATIONS, WEB_DECLARATIONS, MODAL_DIALOG_DECLARATIONS, SERVICES_DECLARATIONS } from './web/index';
 
 import { NavigationModule } from './web/navigation/navigation.module';
 
@@ -31,6 +32,7 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   imports: [
     BrowserModule,
+    ChartsModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
@@ -47,6 +49,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     NgxPageScrollModule,
     BrowserAnimationsModule,
+    MatGridListModule,
     MatSnackBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -77,7 +80,8 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   declarations: [
     ...WEB_DECLARATIONS,
-    ...MODAL_DIALOG_DECLARATIONS
+    ...MODAL_DIALOG_DECLARATIONS,
+    ...CHART_DECLARATIONS
   ],
   providers: [
     RouteGuard,
