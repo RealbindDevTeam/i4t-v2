@@ -104,5 +104,14 @@ Meteor.publish('getOrdersByAdminUser', function (_userId: string, _status: strin
     Establishments.collection.find({ creation_user: _userId }).fetch().forEach(function <Establishment>(establishment, index, arr) {
         _lEstablishmentId.push(establishment._id);
     });
-    return Orders.find({  establishment_id: { $in: _lEstablishmentId }, status: { $in: _status } });
+    return Orders.find({ establishment_id: { $in: _lEstablishmentId }, status: { $in: _status } });
+});
+
+/**
+ * Meteor publication return orders history by user Id
+ * @param {string} _userId
+ */
+Meteor.publish('getOrdersHistoryByUserId', function (_userId: string) {
+    check(_userId, String);
+    return Orders.find({ creation_user: _userId, status: 'ORDER_STATUS.RECEIVED' });
 });

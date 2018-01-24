@@ -54,7 +54,7 @@ export class HomeMenu implements OnInit, OnDestroy {
         this.initializeApp();
         let _lHome = this.itemNameTraduction('MOBILE.HOME-MENU.HOME');
         let _lOrder = this.itemNameTraduction('MOBILE.HOME-MENU.ORDER_RESTAURANT');
-        let _lWaiterCall = this.itemNameTraduction('MOBILE.WAITER_CALL.TITTLE');
+        let _lWaiterCall = this.itemNameTraduction('MOBILE.WAITER_CALL.TITLE');
         let _lChangeTable = this.itemNameTraduction('MOBILE.CHANGE_TABLE.TITLE');
         let _lEstablishmentExit = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.TITLE');
         let _lHistory = this.itemNameTraduction('MOBILE.HOME-MENU.PAYMENTS_HISTORY');

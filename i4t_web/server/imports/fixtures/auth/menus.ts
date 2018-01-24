@@ -301,8 +301,8 @@ export function loadMenus() {
             {
                 _id: "19000",
                 is_active: true,
-                name: "MENUS.PAYMENT_HISTORY",
-                url: "/app/customer-payments-history",
+                name: "MENUS.POINTS",
+                url: "/app/points",
                 icon_name: "payment",
                 order: 19000
             }

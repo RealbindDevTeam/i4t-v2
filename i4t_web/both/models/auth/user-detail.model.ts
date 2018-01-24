@@ -26,6 +26,7 @@ export interface UserDetail extends CollectionObject {
     table_assignment_init?: number;
     table_assignment_end?: number;
     image?: UserDetailImage;
+    reward_points?: UserRewardPoints[];
 }
 
 export interface UserDetailPenalty {
@@ -50,4 +51,9 @@ export class UserDetailImage {
     key?: string;
     container?: string;
     uploadId: string;
+}
+
+export interface UserRewardPoints {
+    establishment_id: string;
+    points: number;
 }

@@ -361,7 +361,8 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 garnishFood: _lGarnishFoodToInsert,
                 additions: _lAdditionsToInsert,
                 paymentItem: this._finalPrice,
-                reward_points: this._finalPoints
+                reward_points: this._finalPoints,
+                is_reward: false
             };
             MeteorObservable.call('AddItemToOrder', _lOrderItem, this.establishmentId, this.tableQRCode, this.finalPrice, this._finalPoints).subscribe(() => {
                 let _lMessage: string = this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
@@ -487,7 +488,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * Calculate final points when item quantity is entered
      */
     calculateFinalPointsQuantity(): void {
-        if (Number.isFinite(this.quantityCount)) {
+        if (Number.isFinite(this._quantityCount)) {
             this._finalPoints = this._unitRewardPoints * this._quantityCount;
         }
     }

@@ -20,6 +20,12 @@ import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/ale
 import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { Reward } from '../../../../../../../both/models/establishment/reward.model';
+import { Rewards } from '../../../../../../../both/collections/establishment/reward.collection';
+import { RewardsDetailComponent } from '../../rewards-detail/rewards-detail.component';
+import { UserDetail, UserRewardPoints } from '../../../../../../../both/models/auth/user-detail.model';
+import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
+import { RewardPoints } from '../../../../../../../both/collections/establishment/reward-point.collection';
 
 @Component({
     selector: 'order-list',
@@ -41,6 +47,9 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _currenciesSub: Subscription;
     private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
+    private _rewardsSub: Subscription;
+    private _userDetailsSub: Subscription;
+    private _rewardPointsSub: Subscription;
     private _mdDialogRef: MatDialogRef<any>;
 
     private _orders: Observable<Order[]>;
@@ -51,6 +60,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _additions: Observable<Addition[]>;
     private _additionDetails: Observable<Addition[]>;
     private _establishments: Observable<Establishment[]>;
+    private _rewards: Observable<Reward[]>;
+    private _userDetails: Observable<UserDetail[]>;
 
     private _showOrderItemDetail: boolean = false;
     private _currentOrder: Order;
@@ -88,6 +99,11 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _thereAreNotUserOrders: boolean = true;
     private _tableNumber: number;
     private _loading: boolean = false;
+    private _showReedemPoints: boolean = true;
+    private _userRewardPoints: number;
+
+    private _finalPoints: number = 0;
+    private _unitRewardPoints: number = 0;
 
     /**
      * OrdersListComponent Constructor
@@ -176,6 +192,21 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 this._tableNumber = Tables.collection.findOne({ QR_code: this.tableQRCode })._number;
             });
         });
+        this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this.establishmentId).subscribe(() => {
+            this._ngZone.run(() => {
+                this._rewards = Rewards.find({ establishments: { $in: [this.establishmentId] } }).zone();
+                this.countRewards();
+                this._rewards.subscribe(() => { this.countRewards(); });
+            });
+        });
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+            this._ngZone.run(() => {
+                this._userDetails = UserDetails.find({}).zone();
+                this.verifyUserRewardPoints();
+                this._userDetails.subscribe(() => { this.verifyUserRewardPoints(); });
+            });
+        });
+        this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).subscribe();
     }
 
     /**
@@ -193,6 +224,31 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Validate if establishment rewards exists
+     */
+    countRewards(): void {
+        Rewards.collection.find({ establishments: { $in: [this.establishmentId] } }).count() > 0 ? this._showReedemPoints = true : this._showReedemPoints = false;
+    }
+
+    /**
+     * Verify user reward points
+     */
+    verifyUserRewardPoints(): void {
+        let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: this._user });
+        if (_lUserDetail) {
+            let _lRewardPoints: UserRewardPoints[] = _lUserDetail.reward_points;
+
+            if (_lRewardPoints) {
+                if (_lRewardPoints.length > 0) {
+                    this._userRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+                } else {
+                    this._userRewardPoints = 0;
+                }
+            }
+        }
+    }
+
+    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
@@ -203,6 +259,9 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
         if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+        if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
+        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
     }
 
     /**
@@ -270,12 +329,14 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             if (result.success) {
                 let _lOrderItemToremove: OrderItem = this._currentOrder.items.filter(o => _pItemId === o.itemId && o.index === this._orderItemIndex)[0];
                 let _lNewTotalPayment: number = this._currentOrder.totalPayment - _lOrderItemToremove.paymentItem;
+                let _lNewTotalPoints: number = Number.parseInt(this._currentOrder.total_reward_points.toString()) - Number.parseInt(_lOrderItemToremove.reward_points.toString());
 
                 Orders.update({ _id: this._currentOrder._id }, { $pull: { items: { itemId: _pItemId, index: this._orderItemIndex } } });
                 Orders.update({ _id: this._currentOrder._id },
                     {
                         $set: {
                             totalPayment: _lNewTotalPayment,
+                            total_reward_points: _lNewTotalPoints,
                             modification_user: this._user,
                             modification_date: new Date()
                         }
@@ -422,6 +483,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._orderItemGarnishFood = _pOrderItem.garnishFood;
         this._orderItemAdditions = _pOrderItem.additions;
         this._finalPrice = _pOrderItem.paymentItem;
+        this._finalPoints = _pOrderItem.reward_points;
 
         this._itemsToShowDetail = Items.find({ _id: _pOrderItem.itemId }).zone();
         this.prepareGarnishFoodToEdit();
@@ -528,6 +590,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      */
     setUnitPrice(_pItemPrice: Item): void {
         this._unitPrice = this.getItemPrice(_pItemPrice);
+        this._unitRewardPoints = this.getItemRewardPoints(_pItemPrice);
     }
 
     /**
@@ -556,6 +619,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._lastQuantity = this._quantityCount;
         this._quantityCount += 1;
         this.calculateFinalPriceQuantity();
+        this.calculateFinalPointsQuantity();
     }
 
     /**
@@ -567,6 +631,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._quantityCount -= 1;
         }
         this.calculateFinalPriceQuantity();
+        this.calculateFinalPointsQuantity();
     }
 
     /**
@@ -579,6 +644,15 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._garnishFormGroup.reset();
             this._additionsFormGroup.reset();
             this._showGarnishFoodError = false;
+        }
+    }
+
+    /**
+     * Calculate final points when item quantity is entered
+     */
+    calculateFinalPointsQuantity(): void {
+        if (Number.isFinite(this._quantityCount)) {
+            this._finalPoints = this._unitRewardPoints * this._quantityCount;
         }
     }
 
@@ -651,18 +725,21 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 observations: this._editOrderItemForm.value.observations,
                 garnishFood: _lGarnishFoodToInsert,
                 additions: _lAdditionsToInsert,
-                paymentItem: this._finalPrice
+                paymentItem: this._finalPrice,
+                reward_points: this._finalPoints
             };
 
 
             let _lOrderItemToremove: OrderItem = this._currentOrder.items.filter(o => _lOrderItem.itemId === o.itemId && _lOrderItem.index === o.index)[0];
-            let _lNewTotalPayment: number = this._currentOrder.totalPayment - _lOrderItemToremove.paymentItem;
+            let _lNewTotalPayment: number = Number.parseInt(this._currentOrder.totalPayment.toString()) - Number.parseInt(_lOrderItemToremove.paymentItem.toString());
+            let _lNewTotalPoints: number = Number.parseInt(this._currentOrder.total_reward_points.toString()) - Number.parseInt(_lOrderItemToremove.reward_points.toString());
 
             Orders.update({ _id: this._currentOrder._id }, { $pull: { items: { itemId: _lOrderItem.itemId, index: _lOrderItem.index } } });
             Orders.update({ _id: this._currentOrder._id },
                 {
                     $set: {
                         totalPayment: _lNewTotalPayment,
+                        total_reward_points: _lNewTotalPoints,
                         modification_user: this._user,
                         modification_date: new Date()
                     }
@@ -671,6 +748,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
             let _lOrder = Orders.findOne({ _id: this._currentOrder._id });
             let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_lOrderItem.paymentItem.toString());
+            let _lTotalPointsAux: number = Number.parseInt(_lOrder.total_reward_points.toString()) + Number.parseInt(_lOrderItem.reward_points.toString());
 
             Orders.update({ _id: _lOrder._id },
                 { $push: { items: _lOrderItem } }
@@ -680,7 +758,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                     $set: {
                         modification_user: this._user,
                         modification_date: new Date(),
-                        totalPayment: _lTotalPaymentAux
+                        totalPayment: _lTotalPaymentAux,
+                        total_reward_points: _lTotalPointsAux
                     }
                 }
             );
@@ -788,6 +867,35 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._mdDialogRef = result;
             if (result.success) {
                 if (_pOrder.status === 'ORDER_STATUS.SELECTING') {
+                    _pOrder.items.forEach((it) => {
+                        if (it.is_reward) {
+                            let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _pOrder.creation_user });
+                            let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _pOrder.establishment_id)[0];
+                            let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(it.redeemed_points.toString());
+
+                            UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
+                            UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+
+                            let _lRedeemedPoints: number = it.redeemed_points;
+                            let _lValidatePoints: boolean = true;
+                            RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: _pOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                                if (_lValidatePoints) {
+                                    if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                                        let aux: number = pnt.points - pnt.difference;
+                                        _lRedeemedPoints = _lRedeemedPoints - aux;
+                                        RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                                    } else if (!pnt.is_active) {
+                                        _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                                        RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                                        if (_lRedeemedPoints === 0) {
+                                            _lValidatePoints = false;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+
                     Orders.update({ _id: _pOrder._id }, {
                         $set: {
                             status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
@@ -796,6 +904,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                     }
                     );
                     this._showDetails = false;
+                    let _lMessage: string = this.itemNameTraduction('ORDER_LIST.CANCEL_ORDER_MSG');
+                    this.snackBar.open(_lMessage, '', { duration: 2500 });
                 } else {
                     this.openDialog(this.titleMsg, '', this.itemNameTraduction("ORDER_LIST.ORDER_CANT_CANCEL"), '', this.btnAcceptLbl, false);
                 }
@@ -895,6 +1005,14 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Return Item rewardPoints
+     * @param {Item} _pItem
+     */
+    getItemRewardPoints(_pItem: Item): number {
+        return Number.parseInt(_pItem.reward_points.toString());
+    }
+
+    /**
      * Return addition information
      * @param {Addition} _pAddition
      */
@@ -949,6 +1067,99 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._mdDialogRef = result;
             if (result.success) {
 
+            }
+        });
+    }
+
+    /**
+     * Function to open rewards detail component
+     */
+    reedemPoints(): void {
+        this._mdDialogRef = this._mdDialog.open(RewardsDetailComponent, {
+            disableClose: true,
+            width: '50%'
+        });
+        this._mdDialogRef.componentInstance._establishmentId = this.establishmentId;
+        this._mdDialogRef.componentInstance._tableQRCode = this.tableQRCode;
+        this._mdDialogRef.componentInstance._userRewardPoints = this._userRewardPoints;
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = null;
+        });
+    }
+
+    /**
+     * Function to remove reward from consumer order
+     * @param {Order} _pOrder 
+     * @param {string} _pItemId 
+     * @param {number} _pIndex 
+     */
+    removeReward(_pOrder: Order, _pItemId: string, _pIndex: number): void {
+        this._mdDialogRef = this._mdDialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: this.itemNameTraduction('ORDER_LIST.REMOVE_REWARD'),
+                subtitle: '',
+                content: this.itemNameTraduction("ORDER_LIST.REMOVE_REWARD_MSG"),
+                buttonCancel: this.itemNameTraduction('NO'),
+                buttonAccept: this.itemNameTraduction('YES'),
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                let _lOrderItemToremove: OrderItem = _pOrder.items.filter(o => _pItemId === o.itemId && o.index === _pIndex && o.is_reward)[0];
+                let _lNewTotalPayment: number = _pOrder.totalPayment - _lOrderItemToremove.paymentItem;
+
+                Orders.update({ _id: _pOrder._id }, { $pull: { items: { itemId: _pItemId, index: _pIndex } } });
+                Orders.update({ _id: _pOrder._id },
+                    {
+                        $set: {
+                            totalPayment: _lNewTotalPayment,
+                            modification_user: this._user,
+                            modification_date: new Date()
+                        }
+                    }
+                );
+
+                let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _pOrder.creation_user });
+                let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _pOrder.establishment_id)[0];
+                let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(_lOrderItemToremove.redeemed_points.toString());
+
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+
+                let _lRedeemedPoints: number = _lOrderItemToremove.redeemed_points;
+                let _lValidatePoints: boolean = true;
+                RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: _pOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                    if (_lValidatePoints) {
+                        if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                            let aux: number = pnt.points - pnt.difference;
+                            _lRedeemedPoints = _lRedeemedPoints - aux;
+                            RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                        } else if (!pnt.is_active) {
+                            _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                            RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                            if (_lRedeemedPoints === 0) {
+                                _lValidatePoints = false;
+                            }
+                        }
+                    }
+                });
+
+                this._currentOrder = Orders.findOne({ _id: _pOrder._id });
+                if (this._currentOrder.items.length === 0 && this._currentOrder.additions.length === 0) {
+                    Orders.update({ _id: this._currentOrder._id }, {
+                        $set: {
+                            status: 'ORDER_STATUS.CANCELED', modification_user: this._user,
+                            modification_date: new Date()
+                        }
+                    });
+                }
+                this.viewItemDetail('item-selected', true);
+                this._showOrderItemDetail = false;
+                let _lMessage: string = this.itemNameTraduction('ORDER_LIST.REWARD_DELETED');
+                this.snackBar.open(_lMessage, '', { duration: 2500 });
             }
         });
     }
