@@ -1,4 +1,6 @@
-<div align="end">
+<div class="header">
+    <h2>{{_establishment.name}}</h2>
+    <span class="app-flex-filler"></span>
     <mat-icon class="ic">date_range</mat-icon>
     <mat-form-field>
         <mat-select [(value)]="_selected" placeholder="{{'CHART_DETAIL.FROM' | translate}} {{_dateIni | date:'d/M/y'}} {{'CHART_DETAIL.TO' | translate}} {{_dateEnd | date:'d/M/y'}}">
@@ -18,6 +20,7 @@
     </mat-card>
 
     <mat-card *ngIf="_showDoughnutChart">
+        <p>{{'CHART_DETAIL.ITEMS_SOLD' | translate}}</p>
         <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType"></canvas>
     </mat-card>
 </div>

@@ -14,7 +14,7 @@ import { ChartsModule } from 'ng2-charts';
 
 import { routes } from './app.routes';
 import { AppComponent } from './web/app.component';
-import { CHART_DECLARATIONS, WEB_DECLARATIONS, MODAL_DIALOG_DECLARATIONS, SERVICES_DECLARATIONS } from './web/index';
+import { WEB_DECLARATIONS, MODAL_DIALOG_DECLARATIONS, SERVICES_DECLARATIONS } from './web/index';
 
 import { NavigationModule } from './web/navigation/navigation.module';
 
@@ -80,8 +80,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   declarations: [
     ...WEB_DECLARATIONS,
-    ...MODAL_DIALOG_DECLARATIONS,
-    ...CHART_DECLARATIONS
+    ...MODAL_DIALOG_DECLARATIONS
   ],
   providers: [
     RouteGuard,

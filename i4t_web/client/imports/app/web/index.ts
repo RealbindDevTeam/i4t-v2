@@ -88,7 +88,6 @@ import { RewardsDetailComponent } from './customer/rewards-detail/rewards-detail
 import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
 import { LightBoxComponent } from './general/lightbox/lightbox.component';
 import { ChartDetailComponent } from "./administrator/dashboard/charts/chart-detail/chart-detail.component";
-import { BarChartItemsComponent } from "./administrator/dashboard/charts/bar-chart-items.component";
 import { CustomerPointsComponent } from './customer/points/points/customer-points.component';
 
 export const WEB_DECLARATIONS = [
@@ -189,8 +188,4 @@ export const SERVICES_DECLARATIONS = [
     UserLanguageService,
     ImageService,
     PayuPaymentService
-];
-
-export const CHART_DECLARATIONS = [
-    BarChartItemsComponent
 ];
