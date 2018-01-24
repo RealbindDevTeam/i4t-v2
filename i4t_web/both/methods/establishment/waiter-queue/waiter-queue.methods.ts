@@ -80,9 +80,9 @@ if (Meteor.isServer) {
         usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
       }
 
-      Job.getJob(queueName, job._doc._id, function (err, job) {
-        if (job) {
-          job.done(function (err, result) { });
+      Job.getJob(queueName, job._doc._id, function (err, res) {
+        if (res) {
+          res.done();
           var toDate = new Date().toLocaleDateString();
           EstablishmentTurns.update({ establishment_id: data_detail.establishment_id, creation_date: { $gte: new Date(toDate) } },
             {

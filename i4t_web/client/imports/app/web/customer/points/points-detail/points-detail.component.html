@@ -1,1 +1,63 @@
-<h1>prueba</h1>
+<mat-accordion class="example-headers-align">
+    <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async" hideToggle="true">
+        <mat-expansion-panel-header>
+            <mat-panel-description>
+                {{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-divider></mat-divider>
+
+        <mat-list>
+            <div *ngFor="let item of orderHistory.items">
+                <mat-list-item>
+                    <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(item.item_name)}}</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{item.quantity}}
+                        <span style="margin-left: 16px">{{item.price}}{{invoice.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <div *ngIf="item.garnish_food.length > 0">
+                    <div *ngFor="let gf of item.garnish_food">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="garnish-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(gf.garnish_food_name)}}</h4>
+                            <span class="app-flex-filler"></span>
+                            <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{item.quantity}}
+                                <span style="margin-left: 16px">{{gf.price}} {{invoice.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+                <div *ngIf="item.additions.length > 0">
+                    <div *ngFor="let ad of item.additions">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(ad.addition_name)}}</h4>
+                            <span class="app-flex-filler"></span>
+                            <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{item.quantity}}
+                                <span style="margin-left: 16px">{{ad.price}} {{invoice.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngFor="let addition of orderHistory.additions">
+                <mat-list-item>
+                    <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(addition.addition_name)}}</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{addition.quantity}}
+                        <span style="margin-left: 16px">{{addition.price}} {{invoice.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            </div>
+        </mat-list>
+    </mat-expansion-panel>
+</mat-accordion>

@@ -72,6 +72,18 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * This function validates if string crop
+     * @param { string } _pItemName 
+     */
+    itemNameCrop(_pItemName: string): string {
+        if (_pItemName.length > 20 && _pItemName.indexOf(' ') <= 0) {
+            return _pItemName.substring(1, 20) + '...';
+        } else {
+            return _pItemName;
+        }
+    }
+
+    /**
      * ngOnDestroy implementation
      */
     ngOnDestroy() {
