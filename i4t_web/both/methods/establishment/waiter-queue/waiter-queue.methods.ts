@@ -58,7 +58,7 @@ if (Meteor.isServer) {
       return;
     },
 
-    processJobs: function (job, callback, queueName, data) {
+    /*processJobs: function (job, callback, queueName, data) {
       let data_detail: WaiterCallDetail;
       let usr_id_enabled: UserDetail;
 
@@ -69,10 +69,10 @@ if (Meteor.isServer) {
           waiter_id: data.waiter_id,
           waiter_call_id: data.waiter_call_id
         }
-        Meteor.call('waiterCall', queueName, true, dt);       
+        Meteor.call('waiterCall', queueName, true, dt);
         data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
       }
-      
+
       let establishment = Establishments.findOne({ _id: data_detail.establishment_id });
       usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
       if (usr_id_enabled === undefined || usr_id_enabled === null) {
@@ -80,30 +80,46 @@ if (Meteor.isServer) {
         usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
       }
 
+      var toDate = new Date().toLocaleDateString();
+
       Job.getJob(queueName, job._doc._id, function (err, res) {
+        let _lJob:any;
+        console.log(res);
         if (res) {
-          res.done();
-          var toDate = new Date().toLocaleDateString();
-          EstablishmentTurns.update({ establishment_id: data_detail.establishment_id, creation_date: { $gte: new Date(toDate) } },
-            {
-              $set: { last_waiter_id: usr_id_enabled.user_id, modification_user: 'SYSTEM', modification_date: new Date(), }
+          if ((res._doc._id !== null && res._doc._id !== undefined) && (res._doc.runId !== null && res._doc.runId !== undefined)) {
+            res.done();
+            _lJob = res;
+          } else {
+            Meteor.call('jobRemove', queueName, res._doc._id, data_detail);
+            Job.getJob(queueName, job._doc._id, function (err, resul) {
+              if(resul){
+                if ((resul._doc._id !== null && resul._doc._id !== undefined) && (resul._doc.runId !== null && resul._doc.runId !== undefined)) {
+                  resul.done();
+                  _lJob = resul;
+                }
+              }
             });
-          //Waiter call detail update in completed state
-          WaiterCallDetails.update({ job_id: job._doc._id },
-            {
-              $set: { "waiter_id": usr_id_enabled.user_id, "status": "completed" }
-            });
-          //Waiter update of current jobs and state
-          let usr_jobs: number = usr_id_enabled.jobs + 1;
-          if (usr_jobs < establishment.max_jobs) {
-            UserDetails.update({ user_id: usr_id_enabled.user_id }, { $set: { "jobs": usr_jobs } });
-          } else if (usr_jobs == establishment.max_jobs) {
-            UserDetails.update({ user_id: usr_id_enabled.user_id }, { $set: { "enabled": false, "jobs": usr_jobs } });
           }
+          EstablishmentTurns.update({ establishment_id: data_detail.establishment_id, creation_date: { $gte: new Date(toDate) } },
+              {
+                $set: { last_waiter_id: usr_id_enabled.user_id, modification_user: 'SYSTEM', modification_date: new Date(), }
+              });
+            //Waiter call detail update in completed state
+            WaiterCallDetails.update({ job_id: _lJob._doc._id },
+              {
+                $set: { "waiter_id": usr_id_enabled.user_id, "status": "completed" }
+              });
+            //Waiter update of current jobs and state
+            let usr_jobs: number = usr_id_enabled.jobs + 1;
+            if (usr_jobs < establishment.max_jobs) {
+              UserDetails.update({ user_id: usr_id_enabled.user_id }, { $set: { "jobs": usr_jobs } });
+            } else if (usr_jobs == establishment.max_jobs) {
+              UserDetails.update({ user_id: usr_id_enabled.user_id }, { $set: { "enabled": false, "jobs": usr_jobs } });
+            }
         }
       });
       callback();
-    },
+    },*/
 
     /**
      * Job remove
@@ -207,24 +223,24 @@ if (Meteor.isServer) {
 
             _lOrder.items.forEach((it) => {
               if (it.is_reward) {
-                  let _lRedeemedPoints: number = it.redeemed_points;
-                  let _lValidatePoints: boolean = true;
-                  RewardPoints.collection.find({ id_user: _lOrder.creation_user, establishment_id: _lOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
-                      if (_lValidatePoints) {
-                          if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
-                              let aux: number = pnt.points - pnt.difference;
-                              _lRedeemedPoints = _lRedeemedPoints - aux;
-                              RewardPoints.update({ _id: pnt._id }, { $set: { points: pnt.difference, difference: 0 } });
-                          } else if (!pnt.is_active) {
-                              _lRedeemedPoints = _lRedeemedPoints - pnt.points;
-                              if (_lRedeemedPoints === 0) {
-                                  _lValidatePoints = false;
-                              }
-                          }
+                let _lRedeemedPoints: number = it.redeemed_points;
+                let _lValidatePoints: boolean = true;
+                RewardPoints.collection.find({ id_user: _lOrder.creation_user, establishment_id: _lOrder.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                  if (_lValidatePoints) {
+                    if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                      let aux: number = pnt.points - pnt.difference;
+                      _lRedeemedPoints = _lRedeemedPoints - aux;
+                      RewardPoints.update({ _id: pnt._id }, { $set: { points: pnt.difference, difference: 0 } });
+                    } else if (!pnt.is_active) {
+                      _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                      if (_lRedeemedPoints === 0) {
+                        _lValidatePoints = false;
                       }
-                  });
+                    }
+                  }
+                });
               }
-          });
+            });
 
             Orders.update({ _id: waiterDetail.order_id },
               {
@@ -360,11 +376,18 @@ if (Meteor.isServer) {
      * @param {string} _maxJobs
      */
     validateWaiterEnabled(_establishment: string, _maxJobs: string, _tableId: string): UserDetail {
+      console.log('flg-1');
+      console.log(_establishment);
+      console.log(_maxJobs);
+      console.log(_tableId);
+      
       let usr: UserDetail = null;
       let position: number = 0;
       let _randomLast: string;
 
       let table = Tables.findOne({ _id: _tableId });
+      console.log('flg-2');      
+      console.log(table);
       let waiterEnableds = UserDetails.collection.find({
         establishment_work: _establishment,
         is_active: true,
@@ -374,7 +397,10 @@ if (Meteor.isServer) {
         table_assignment_init: { $lte: table._number },
         table_assignment_end: { $gte: table._number }
       });
-      var count = waiterEnableds.count();
+      console.log('flg-3');
+      console.log(waiterEnableds);
+      
+      var count = waiterEnableds.fetch().length;
 
       if (count > 0) {
         let establishmentTurn = EstablishmentTurns.findOne({ "establishment_id": _establishment },
