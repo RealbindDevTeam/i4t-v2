@@ -87,6 +87,9 @@ import { RewardEditComponent } from './administrator/rewards/reward-edit/reward-
 import { RewardsDetailComponent } from './customer/rewards-detail/rewards-detail.component';
 import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
 import { LightBoxComponent } from './general/lightbox/lightbox.component';
+import { ChartDetailComponent } from "./administrator/dashboard/charts/chart-detail/chart-detail.component";
+import { BarChartItemsComponent } from "./administrator/dashboard/charts/bar-chart-items.component";
+import { CustomerPointsComponent } from './customer/points/points/customer-points.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -144,7 +147,9 @@ export const WEB_DECLARATIONS = [
     //InvoicesDownloadPage,
     EstablishmentProfileComponent,
     EstablishmentProFileDetailComponent,
-    RewardComponent
+    RewardComponent,
+    ChartDetailComponent,
+    CustomerPointsComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [
@@ -184,4 +189,8 @@ export const SERVICES_DECLARATIONS = [
     UserLanguageService,
     ImageService,
     PayuPaymentService
-]; 
+];
+
+export const CHART_DECLARATIONS = [
+    BarChartItemsComponent
+];
