@@ -52,7 +52,7 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
      * ngOnInit implementation
      */
     ngOnInit() {
-        this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }).zone();
+        this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).zone();
         this._orders = Orders.find({ creation_user: this._user }).zone();
         this._items = Items.find({}).zone();
     }
@@ -72,7 +72,7 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
      * @param {number} _pItemQuantiy
      * @param {number} _pRewardPoints
      */
-    AddRewardToOrder(_pItemToInsert: string, _pItemQuantiy:number, _pRewardPoints: number): void {
+    AddRewardToOrder(_pItemToInsert: string, _pItemQuantiy: number, _pRewardPoints: number): void {
         let _lOrderItemIndex: number = 0;
         let _lOrder: Order = Orders.collection.find({ creation_user: this._user, establishment_id: this._establishmentId }).fetch()[0];
 
