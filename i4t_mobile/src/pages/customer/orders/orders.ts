@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { App, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
+import { App, NavController, NavParams, AlertController, LoadingController, ToastController, ModalController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -19,8 +19,12 @@ import { ItemEditPage } from '../item-edit/item-edit';
 import { AdditionEditPage } from '../addition-edit/addition-edit';
 import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
-import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.model';
+import { UserDetail, UserRewardPoints } from '../../../../../i4t_web/both/models/auth/user-detail.model';
 import { Meteor } from 'meteor/meteor';
+import { Reward } from 'i4t_web/both/models/establishment/reward.model';
+import { Rewards } from 'i4t_web/both/collections/establishment/reward.collection';
+import { RewardListComponent } from './reward-list';
+import { RewardPoints } from 'i4t_web/both/collections/establishment/reward-point.collection';
 
 @Component({
     selector: 'page-orders',
@@ -35,6 +39,8 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _additionsSub: Subscription;
     private _itemsSub: Subscription;
     private _currencySub: Subscription;
+    private _rewardsSub: Subscription;
+    private _rewardPointsSub: Subscription;
 
     private _userLang: string;
     private _table_code: string = "";
@@ -54,12 +60,14 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _orders;
     private _items;
     private _userDetails: Observable<UserDetail[]>;
+    private _rewards: Observable<Reward[]>;
 
     private _currentOrderUserId: string;
     private _btnOrderItem: boolean = true;
 
     private _thereIsUser: boolean = true;
     private _thereAreOrders: boolean = true;
+    private _showReedemPoints: boolean = true;
 
     constructor(public _navCtrl: NavController,
         public _navParams: NavParams,
@@ -69,6 +77,7 @@ export class OrdersPage implements OnInit, OnDestroy {
         public _loadingCtrl: LoadingController,
         private _userLanguageService: UserLanguageServiceProvider,
         private toastCtrl: ToastController,
+        public _modalCtrl: ModalController,
         private _ngZone: NgZone) {
         _translate.setDefaultLang('en');
         this._currentUserId = Meteor.userId();
@@ -115,6 +124,16 @@ export class OrdersPage implements OnInit, OnDestroy {
                             this._orders.subscribe(() => { this.getOrders() });
                         });
                     });
+
+                    this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._userDetail.current_establishment).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._rewards = Rewards.find({ establishments: { $in: [this._userDetail.current_establishment] } }).zone();
+                            this.countRewards();
+                            this._rewards.subscribe(() => { this.countRewards(); });
+                        });
+                    });
+
+                    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).subscribe();
                 }
             });
         });
@@ -137,6 +156,10 @@ export class OrdersPage implements OnInit, OnDestroy {
 
     getOrders() {
         Orders.collection.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).count() > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
+    }
+
+    countRewards(): void {
+        Rewards.collection.find({ establishments: { $in: [this._userDetail.current_establishment] } }).count() > 0 ? this._showReedemPoints = true : this._showReedemPoints = false;
     }
 
     goToNewOrder() {
@@ -221,6 +244,36 @@ export class OrdersPage implements OnInit, OnDestroy {
                     text: dialog_accept_btn,
                     handler: () => {
                         if (_order.status === 'ORDER_STATUS.SELECTING') {
+                            //for reward item
+                            _order.items.forEach(item => {
+                                if (item.is_reward) {
+                                    let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _order.creation_user });
+                                    let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _order.establishment_id)[0];
+                                    let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(item.redeemed_points.toString());
+
+                                    UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _order.establishment_id } } });
+                                    UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _order.establishment_id, points: _lNewPoints } } });
+
+                                    let _lRedeemedPoints: number = item.redeemed_points;
+                                    let _lValidatePoints: boolean = true;
+                                    RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: _order.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                                        if (_lValidatePoints) {
+                                            if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                                                let aux: number = pnt.points - pnt.difference;
+                                                _lRedeemedPoints = _lRedeemedPoints - aux;
+                                                RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                                            } else if (!pnt.is_active) {
+                                                _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                                                RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                                                if (_lRedeemedPoints === 0) {
+                                                    _lValidatePoints = false;
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
                             Orders.update({ _id: _order._id }, {
                                 $set: {
                                     status: 'ORDER_STATUS.CANCELED', modification_user: Meteor.userId(),
@@ -228,6 +281,16 @@ export class OrdersPage implements OnInit, OnDestroy {
                                 }
                             });
                             this._orderIndex = -1;
+
+                            this._toastMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CANCELED_MSG');
+                            let toast = this.toastCtrl.create({
+                                message: this._toastMsg,
+                                duration: 1500,
+                                position: 'middle'
+                            });
+                            toast.onDidDismiss(() => {
+                            });
+                            toast.present();
                         } else {
                             alert(alert_not);
                         }
@@ -265,7 +328,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                         let _lItemsIsAvailable: boolean = true;
                         let loading = this._loadingCtrl.create({
                             content: _loadingMsg
-                          });
+                        });
                         if (_order.status === 'ORDER_STATUS.SELECTING') {
                             let _Items = _order.items;
                             _Items.forEach((item) => {
@@ -314,16 +377,16 @@ export class OrdersPage implements OnInit, OnDestroy {
     presentToast() {
         this._toastMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CONFIRMED_MSG');
         let toast = this.toastCtrl.create({
-          message: this._toastMsg,
-          duration: 1500,
-          position: 'middle'
+            message: this._toastMsg,
+            duration: 1500,
+            position: 'middle'
         });
-    
+
         toast.onDidDismiss(() => {
         });
-    
+
         toast.present();
-      }
+    }
 
     goToItemEdit(_itemId: string, _orderItemIndex: number, _order: Order) {
         let loader = this._loadingCtrl.create({
@@ -345,6 +408,10 @@ export class OrdersPage implements OnInit, OnDestroy {
             res_code: this._res_code,
             table_code: this._table_code
         });
+    }
+
+    goToRewardList() {
+        this._navCtrl.push(RewardListComponent, { establishment: this._res_code });
     }
 
     /**
@@ -436,5 +503,7 @@ export class OrdersPage implements OnInit, OnDestroy {
         if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
         if (this._currencySub) { this._currencySub.unsubscribe(); }
         if (this._additionsSub) { this._additionsSub.unsubscribe(); }
+        if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
+        if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
     }
 }

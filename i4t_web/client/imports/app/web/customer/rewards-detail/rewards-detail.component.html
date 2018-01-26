@@ -14,7 +14,7 @@
                                 <mat-chip style="color: white;background-color: #4CAF50;">{{reward.points}} {{'REWARD_DETAIL.POINTS' | translate}}</mat-chip>
                             </mat-chip-list>
                             <p mat-line *ngIf="!getItemAvailability(item._id)" style="color: #D50000;font-weight: bold;">{{'REWARD_DETAIL.UNAVAILABLE' | translate}}</p>
-                            <button mat-button class="primary-button" *ngIf="reward.points <= _userRewardPoints" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">{{'REWARD_DETAIL.REDEEM' | translate}}</button>
+                            <button mat-button class="primary-button" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">{{'REWARD_DETAIL.REDEEM' | translate}}</button>
                             <button mat-button disabled *ngIf="reward.points > _userRewardPoints" style="color:#4CAF50">{{'REWARD_DETAIL.GET_POINTS' | translate}}!</button>
                         </mat-list-item>
                         <mat-divider class="divider"></mat-divider>

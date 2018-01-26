@@ -42,6 +42,7 @@ import { EstablishmentExitConfirmPage } from '../pages/waiter/calls/establishmen
 import { EstablishmentProfilePage } from '../pages/customer/establishment-profile/establishment-profile';
 import { ModalSchedule } from '../pages/customer/establishment-profile/modal-schedule/modal-schedule';
 import { CustomerOrderConfirm } from "../pages/waiter/calls/customer-order-confirm/customer-order-confirm";
+import { RewardListComponent } from '../pages/customer/orders/reward-list';
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -87,5 +88,6 @@ export const PAGES_DECLARATIONS = [
     EstablishmentExitConfirmPage,
     EstablishmentProfilePage,
     ModalSchedule,
-    CustomerOrderConfirm
+    CustomerOrderConfirm,
+    RewardListComponent
 ];
