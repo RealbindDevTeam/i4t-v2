@@ -9,12 +9,16 @@ import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
 import { GarnishFoodCol } from 'i4t_web/both/collections/menu/garnish-food.collection';
 import { GarnishFood } from 'i4t_web/both/models/menu/garnish-food.model';
+import { Order, OrderItem } from 'i4t_web/both/models/establishment/order.model';
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Item } from 'i4t_web/both/models/menu/item.model';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { ModalObservationsEdit } from './modal-observations-edit';
 import { Storage } from '@ionic/storage';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
+import { UserDetail, UserRewardPoints } from 'i4t_web/both/models/auth/user-detail.model';
+import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
+import { RewardPoints } from 'i4t_web/both/collections/establishment/reward-point.collection';
 
 @Component({
   selector: 'page-item-edit',
@@ -40,6 +44,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _additionSub: Subscription;
   private _garnishes;
   private _garnishSub: Subscription;
+  private _rewardPointsSub: Subscription;
   private _createAdditions: any[];
   private _maxGarnishFoodElements: number = 0;
   private _quantityCount: number;
@@ -65,6 +70,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _currenciesSub: Subscription;
   private _finalPoints: number = 0;
   private _unitRewardPoints: number = 0;
+  private _showEditBtn: boolean;
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -228,6 +234,8 @@ export class ItemEditPage implements OnInit, OnDestroy {
         }
       });
     });
+
+    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).subscribe();
 
     this._newOrderForm = new FormGroup({
       quantity: new FormControl('', [Validators.required]),
@@ -581,6 +589,101 @@ export class ItemEditPage implements OnInit, OnDestroy {
     return aux.isAvailable;
   }
 
+  /**
+   * Function to hide edit button if item is reward
+   */
+  isReward(_orderItem: OrderItem) {
+    if (_orderItem.is_reward) {
+      this._showEditBtn = false;
+    } else {
+      this._showEditBtn = true;
+    }
+  }
+
+  /**
+      * Function to remove the reward 
+      */
+  removeReward() {
+    let dialog_title = this.itemNameTraduction('MOBILE.ITEM_EDIT.REMOVE_ITEM');
+    let dialog_subtitle = this.itemNameTraduction('MOBILE.ITEM_EDIT.SURE_REMOVE');
+    let dialog_cancel_btn = this.itemNameTraduction('MOBILE.ITEM_EDIT.NO_ANSWER');
+    let dialog_accept_btn = this.itemNameTraduction('MOBILE.ITEM_EDIT.YES_ANSWER');
+
+    let alertConfirm = this._alertCtrl.create({
+      title: dialog_title,
+      message: dialog_subtitle,
+      buttons: [
+        {
+          text: dialog_cancel_btn,
+          role: 'cancel',
+          handler: () => {
+          }
+        },
+        {
+          text: dialog_accept_btn,
+          handler: () => {
+            let orderAux: Order = Orders.findOne({ _id: this._order_code });
+            let _lOrderItemToremove: OrderItem = orderAux.items.filter(o => this._item_code === o.itemId && o.index === Number(this._item_order_index) && o.is_reward)[0];
+            let _lNewTotalPayment: number = orderAux.totalPayment - _lOrderItemToremove.paymentItem;
+
+            Orders.update({ _id: orderAux._id }, { $pull: { items: { itemId: this._item_code, index: Number(this._item_order_index) } } });
+            Orders.update({ _id: orderAux._id },
+              {
+                $set: {
+                  totalPayment: _lNewTotalPayment,
+                  modification_user: this._currentUserId,
+                  modification_date: new Date()
+                }
+              }
+            );
+
+            let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: orderAux.creation_user });
+            let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === orderAux.establishment_id)[0];
+            let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(_lOrderItemToremove.redeemed_points.toString());
+
+            UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: orderAux.establishment_id } } });
+            UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: orderAux.establishment_id, points: _lNewPoints } } });
+
+            let _lRedeemedPoints: number = _lOrderItemToremove.redeemed_points;
+            let _lValidatePoints: boolean = true;
+
+            RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: orderAux.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+              if (_lValidatePoints) {
+                if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                  let aux: number = pnt.points - pnt.difference;
+                  _lRedeemedPoints = _lRedeemedPoints - aux;
+                  RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                } else if (!pnt.is_active) {
+                  _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                  RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                  if (_lRedeemedPoints === 0) {
+                    _lValidatePoints = false;
+                  }
+                }
+              }
+            });
+
+            let _currentOrder = Orders.findOne({ _id: this._order_code });
+            if (_currentOrder.items.length === 0 && _currentOrder.additions.length === 0) {
+              Orders.update({ _id: _currentOrder._id }, {
+                $set: {
+                  status: 'ORDER_STATUS.CANCELED', modification_user: this._currentUserId,
+                  modification_date: new Date()
+                }
+              });
+            }
+
+            this._navCtrl.pop();
+            let _toastMsg = this.itemNameTraduction('MOBILE.REWARD_LIST.REWARD_DELETED');
+            this.presentToast(_toastMsg);
+          }
+        }
+      ]
+    });
+
+    alertConfirm.present();
+  }
+
   ngOnDestroy() {
     this.removeSubscriptions();
   }
@@ -594,5 +697,6 @@ export class ItemEditPage implements OnInit, OnDestroy {
     if (this._garnishSub) { this._garnishSub.unsubscribe(); }
     if (this._ordersSub) { this._ordersSub.unsubscribe(); }
     if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
+    if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
   }
 }

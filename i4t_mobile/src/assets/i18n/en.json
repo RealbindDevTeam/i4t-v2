@@ -13,7 +13,7 @@
     "SIGNUP": {
         "MALE_GENDER": "Male",
         "FEMALE_GENDER": "Female",
-        "OTHER_GENDER": "Other",
+        "OTHER_GENDER": "Other"
     },
     "MOBILE": {
         "CANCEL": "Cancel",
@@ -183,7 +183,11 @@
             "LOADING_MENU": "Loading menu",
             "PENALTY": "At the moment you don't have available the option to create orders. Try later",
             "ORDER_CONFIRM": "Confirmation in process",
-            "ORDER_CONFIRMED_MSG": "Order confirmed"
+            "ORDER_CONFIRMED_MSG": "Order confirmed",
+            "REDEEM_POINTS": "Redeem points",
+            "REWARDS_TITLE": "Rewards",
+            "ITEM_REDEEMED": "Redeemed",
+            "ORDER_CANCELED_MSG": "Order canceled"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
@@ -467,6 +471,17 @@
             "NO_RESTAURANT_HOURS": "No restaurant hours have been entered",
             "DELETE": "Delete a day of the schedule",
             "CLOSE": "Close"
+        },
+        "REWARD_LIST": {
+            "TITLE": "Rewards",
+            "AVALAIBLE_PTS": "Points to redeem: ",
+            "NOT_AVAILABLE": "Unavailable",
+            "REDEEM_BTN": "Redeem",
+            "GET_MORE_PTS": "Get pts",
+            "REWARD_AGGREGATED": "Reward added",
+            "ERROR": "Error adding reward. Try again",
+            "LOADING_MSG": "Adding to your order ...",
+            "REWARD_DELETED": "Reward deleted from order"
         }
     },
     "CURRENCIES": {

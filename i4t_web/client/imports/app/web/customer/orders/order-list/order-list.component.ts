@@ -194,7 +194,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         });
         this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this.establishmentId).subscribe(() => {
             this._ngZone.run(() => {
-                this._rewards = Rewards.find({ establishments: { $in: [this.establishmentId] } }).zone();
+                this._rewards = Rewards.find({ establishments: { $in: [this.establishmentId] } }, { sort: { points: 1 } }).zone();
                 this.countRewards();
                 this._rewards.subscribe(() => { this.countRewards(); });
             });
@@ -227,7 +227,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      * Validate if establishment rewards exists
      */
     countRewards(): void {
-        Rewards.collection.find({ establishments: { $in: [this.establishmentId] } }).count() > 0 ? this._showReedemPoints = true : this._showReedemPoints = false;
+        Rewards.collection.find({ establishments: { $in: [this.establishmentId] } }, { sort: { points: 1 } }).count() > 0 ? this._showReedemPoints = true : this._showReedemPoints = false;
     }
 
     /**
@@ -1077,7 +1077,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     reedemPoints(): void {
         this._mdDialogRef = this._mdDialog.open(RewardsDetailComponent, {
             disableClose: true,
-            width: '50%'
         });
         this._mdDialogRef.componentInstance._establishmentId = this.establishmentId;
         this._mdDialogRef.componentInstance._tableQRCode = this.tableQRCode;

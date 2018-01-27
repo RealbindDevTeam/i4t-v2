@@ -183,7 +183,11 @@
             "LOADING_MENU": "Cargando menú",
             "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del ",
             "ORDER_CONFIRM": "Confirmando tu orden",
-            "ORDER_CONFIRMED_MSG": "Orden confirmada"
+            "ORDER_CONFIRMED_MSG": "Orden confirmada",
+            "REDEEM_POINTS": "Redimir puntos",
+            "REWARDS_TITLE": "Recompensas",
+            "ITEM_REDEEMED": "Redimido",
+            "ORDER_CANCELED_MSG": "Orden cancelada"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirma aquellas ordenes que otros usuarios desean pagar por ti.",
@@ -467,6 +471,17 @@
             "NO_RESTAURANT_HOURS": "No se ha ingresado horario del restaurante",
             "DELETE": "Eliminar día del horario",
             "CLOSE": "Cerrar"
+        },
+        "REWARD_LIST": {
+            "TITLE": "Recompensas",
+            "AVALAIBLE_PTS": "Puntos para redimir: ",
+            "NOT_AVAILABLE": "No disponible",
+            "REDEEM_BTN": "Redimir",
+            "GET_MORE_PTS": "Obtén pts",
+            "REWARD_AGGREGATED": "Recompensa agregada",
+            "ERROR": "Error agregando la recompensa. Intenta nuevamente",
+            "LOADING_MSG": "Agregando a tu orden ...",
+            "REWARD_DELETED": "Recompensa eliminada de la orden"
         }
     },
     "CURRENCIES": {
