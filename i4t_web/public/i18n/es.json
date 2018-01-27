@@ -1622,5 +1622,25 @@
         "GET_POINTS": "Obtén puntos",
         "REWARD_AGGREGATED": "Recompensa agregada",
         "ERROR": "Error agregando la recompensa. Intenta nuevamente"
+    },
+    "CUSTOMER_POINTS": {
+        "NO_POINTS_MSG": "Aún no has acumulado puntos en ningún restaurante. Animate!",
+        "GO_TO_ORDERS": "Ir a ordenes",
+        "ADDRESS": "Dirección",
+        "ACCUMULATED_POINTS": "Puntos Acumulados",
+        "POINTS": "Puntos",
+        "YOU_HAVE": "Tienes",
+        "POINTS_FOR_EXPIRING": "puntos para vencer el día",
+        "DETAIL": "Detalle"
+    },
+    "POINTS_DETAIL": {
+        "TITLE": "Historial de ordenes y puntos",
+        "SUBTITLE": "Te presentamos las ordenes que has pedido en el restaurante, los puntos que has ganado y has redimido",
+        "ORDER": "Orden",
+        "YOU_EARNED": "Ganaste",
+        "POINTS": "Puntos",
+        "YOU_REDEEMED": "Redimiste",
+        "QUANT":"Cant. ",
+        "REWARD": "Recompensa"
     }
 }

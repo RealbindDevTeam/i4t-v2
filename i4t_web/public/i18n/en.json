@@ -1622,5 +1622,25 @@
         "GET_POINTS": "Get points",
         "REWARD_AGGREGATED": "Reward aggregated",
         "ERROR": "Error aggregating reward. Try again"
+    },
+    "CUSTOMER_POINTS": {
+        "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",
+        "GO_TO_ORDERS": "Go to orders",
+        "ADDRESS": "Address",
+        "ACCUMULATED_POINTS": "Accumulated points",
+        "POINTS": "Points",
+        "YOU_HAVE": "You have",
+        "POINTS_FOR_EXPIRING": "points for expiring the day",
+        "DETAIL": "Detail"
+    },
+    "POINTS_DETAIL": {
+        "TITLE": "Orders and points history",
+        "SUBTITLE": "We present the orders you have ordered in the restaurant, the points you have earned and redeemed",
+        "ORDER": "Order",
+        "YOU_EARNED": "You earned",
+        "POINTS": "Points",
+        "YOU_REDEEMED": "You redeemed",
+        "QUANT":"Quant. ",
+        "REWARD": "Reward"
     }
 }

@@ -7,12 +7,12 @@
                 </div>
                 <div class="card_initial-copy">
                     <div class="card_initial-tagline">
-                        Aun no has acumulado puntos en ningun restaurante. Animate!
+                        {{'CUSTOMER_POINTS.NO_POINTS_MSG' | translate}}
                     </div>
                     <div class="card_initial-additional-links">
                     </div>
                     <div class="card_initial-button">
-                        <button mat-raised-button (click)="goToOrders()">Ir a Ordenes</button>
+                        <button mat-raised-button (click)="goToOrders()">{{'CUSTOMER_POINTS.GO_TO_ORDERS' | translate}}</button>
                     </div>
                 </div>
             </div>
@@ -30,10 +30,10 @@
                             <img mat-list-avatar class="image" *ngIf="_establishment.image" src="{{ _establishment.image.url }}">
                             <img mat-list-avatar class="image" *ngIf="!_establishment.image" src="/images/default-restaurant.png">
                             <h2 mat-line class="card-title">{{_establishment.name}}</h2>
-                            <p mat-line>Direccion: {{_establishment.address}}</p>
-                            <p mat-line class="customer-points">Puntos Acumulados: {{_points.points}} Puntos</p>
-                            <p mat-line class="expiration-points" *ngIf="validateEstablishmentExpirePoints(_establishment._id)">Tienes {{getEstablishmentExpirePoints(_establishment._id)}} puntos por vencer el dia {{getEstablishmentExpirePointsDate(_establishment._id) | date:'MM/dd/yyyy'}}</p>
-                            <button mat-raised-button class="primary-button card-button detail-button" (click)="openEstablishmentDetail(_establishment._id)">Detalle</button>
+                            <p mat-line>{{'CUSTOMER_POINTS.ADDRESS' | translate}}: {{_establishment.address}}</p>
+                            <p mat-line class="customer-points">{{'CUSTOMER_POINTS.ACCUMULATED_POINTS' | translate}}: {{_points.points}} {{'CUSTOMER_POINTS.POINTS' | translate}}</p>
+                            <p mat-line class="expiration-points" *ngIf="validateEstablishmentExpirePoints(_establishment._id)">{{'CUSTOMER_POINTS.YOU_HAVE' | translate}} {{getEstablishmentExpirePoints(_establishment._id)}} {{'CUSTOMER_POINTS.POINTS_FOR_EXPIRING' | translate}} {{getEstablishmentExpirePointsDate(_establishment._id) | date:'MM/dd/yyyy'}}</p>
+                            <button mat-raised-button class="primary-button card-button detail-button" (click)="openEstablishmentDetail(_establishment._id)">{{'CUSTOMER_POINTS.DETAIL' | translate}}</button>
                         </mat-list-item>
                     </mat-list>
                 </mat-card>

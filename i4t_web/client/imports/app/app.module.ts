@@ -10,7 +10,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AgmCoreModule } from '@agm/core';
 import { NgxPageScrollModule } from 'ngx-page-scroll';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { routes } from './app.routes';
 import { AppComponent } from './web/app.component';
@@ -75,8 +74,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatChipsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyCFXGTI9kCa4U7YyMd2USL9LCV_JlQinyw'
-    }),
-    NgxChartsModule
+    })
   ],
   declarations: [
     ...WEB_DECLARATIONS,
