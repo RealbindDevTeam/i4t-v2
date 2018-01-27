@@ -110,15 +110,11 @@ if (Meteor.isServer) {
                     }
 
                     let establishment = Establishments.findOne({ _id: data_detail.establishment_id });
-                    console.log('tst-1');
                     usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
                     if (usr_id_enabled === undefined || usr_id_enabled === null) {
-                        console.log('tst-2');
                         Meteor.call('jobRemove', queueName, job._doc._id, data_detail);
                         usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
                     }
-                    console.log('tst-3');
-                    console.log(usr_id_enabled);
                     job.done();
                     var toDate = new Date().toLocaleDateString();
                     EstablishmentTurns.update({ establishment_id: data_detail.establishment_id, creation_date: { $gte: new Date(toDate) } },

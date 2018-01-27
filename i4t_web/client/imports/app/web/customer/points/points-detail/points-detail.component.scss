@@ -124,3 +124,40 @@
     border-radius: 50%;
     margin-right: 8px;
 }
+
+.initial-card {
+    .img {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        color: #114b5f; 
+        font-weight: 500;
+        margin-right: 5rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+}
+
+.panel-title {
+    font-weight: bold;
+}
+
+.total-reward-points {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.redeemed-points {
+    font-weight: bold;
+    color: darkgoldenrod;
+}
+
+.price {
+    margin-left: 16px;
+}

@@ -216,8 +216,13 @@ if (Meteor.isServer) {
                 UserDetails.update({ _id: _lConsumerDetail._id }, { $set: { reward_points: [_lUserReward] } });
               } else {
                 let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
-                UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
-                  { $set: { 'reward_points.$.points': (_lPoints.points + _lOrder.total_reward_points) } });
+                if (_lPoints) {
+                  UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
+                    { $set: { 'reward_points.$.points': (_lPoints.points + _lOrder.total_reward_points) } });
+                } else {
+                  let _lUserReward: UserRewardPoints = { establishment_id: _lOrder.establishment_id, points: _lOrder.total_reward_points }
+                  UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: _lUserReward } });
+                }
               }
             }
 
@@ -251,7 +256,7 @@ if (Meteor.isServer) {
                 }
               }
             );
-            Meteor.call('generateOrderHistory', _lOrder);
+            Meteor.call('generateOrderHistory', _lOrder, waiterDetail.waiter_id);
           }
 
           let usr_detail: UserDetail = UserDetails.findOne({ user_id: _waiter_id });
@@ -376,19 +381,12 @@ if (Meteor.isServer) {
      * @param {string} _maxJobs
      */
     validateWaiterEnabled(_establishment: string, _maxJobs: string, _tableId: string): UserDetail {
-      console.log('flg-1');
-      console.log(_establishment);
-      console.log(_maxJobs);
-      console.log(_tableId);
-      
       let usr: UserDetail = null;
       let position: number = 0;
       let _randomLast: string;
 
       let table = Tables.findOne({ _id: _tableId });
-      console.log('flg-2');      
-      console.log(table);
-      let waiterEnableds = UserDetails.collection.find({
+      let waiterEnableds: UserDetail[] = UserDetails.collection.find({
         establishment_work: _establishment,
         is_active: true,
         enabled: true,
@@ -396,13 +394,9 @@ if (Meteor.isServer) {
         jobs: { $lt: _maxJobs },
         table_assignment_init: { $lte: table._number },
         table_assignment_end: { $gte: table._number }
-      });
-      console.log('flg-3');
-      console.log(waiterEnableds);
-      
-      var count = waiterEnableds.fetch().length;
+      }).fetch();
 
-      if (count > 0) {
+      if (waiterEnableds.length > 0) {
         let establishmentTurn = EstablishmentTurns.findOne({ "establishment_id": _establishment },
           {
             sort: { "creation_date": -1 }
@@ -412,10 +406,12 @@ if (Meteor.isServer) {
           _randomLast = establishmentTurn.last_waiter_id;
         }
         do {
-          position = Meteor.call('getRandomInt', 0, count - 1);
-          usr = waiterEnableds.fetch()[position];
+          if (waiterEnableds.length > 0) {
+            position = Meteor.call('getRandomInt', 0, waiterEnableds.length - 1);
+          }
+          usr = waiterEnableds[position];
         }
-        while (usr.user_id == _randomLast && count > 1);
+        while (usr.user_id == _randomLast && waiterEnableds.length > 1);
         return usr;
       } else {
         return null;

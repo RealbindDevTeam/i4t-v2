@@ -1,8 +1,23 @@
+<mat-card class="initial-card">
+    <mat-list>
+        <mat-list-item>
+            <img mat-list-avatar class="img" src="/images/delivery-of-item.png">
+            <h2 mat-line class="title">Historial de ordenes</h2>
+            <p mat-line class="subtitle">Te presentamos las ordenes que has pedido en el restaurante</p>
+        </mat-list-item>
+    </mat-list>
+</mat-card>
+
 <mat-accordion class="example-headers-align">
-    <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async" hideToggle="true">
+    <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async; let i = index" hideToggle="true" [expanded]="i === 0">
         <mat-expansion-panel-header>
+            <mat-panel-title class="panel-title">
+                {{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}} - Orden # {{orderHistory.order_code}}
+            </mat-panel-title>
             <mat-panel-description>
-                {{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}}
+                <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">Ganaste {{orderHistory.total_reward_points}} Puntos!</span>
+                <span class="app-flex-filler"></span>
+                <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">Redimiste {{getRedeemedPoints(orderHistory)}} Puntos</span>
             </mat-panel-description>
         </mat-expansion-panel-header>
 
@@ -10,12 +25,20 @@
 
         <mat-list>
             <div *ngFor="let item of orderHistory.items">
-                <mat-list-item>
+                <mat-list-item *ngIf="item.is_reward">
+                    <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(item.item_name)}} (RECOMPENSA)</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{item.quantity}}
+                        <span class="price">{{item.price}}{{orderHistory.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-list-item *ngIf="!item.is_reward">
                     <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
                     <h4 mat-line>{{itemNameCrop(item.item_name)}}</h4>
                     <span class="app-flex-filler"></span>
                     <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{item.quantity}}
-                        <span style="margin-left: 16px">{{item.price}}{{invoice.currency}}</span>
+                        <span class="price">{{item.price}}{{orderHistory.currency}}</span>
                     </p>
                 </mat-list-item>
                 <mat-divider></mat-divider>
@@ -26,7 +49,7 @@
                             <h4 mat-line>{{itemNameCrop(gf.garnish_food_name)}}</h4>
                             <span class="app-flex-filler"></span>
                             <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{item.quantity}}
-                                <span style="margin-left: 16px">{{gf.price}} {{invoice.currency}}</span>
+                                <span class="price">{{gf.price}} {{orderHistory.currency}}</span>
                             </p>
                         </mat-list-item>
                         <mat-divider></mat-divider>
@@ -39,7 +62,7 @@
                             <h4 mat-line>{{itemNameCrop(ad.addition_name)}}</h4>
                             <span class="app-flex-filler"></span>
                             <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{item.quantity}}
-                                <span style="margin-left: 16px">{{ad.price}} {{invoice.currency}}</span>
+                                <span class="price">{{ad.price}} {{orderHistory.currency}}</span>
                             </p>
                         </mat-list-item>
                         <mat-divider></mat-divider>
@@ -53,7 +76,7 @@
                     <h4 mat-line>{{itemNameCrop(addition.addition_name)}}</h4>
                     <span class="app-flex-filler"></span>
                     <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{addition.quantity}}
-                        <span style="margin-left: 16px">{{addition.price}} {{invoice.currency}}</span>
+                        <span class="price">{{addition.price}} {{orderHistory.currency}}</span>
                     </p>
                 </mat-list-item>
                 <mat-divider></mat-divider>

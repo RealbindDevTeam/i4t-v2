@@ -9,6 +9,7 @@ export interface OrderHistory extends CollectionObject {
     establishment_address: string;
     establishment_phone: string;
     country_id: string;
+    order_code: number;
     table_number: number;
     total_order: number;
     customer_id: string;

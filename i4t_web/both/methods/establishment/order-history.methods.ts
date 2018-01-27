@@ -16,7 +16,7 @@ if (Meteor.isServer) {
          * This function allow generate order history
          * @param { Order } _pOrder
          */
-        generateOrderHistory: function (_pOrder: Order) {
+        generateOrderHistory: function (_pOrder: Order, _pWaiterId:string) {
             let lEstablishment = Establishments.findOne({ _id: _pOrder.establishment_id });
             let lTable = Tables.findOne({ _id: _pOrder.tableId });
             let lCurrency = Currencies.findOne({ _id: lEstablishment.currencyId });
@@ -64,7 +64,8 @@ if (Meteor.isServer) {
                         quantity: item.quantity,
                         garnish_food: lGarnishFood,
                         additions: lAdditions,
-                        price: lItem.establishments.filter(i => i.establishment_id === _pOrder.establishment_id)[0].price
+                        price: lItem.establishments.filter(i => i.establishment_id === _pOrder.establishment_id)[0].price,
+                        is_reward: item.is_reward
                     }
                 }
                 lInvoiceItems.push(lInvoiceItem);
@@ -89,6 +90,7 @@ if (Meteor.isServer) {
                     establishment_address: lEstablishment.address,
                     establishment_phone: lEstablishment.phone,
                     country_id: lEstablishment.countryId,
+                    order_code: _pOrder.code,
                     table_number: lTable._number,
                     total_order: _pOrder.totalPayment,
                     customer_id: _pOrder.creation_user,
@@ -99,13 +101,14 @@ if (Meteor.isServer) {
                 });
             } else {
                 OrderHistories.insert({
-                    creation_user: Meteor.userId(),
+                    creation_user: _pWaiterId,
                     creation_date: new Date(),
                     establishment_id: _pOrder.establishment_id,
                     establishment_name: lEstablishment.name,
                     establishment_address: lEstablishment.address,
                     establishment_phone: lEstablishment.phone,
                     country_id: lEstablishment.countryId,
+                    order_code: _pOrder.code,
                     table_number: lTable._number,
                     total_order: _pOrder.totalPayment,
                     customer_id: _pOrder.creation_user,

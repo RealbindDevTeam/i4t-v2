@@ -52,7 +52,7 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
         if (this._establishmentId !== null && this._establishmentId !== undefined) {
             this._orderHistorySub = MeteorObservable.subscribe('getOrdersHistoryByUserId', this._user, this._establishmentId).subscribe(() => {
                 this._ngZone.run(() => {
-                    this._orderHistories = OrderHistories.find({ customer_id: this._user, establishment_id: this._establishmentId }).zone();
+                    this._orderHistories = OrderHistories.find({ customer_id: this._user, establishment_id: this._establishmentId }, { sort: { creation_date: -1 } }).zone();
                 });
             });
         } else {
@@ -81,6 +81,20 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
         } else {
             return _pItemName;
         }
+    }
+
+    /**
+     * Return order history redeemed points
+     * @param {OrderHistory} _pOrderHistory 
+     */
+    getRedeemedPoints(_pOrderHistory: OrderHistory): number {
+        let _lPoints:number = 0;
+        _pOrderHistory.items.forEach((it) => {
+            if(it.is_reward){
+                _lPoints += Number.parseInt(it.redeemed_points.toString());
+            }
+        });
+        return _lPoints;
     }
 
     /**
