@@ -41,6 +41,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private _currentMonth: number = this._currentDate.getMonth();
   private _currentYear: number = this._currentDate.getFullYear();
   private _thereAreEstablishments: boolean = true;
+  private show: boolean = false;
+
+  chart = [];
+  ctx;
 
   /**
    * DashboardComponent Constructor
@@ -231,8 +235,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this._router.navigate(['/app/establishment-register']);
   }
 
-  goToCharts(_pEstablishmentId: string) {
-    this._router.navigate(['/app/chart-detail', _pEstablishmentId]);
+  goToCharts() {
+
   }
 
   /**
