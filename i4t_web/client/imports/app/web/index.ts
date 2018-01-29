@@ -56,7 +56,6 @@ import { ReactivateEstablishmentComponent } from './administrator/payment/reacti
 import { CcPaymentConfirmComponent } from './administrator/payment/payu-payment-form/cc-payment-confirm/cc-payment-confirm.component';
 import { TrnResponseConfirmComponent } from './administrator/payment/payu-payment-form/transaction-response-confirm/trn-response-confirm.component';
 import { VerifyResultComponent } from './administrator/payment/payment-history/verify-result/verify-result.component';
-import { CustomerPaymentsHistoryComponent } from './customer/payments-history/customer-payments-history.component';
 import { AdminSignupComponent } from './auth/admin-signup/admin-signup.component';
 import { AlertConfirmComponent } from './general/alert-confirm/alert-confirm.component';
 import { UserLanguageService } from './services/general/user-language.service';
@@ -88,6 +87,7 @@ import { RewardsDetailComponent } from './customer/rewards-detail/rewards-detail
 import { AfterEstablishmentCreationComponent } from './administrator/administration/establishment/register/after-establishment-creation/after-establishment-creation.component';
 import { LightBoxComponent } from './general/lightbox/lightbox.component';
 import { CustomerPointsComponent } from './customer/points/points/customer-points.component';
+import { PointsDetailComponent } from './customer/points/points-detail/points-detail.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -130,7 +130,6 @@ export const WEB_DECLARATIONS = [
     PayuPaymentFormComponent,
     PaymentHistoryComponent,
     ReactivateEstablishmentComponent,
-    CustomerPaymentsHistoryComponent,
     AdminSignupComponent,
     ItemEnableSupComponent,
     MenuListComponent,
@@ -146,7 +145,8 @@ export const WEB_DECLARATIONS = [
     EstablishmentProfileComponent,
     EstablishmentProFileDetailComponent,
     RewardComponent,
-    CustomerPointsComponent
+    CustomerPointsComponent,
+    PointsDetailComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [

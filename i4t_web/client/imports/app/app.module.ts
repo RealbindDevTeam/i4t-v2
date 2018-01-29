@@ -78,7 +78,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   declarations: [
     ...WEB_DECLARATIONS,
-    ...MODAL_DIALOG_DECLARATIONS,
+    ...MODAL_DIALOG_DECLARATIONS
   ],
   providers: [
     RouteGuard,

@@ -19,7 +19,7 @@ import '../both/methods/general/country.methods';
 import '../both/methods/general/iurest-invoice.methods';
 import '../both/methods/general/push-notifications.methods';
 import '../both/methods/establishment/establishment.methods';
-import '../both/methods/establishment/invoice.methods';
+import '../both/methods/establishment/order-history.methods';
 import '../both/methods/establishment/order.methods';
 import '../both/methods/establishment/schedule.methods';
 import '../both/methods/establishment/table.method';

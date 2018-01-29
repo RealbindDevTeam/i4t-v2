@@ -13,7 +13,7 @@ import { Tables } from '../../../both/collections/establishment/table.collection
 import { WaiterCallDetails } from '../../../both/collections/establishment/waiter-call-detail.collection';
 import { CcPaymentMethods } from '../../../both/collections/payment/cc-payment-methods.collection';
 import { PaymentTransactions } from '../../../both/collections/payment/payment-transaction.collection';
-import { Invoices } from '../../../both/collections/establishment/invoice.collection';
+import { OrderHistories } from '../../../both/collections/establishment/order-history.collection';
 import { Cities } from '../../../both/collections/general/city.collection';
 import { Countries } from '../../../both/collections/general/country.collection';
 import { Languages } from '../../../both/collections/general/language.collection';
@@ -86,8 +86,8 @@ export function createdbindexes(){
     // PaymentTransactions Collection Indexes
     PaymentTransactions.collection._ensureIndex( { creation_user: 1 } );
 
-    // Invoices Collection Indexes
-    Invoices.collection._ensureIndex( { customer_id: 1 } );
+    // OrderHistories Collection Indexes
+    OrderHistories.collection._ensureIndex( { customer_id: 1, establishment_id: 1 } );
 
     // Cities Collection Indexes
     Cities.collection._ensureIndex( { country: 1 } );

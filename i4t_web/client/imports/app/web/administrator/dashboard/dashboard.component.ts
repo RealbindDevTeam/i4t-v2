@@ -10,8 +10,6 @@ import { Establishments } from '../../../../../../both/collections/establishment
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
 import { Tables } from '../../../../../../both/collections/establishment/table.collection';
 import { Items } from '../../../../../../both/collections/menu/item.collection';
-//import { Payment } from '../../../../../../both/models/establishment/payment.model';
-//import { Payments } from '../../../../../../both/collections/establishment/payment.collection';
 import { Order, OrderItem, OrderAddition } from '../../../../../../both/models/establishment/order.model';
 import { Orders } from '../../../../../../both/collections/establishment/order.collection';
 import { Currency } from '../../../../../../both/models/general/currency.model';
@@ -77,8 +75,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
         this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', _lEstablishmentsId).subscribe();
         this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentIds', _lEstablishmentsId).subscribe();
-        //this._paymentsSub = MeteorObservable.subscribe('getPaymentsByEstablishmentIds', _lEstablishmentsId).subscribe();
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByEstablishmentIds', _lEstablishmentsId, ['ORDER_STATUS.CLOSED']).subscribe();
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByEstablishmentIds', _lEstablishmentsId, ['ORDER_STATUS.RECEIVED']).subscribe();
         this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).subscribe();
       });
     });
@@ -162,27 +159,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @param {string} _pEstablishmentId
    */
   getItemsSold(_pEstablishmentId: string): number {
-    let _lItemCount: number = 0;
-    /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
-      pay.orders.forEach((orderId) => {
-        let _lOrder: Order = Orders.findOne({ _id: orderId });
-        if (_lOrder) {
-          _lOrder.items.forEach((orderItem: OrderItem) => {
-            _lItemCount += orderItem.quantity;
-          });
-        }
+    let _lAggregate: number = 0;
+    let _lToday: Date = new Date();
+    Orders.collection.find({
+      establishment_id: _pEstablishmentId,
+      'creation_date': {
+        $gte: new Date(_lToday.getFullYear(), _lToday.getMonth(), _lToday.getDate())
+      }
+    }).fetch().forEach((order) => {
+      order.items.forEach((itemObject) => {
+        _lAggregate = _lAggregate + itemObject.quantity;
       });
-    });*/
-    return _lItemCount;
+
+    });
+    return _lAggregate;
   }
 
   /**
    * Get GarnishFood Sold
    * @param {string} _pEstablishmentId
    */
+  /*
   getGarnishFoodSold(_pEstablishmentId: string): number {
     let _lGarnishFoodCount: number = 0;
-    /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+    Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
       pay.orders.forEach((orderId) => {
         let _lOrder: Order = Orders.findOne({ _id: orderId });
         if (_lOrder) {
@@ -191,17 +191,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
           });
         }
       });
-    });*/
+    });
     return _lGarnishFoodCount;
   }
+  */
 
   /**
    * Get Additions Sold
    * @param {string} _pEstablishmentId
    */
+  /*
   getAdditionsSold(_pEstablishmentId: string): number {
     let _lAdditions: number = 0;
-    /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+    Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
       pay.orders.forEach((orderId) => {
         let _lOrder: Order = Orders.findOne({ _id: orderId });
         if (_lOrder) {
@@ -213,9 +215,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
           });
         }
       });
-    });*/
+    });
     return _lAdditions;
   }
+  */
 
   /**
    * Get Establishment Currency
