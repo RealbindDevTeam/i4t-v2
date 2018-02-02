@@ -240,7 +240,12 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
             if (_lRewardPoints) {
                 if (_lRewardPoints.length > 0) {
-                    this._userRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this.establishmentId)[0].points;
+                    let _lPoints: UserRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this.establishmentId)[0];
+                    if(_lPoints){
+                        this._userRewardPoints = _lPoints.points;
+                    } else {
+                        this._userRewardPoints = 0;
+                    }
                 } else {
                     this._userRewardPoints = 0;
                 }

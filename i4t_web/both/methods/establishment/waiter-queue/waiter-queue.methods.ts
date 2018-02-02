@@ -58,69 +58,6 @@ if (Meteor.isServer) {
       return;
     },
 
-    /*processJobs: function (job, callback, queueName, data) {
-      let data_detail: WaiterCallDetail;
-      let usr_id_enabled: UserDetail;
-
-      data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
-      if (data_detail === undefined || data_detail === null) {
-        let dt: any = {
-          job_id: job._doc._id,
-          waiter_id: data.waiter_id,
-          waiter_call_id: data.waiter_call_id
-        }
-        Meteor.call('waiterCall', queueName, true, dt);
-        data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
-      }
-
-      let establishment = Establishments.findOne({ _id: data_detail.establishment_id });
-      usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
-      if (usr_id_enabled === undefined || usr_id_enabled === null) {
-        Meteor.call('jobRemove', queueName, job._doc._id, data_detail);
-        usr_id_enabled = Meteor.call('validateWaiterEnabled', data_detail.establishment_id, establishment.max_jobs, data_detail.table_id);
-      }
-
-      var toDate = new Date().toLocaleDateString();
-
-      Job.getJob(queueName, job._doc._id, function (err, res) {
-        let _lJob:any;
-        console.log(res);
-        if (res) {
-          if ((res._doc._id !== null && res._doc._id !== undefined) && (res._doc.runId !== null && res._doc.runId !== undefined)) {
-            res.done();
-            _lJob = res;
-          } else {
-            Meteor.call('jobRemove', queueName, res._doc._id, data_detail);
-            Job.getJob(queueName, job._doc._id, function (err, resul) {
-              if(resul){
-                if ((resul._doc._id !== null && resul._doc._id !== undefined) && (resul._doc.runId !== null && resul._doc.runId !== undefined)) {
-                  resul.done();
-                  _lJob = resul;
-                }
-              }
-            });
-          }
-          EstablishmentTurns.update({ establishment_id: data_detail.establishment_id, creation_date: { $gte: new Date(toDate) } },
-              {
-                $set: { last_waiter_id: usr_id_enabled.user_id, modification_user: 'SYSTEM', modification_date: new Date(), }
-              });
-            //Waiter call detail update in completed state
-            WaiterCallDetails.update({ job_id: _lJob._doc._id },
-              {
-                $set: { "waiter_id": usr_id_enabled.user_id, "status": "completed" }
-              });
-            //Waiter update of current jobs and state
-            let usr_jobs: number = usr_id_enabled.jobs + 1;
-            if (usr_jobs < establishment.max_jobs) {
-              UserDetails.update({ user_id: usr_id_enabled.user_id }, { $set: { "jobs": usr_jobs } });
-            } else if (usr_jobs == establishment.max_jobs) {
-              UserDetails.update({ user_id: usr_id_enabled.user_id }, { $set: { "enabled": false, "jobs": usr_jobs } });
-            }
-        }
-      });
-      callback();
-    },*/
-
     /**
      * Job remove
      * @param pQueueName 
@@ -212,7 +149,7 @@ if (Meteor.isServer) {
               });
 
               if (_lConsumerDetail.reward_points === null || _lConsumerDetail.reward_points === undefined) {
-                let _lUserReward: UserRewardPoints = { establishment_id: _lOrder.establishment_id, points: _lOrder.total_reward_points }
+                let _lUserReward: UserRewardPoints = { index: 1, establishment_id: _lOrder.establishment_id, points: _lOrder.total_reward_points }
                 UserDetails.update({ _id: _lConsumerDetail._id }, { $set: { reward_points: [_lUserReward] } });
               } else {
                 let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
@@ -220,7 +157,13 @@ if (Meteor.isServer) {
                   UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
                     { $set: { 'reward_points.$.points': (_lPoints.points + _lOrder.total_reward_points) } });
                 } else {
-                  let _lUserReward: UserRewardPoints = { establishment_id: _lOrder.establishment_id, points: _lOrder.total_reward_points }
+                  let _lUserRewardPoints: UserRewardPoints[] = [];
+                  let _newIndex:number;
+                  _lUserRewardPoints = _lConsumerDetail.reward_points;
+                  _lUserRewardPoints.sort(function (a, b) { return b.index - a.index });
+                  _newIndex = (_lUserRewardPoints[0].index) + 1;
+
+                  let _lUserReward: UserRewardPoints = { index: _newIndex, establishment_id: _lOrder.establishment_id, points: _lOrder.total_reward_points }
                   UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: _lUserReward } });
                 }
               }
