@@ -1352,15 +1352,15 @@
         "RESTAURANT_REGISTER": "Restaurant registration",
         "MESSAGE": "Register one to enable this option"
     },
-    "CHART_DETAIL": {
+    "ITEM_UNIT_CHART": {
         "TODAY": "Today",
         "YESTERDAY": "Yesterday",
-        "THIS_WEEK" : "This week",
+        "THIS_WEEK": "This week",
         "SEVEN_DAYS": "Last 7 days",
         "THIRTY_DAYS": "Last 30 days",
-        "FROM" : "From",
-        "TO" : "to",
-        "ITEMS_SOLD": "Items sold for day"
+        "FROM": "From",
+        "TO": "to",
+        "ITEMS_ORDERED": "Items ordered by time range"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Enable/disable Item",
@@ -1583,11 +1583,11 @@
         "READ_MORE": "Read more",
         "READ_LESS": "Read less"
     },
-    "AFTER_RESTAURANT_CREATION" : {
-        "A" : "Go to Administrator/collaborators option, and create the employees of the restaurant",
-        "B" : "Go to Administrator/Tables/Search tables, to select and print the QR code of the tables",
-        "C" : "Charge the information of your menu from the menu option, in order to the users can see it from their devices",
-        "NOT_SHOW" : "Do not show again"
+    "AFTER_RESTAURANT_CREATION": {
+        "A": "Go to Administrator/collaborators option, and create the employees of the restaurant",
+        "B": "Go to Administrator/Tables/Search tables, to select and print the QR code of the tables",
+        "C": "Charge the information of your menu from the menu option, in order to the users can see it from their devices",
+        "NOT_SHOW": "Do not show again"
     },
     "REWARD": {
         "THERE_NOT_ESTABLISHMENTS": "There are not establishment register yet",
@@ -1640,7 +1640,7 @@
         "YOU_EARNED": "You earned",
         "POINTS": "Points",
         "YOU_REDEEMED": "You redeemed",
-        "QUANT":"Quant. ",
+        "QUANT": "Quant. ",
         "REWARD": "Reward"
     }
 }
