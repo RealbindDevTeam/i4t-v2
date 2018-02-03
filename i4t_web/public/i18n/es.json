@@ -809,7 +809,8 @@
         "REWARD": "Recompensa",
         "POINTS": "puntos",
         "TOTAL_ITEM_POINTS": "Total",
-        "MENU": "Menú"
+        "MENU": "Menú",
+        "GET_POINTS": "Obtienes"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",
@@ -862,7 +863,14 @@
         "CANCEL_ORDER_MSG": "Orden cancelada",
         "REMOVE_REWARD": "Eliminar Recompensa",
         "REMOVE_REWARD_MSG": "Esta seguro de eliminar la recompensa de la orden?",
-        "REWARD_DELETED": "Recompensa eliminada de la orden"
+        "REWARD_DELETED": "Recompensa eliminada de la orden",
+        "ITEM": "Item Redimido",
+        "FREE": "Este es Gratis!",
+        "TOTAL_ORDER": "Total de tu orden",
+        "ORDER_LBL": "Orden",
+        "USR_ORDER_CONFIRMED": "Confirmaste tu orden! Un mesero la atendera!",
+        "NO_USR_ORDER_CONFIRMED": "Orden confirmada",
+        "WIN": "Ganas"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "No te encuentras en un restaurante",

@@ -56,11 +56,13 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
         this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).zone();
         this._items = Items.find({}).zone();
         Orders.collection.find({ creation_user: this._user }).fetch().forEach((order) => {
-            order.items.forEach((it) => {
-                if (it.is_reward) {
-                    this._allowAddRewardsToOrder = false;
-                }
-            });
+            if (order.status === 'ORDER_STATUS.SELECTING') {
+                order.items.forEach((it) => {
+                    if (it.is_reward) {
+                        this._allowAddRewardsToOrder = false;
+                    }
+                });
+            }
         });
     }
 

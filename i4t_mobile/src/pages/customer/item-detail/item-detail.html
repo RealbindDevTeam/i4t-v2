@@ -12,7 +12,7 @@
     </div>
     <ion-card class="ion-card-custom" style="margin: 0px !important">
       <ion-card-content>
-        <ion-badge class="pts tb" *ngIf="item.has_reward">{{item.reward_points}} pts
+        <ion-badge style="background-color: darkorange; margin: 12px 0;float: right;" *ngIf="item.has_reward">{{item.reward_points}} pts
           <ion-icon name="star"></ion-icon>
         </ion-badge>
         <ion-card-title>{{item.name}}</ion-card-title>
@@ -98,7 +98,7 @@
 
 <ion-footer class="ion-footer-custom" padding align="end">
   <h2 class="fc">{{'MOBILE.SECTIONS.TOTAL' | translate}} {{_finalPrice}} {{_currencyCode}}</h2>
-  <ion-badge *ngIf="_finalPoints > 0" class="pts">{{_finalPoints}} pts
+  <ion-badge *ngIf="_finalPoints > 0" class="pts" style="background-color: darkorange">{{_finalPoints}} pts
     <ion-icon name="star"></ion-icon>
   </ion-badge>
   <button *ngIf="_showAddBtn" ion-button block outline [disabled]="_disabledAddBtn" (click)="addItemToOrder()">{{'MOBILE.SECTIONS.ADD_TO_ORDER' | translate}}</button>

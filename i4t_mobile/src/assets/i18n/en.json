@@ -187,7 +187,14 @@
             "REDEEM_POINTS": "Redeem points",
             "REWARDS_TITLE": "Rewards",
             "ITEM_REDEEMED": "Redeemed",
-            "ORDER_CANCELED_MSG": "Order canceled"
+            "ORDER_CANCELED_MSG": "Order canceled",
+            "ITEM": "Item",
+            "FREE": "It's Free!",
+            "TOTAL_ORDER": "Total of your order",
+            "ORDER_LBL": "Order",
+            "USR_ORDER_CONFIRMED": "You confirmed your order! A waiter/waitress will attend it",
+            "NO_USR_ORDER_CONFIRMED": "Order confirmed",
+            "WIN": "You win"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
@@ -331,7 +338,8 @@
             "WAIT_QR": "Please wait ...",
             "TIME": "Cooking time:",
             "ADDITION": "Additions",
-            "RECOMMENDED": "Recommended"
+            "RECOMMENDED": "Recommended",
+            "GET_POINTS": "You get"
         },
         "ITEM_EDIT": {
             "MODIFY": "Modify",
@@ -481,7 +489,8 @@
             "REWARD_AGGREGATED": "Reward added",
             "ERROR": "Error adding reward. Try again",
             "LOADING_MSG": "Adding to your order ...",
-            "REWARD_DELETED": "Reward deleted from order"
+            "REWARD_DELETED": "Reward deleted from order",
+            "ORDER_ERROR": "You can redeem maximum one reward per order"
         }
     },
     "CURRENCIES": {

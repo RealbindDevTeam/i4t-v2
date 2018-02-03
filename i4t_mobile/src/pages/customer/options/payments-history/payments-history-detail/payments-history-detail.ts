@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Invoice } from 'i4t_web/both/models/establishment/invoice.model';
+//import { Invoice } from 'i4t_web/both/models/establishment/invoice.model';
 import { UserLanguageServiceProvider } from '../../../../../providers/user-language-service/user-language-service';
 
 @Component({
@@ -10,7 +10,7 @@ import { UserLanguageServiceProvider } from '../../../../../providers/user-langu
 })
 export class PaymentsHistoryDetailPage implements OnInit, OnDestroy {
     
-    private _invoice : Invoice;
+    //private _invoice : Invoice;
     /**
      * PaymentsHistoryDetailPage constructor
      * @param _navParams 
@@ -22,7 +22,7 @@ export class PaymentsHistoryDetailPage implements OnInit, OnDestroy {
                  public _navCtrl   : NavController,
                  public _translate: TranslateService,
                  private _userLanguageService: UserLanguageServiceProvider ){
-        this._invoice = this._navParams.get("invoice");
+        //this._invoice = this._navParams.get("invoice");
     }
 
     /**
