@@ -23,12 +23,12 @@ export function loadMenus() {
                 order: 910
             },
             {
-                _id: "920",
+                _id: "10000",
                 is_active: true,
                 name: "MENUS.REWARDS",
                 url: "/app/rewards",
                 icon_name: "grade",
-                order: 910
+                order: 10000
             },
             {
                 _id: "1000",

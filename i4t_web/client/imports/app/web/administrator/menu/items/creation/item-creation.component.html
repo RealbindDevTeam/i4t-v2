@@ -87,7 +87,7 @@
                                 <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
                                 <div *ngIf="_showEstablishments" formGroupName="establishments">
                                     <mat-checkbox *ngFor="let establishment of _establishmentList" [formControlName]="establishment._id" [class.invalid]="!_itemForm.controls.establishments.valid"
-                                        class="checkbox" (change)="onCheckEstablishment(establishment.name, $event)">{{establishment.name}}</mat-checkbox>
+                                        class="checkbox" (change)="onCheckEstablishment(establishment.name, $event)">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
                                 </div>
                             </div>
                             <div>

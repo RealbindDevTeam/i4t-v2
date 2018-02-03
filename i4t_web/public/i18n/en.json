@@ -558,7 +558,8 @@
         "ADD_FACEBOOK_LINK": "Add the link of your page to Facebook so your customers can see it",
         "FACEBOOK_LINK": "Link to your page on Facebook",
         "RESTAURANT_INACTIVE": "Inactive Restaurant",
-        "RESTAURANT_ACTIVE": "Active Restaurant"
+        "RESTAURANT_ACTIVE": "Active Restaurant",
+        "WAITERS_ERROR": "There are restaurants that don't have waiters/waitress. please check the collaborators option"
     },
     "TABLES": {
         "TABLES_CREATION": "Create tables",
@@ -1621,7 +1622,8 @@
         "REDEEM": "Redeem",
         "GET_POINTS": "Get points",
         "REWARD_AGGREGATED": "Reward aggregated",
-        "ERROR": "Error aggregating reward. Try again"
+        "ERROR": "Error aggregating reward. Try again",
+        "ORDER_ERROR": "You can redeem maximum one reward per order"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",

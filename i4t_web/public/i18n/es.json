@@ -558,7 +558,8 @@
         "ADD_FACEBOOK_LINK": "Agrega el link de tu página en Facebook para que tus clientes puedan verla",
         "FACEBOOK_LINK": "Link de tu página en Facebook",
         "RESTAURANT_INACTIVE": "Restaurante inactivo",
-        "RESTAURANT_ACTIVE": "Restaurante activo"
+        "RESTAURANT_ACTIVE": "Restaurante activo",
+        "WAITERS_ERROR": "Hay restaurantes que no cuentan con meseros. Por favor verifica en la opción de colaboradores"
     },
     "TABLES": {
         "TABLES_CREATION": "Creación de mesas",
@@ -1621,7 +1622,8 @@
         "REDEEM": "Redimir",
         "GET_POINTS": "Obtén puntos",
         "REWARD_AGGREGATED": "Recompensa agregada",
-        "ERROR": "Error agregando la recompensa. Intenta nuevamente"
+        "ERROR": "Error agregando la recompensa. Intenta nuevamente",
+        "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "Aún no has acumulado puntos en ningún restaurante. Animate!",
