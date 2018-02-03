@@ -1360,7 +1360,7 @@
         "THIRTY_DAYS": "Last 30 days",
         "FROM": "From",
         "TO": "to",
-        "ITEMS_ORDERED": "Items ordered by time range"
+        "ITEMS_ORDERED": "Units of items ordered by time range"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Enable/disable Item",

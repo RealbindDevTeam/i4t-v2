@@ -1360,7 +1360,7 @@
         "THIRTY_DAYS": "Últimos 30 días",
         "FROM": "De",
         "TO": "a",
-        "ITEMS_ORDERED": "Items ordenados(pedidos) por rango de tiempo ",
+        "ITEMS_ORDERED": "Cantidad de items ordenados(pedidos) por rango de tiempo ",
         "UNITS_LBL": "Unidades",
         "ITEMS_LBL": "Items"
     },

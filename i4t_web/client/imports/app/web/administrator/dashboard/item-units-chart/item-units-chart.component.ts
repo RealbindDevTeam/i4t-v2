@@ -31,9 +31,19 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
     private _establishment: Establishment = null;
 
     private xAxisArray: string[] = [];
-    private seriesArray: number[] = [];
-    private _dateIni: Date;
-    private _dateEnd: Date;
+    private todaySeriesArray: number[] = [];
+    private yesterdaySeriesArray: number[] = [];
+    private lastSevenDaysArray: number[] = [];
+    private lastThirtyDaysArray: number[] = [];
+    private _today: Date = new Date();
+    private _todayDateIni: Date;
+    private _todayDateEnd: Date;
+    private _yesterdayDateIni: Date;
+    private _yesterdayDateEnd: Date;
+    private _lastSevenDaysDateIni: Date;
+    private _lastSevenDaysDateEnd: Date;
+    private _lastThirtyDaysDateIni: Date;
+    private _lastThirtyDaysDateEnd: Date;
 
     private dateRangeLbl: string;
 
@@ -55,8 +65,17 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
             this._establishmentId = params['param1'];
         });
 
-        this._dateIni = new Date();
-        this._dateEnd = new Date();
+        this._todayDateIni = new Date();
+        this._todayDateEnd = new Date();
+
+        this._yesterdayDateIni = new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate() - 1);
+        this._yesterdayDateEnd = new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate() - 1);
+
+        this._lastSevenDaysDateIni = new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate() - 7);
+        this._lastSevenDaysDateEnd = new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate() - 1);
+
+        this._lastThirtyDaysDateIni = new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate() - 30);
+        this._lastThirtyDaysDateEnd = new Date(this._today.getFullYear(), this._today.getMonth(), this._today.getDate() - 1);
     }
 
     ngOnInit() {
@@ -91,32 +110,94 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
         let unitsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.UNITS_LBL');
         let itemsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.ITEMS_LBL');
         let todayLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.TODAY');
+        let yesterdayLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.YESTERDAY')
+        let lastSevenDaysLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.SEVEN_DAYS');
+        let lastThirtyDaysLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.THIRTY_DAYS');
 
         this.xAxisArray = [];
-        this.seriesArray = [];
+        this.todaySeriesArray = [];
+        this.yesterdaySeriesArray = [];
+        this.lastSevenDaysArray = [];
+        this.lastThirtyDaysArray = [];
+
         let aux = 0;
-        Items.collection.find().fetch().forEach((item) => {
-            let _lAggregate: number = 0;
+        Items.collection.find({}).fetch().forEach((item) => {
+            let _todayAggregate: number = 0;
+            let _yesterdayAggregate: number = 0;
+            let _lastSevenDaysAggregate: number = 0;
+            let _lastThirtyDaysAggregate: number = 0;
+
             this.xAxisArray.push(item.name);
+
+            //Orders today
             Orders.collection.find({
                 'items.itemId': item._id,
                 'creation_date': {
-                    $gte: new Date(this._dateIni.getFullYear(), this._dateIni.getMonth(), this._dateIni.getDate()),
-                    $lte: new Date(this._dateEnd.getFullYear(), this._dateEnd.getMonth(), this._dateEnd.getDate(), 23, 59, 59)
+                    $gte: new Date(this._todayDateIni.getFullYear(), this._todayDateIni.getMonth(), this._todayDateIni.getDate()),
+                    $lte: new Date(this._todayDateEnd.getFullYear(), this._todayDateEnd.getMonth(), this._todayDateEnd.getDate(), 23, 59, 59)
                 }
             }).fetch().forEach((order) => {
                 order.items.forEach((orderItem) => {
                     if (orderItem.itemId === item._id) {
-                        _lAggregate = _lAggregate + orderItem.quantity;
+                        _todayAggregate = _todayAggregate + orderItem.quantity;
                     }
                 })
             });
-            this.seriesArray.push(_lAggregate);
+            this.todaySeriesArray.push(_todayAggregate);
+
+            //Orders yesterday
+            Orders.collection.find({
+                'items.itemId': item._id,
+                'creation_date': {
+                    $gte: new Date(this._yesterdayDateIni.getFullYear(), this._yesterdayDateIni.getMonth(), this._yesterdayDateIni.getDate()),
+                    $lte: new Date(this._yesterdayDateEnd.getFullYear(), this._yesterdayDateEnd.getMonth(), this._yesterdayDateEnd.getDate(), 23, 59, 59)
+                }
+            }).fetch().forEach((order) => {
+                order.items.forEach((orderItem) => {
+                    if (orderItem.itemId === item._id) {
+                        _yesterdayAggregate = _yesterdayAggregate + orderItem.quantity;
+                    }
+                })
+            });
+            this.yesterdaySeriesArray.push(_yesterdayAggregate);
+
+            //Orders last seven days
+            Orders.collection.find({
+                'items.itemId': item._id,
+                'creation_date': {
+                    $gte: new Date(this._lastSevenDaysDateIni.getFullYear(), this._lastSevenDaysDateIni.getMonth(), this._lastSevenDaysDateIni.getDate()),
+                    $lte: new Date(this._lastSevenDaysDateEnd.getFullYear(), this._lastSevenDaysDateEnd.getMonth(), this._lastSevenDaysDateEnd.getDate(), 23, 59, 59)
+                }
+            }).fetch().forEach((order) => {
+                order.items.forEach((orderItem) => {
+                    if (orderItem.itemId === item._id) {
+                        _lastSevenDaysAggregate = _lastSevenDaysAggregate + orderItem.quantity;
+                    }
+                })
+            });
+            this.lastSevenDaysArray.push(_lastSevenDaysAggregate);
+
+            //Orders last thirty days
+            Orders.collection.find({
+                'items.itemId': item._id,
+                'creation_date': {
+                    $gte: new Date(this._lastThirtyDaysDateIni.getFullYear(), this._lastThirtyDaysDateIni.getMonth(), this._lastThirtyDaysDateIni.getDate()),
+                    $lte: new Date(this._lastThirtyDaysDateEnd.getFullYear(), this._lastThirtyDaysDateEnd.getMonth(), this._lastThirtyDaysDateEnd.getDate(), 23, 59, 59)
+                }
+            }).fetch().forEach((order) => {
+                order.items.forEach((orderItem) => {
+                    if (orderItem.itemId === item._id) {
+                        _lastThirtyDaysAggregate = _lastThirtyDaysAggregate + orderItem.quantity;
+                    }
+                })
+            });
+            this.lastThirtyDaysArray.push(_lastThirtyDaysAggregate);
         });
 
         this.itemUnitsChart = new Chart({
             chart: {
-                type: 'bar'
+                type: 'bar',
+                height: "100%"
             },
             title: {
                 text: chartTitle
@@ -163,8 +244,18 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
             },
             series: [{
                 name: todayLbl,
-                data: [107, 31, 235, 203, 99, 150]
-            }]
+                data: this.todaySeriesArray
+            }, {
+                name: yesterdayLbl,
+                data: this.yesterdaySeriesArray
+            }, {
+                name: lastSevenDaysLbl,
+                data: this.lastSevenDaysArray
+            }, {
+                name: lastThirtyDaysLbl,
+                data: this.lastThirtyDaysArray
+            }
+            ]
         });
     }
 
