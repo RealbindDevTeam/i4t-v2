@@ -34,7 +34,8 @@
 
                             <div style="margin-top: 1%;">
                                 <mat-form-field style="width: 48%">
-                                    <textarea matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName></textarea>
+                                    <textarea matInput required formControlName="name" placeholder="{{'RESTAURANT_REGISTER.NAME' | translate}}" minlength="1"
+                                        maxlength="70" #inputName></textarea>
                                     <mat-hint align="end">{{inputName.value.length}} / 70</mat-hint>
                                 </mat-form-field>
                                 <mat-form-field style="width: 48%;margin-left: 2%;">
@@ -74,6 +75,13 @@
                                         <span *ngIf="_createImage">{{_nameImageFile}}&hellip;</span>
                                     </label>
                                 </div>
+                            </div>
+                            <div style="margin-top: 1%;">
+                                <mat-form-field style="width: 48%;">
+                                    <mat-select formControlName="pointsValidity" placeholder="{{'RESTAURANT_REGISTER.POINTS_VALIDITY' | translate}}">
+                                        <mat-option *ngFor="let point_validity of _pointsValidity | async" value="{{point_validity._id}}"> {{point_validity.point_validity}} {{'RESTAURANT_REGISTER.DAYS' | translate}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
                             </div>
                             <div style="margin-top: 1%;">
                                 <div>

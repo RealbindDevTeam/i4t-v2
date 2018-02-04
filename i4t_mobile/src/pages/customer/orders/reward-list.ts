@@ -24,10 +24,13 @@ export class RewardListComponent {
     private _itemsSub: Subscription;
     private _rewardsSub: Subscription;
     private _userDetailSub: Subscription;
+    private _ordersSub: Subscription;
     private _items: Observable<Item[]>;
     private _rewards: Observable<Reward[]>;
     private _establishmentId: string;
     private _userDetail: UserDetail;
+    private _allowAddRewardsToOrder: boolean = true;
+    private _statusArray: string[] = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
 
     constructor(public viewCtrl: ViewController,
         public _translate: TranslateService,
@@ -59,6 +62,19 @@ export class RewardListComponent {
             });
         });
 
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, this._statusArray).subscribe(() => {
+            this._ngZone.run(() => {
+                Orders.collection.find({ creation_user: this._user }).fetch().forEach((order) => {
+                    if (order.status === 'ORDER_STATUS.SELECTING') {
+                        order.items.forEach((it) => {
+                            if (it.is_reward) {
+                                this._allowAddRewardsToOrder = false;
+                            }
+                        });
+                    }
+                });
+            });
+        });
     }
 
     /**This function gets the item image or default
@@ -225,6 +241,7 @@ export class RewardListComponent {
         if (this._itemsSub) { this._itemsSub.unsubscribe(); }
         if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
         if (this._userDetailSub) { this._userDetailSub.unsubscribe(); };
+        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
     }
 
 }

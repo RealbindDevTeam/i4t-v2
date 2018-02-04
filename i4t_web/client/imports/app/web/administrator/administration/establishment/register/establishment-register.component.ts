@@ -29,6 +29,8 @@ import { GarnishFood, GarnishFoodPrice, GarnishFoodEstablishment } from '../../.
 import { Additions } from '../../../../../../../../both/collections/menu/addition.collection';
 import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/garnish-food.collection';
 import { AfterEstablishmentCreationComponent } from './after-establishment-creation/after-establishment-creation.component';
+import { PointValidity } from '../../../../../../../../both/models/general/point-validity.model';
+import { PointsValidity } from '../../../../../../../../both/collections/general/point-validity.collection';
 
 import * as QRious from 'qrious';
 import { UserDetails } from 'both/collections/auth/user-detail.collection';
@@ -52,10 +54,12 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private _additionsSub: Subscription;
     private _garnishFoodSub: Subscription;
     private _usrDetailSubscription: Subscription;
+    private _pointValiditySub: Subscription;
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
     private _paymentMethods: Observable<PaymentMethod[]>;
+    private _pointsValidity: Observable<PointValidity[]>;
 
     private _establishmentImageToInsert: EstablishmentImage;
     private _createImage: boolean;
@@ -125,6 +129,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
             phone: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]),
             tables_number: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(3)]),
             image: new FormControl(''),
+            pointsValidity: new FormControl(''),
             paymentMethods: this._paymentsFormGroup,
             otherCity: new FormControl()
         });
@@ -158,6 +163,11 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 this.showRestCreation = _lUsrDetail.show_after_rest_creation;
             }
         });
+        this._pointValiditySub = MeteorObservable.subscribe('pointsValidity').subscribe(() => {
+            this._ngZone.run(() => {
+                this._pointsValidity = PointsValidity.find({}).zone();
+            });
+        });
     }
 
     /**
@@ -172,6 +182,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         if (this._additionsSub) { this._additionsSub.unsubscribe(); }
         if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
         if (this._usrDetailSubscription) { this._usrDetailSubscription.unsubscribe(); }
+        if (this._pointValiditySub) { this._pointValiditySub.unsubscribe(); }
     }
 
     /**
@@ -279,6 +290,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         phone: this._establishmentForm.value.phone,
                         establishment_code: this.generateEstablishmentCode(),
                         paymentMethods: _lPaymentMethodsToInsert,
+                        points_validity: this._establishmentForm.value.pointsValidity,
                         image: this._establishmentImageToInsert,
                         tables_quantity: 0,
                         orderNumberCount: 0,
@@ -305,6 +317,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         phone: this._establishmentForm.value.phone,
                         establishment_code: this.generateEstablishmentCode(),
                         paymentMethods: _lPaymentMethodsToInsert,
+                        points_validity: this._establishmentForm.value.pointsValidity,
                         tables_quantity: 0,
                         orderNumberCount: 0,
                         max_jobs: 5,

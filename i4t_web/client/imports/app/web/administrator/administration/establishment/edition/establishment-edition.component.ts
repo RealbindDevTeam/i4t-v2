@@ -21,6 +21,8 @@ import { Parameter } from '../../../../../../../../both/models/general/parameter
 import { Parameters } from '../../../../../../../../both/collections/general/parameter.collection';
 import { AlertConfirmComponent } from '../../../../../web/general/alert-confirm/alert-confirm.component';
 import { ImageService } from '../../../../services/general/image.service';
+import { PointValidity } from '../../../../../../../../both/models/general/point-validity.model';
+import { PointsValidity } from '../../../../../../../../both/collections/general/point-validity.collection';
 
 @Component({
     selector: 'establishment-edition',
@@ -41,11 +43,13 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
     private _citiesSub: Subscription;
     private _paymentMethodsSub: Subscription;
     private _parameterSub: Subscription;
+    private _pointValiditySub: Subscription;
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
     private _currencies: Observable<Currency[]>;
     private _parameterDaysTrial: Observable<Parameter[]>;
+    private _pointsValidity: Observable<PointValidity[]>;
 
     private _paymentMethods: PaymentMethod[] = [];
     private _paymentMethodsList: PaymentMethod[] = [];
@@ -167,6 +171,12 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
             this._parameterDaysTrial = Parameters.find({ _id: '100' });
         });
 
+        this._pointValiditySub = MeteorObservable.subscribe('pointsValidity').subscribe(() => {
+            this._ngZone.run(() => {
+                this._pointsValidity = PointsValidity.find({}).zone();
+            });
+        });
+
         this._establishmentEditionForm = new FormGroup({
             editId: new FormControl(this._establishmentToEdit._id),
             country: new FormControl(this._establishmentToEdit.countryId),
@@ -175,6 +185,7 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
             address: new FormControl(this._establishmentToEdit.address),
             phone: new FormControl(this._establishmentToEdit.phone),
             editImage: new FormControl(''),
+            pointsValidity: new FormControl(this._establishmentToEdit.points_validity),
             paymentMethods: this._paymentsFormGroup,
             otherCity: new FormControl(this._establishmentToEdit.other_city)
         });
@@ -206,6 +217,7 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
         if (this._citiesSub) { this._citiesSub.unsubscribe(); }
         if (this._paymentMethodsSub) { this._paymentMethodsSub.unsubscribe(); }
         if (this._parameterSub) { this._parameterSub.unsubscribe(); }
+        if (this._pointValiditySub) { this._pointValiditySub.unsubscribe(); }
     }
 
     /**
@@ -259,6 +271,7 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
                     address: this._establishmentEditionForm.value.address,
                     phone: this._establishmentEditionForm.value.phone,
                     paymentMethods: _lPaymentMethodsToInsert,
+                    points_validity: this._establishmentEditionForm.value.pointsValidity,
                     queue: this._queue,
                     image: this._establishmentImageToEdit
                 }
@@ -275,6 +288,7 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
                     address: this._establishmentEditionForm.value.address,
                     phone: this._establishmentEditionForm.value.phone,
                     paymentMethods: _lPaymentMethodsToInsert,
+                    points_validity: this._establishmentEditionForm.value.pointsValidity,
                     queue: this._queue
                 }
             });

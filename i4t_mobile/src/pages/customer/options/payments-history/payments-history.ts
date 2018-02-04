@@ -3,8 +3,8 @@ import { NavController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription } from 'rxjs';
-import { Invoice } from 'i4t_web/both/models/establishment/invoice.model';
-import { Invoices } from 'i4t_web/both/collections/establishment/invoice.collection';
+//import { Invoice } from 'i4t_web/both/models/establishment/invoice.model';
+//import { Invoices } from 'i4t_web/both/collections/establishment/invoice.collection';
 import { Parameters } from 'i4t_web/both/collections/general/parameter.collection';
 import { PaymentsHistoryDetailPage } from "./payments-history-detail/payments-history-detail";
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
@@ -40,7 +40,7 @@ export class PaymentsHistoryPage implements OnInit, OnDestroy {
     this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
     this.removeSubscriptions();
     this._invoicesHistorySubscription = MeteorObservable.subscribe('getInvoicesByUserId', Meteor.userId()).subscribe(()=> {
-      this._invoices = Invoices.find({});
+      //this._invoices = Invoices.find({});
     });
 
     this._parameterSubscription = MeteorObservable.subscribe('getParameters').subscribe(()=>{
@@ -54,7 +54,7 @@ export class PaymentsHistoryPage implements OnInit, OnDestroy {
    * This function allow go to PaymentsHistoryDetailPage component
    * @param {Invoice} _pInvoice 
    */
-  goToPaymentDetail( _pInvoice : Invoice ){
+  goToPaymentDetail( _pInvoice : any ){
     this._navCtrl.push(PaymentsHistoryDetailPage, { invoice : _pInvoice });
   }
 

@@ -9,6 +9,7 @@ import { Establishments } from '../../../../../../../both/collections/establishm
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
 import { RewardPoints } from '../../../../../../../both/collections/establishment/reward-point.collection';
+import { RewardPoint } from '../../../../../../../both/models/establishment/reward-point.model';
 
 @Component({
     selector: 'customer-points',
@@ -96,12 +97,18 @@ export class CustomerPointsComponent implements OnInit, OnDestroy {
      * @param {string} _pEstablishmentId 
      */
     validateEstablishmentExpirePoints(_pEstablishmentId: string): boolean {
-        let _points: number = 0;
-        _points = RewardPoints.collection.find({ id_user: this._user, is_active: true }).fetch()[0].points;
-        if (_points <= 0) {
-            return false;
+        let _RewardPoints: RewardPoint;
+        _RewardPoints = RewardPoints.collection.find({ id_user: this._user, establishment_id: _pEstablishmentId, is_active: true }).fetch()[0];
+        if (_RewardPoints) {
+            let _points: number = 0;
+            _points = _RewardPoints.points;
+            if (_points <= 0) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -110,7 +117,7 @@ export class CustomerPointsComponent implements OnInit, OnDestroy {
      * @param {string} _pEstablishmentId 
      */
     getEstablishmentExpirePoints(_pEstablishmentId: string): number {
-        return RewardPoints.collection.find({ id_user: this._user, is_active: true }).fetch()[0].points;
+        return RewardPoints.collection.find({ id_user: this._user, establishment_id: _pEstablishmentId, is_active: true }).fetch()[0].points;
     }
 
     /**
@@ -118,7 +125,7 @@ export class CustomerPointsComponent implements OnInit, OnDestroy {
      * @param {string} _pEstablishmentId 
      */
     getEstablishmentExpirePointsDate(_pEstablishmentId: string): Date {
-        return RewardPoints.collection.find({ id_user: this._user, is_active: true }).fetch()[0].expire_date;
+        return RewardPoints.collection.find({ id_user: this._user, establishment_id: _pEstablishmentId, is_active: true }).fetch()[0].expire_date;
     }
 
     /**

@@ -54,6 +54,7 @@ export class UserDetailImage {
 }
 
 export interface UserRewardPoints {
+    index: number;
     establishment_id: string;
     points: number;
 }

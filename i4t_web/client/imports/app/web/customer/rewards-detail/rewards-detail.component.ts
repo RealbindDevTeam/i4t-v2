@@ -24,10 +24,11 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
     private _establishmentId: string;
     private _tableQRCode: string;
     private _userRewardPoints: number;
+    private _allowAddRewardsToOrder: boolean = true;
+    private _loading: boolean;
 
     private _rewards: Observable<Reward[]>;
     private _items: Observable<Item[]>;
-    private _orders: Observable<Order[]>;
 
     /**
      * RewardsDetailComponent constructor
@@ -53,8 +54,16 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).zone();
-        this._orders = Orders.find({ creation_user: this._user }).zone();
         this._items = Items.find({}).zone();
+        Orders.collection.find({ creation_user: this._user }).fetch().forEach((order) => {
+            if (order.status === 'ORDER_STATUS.SELECTING') {
+                order.items.forEach((it) => {
+                    if (it.is_reward) {
+                        this._allowAddRewardsToOrder = false;
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -73,36 +82,41 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
      * @param {number} _pRewardPoints
      */
     AddRewardToOrder(_pItemToInsert: string, _pItemQuantiy: number, _pRewardPoints: number): void {
-        let _lOrderItemIndex: number = 0;
-        let _lOrder: Order = Orders.collection.find({ creation_user: this._user, establishment_id: this._establishmentId }).fetch()[0];
+        this._loading = true;
+        setTimeout(() => {
+            let _lOrderItemIndex: number = 0;
+            let _lOrder: Order = Orders.collection.find({ creation_user: this._user, establishment_id: this._establishmentId }).fetch()[0];
 
-        if (_lOrder) {
-            _lOrderItemIndex = _lOrder.orderItemCount + 1;
-        } else {
-            _lOrderItemIndex = 1;
-        }
+            if (_lOrder) {
+                _lOrderItemIndex = _lOrder.orderItemCount + 1;
+            } else {
+                _lOrderItemIndex = 1;
+            }
 
-        let _lOrderItem: OrderItem = {
-            index: _lOrderItemIndex,
-            itemId: _pItemToInsert,
-            quantity: _pItemQuantiy,
-            observations: '',
-            garnishFood: [],
-            additions: [],
-            paymentItem: 0,
-            reward_points: 0,
-            is_reward: true,
-            redeemed_points: _pRewardPoints
-        };
-        MeteorObservable.call('AddItemToOrder', _lOrderItem, this._establishmentId, this._tableQRCode, 0, 0).subscribe(() => {
-            let _lMessage: string = this.itemNameTraduction('REWARD_DETAIL.REWARD_AGGREGATED');
-            this._snackBar.open(_lMessage, '', { duration: 3000 });
-            this._dialogRef.close();
-        }, (error) => {
-            let _lMessage: string = this.itemNameTraduction('REWARD_DETAIL.ERROR');
-            this._snackBar.open(_lMessage, '', { duration: 3000 });
-            this._dialogRef.close();
-        });
+            let _lOrderItem: OrderItem = {
+                index: _lOrderItemIndex,
+                itemId: _pItemToInsert,
+                quantity: _pItemQuantiy,
+                observations: '',
+                garnishFood: [],
+                additions: [],
+                paymentItem: 0,
+                reward_points: 0,
+                is_reward: true,
+                redeemed_points: _pRewardPoints
+            };
+            MeteorObservable.call('AddItemToOrder', _lOrderItem, this._establishmentId, this._tableQRCode, 0, 0).subscribe(() => {
+                this._loading = false;
+                let _lMessage: string = this.itemNameTraduction('REWARD_DETAIL.REWARD_AGGREGATED');
+                this._snackBar.open(_lMessage, '', { duration: 3000 });
+                this._dialogRef.close();
+            }, (error) => {
+                this._loading = false;
+                let _lMessage: string = this.itemNameTraduction('REWARD_DETAIL.ERROR');
+                this._snackBar.open(_lMessage, '', { duration: 3000 });
+                this._dialogRef.close();
+            });
+        }, 1500);
     }
 
     /**

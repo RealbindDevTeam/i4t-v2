@@ -348,8 +348,9 @@
     "RESTAURANT_REGISTER": {
         "SELECT_COUNTRY": "Selecciona país",
         "SELECT_CITY": "Selecciona ciudad",
-        "ADDRESS": "Dirección",
-        "PHONE": "Teléfono",
+        "NAME": "Nombre del restaurante",
+        "ADDRESS": "Dirección del restaurante",
+        "PHONE": "Teléfono de contacto",
         "WEBPAGE": "Página de Internet",
         "EMAIL": "Correo electrónico",
         "WEEKDAY": "Día de la semana",
@@ -390,7 +391,9 @@
         "MAX_TABLES": "máximo ",
         "TABLES_MSG": "En caso de necesitar más mesas para tu restaurante, en la opción Administración -> Restaurantes -> Configuración, podrás agregar las que necesites.",
         "CREATION_ERROR": "Se ha presentado un error creando el restaurante. Por favor intenta nuevamente.",
-        "RESTAURANT_CREATED": "Restaurante Creado"
+        "RESTAURANT_CREATED": "Restaurante Creado",
+        "POINTS_VALIDITY": "Selecciona la vigencia de los puntos de recompensa",
+        "DAYS": "Días"
     },
     "WEEK": {
         "MONDAY": "Lunes",
@@ -558,7 +561,8 @@
         "ADD_FACEBOOK_LINK": "Agrega el link de tu página en Facebook para que tus clientes puedan verla",
         "FACEBOOK_LINK": "Link de tu página en Facebook",
         "RESTAURANT_INACTIVE": "Restaurante inactivo",
-        "RESTAURANT_ACTIVE": "Restaurante activo"
+        "RESTAURANT_ACTIVE": "Restaurante activo",
+        "WAITERS_ERROR": "Hay restaurantes que no cuentan con meseros. Por favor verifica en la opción de colaboradores"
     },
     "TABLES": {
         "TABLES_CREATION": "Creación de mesas",
@@ -808,7 +812,8 @@
         "REWARD": "Recompensa",
         "POINTS": "puntos",
         "TOTAL_ITEM_POINTS": "Total",
-        "MENU": "Menú"
+        "MENU": "Menú",
+        "GET_POINTS": "Obtienes"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",
@@ -861,7 +866,14 @@
         "CANCEL_ORDER_MSG": "Orden cancelada",
         "REMOVE_REWARD": "Eliminar Recompensa",
         "REMOVE_REWARD_MSG": "Esta seguro de eliminar la recompensa de la orden?",
-        "REWARD_DELETED": "Recompensa eliminada de la orden"
+        "REWARD_DELETED": "Recompensa eliminada de la orden",
+        "ITEM": "Item Redimido",
+        "FREE": "Este es Gratis!",
+        "TOTAL_ORDER": "Total de tu orden",
+        "ORDER_LBL": "Orden",
+        "USR_ORDER_CONFIRMED": "Confirmaste tu orden! Un mesero la atendera!",
+        "NO_USR_ORDER_CONFIRMED": "Orden confirmada",
+        "WIN": "Ganas"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "No te encuentras en un restaurante",
@@ -1623,7 +1635,8 @@
         "REDEEM": "Redimir",
         "GET_POINTS": "Obtén puntos",
         "REWARD_AGGREGATED": "Recompensa agregada",
-        "ERROR": "Error agregando la recompensa. Intenta nuevamente"
+        "ERROR": "Error agregando la recompensa. Intenta nuevamente",
+        "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "Aún no has acumulado puntos en ningún restaurante. Animate!",

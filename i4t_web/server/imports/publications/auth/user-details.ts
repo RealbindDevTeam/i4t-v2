@@ -45,3 +45,10 @@ Meteor.publish('getUserDetailsByEstablishmentWork', function (_userId: string) {
         return;
     }
 });
+
+/**
+ * Meteor publication return establishment collaborators
+ */
+Meteor.publish('getUsersCollaboratorsByEstablishmentsId', function (_pEstablishmentsId: string[]) {
+    return UserDetails.find({ establishment_work: { $in: _pEstablishmentsId } });
+});

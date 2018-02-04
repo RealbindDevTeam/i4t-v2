@@ -35,7 +35,7 @@
                             <ion-option value="other">{{'MOBILE.ORDERS.OTHER_ORDERS' | translate}}</ion-option>
                         </ion-select>
                     </ion-item>
-                    <button *ngIf="_showReedemPoints" ion-button small icon-right clear style="float: right" (click)="goToRewardList()">{{'MOBILE.ORDERS.REDEEM_POINTS' | translate}}
+                    <button *ngIf="_showReedemPoints" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;" (click)="goToRewardList()">{{'MOBILE.ORDERS.REDEEM_POINTS' | translate}}
                         <ion-icon name="trophy"></ion-icon>
                     </button>
                 </ion-list>
@@ -90,10 +90,11 @@
                                         <p *ngIf="!itemId.is_reward">{{itemId.paymentItem}} {{_currencyCode}}</p>
                                         <p *ngIf="!getItemAvailability(itemId.itemId)" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
                                         <p>{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{itemId.quantity}}</p>
-                                        <ion-badge *ngIf="itemId.reward_points > 0 && !itemId.is_reward" class="pts fn">{{itemId.reward_points}} pts
+                                        <ion-badge *ngIf="itemId.reward_points > 0 && !itemId.is_reward" style="background-color: #fff;color: #4CAF50;padding: 0;">{{'MOBILE.SECTIONS.GET_POINTS' | translate}} {{itemId.reward_points}} pts
                                             <ion-icon name="star"></ion-icon>
                                         </ion-badge>
-                                        <ion-badge *ngIf="itemId.is_reward" class="pts fn">{{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}
+                                        <p *ngIf="itemId.is_reward">{{'MOBILE.ORDERS.FREE' | translate}}</p>
+                                        <ion-badge *ngIf="itemId.is_reward" style="background-color: #fff;color: #ffbf00;padding: 0;">{{'MOBILE.ORDERS.ITEM' | translate}} {{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}
                                             <ion-icon name="ribbon"></ion-icon>
                                         </ion-badge>
                                         <button *ngIf="order.creation_user === _currentUserId" ion-button icon-only clear item-right style="margin-right: 0px">

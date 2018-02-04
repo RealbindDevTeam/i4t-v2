@@ -6,7 +6,7 @@
     <p>{{itemIdIn.description}}</p>
     <h2>{{ getItemPrice( itemIdIn ) }} {{_currencyCode}}</h2>
     <p *ngIf="!getItemAvailability()" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
-    <ion-badge class="pts" *ngIf="itemIdIn.has_reward">{{itemIdIn.reward_points}} pts
+    <ion-badge style="background-color: darkorange;float: right;" *ngIf="itemIdIn.has_reward">{{'MOBILE.SECTIONS.GET_POINTS' | translate}} {{itemIdIn.reward_points}} pts
         <ion-icon name="star"></ion-icon>
     </ion-badge>
 </button>

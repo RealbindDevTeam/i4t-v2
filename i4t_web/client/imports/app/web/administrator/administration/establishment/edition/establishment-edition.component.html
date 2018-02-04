@@ -70,6 +70,13 @@
                     </div>
                 </div>
                 <div style="margin-top: 1%;">
+                    <mat-form-field style="width: 48%;">
+                        <mat-select formControlName="pointsValidity" placeholder="{{'RESTAURANT_REGISTER.POINTS_VALIDITY' | translate}}">
+                            <mat-option *ngFor="let point_validity of _pointsValidity | async" value="{{point_validity._id}}"> {{point_validity.point_validity}} {{'RESTAURANT_REGISTER.DAYS' | translate}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div style="margin-top: 1%;">
                     <p>{{'RESTAURANT_EDITION.ADD_PAYMENTMETHODS_RESTURANT' | translate}}</p>
                     <div formGroupName="paymentMethods">
                         <mat-checkbox *ngFor="let payment of _paymentMethodsList" [formControlName]="payment.name" [class.invalid]="!_establishmentEditionForm.controls.paymentMethods.valid"

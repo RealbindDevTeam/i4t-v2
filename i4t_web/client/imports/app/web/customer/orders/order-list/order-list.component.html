@@ -79,23 +79,23 @@
                             <mat-option (click)="changeOrderFilter('other')" value="other">{{'ORDER_LIST.OTHER_ORDERS' | translate}}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <button mat-button class="primary-button" *ngIf="_showReedemPoints" (click)="reedemPoints()">{{'ORDERS.REDEEM_POINTS' | translate}}</button>
+                    <button mat-button class="rewards-button" *ngIf="_showReedemPoints" (click)="reedemPoints()">{{'ORDERS.REDEEM_POINTS' | translate}} <mat-icon style="margin-left: 5px;">redeem</mat-icon></button>
                 </div>
                 <div *ngIf="_showCustomerOrders || _showAllOrders">
                     <div *ngFor="let or of _orders | async; let i = index">
                         <mat-toolbar class="customer-order" (click)="showCustomerOrderDetail(or,i)">
                             <img class="order" src="/images/my-orders.png">
                             <div class="mt-div">
-                                <span class="order-code">{{'ORDER_LIST.ORDERS' | translate}} # {{or.code}}</span>
-                                <span class="order-code">{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
+                                <span class="order-code">{{'ORDER_LIST.TOTAL_ORDER' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
                                 <span>
-                                    <mat-chip-list style="display: inline-block">
-                                        <mat-chip class="cust-color-chip">{{or.total_reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                    <mat-chip-list *ngIf="or.total_reward_points" style="display: inline-block">
+                                        <mat-chip class="cust-color-chip">{{'ORDER_LIST.WIN' | translate}} {{or.total_reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                            <mat-icon style="margin-left: 5px;">star</mat-icon>
                                         </mat-chip>
                                     </mat-chip-list>
                                 </span>
                                 <span class="app-flex-filler"></span>
-                                <span class="order-status">{{'ORDER_LIST.STATUS' | translate}}: {{or.status | translate}}</span>
+                                <span class="order-status" *ngIf="or.status === 'ORDER_STATUS.CONFIRMED'" style="color: #4CAF50">{{'ORDER_LIST.USR_ORDER_CONFIRMED' | translate}}</span>
                             </div>
                             <mat-icon>keyboard_arrow_right</mat-icon>
                         </mat-toolbar>
@@ -110,9 +110,13 @@
                                                         <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
                                                         <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
                                                         <h4 mat-line>{{item.name}}</h4>
-                                                        <h5 mat-line>
-                                                            {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
-                                                        </h5>
+                                                        <h5 mat-line>{{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}</h5>
+                                                        <h5 mat-line>{{'ORDER_LIST.FREE' | translate}}</h5>
+                                                        <mat-chip-list mat-line>
+                                                            <mat-chip style="background-color: #fff;color: #ffbf00;padding: 0;">{{'ORDER_LIST.ITEM' | translate}}
+                                                                <mat-icon style="margin-left: 5px;">redeem</mat-icon>
+                                                            </mat-chip>
+                                                        </mat-chip-list>
                                                         <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
                                                         <button mat-icon-button *ngIf="or.status === 'ORDER_STATUS.SELECTING'" (click)="removeReward(or, it.itemId, it.index)">
                                                             <mat-icon class="item-icon">clear</mat-icon>
@@ -128,7 +132,9 @@
                                                             <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
                                                         </h5>
                                                         <mat-chip-list mat-line *ngIf="it.reward_points > 0">
-                                                            <mat-chip class="cust-color-chip">{{it.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                            <mat-chip style="background-color: #fff;color: #4CAF50;padding: 0;">{{'ORDER_CREATE.GET_POINTS' | translate}} {{it.reward_points}}
+                                                                {{'ORDER_CREATE.POINTS' | translate}}
+                                                                <mat-icon style="margin-left: 5px;">star</mat-icon>
                                                             </mat-chip>
                                                         </mat-chip-list>
                                                         <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
@@ -136,7 +142,7 @@
                                                             <mat-icon class="item-icon">mode_edit</mat-icon>
                                                         </button>
                                                         <button mat-icon-button *ngIf="or.status !== 'ORDER_STATUS.SELECTING'" (click)="showOrderItemDetail(it)">
-                                                            <mat-icon class="item-icon">visibility</mat-icon>
+                                                            <mat-icon class="item-icon">search</mat-icon>
                                                         </button>
                                                     </mat-list-item>
                                                     <mat-divider class="divider"></mat-divider>
@@ -178,16 +184,9 @@
                         <mat-toolbar class="customer-order" (click)="showOthersOrderDetail(or,in)">
                             <img class="order" src="/images/others-orders.png">
                             <div class="mt-div">
-                                <span class="order-code">{{'ORDER_LIST.ORDERS' | translate}} # {{or.code}}</span>
-                                <span class="order-code">{{'ORDER_LIST.TOTAL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
-                                <span>
-                                    <mat-chip-list style="display: inline-block">
-                                        <mat-chip class="cust-color-chip">{{or.total_reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
-                                        </mat-chip>
-                                    </mat-chip-list>
-                                </span>
+                                <span class="order-code">{{'ORDER_LIST.ORDER_LBL' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
                                 <span class="app-flex-filler"></span>
-                                <span class="order-status">{{'ORDER_LIST.STATUS' | translate}}: {{or.status | translate}}</span>
+                                <span *ngIf="or.status === 'ORDER_STATUS.CONFIRMED'" style="color: #4CAF50" class="order-status">{{'ORDER_LIST.NO_USR_ORDER_CONFIRMED' | translate}}</span>
                             </div>
                             <mat-icon>keyboard_arrow_right</mat-icon>
                         </mat-toolbar>
@@ -212,7 +211,7 @@
                                                     </mat-chip-list>
                                                     <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
                                                     <button mat-icon-button (click)="showOrderItemDetail(it)">
-                                                        <mat-icon class="item-icon">visibility</mat-icon>
+                                                        <mat-icon class="item-icon">search</mat-icon>
                                                     </button>
                                                 </mat-list-item>
                                                 <mat-divider class="divider"></mat-divider>
@@ -335,7 +334,7 @@
                                     </div>
                                     <h3>{{'ORDER_LIST.TOTAL_PRICE' | translate}}: {{ _finalPrice }} {{_currencyCode}}</h3>
                                     <div>
-                                        <mat-chip-list *ngIf="item.has_reward" style="display: inline-block; margin-bottom: 19px"> 
+                                        <mat-chip-list *ngIf="item.has_reward" style="display: inline-block; margin-bottom: 19px">
                                             <mat-chip class="cust-color-chip">{{_finalPoints}} {{'ORDER_CREATE.POINTS' | translate}}
                                                 <mat-icon>star</mat-icon>
                                             </mat-chip>

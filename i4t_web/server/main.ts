@@ -33,6 +33,7 @@ import './imports/publications/establishment/reward-point';
 import './imports/publications/establishment/order-history';
 import './imports/publications/general/point';
 import './imports/publications/general/cooking-time';
+import './imports/publications/general/point-validity';
 
 import '../both/methods/menu/item.methods';
 import '../both/methods/auth/collaborators.methods';
@@ -73,6 +74,7 @@ import { loadCcPaymentMethods } from './imports/fixtures/payments/cc-payment-met
 import { loadInvoicesInfo } from './imports/fixtures/payments/invoices-info';
 import { loadPoints } from './imports/fixtures/general/point';
 import { loadCookingTimes } from './imports/fixtures/general/cooking-time';
+import { loadPointsValidity } from './imports/fixtures/general/point-validity';
 import { createdbindexes } from './imports/indexes/indexdb';
 import { createCrons } from './cron';
 
@@ -93,5 +95,6 @@ Meteor.startup(() => {
     loadInvoicesInfo();
     loadPoints();
     loadCookingTimes();
+    loadPointsValidity();
     createCrons();
 });

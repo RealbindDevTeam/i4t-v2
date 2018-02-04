@@ -1,5 +1,6 @@
 <mat-card>
     <mat-card-title>{{'REWARD_DETAIL.REWARD_TITLE' | translate}}</mat-card-title>
+    <p style="color:red; font-weight: bold" *ngIf="!_allowAddRewardsToOrder">{{'REWARD_DETAIL.ORDER_ERROR' | translate}}</p>
     <mat-card-content>
         <p style="font-weight: bold">{{'REWARD_DETAIL.POINTS_TO_REDEEM' | translate}}: {{_userRewardPoints}} {{'REWARD_DETAIL.POINTS' | translate}}</p>
         <mat-list>
@@ -14,8 +15,10 @@
                                 <mat-chip style="color: white;background-color: #4CAF50;">{{reward.points}} {{'REWARD_DETAIL.POINTS' | translate}}</mat-chip>
                             </mat-chip-list>
                             <p mat-line *ngIf="!getItemAvailability(item._id)" style="color: #D50000;font-weight: bold;">{{'REWARD_DETAIL.UNAVAILABLE' | translate}}</p>
-                            <button mat-button class="primary-button" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">{{'REWARD_DETAIL.REDEEM' | translate}}</button>
-                            <button mat-button disabled *ngIf="reward.points > _userRewardPoints" style="color:#4CAF50">{{'REWARD_DETAIL.GET_POINTS' | translate}}!</button>
+                            <div *ngIf="_allowAddRewardsToOrder">
+                                <button mat-button class="primary-button" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">{{'REWARD_DETAIL.REDEEM' | translate}}</button>
+                                <button mat-button disabled *ngIf="reward.points > _userRewardPoints" style="color:#4CAF50">{{'REWARD_DETAIL.GET_POINTS' | translate}}!</button>
+                            </div>
                         </mat-list-item>
                         <mat-divider class="divider"></mat-divider>
                     </ng-template>
@@ -27,3 +30,6 @@
         <button mat-raised-button class="secondary-button" type="button" (click)="_dialogRef.close()">{{'CLOSE' | translate}}</button>
     </mat-card-actions>
 </mat-card>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>
