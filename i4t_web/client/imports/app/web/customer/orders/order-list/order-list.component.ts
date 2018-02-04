@@ -879,7 +879,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                             let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(it.redeemed_points.toString());
 
                             UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
-                            UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+                            UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { index: _lPoints.index, establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
 
                             let _lRedeemedPoints: number = it.redeemed_points;
                             let _lValidatePoints: boolean = true;
@@ -1131,7 +1131,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(_lOrderItemToremove.redeemed_points.toString());
 
                 UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _pOrder.establishment_id } } });
-                UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
+                UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { index: _lPoints.index, establishment_id: _pOrder.establishment_id, points: _lNewPoints } } });
 
                 let _lRedeemedPoints: number = _lOrderItemToremove.redeemed_points;
                 let _lValidatePoints: boolean = true;

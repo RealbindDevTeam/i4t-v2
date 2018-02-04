@@ -133,8 +133,8 @@
         "CODE_TYPE_SELECT": {
             "TITTLE": "Type of code",
             "CONTENT": "Select the type of code, so you can order what you want",
-            "QR": "QR Code",
-            "ALPHANUMERIC": "Alphanumeric Code"
+            "QR": "Scan QR Code",
+            "ALPHANUMERIC": "Enter Code"
         },
         "ALPHABET_CODE": {
             "TITTLE": "Alphanumeric code",

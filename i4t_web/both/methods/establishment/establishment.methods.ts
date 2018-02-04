@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { CodeGenerator } from './QR/codeGenerator';
 import { Table } from '../../models/establishment/table.model';
 import { Tables } from '../../collections/establishment/table.collection';
+import { UserRewardPoints } from '../../models/auth/user-detail.model';
 import { UserDetails } from '../../collections/auth/user-detail.collection';
 import { Establishment } from '../../models/establishment/establishment.model';
 import { Establishments } from '../../collections/establishment/establishment.collection';
@@ -14,6 +15,7 @@ import { Parameters } from '../../collections/general/parameter.collection';
 import { Parameter } from '../../models/general/parameter.model';
 import { UserPenalty } from '../../models/auth/user-penalty.model';
 import { UserPenalties } from '../../collections/auth/user-penalty.collection';
+import { RewardPoints } from '../../collections/establishment/reward-point.collection';
 
 /**
  * This function create random code with 9 length to establishments
@@ -163,6 +165,34 @@ if (Meteor.isServer) {
                 creation_user: _pUserId, establishment_id: _pCurrentEstablishment, tableId: _pCurrentTable,
                 status: 'ORDER_STATUS.SELECTING'
             }).fetch().forEach((order) => {
+                order.items.forEach((it) => {
+                    if (it.is_reward) {
+                        let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: order.creation_user });
+                        let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === order.establishment_id)[0];
+                        let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(it.redeemed_points.toString());
+
+                        UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: order.establishment_id } } });
+                        UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { index: _lPoints.index, establishment_id: order.establishment_id, points: _lNewPoints } } });
+
+                        let _lRedeemedPoints: number = it.redeemed_points;
+                        let _lValidatePoints: boolean = true;
+                        RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: order.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                            if (_lValidatePoints) {
+                                if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                                    let aux: number = pnt.points - pnt.difference;
+                                    _lRedeemedPoints = _lRedeemedPoints - aux;
+                                    RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                                } else if (!pnt.is_active) {
+                                    _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                                    RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                                    if (_lRedeemedPoints === 0) {
+                                        _lValidatePoints = false;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
                 Orders.update({ _id: order._id }, { $set: { status: 'ORDER_STATUS.CANCELED', modification_date: new Date() } });
             });
             

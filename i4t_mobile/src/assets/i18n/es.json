@@ -133,8 +133,8 @@
         "CODE_TYPE_SELECT": {
             "TITTLE": "Tipo de código",
             "CONTENT": "Selecciona el tipo de código para que puedas ordenar lo que deseas",
-            "QR": "Código QR",
-            "ALPHANUMERIC": "Código alfanumérico"
+            "QR": "Escanear Código QR",
+            "ALPHANUMERIC": "Escribir Código"
         },
         "ALPHABET_CODE": {
             "TITTLE": "Código alfanumérico",

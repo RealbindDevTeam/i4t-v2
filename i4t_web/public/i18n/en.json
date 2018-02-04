@@ -348,8 +348,9 @@
     "RESTAURANT_REGISTER": {
         "SELECT_COUNTRY": "Select Country",
         "SELECT_CITY": "Select City",
-        "ADDRESS": "Address",
-        "PHONE": "Phone",
+        "NAME": "Restaurant name",
+        "ADDRESS": "Restaurant address",
+        "PHONE": "Phone contact",
         "WEBPAGE": "Web Page",
         "EMAIL": "Email",
         "WEEKDAY": "Weekday",
@@ -390,7 +391,9 @@
         "MAX_TABLES": "max ",
         "TABLES_MSG": "In case you need more tables for your restaurant, in the option Management -> Restaurants -> Configuration, you can add more.",
         "CREATION_ERROR": "An error has occurred creating the restaurant. Please try again.",
-        "RESTAURANT_CREATED": "Restaurant created"
+        "RESTAURANT_CREATED": "Restaurant created",
+        "POINTS_VALIDITY": "Select the validity of the reward points",
+        "DAYS": "Days"
     },
     "WEEK": {
         "MONDAY": "Monday",

@@ -137,14 +137,15 @@ if (Meteor.isServer) {
             let _lOrder: Order = Orders.findOne({ _id: waiterDetail.order_id });
             let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _lOrder.creation_user });
             if (_lOrder.total_reward_points > 0) {
+              let _establishment: Establishment = Establishments.findOne({ _id: _lOrder.establishment_id });
               let _lExpireDate = new Date();
               RewardPoints.insert({
                 id_user: _lOrder.creation_user,
                 establishment_id: _lOrder.establishment_id,
                 points: _lOrder.total_reward_points,
-                days_to_expire: 30,
+                days_to_expire: Number.parseInt(_establishment.points_validity.toString()),
                 gain_date: new Date(),
-                expire_date: new Date(_lExpireDate.setDate(_lExpireDate.getDate() + 30)),
+                expire_date: new Date(_lExpireDate.setDate(_lExpireDate.getDate() + Number.parseInt(_establishment.points_validity.toString()))),
                 is_active: true
               });
 
@@ -158,7 +159,7 @@ if (Meteor.isServer) {
                     { $set: { 'reward_points.$.points': (_lPoints.points + _lOrder.total_reward_points) } });
                 } else {
                   let _lUserRewardPoints: UserRewardPoints[] = [];
-                  let _newIndex:number;
+                  let _newIndex: number;
                   _lUserRewardPoints = _lConsumerDetail.reward_points;
                   _lUserRewardPoints.sort(function (a, b) { return b.index - a.index });
                   _newIndex = (_lUserRewardPoints[0].index) + 1;
