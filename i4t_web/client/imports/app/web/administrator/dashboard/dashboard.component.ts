@@ -14,6 +14,7 @@ import { Order, OrderItem, OrderAddition } from '../../../../../../both/models/e
 import { Orders } from '../../../../../../both/collections/establishment/order.collection';
 import { Currency } from '../../../../../../both/models/general/currency.model';
 import { Currencies } from '../../../../../../both/collections/general/currency.collection';
+import { Chart } from 'angular-highcharts';
 
 @Component({
   selector: 'admin-dashboard',
@@ -39,7 +40,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private _currentMonth: number = this._currentDate.getMonth();
   private _currentYear: number = this._currentDate.getFullYear();
   private _thereAreEstablishments: boolean = true;
-
+  private show: boolean = false;
   /**
    * DashboardComponent Constructor
    * @param {TranslateService} _translate 
@@ -158,7 +159,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     let _lAggregate: number = 0;
     let _lToday: Date = new Date();
     Orders.collection.find({
-      establishment_id: _pEstablishmentId, 
+      establishment_id: _pEstablishmentId,
       'creation_date': {
         $gte: new Date(_lToday.getFullYear(), _lToday.getMonth(), _lToday.getDate())
       }
@@ -169,6 +170,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     });
     return _lAggregate;
+  }
+
+  /**
+  * Go to charts detail by restaurant
+  * @param _pEstablishmentId 
+  */
+  goToCharts(_pEstablishmentId: string) {
+    this._router.navigate(['/app/item-units-chart', _pEstablishmentId], { skipLocationChange: true });
   }
 
   /**
@@ -232,14 +241,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   goToAddEstablishment() {
     this._router.navigate(['/app/establishment-register']);
-  }
-
-  /**
-   * Go to charts detail by restaurant
-   * @param _pEstablishmentId 
-   */
-  goToCharts(_pEstablishmentId: string) {
-    this._router.navigate(['/app/chart-detail', _pEstablishmentId], { skipLocationChange: true });
   }
 
   /**

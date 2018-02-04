@@ -1361,15 +1361,17 @@
         "RESTAURANT_REGISTER": "Registrar restaurante",
         "MESSAGE": "Regístra uno para habilitar esta opción"
     },
-    "CHART_DETAIL": {
+    "ITEM_UNIT_CHART": {
         "TODAY": "Hoy",
         "YESTERDAY": "Ayer",
         "THIS_WEEK": "Esta semana",
         "SEVEN_DAYS": "Últimos 7 días",
         "THIRTY_DAYS": "Últimos 30 días",
-        "FROM" : "De",
-        "TO" : "a",
-        "ITEMS_SOLD": "Items vendidos por día"
+        "FROM": "De",
+        "TO": "a",
+        "ITEMS_ORDERED": "Cantidad de items ordenados(pedidos) por rango de tiempo ",
+        "UNITS_LBL": "Unidades",
+        "ITEMS_LBL": "Items"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Habilitar/Inhabilitar Item",
@@ -1650,7 +1652,7 @@
         "YOU_EARNED": "Ganaste",
         "POINTS": "Puntos",
         "YOU_REDEEMED": "Redimiste",
-        "QUANT":"Cant. ",
+        "QUANT": "Cant. ",
         "REWARD": "Recompensa"
     }
 }
