@@ -19,7 +19,7 @@ import { Orders } from '../../../../../../../both/collections/establishment/orde
     styleUrls: ['./item-units-chart.component.scss']
 })
 
-export class ItemUnitsComponent implements OnInit, OnDestroy {
+export class ItemUnitsChartComponent implements OnInit, OnDestroy {
 
     private _establishmentId: string = null;
     private itemUnitsChart;
@@ -86,7 +86,7 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._establishmentId).subscribe();
+        this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishmentSortedByName', this._establishmentId).subscribe();
 
         this._ordersSubscription = MeteorObservable.subscribe('getOrdersByEstablishmentId', this._establishmentId, ['ORDER_STATUS.RECEIVED']).subscribe(() => {
             this._ngZone.run(() => {
@@ -106,7 +106,8 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
     setBarChartData() {
 
         this.dateRangeLbl = this.itemNameTraduction('ITEM_UNIT_CHART.TODAY');
-        let chartTitle: string = this.itemNameTraduction('ITEM_UNIT_CHART.ITEMS_ORDERED');
+        let chartTitle: string = this.itemNameTraduction('ITEM_UNIT_CHART.CHART_TITLE');
+        let chartSubtitle: string = this.itemNameTraduction('ITEM_UNIT_CHART.CHART_SUBTITLE');
         let unitsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.UNITS_LBL');
         let itemsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.ITEMS_LBL');
         let todayLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.TODAY');
@@ -200,7 +201,10 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
                 height: "100%"
             },
             title: {
-                text: chartTitle
+                text: chartTitle,
+            },
+            subtitle: {
+                text: chartSubtitle
             },
             xAxis: {
                 categories: this.xAxisArray,
@@ -229,31 +233,31 @@ export class ItemUnitsComponent implements OnInit, OnDestroy {
                 }
             },
             legend: {
-                layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'top',
-                x: -40,
-                y: 80,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: ('#FFFFFF'),
-                shadow: true
+                layout: 'vertical',
+                x: 0,
+                y: 100
             },
             credits: {
                 enabled: false
             },
             series: [{
                 name: todayLbl,
-                data: this.todaySeriesArray
+                data: this.todaySeriesArray,
+                color: '#2196F3'
             }, {
                 name: yesterdayLbl,
-                data: this.yesterdaySeriesArray
+                data: this.yesterdaySeriesArray,
+                color: '#8BC34A'
             }, {
                 name: lastSevenDaysLbl,
-                data: this.lastSevenDaysArray
+                data: this.lastSevenDaysArray,
+                color: '#FF9800'
             }, {
                 name: lastThirtyDaysLbl,
-                data: this.lastThirtyDaysArray
+                data: this.lastThirtyDaysArray,
+                color: '#9C27B0'
             }
             ]
         });

@@ -1351,7 +1351,7 @@
         },
         "SALES": "Ventas ",
         "USERS": "Usuarios activos",
-        "ITEMS": "Items vendidos diariamente",
+        "ITEMS": "Items ordenados hoy",
         "SOLD": "Vendidos",
         "ADDITIONS": "Adiciones",
         "GARNISHFOOD": "Guarniciones",
@@ -1362,7 +1362,8 @@
         "BUSY": "Mesas Ocupadas",
         "THERE_NOT_RESTAURANTS": "Aún no hay restaurantes registrados",
         "RESTAURANT_REGISTER": "Registrar restaurante",
-        "MESSAGE": "Regístra uno para habilitar esta opción"
+        "MESSAGE": "Regístra uno para habilitar esta opción",
+        "REWARDS": "Recompensas redimidas hoy"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Hoy",
@@ -1372,9 +1373,10 @@
         "THIRTY_DAYS": "Últimos 30 días",
         "FROM": "De",
         "TO": "a",
-        "ITEMS_ORDERED": "Cantidad de items ordenados(pedidos) por rango de tiempo ",
+        "CHART_TITLE": "Cantidad de items ordenados(pedidos) por rango de tiempo ",
         "UNITS_LBL": "Unidades",
-        "ITEMS_LBL": "Items"
+        "ITEMS_LBL": "Items",
+        "CHART_SUBTITLE": "Ordenados alfabéticamente"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Habilitar/Inhabilitar Item",
