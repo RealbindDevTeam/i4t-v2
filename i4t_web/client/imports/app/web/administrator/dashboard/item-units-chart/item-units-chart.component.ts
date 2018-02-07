@@ -48,7 +48,6 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
     private dateRangeLbl: string;
 
     /**
-   * DashboardComponent Constructor
    * @param {TranslateService} _translate 
    * @param {NgZone} _ngZone 
    * @param {Router} _router
