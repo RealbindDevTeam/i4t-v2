@@ -89,7 +89,6 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
 
         this._ordersSubscription = MeteorObservable.subscribe('getOrdersByEstablishmentId', this._establishmentId, ['ORDER_STATUS.RECEIVED']).subscribe(() => {
             this._ngZone.run(() => {
-                let todayDate = new Date();
                 this._orders = Orders.find({}).zone();
 
                 this._orders.subscribe(() => {
@@ -103,8 +102,6 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
      * Set the chart data according to the initial conditions
      */
     setBarChartData() {
-
-        this.dateRangeLbl = this.itemNameTraduction('ITEM_UNIT_CHART.TODAY');
         let chartTitle: string = this.itemNameTraduction('ITEM_UNIT_CHART.CHART_TITLE');
         let chartSubtitle: string = this.itemNameTraduction('ITEM_UNIT_CHART.CHART_SUBTITLE');
         let unitsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.UNITS_LBL');
@@ -120,7 +117,6 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
         this.lastSevenDaysArray = [];
         this.lastThirtyDaysArray = [];
 
-        let aux = 0;
         Items.collection.find({}).fetch().forEach((item) => {
             let _todayAggregate: number = 0;
             let _yesterdayAggregate: number = 0;

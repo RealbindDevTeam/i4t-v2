@@ -32,7 +32,7 @@ Meteor["publishComposite"]('getRewardsToItems', function (_establishmentId: stri
             },
             children: [{
                 find(item) {
-                    Rewards.find({ item_id: item});
+                    return Rewards.find({ item_id: item._id });
                 }
             }]
         }

@@ -5,6 +5,6 @@
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <p *ngFor="let reward of _rewards | async"> {{reward.item_id}}</p>
+        <div [chart]="rewardUnitsChart"></div>
     </mat-card-content>
 </mat-card>
