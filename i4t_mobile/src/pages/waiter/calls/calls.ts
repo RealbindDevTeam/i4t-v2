@@ -31,6 +31,7 @@ export class CallsPage implements OnInit, OnDestroy {
   private _tables: any;
   private _waiterCallDetailCollection: any;
   private _imgEstablishment: any;
+  private _thereAreCalls: boolean = true;
 
   private _userLang: string;
 
@@ -68,12 +69,22 @@ export class CallsPage implements OnInit, OnDestroy {
     this._callsDetailsSubscription = MeteorObservable.subscribe('waiterCallDetailByWaiterId', Meteor.userId()).subscribe(() => {
       this._waiterCallDetail = WaiterCallDetails.find({});
       this._waiterCallDetailCollection = WaiterCallDetails.collection.find({}).fetch()[0];
+      this.countCalls();
+      this._waiterCallDetail.subscribe(() => { this.countCalls(); });
     });
 
     this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', Meteor.userId()).subscribe(() => {
       this._tables = Tables.find({});
     });
 
+  }
+
+  /**
+     * Count calls
+     */
+  countCalls(): void {
+    let _lCalls: number = WaiterCallDetails.collection.find({}).count();
+    _lCalls > 0 ? this._thereAreCalls = true : this._thereAreCalls = false;
   }
 
   /**

@@ -5,16 +5,18 @@
 </ion-header>
 <ion-content>
     <ion-card-header style="white-space: normal">
+        {{'MOBILE.REWARD_LIST.REWARDS_MSG' | translate}}
+    </ion-card-header>
+    <ion-card-header style="white-space: normal">
         {{'MOBILE.REWARD_LIST.AVALAIBLE_PTS' | translate}} {{getUserPoints()}} pts
     </ion-card-header>
-
-    <ion-card-header style="color:red; font-weight: bold;white-space: normal;" *ngIf="!_allowAddRewardsToOrder">
+    <ion-card-header style="color:red;white-space: normal;" *ngIf="!_allowAddRewardsToOrder">
         {{'MOBILE.REWARD_LIST.ORDER_ERROR' | translate}}
     </ion-card-header>
-    
+
     <ion-list>
         <div *ngFor="let reward of _rewards | async">
-            <ion-card *ngIf="showReward(reward.item_id)"> 
+            <ion-card *ngIf="showReward(reward.item_id)">
                 <ion-card-content>
                     <ion-item style="padding-left: 0px">
                         <ion-thumbnail item-left>

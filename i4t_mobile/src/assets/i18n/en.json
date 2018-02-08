@@ -301,7 +301,8 @@
             "PAY_CLOSE": "Close payments received",
             "NO_WAITERS": "There are no assigned waiter/waitress in the restaurant",
             "ALPHANUMERIC_CODE": "Code",
-            "CALL_LABEL_EXIT_CUSTOMER": "User output"
+            "CALL_LABEL_EXIT_CUSTOMER": "User output",
+            "NO_CALLS": "There are no pending calls"
         },
         "CUSTOMER_ORDER": {
             "TITLE": "Order detail",
@@ -491,7 +492,8 @@
             "ERROR": "Error adding reward. Try again",
             "LOADING_MSG": "Adding to your order ...",
             "REWARD_DELETED": "Reward deleted from order",
-            "ORDER_ERROR": "You can redeem maximum one reward per order"
+            "ORDER_ERROR": "You can redeem maximum one reward per order",
+            "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
         }
     },
     "CURRENCIES": {

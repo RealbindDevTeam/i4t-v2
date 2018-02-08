@@ -1637,7 +1637,8 @@
         "GET_POINTS": "Obtén puntos",
         "REWARD_AGGREGATED": "Recompensa agregada",
         "ERROR": "Error agregando la recompensa. Intenta nuevamente",
-        "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden"
+        "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden",
+        "REWARDS_MSG": "Reclama una recompensa y el plato te sale gratis! Disfrutalo!"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "Aún no has acumulado puntos en ningún restaurante. Animate!",

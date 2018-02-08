@@ -301,7 +301,8 @@
             "PAY_CLOSE": "Cerrar pagos recibidos",
             "NO_WAITERS": "No hay meseros asignados en el restaurante",
             "ALPHANUMERIC_CODE": "Código",
-            "CALL_LABEL_EXIT_CUSTOMER": "Salida de usuario"
+            "CALL_LABEL_EXIT_CUSTOMER": "Salida de usuario",
+            "NO_CALLS": "No hay llamados pendientes"
         },
         "CUSTOMER_ORDER": {
             "TITLE": "Detalle de la orden",
@@ -491,7 +492,8 @@
             "ERROR": "Error agregando la recompensa. Intenta nuevamente",
             "LOADING_MSG": "Agregando a tu orden ...",
             "REWARD_DELETED": "Recompensa eliminada de la orden",
-            "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden"
+            "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden",
+            "REWARDS_MSG": "Reclama una recompensa y el plato te sale gratis! Disfrutalo!"
         }
     },
     "CURRENCIES": {

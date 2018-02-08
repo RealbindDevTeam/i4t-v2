@@ -1635,7 +1635,8 @@
         "GET_POINTS": "Get points",
         "REWARD_AGGREGATED": "Reward aggregated",
         "ERROR": "Error aggregating reward. Try again",
-        "ORDER_ERROR": "You can redeem maximum one reward per order"
+        "ORDER_ERROR": "You can redeem maximum one reward per order",
+        "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",
