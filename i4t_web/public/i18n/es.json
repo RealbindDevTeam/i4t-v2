@@ -778,7 +778,8 @@
         "TABLE_CODE": "Número de la mesa",
         "INFORMATION": "Información",
         "SCHEDULE": "Horario",
-        "LOCATION": "Ubicación"
+        "LOCATION": "Ubicación",
+        "POINTS": "Puntos Disponibles"
     },
     "RESTAURANT_LOCATION_INFO": {
         "TITTLE": "Ubicación del establecimiento",

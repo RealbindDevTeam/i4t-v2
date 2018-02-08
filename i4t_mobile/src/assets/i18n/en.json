@@ -194,7 +194,8 @@
             "ORDER_LBL": "Order",
             "USR_ORDER_CONFIRMED": "You confirmed your order! A waiter/waitress will attend it",
             "NO_USR_ORDER_CONFIRMED": "Order confirmed",
-            "WIN": "You win"
+            "WIN": "You win",
+            "AVAILABLE_POINTS": "Available points"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",

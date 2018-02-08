@@ -21,6 +21,7 @@
                 <h2>{{establishment.name}}</h2>
                 <h2 *ngIf="_table">{{'MOBILE.ORDERS.TABLE' | translate}}: {{_table._number}}</h2>
                 <p>{{establishment.address}}</p>
+                <p style="color: #4CAF50;">{{_userRewardPoints}} {{'MOBILE.ORDERS.AVAILABLE_POINTS' | translate}}</p>
             </button>
         </ion-list>
         <ion-card *ngIf="_thereAreOrders">

@@ -778,7 +778,8 @@
         "TABLE_CODE": "Table Number",
         "INFORMATION": "Information",
         "SCHEDULE": "Schedule",
-        "LOCATION": "Location"
+        "LOCATION": "Location",
+        "POINTS": "Available points"
     },
     "RESTAURANT_LOCATION_INFO": {
         "TITTLE": "Location of the establishment",
