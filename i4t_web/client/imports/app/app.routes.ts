@@ -55,7 +55,8 @@ import { EstablishmentProFileDetailComponent } from './web/customer/establishmen
 import { RewardComponent } from './web/administrator/rewards/reward/reward.component';
 import { CustomerPointsComponent } from './web/customer/points/points/customer-points.component';
 import { PointsDetailComponent } from './web/customer/points/points-detail/points-detail.component';
-import { ItemUnitsComponent } from './web/administrator/dashboard/item-units-chart/item-units-chart.component';
+import { ItemUnitsChartComponent } from './web/administrator/dashboard/item-units-chart/item-units-chart.component';
+import { RewardUnitsChartComponent } from 'client/imports/app/web/administrator/dashboard/reward-units-chart/reward-units-chart.component';
 
 export const routes: Route[] = [
     {
@@ -103,7 +104,8 @@ export const routes: Route[] = [
             { path: 'points', component: CustomerPointsComponent, canActivate: [CustomerGuard] },
             { path: 'establishment-points', component: PointsDetailComponent, canActivate: [CustomerGuard] },
             { path: 'establishment-points/:param1', component: PointsDetailComponent, canActivate: [CustomerGuard] },
-            { path: 'item-units-chart/:param1', component: ItemUnitsComponent, canActivate: [AdminGuard] }
+            { path: 'item-units-chart/:param1', component: ItemUnitsChartComponent, canActivate: [AdminGuard] },
+            { path: 'reward-units-chart/:param1', component: RewardUnitsChartComponent, canActivate: [AdminGuard] }
         ]
     },
     { path: '', component: LandingPageComponent },

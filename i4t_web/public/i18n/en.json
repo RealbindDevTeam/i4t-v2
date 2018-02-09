@@ -1353,7 +1353,7 @@
         },
         "SALES": "Sales ",
         "USERS": "Active users",
-        "ITEMS": "Items sold today",
+        "ITEMS": "Items ordered today",
         "SOLD": "Sold",
         "ADDITIONS": "Additions",
         "GARNISHFOOD": "Side dishes",
@@ -1364,7 +1364,8 @@
         "BUSY": "Busy tables",
         "THERE_NOT_RESTAURANTS": "No restaurants registered yet",
         "RESTAURANT_REGISTER": "Restaurant registration",
-        "MESSAGE": "Register one to enable this option"
+        "MESSAGE": "Register one to enable this option",
+        "REWARDS": "Rewards redeemed today"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Today",
@@ -1374,7 +1375,21 @@
         "THIRTY_DAYS": "Last 30 days",
         "FROM": "From",
         "TO": "to",
-        "ITEMS_ORDERED": "Units of items ordered by time range"
+        "CHART_TITLE": "Units of items ordered by time range",
+        "UNITS_LBL": "Units",
+        "ITEMS_LBL": "Items",
+        "CHART_SUBTITLE": "Sorted alphabetically"
+    },
+    "REWARD_UNIT_CHART": {
+        "TODAY": "Today",
+        "YESTERDAY": "Yesterday",
+        "THIS_WEEK": "This week",
+        "SEVEN_DAYS": "Last 7 days",
+        "THIRTY_DAYS": "Last 30 days",
+        "CHART_TITLE": "Units of rewards redeemed by time range",
+        "UNITS_LBL": "Units",
+        "REWARDS_LBL": "Rewards",
+        "CHART_SUBTITLE": "Sorted alphabetically"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Enable/disable Item",
