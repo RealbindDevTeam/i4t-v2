@@ -778,7 +778,8 @@
         "TABLE_CODE": "Table Number",
         "INFORMATION": "Information",
         "SCHEDULE": "Schedule",
-        "LOCATION": "Location"
+        "LOCATION": "Location",
+        "POINTS": "Available points"
     },
     "RESTAURANT_LOCATION_INFO": {
         "TITTLE": "Location of the establishment",
@@ -1111,7 +1112,8 @@
         "RECEIVE_ORDER": "Receive order",
         "RECEIVE_ORDER_CONFIRM": "Order received",
         "CANCEL_ORDER": "Cancel Order",
-        "CANCEL_ORDER_CONFIRM": "Order Canceled"
+        "CANCEL_ORDER_CONFIRM": "Order Canceled",
+        "ITEM_REDEEMED": "Item Redeemed"
     },
     "PAYU_PAYMENT_FORM": {
         "TITLE": "Payment method",
@@ -1649,7 +1651,8 @@
         "GET_POINTS": "Get points",
         "REWARD_AGGREGATED": "Reward aggregated",
         "ERROR": "Error aggregating reward. Try again",
-        "ORDER_ERROR": "You can redeem maximum one reward per order"
+        "ORDER_ERROR": "You can redeem maximum one reward per order",
+        "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",

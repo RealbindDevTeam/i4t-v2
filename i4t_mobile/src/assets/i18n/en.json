@@ -194,7 +194,8 @@
             "ORDER_LBL": "Order",
             "USR_ORDER_CONFIRMED": "You confirmed your order! A waiter/waitress will attend it",
             "NO_USR_ORDER_CONFIRMED": "Order confirmed",
-            "WIN": "You win"
+            "WIN": "You win",
+            "AVAILABLE_POINTS": "Available points"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
@@ -300,7 +301,8 @@
             "PAY_CLOSE": "Close payments received",
             "NO_WAITERS": "There are no assigned waiter/waitress in the restaurant",
             "ALPHANUMERIC_CODE": "Code",
-            "CALL_LABEL_EXIT_CUSTOMER": "User output"
+            "CALL_LABEL_EXIT_CUSTOMER": "User output",
+            "NO_CALLS": "There are no pending calls"
         },
         "CUSTOMER_ORDER": {
             "TITLE": "Order detail",
@@ -311,7 +313,8 @@
             "CANCEL": "Cancel",
             "RECEIVE": "Receive",
             "CONTENT_PROMPT": "¿Do you want to cancel the customer order?",
-            "RECEIVE_CONTENT_PROMPT": "¿Do you want to receive the customer order?"
+            "RECEIVE_CONTENT_PROMPT": "¿Do you want to receive the customer order?",
+            "ITEM_REDEEMED": "Item Redeemed"
         },
         "SECTIONS": {
             "MENU": "Menu",
@@ -490,7 +493,8 @@
             "ERROR": "Error adding reward. Try again",
             "LOADING_MSG": "Adding to your order ...",
             "REWARD_DELETED": "Reward deleted from order",
-            "ORDER_ERROR": "You can redeem maximum one reward per order"
+            "ORDER_ERROR": "You can redeem maximum one reward per order",
+            "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
         }
     },
     "CURRENCIES": {

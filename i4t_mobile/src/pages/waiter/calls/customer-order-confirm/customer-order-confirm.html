@@ -22,8 +22,10 @@
             <span *ngFor="let it of order.items">
                 <span *ngIf="it.is_reward">
                     <button ion-item detail-none>
-                        <h2>{{it.quantity}} {{getItemName(it.itemId)}}</h2>
-                        <h3>{{it.observations}}</h3>
+                        <h2>{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
+                        <ion-badge style="background-color: #ffbf00;color: #fff;">{{ 'MOBILE.CUSTOMER_ORDER.ITEM_REDEEMED' | translate }}
+                            <ion-icon name="ribbon"></ion-icon>
+                        </ion-badge>
                     </button>
                 </span>
                 <span *ngIf="!it.is_reward">

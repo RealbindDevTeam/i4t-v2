@@ -3,7 +3,7 @@
         <mat-list>
             <mat-list-item>
                 <img mat-list-avatar class="img" src="{{ establishment.image.url }}">
-                <h2 mat-line class="name"> {{establishment.name}} </h2>
+                <h2 mat-line style="font-size: 1.5rem;color: #114b5f;font-weight: 500;white-space: normal !important;"> {{establishment.name}} </h2>
                 <p mat-line class="location">
                     <mat-icon class="location-icon">location_on</mat-icon>
                     <span>{{_establishmentCountry}}, {{_establishmentCity}}</span>
@@ -32,6 +32,16 @@
     <span *ngFor="let establishmentProfile of _establishmentsProfile | async">
         <ng-template [ngIf]="establishment._id === establishmentProfile.establishment_id">
             <mat-card>
+                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.LOCATION' | translate}}</mat-card-title>
+                <mat-card-content>
+                    <p>{{'RESTAURANT_PROFILE_DETAIL.ADDRESS' | translate}}: {{establishment.address}}</p>
+                    <agm-map [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng" [mapDraggable]="false"
+                        [minZoom]="19" [maxZoom]="19" [zoomControl]="false">
+                        <agm-marker [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng"></agm-marker>
+                    </agm-map>
+                </mat-card-content>
+            </mat-card>
+            <mat-card>
                 <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.ABOUT_RESTAURANT' | translate}}</mat-card-title>
                 <mat-card-content>
                     <p *ngIf="!_showExtended">{{establishmentProfile.establishment_description.substring(0, 450)}}</p>
@@ -40,7 +50,8 @@
                 </mat-card-content>
             </mat-card>
             <mat-card class="photos">
-                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.PHOTOS' | translate}}</mat-card-title><div *ngIf="establishmentProfile.images">
+                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.PHOTOS' | translate}}</mat-card-title>
+                <div *ngIf="establishmentProfile.images">
                     <p *ngIf="establishmentProfile.images.length <= 0">{{'RESTAURANT_PROFILE_DETAIL.NO_PHOTOS' | translate}}</p>
                     <mat-card-content class="content">
                         <button *ngFor="let restProfileImgeThumb of establishmentProfile.images; let i = index" mat-button class="img-wp">
@@ -124,16 +135,6 @@
                     </mat-card-content>
                 </mat-card>
             </div>
-            <mat-card>
-                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.LOCATION' | translate}}</mat-card-title>
-                <mat-card-content>
-                    <p>{{'RESTAURANT_PROFILE_DETAIL.ADDRESS' | translate}}: {{establishment.address}}</p>
-                    <agm-map [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng" [mapDraggable]="false"
-                        [minZoom]="19" [maxZoom]="19" [zoomControl]="false">
-                        <agm-marker [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng"></agm-marker>
-                    </agm-map>
-                </mat-card-content>
-            </mat-card>
         </ng-template>
     </span>
 </div>

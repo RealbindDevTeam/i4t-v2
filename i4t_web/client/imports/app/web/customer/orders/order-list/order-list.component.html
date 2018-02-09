@@ -13,8 +13,11 @@
                     <mat-icon style="vertical-align: middle">restaurant</mat-icon>
                     <span>{{'RESTAURANT_INFO_MASTER.TABLE_CODE' | translate}}: {{_tableNumber}}</span>
                 </p>
+                <p style="font-size: 1.4rem;font-weight: bold;text-align: center;color: #4CAF50;">
+                    <span>{{_userRewardPoints}} {{'RESTAURANT_INFO_MASTER.POINTS' | translate}}</span>
+                </p>
                 <button mat-icon-button (click)="openEstablishmentProfileDetail(_es._id)">
-                    <mat-icon>keyboard_arrow_right</mat-icon>
+                    <mat-icon>search</mat-icon>
                 </button>
             </mat-list-item>
         </mat-list>
@@ -64,8 +67,11 @@
                                     <mat-icon style="vertical-align: middle">restaurant</mat-icon>
                                     <span>{{'RESTAURANT_INFO_MASTER.TABLE_CODE' | translate}}: {{_tableNumber}}</span>
                                 </p>
+                                <p style="font-size: 1.4rem;font-weight: bold;text-align: center;color: #4CAF50;">
+                                    <span>{{_userRewardPoints}} Puntos Disponibles</span>
+                                </p>
                                 <button mat-icon-button (click)="openEstablishmentProfileDetail(_es._id)">
-                                    <mat-icon>keyboard_arrow_right</mat-icon>
+                                    <mat-icon>search</mat-icon>
                                 </button>
                             </mat-list-item>
                         </mat-list>
@@ -79,7 +85,9 @@
                             <mat-option (click)="changeOrderFilter('other')" value="other">{{'ORDER_LIST.OTHER_ORDERS' | translate}}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <button mat-button class="rewards-button" *ngIf="_showReedemPoints" (click)="reedemPoints()">{{'ORDERS.REDEEM_POINTS' | translate}} <mat-icon style="margin-left: 5px;">redeem</mat-icon></button>
+                    <button mat-button class="rewards-button" *ngIf="_showReedemPoints" (click)="reedemPoints()">{{'ORDERS.REDEEM_POINTS' | translate}}
+                        <mat-icon style="margin-left: 5px;">redeem</mat-icon>
+                    </button>
                 </div>
                 <div *ngIf="_showCustomerOrders || _showAllOrders">
                     <div *ngFor="let or of _orders | async; let i = index">
@@ -89,7 +97,8 @@
                                 <span class="order-code">{{'ORDER_LIST.TOTAL_ORDER' | translate}}: {{or.totalPayment}} {{_currencyCode}}</span>
                                 <span>
                                     <mat-chip-list *ngIf="or.total_reward_points" style="display: inline-block">
-                                        <mat-chip class="cust-color-chip">{{'ORDER_LIST.WIN' | translate}} {{or.total_reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                        <mat-chip class="cust-color-chip">{{'ORDER_LIST.WIN' | translate}} {{or.total_reward_points}} {{'ORDER_CREATE.POINTS'
+                                            | translate}}
                                             <mat-icon style="margin-left: 5px;">star</mat-icon>
                                         </mat-chip>
                                     </mat-chip-list>

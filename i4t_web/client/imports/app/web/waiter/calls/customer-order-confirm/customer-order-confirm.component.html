@@ -9,6 +9,11 @@
                 <ng-template [ngIf]="it.itemId === item._id">
                     <span *ngIf="it.is_reward">
                         <h2 class="name">{{it.quantity}} - {{item.name}}</h2>
+                        <mat-chip-list mat-line>
+                            <mat-chip style="background-color: #ffbf00;color: #fff;height: 10px;">{{ 'CUSTOMER_ORDER.ITEM_REDEEMED' | translate }}
+                                <mat-icon style="margin-left: 5px;">redeem</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
                         <p *ngIf="it.observations" class="observations">{{ 'CUSTOMER_ORDER.OBSERVATIONS' | translate }}: {{it.observations}}</p>
                         <p *ngIf="(it.garnishFood.length <= 0)"></p>
                         <div *ngIf="(it.garnishFood.length > 0)" class="garnish-food">

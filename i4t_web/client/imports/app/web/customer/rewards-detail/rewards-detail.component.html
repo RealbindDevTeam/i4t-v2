@@ -1,6 +1,7 @@
 <mat-card>
     <mat-card-title>{{'REWARD_DETAIL.REWARD_TITLE' | translate}}</mat-card-title>
-    <p style="color:red; font-weight: bold" *ngIf="!_allowAddRewardsToOrder">{{'REWARD_DETAIL.ORDER_ERROR' | translate}}</p>
+    <mat-card-subtitle>{{'REWARD_DETAIL.REWARDS_MSG' | translate}}</mat-card-subtitle>
+    <p style="color:red;" *ngIf="!_allowAddRewardsToOrder">{{'REWARD_DETAIL.ORDER_ERROR' | translate}}</p>
     <mat-card-content>
         <p style="font-weight: bold">{{'REWARD_DETAIL.POINTS_TO_REDEEM' | translate}}: {{_userRewardPoints}} {{'REWARD_DETAIL.POINTS' | translate}}</p>
         <mat-list>

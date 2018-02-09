@@ -68,6 +68,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _thereIsUser: boolean = true;
     private _thereAreOrders: boolean = true;
     private _showReedemPoints: boolean = true;
+    private _userRewardPoints: number;
 
     constructor(public _navCtrl: NavController,
         public _navParams: NavParams,
@@ -105,6 +106,8 @@ export class OrdersPage implements OnInit, OnDestroy {
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 if (this._userDetail) {
                     this._res_code = this._userDetail.current_establishment;
+                    this.verifyUserRewardPoints();
+                    this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
                     this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).subscribe(() => {
                         this._ngZone.run(() => {
                             this._establishments = Establishments.find({ _id: this._userDetail.current_establishment }).zone();
@@ -152,6 +155,29 @@ export class OrdersPage implements OnInit, OnDestroy {
     validateUser(): void {
         let _user: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
         _user.current_establishment !== '' && _user.current_table !== '' ? this._thereIsUser = true : this._thereIsUser = false;
+    }
+
+    /**
+     * Verify user reward points
+     */
+    verifyUserRewardPoints(): void {
+        let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+        if (_lUserDetail) {
+            let _lRewardPoints: UserRewardPoints[] = _lUserDetail.reward_points;
+
+            if (_lRewardPoints) {
+                if (_lRewardPoints.length > 0) {
+                    let _lPoints: UserRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this._res_code)[0];
+                    if(_lPoints){
+                        this._userRewardPoints = _lPoints.points;
+                    } else {
+                        this._userRewardPoints = 0;
+                    }
+                } else {
+                    this._userRewardPoints = 0;
+                }
+            }
+        }
     }
 
     getOrders() {
@@ -252,7 +278,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                                     let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(item.redeemed_points.toString());
 
                                     UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _order.establishment_id } } });
-                                    UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { establishment_id: _order.establishment_id, points: _lNewPoints } } });
+                                    UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { index: _lPoints.index, establishment_id: _order.establishment_id, points: _lNewPoints } } });
 
                                     let _lRedeemedPoints: number = item.redeemed_points;
                                     let _lValidatePoints: boolean = true;

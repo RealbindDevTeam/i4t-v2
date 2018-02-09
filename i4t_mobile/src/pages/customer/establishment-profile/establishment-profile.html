@@ -3,10 +3,13 @@
         <ion-title style="width: 90%;" *ngFor="let _establishment of _establishments | async;">{{_establishment?.name}}</ion-title>
     </ion-navbar>
 </ion-header>
-  
+
 <ion-content>
-    <ion-fab *ngIf="_establishmentProfile?.web_page || _establishmentProfile?.social_networks?.facebook || _establishmentProfile?.social_networks?.twitter  || _establishmentProfile?.social_networks?.instagram" top right>
-        <button ion-fab color="vibrant" mini class="custom"><ion-icon name="more"></ion-icon></button>
+    <ion-fab *ngIf="_establishmentProfile?.web_page || _establishmentProfile?.social_networks?.facebook || _establishmentProfile?.social_networks?.twitter  || _establishmentProfile?.social_networks?.instagram"
+        top right>
+        <button ion-fab color="vibrant" mini class="custom">
+            <ion-icon name="more"></ion-icon>
+        </button>
         <ion-fab-list side="bottom">
             <a ion-fab *ngIf="_establishmentProfile?.web_page" href="{{_establishmentProfile?.web_page}}">
                 <ion-icon name="navigate"></ion-icon>
@@ -23,13 +26,7 @@
         </ion-fab-list>
     </ion-fab>
 
-    <span *ngFor="let establishmentProfile of _establishmentsProfiles | async">
-        <ion-slides *ngIf="establishmentProfile.images?.length > 0" zoom>
-            <ion-slide *ngFor="let restProfileImgeThumb of establishmentProfile.images">
-                <img src="{{restProfileImgeThumb.url}}"/>
-            </ion-slide>
-        </ion-slides>
-    </span>
+    <div id="map_canvas"></div>
 
     <ion-card *ngFor="let _establishment of _establishments | async;" class="card-nm">
         <ion-card-content>
@@ -37,16 +34,29 @@
                 <ion-card-title style="white-space: normal;">{{_establishment?.name}}</ion-card-title>
                 <!--button ion-button outline item-end>{{'MOBILE.RESTAURANT_PROFILE.MENU_BTN' | translate}}</button-->
             </ion-item>
-            
             <ion-list inset class="margin" no-lines>
                 <ion-item>
                     <ion-icon name="map"></ion-icon>
                     {{_establishmentCountry}}, {{_establishmentCity}}
                 </ion-item>
+
+                <ion-item *ngIf="_establishment?.address">
+                    <ion-icon name="pin"></ion-icon>
+                    {{_establishment.address}}
+                </ion-item>
+                <ion-item *ngIf="_establishment?.phone">
+                    <ion-icon name="call"></ion-icon>
+                    {{_establishment.indicative}} {{_establishment.phone}}
+                </ion-item>
+                <ion-item *ngIf="_establishmentProfile?.email">
+                    <ion-icon name="chatbubbles"></ion-icon>
+                    {{_establishmentProfile?.email}}
+                </ion-item>
+
                 <button ion-item (click)="openSchedule()" *ngIf="_establishmentProfile?.schedule.monday.isActive || _establishmentProfile?.schedule.tuesday.isActive || 
-                _establishmentProfile?.schedule.wednesday.isActive || _establishmentProfile?.schedule.thursday.isActive ||
-                _establishmentProfile?.schedule.friday.isActive || _establishmentProfile?.schedule.saturday.isActive || 
-                _establishmentProfile?.schedule.sunday.isActive || _establishmentProfile?.schedule.holiday.isActive">
+                    _establishmentProfile?.schedule.wednesday.isActive || _establishmentProfile?.schedule.thursday.isActive ||
+                    _establishmentProfile?.schedule.friday.isActive || _establishmentProfile?.schedule.saturday.isActive || 
+                    _establishmentProfile?.schedule.sunday.isActive || _establishmentProfile?.schedule.holiday.isActive">
                     <ion-icon name="time"></ion-icon>
                     {{'MOBILE.SCHEDULE.SCHEDULE' | translate}}
                 </button>
@@ -66,8 +76,20 @@
             <a *ngIf="!_showDescription" (click)="showInformation()">
                 Ver más
             </a>
+        </ion-card-content>
+    </ion-card>
 
-            
+    <span *ngFor="let establishmentProfile of _establishmentsProfiles | async">
+        <ion-slides *ngIf="establishmentProfile.images?.length > 0" zoom>
+            <ion-slide *ngFor="let restProfileImgeThumb of establishmentProfile.images">
+                <img src="{{restProfileImgeThumb.url}}" />
+            </ion-slide>
+        </ion-slides>
+    </span>
+
+    <ion-card *ngFor="let _establishment of _establishments | async;" class="card-nm">
+        <ion-card-content>
+
             <div class="pm">
                 <h2>{{'MOBILE.RESTAURANT_PROFILE.PAYMENT_METHODS' | translate}}</h2>
                 <ion-list no-lines>
@@ -82,22 +104,6 @@
                     </ion-item>
                 </ion-list>
             </div>
-
-            <ion-list inset class="margin" no-lines>
-                <ion-item *ngIf="_establishment?.phone">
-                    <ion-icon name="call"></ion-icon>
-                    {{_establishment.indicative}} {{_establishment.phone}}
-                </ion-item>
-                <ion-item *ngIf="_establishmentProfile?.email">
-                    <ion-icon name="chatbubbles"></ion-icon>
-                    {{_establishmentProfile?.email}}
-                </ion-item>
-                <ion-item *ngIf="_establishment?.address">
-                    <ion-icon name="pin"></ion-icon>
-                    {{_establishment.address}}
-                </ion-item>
-            </ion-list>
         </ion-card-content>
     </ion-card>
-    <div id="map_canvas"></div>
 </ion-content>
