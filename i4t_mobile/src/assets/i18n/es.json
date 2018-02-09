@@ -313,7 +313,8 @@
             "CANCEL": "Cancelar",
             "RECEIVE": "Recibir",
             "CONTENT_PROMPT": "Deseas cancelar la orden del cliente?",
-            "RECEIVE_CONTENT_PROMPT": "Deseas recibir la orden del cliente?"
+            "RECEIVE_CONTENT_PROMPT": "Deseas recibir la orden del cliente?",
+            "ITEM_REDEEMED": "Item Redimido"
         },
         "SECTIONS": {
             "MENU": "Menú",

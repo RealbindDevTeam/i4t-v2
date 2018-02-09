@@ -1112,7 +1112,8 @@
         "RECEIVE_ORDER": "Receive order",
         "RECEIVE_ORDER_CONFIRM": "Order received",
         "CANCEL_ORDER": "Cancel Order",
-        "CANCEL_ORDER_CONFIRM": "Order Canceled"
+        "CANCEL_ORDER_CONFIRM": "Order Canceled",
+        "ITEM_REDEEMED": "Item Redeemed"
     },
     "PAYU_PAYMENT_FORM": {
         "TITLE": "Payment method",
