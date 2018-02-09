@@ -154,7 +154,7 @@ if (Meteor.isServer) {
          * This function validate the establishment registered in history_payment and change isActive to false if is not 
          * @param {string} _countryId
          */
-        validateActiveRestaurants: function (_countryId: string) {
+        validateActiveEstablishments: function (_countryId: string) {
             let currentDate: Date = new Date();
             let currentMonth: string = (currentDate.getMonth() + 1).toString();
             let currentYear: string = currentDate.getFullYear().toString();

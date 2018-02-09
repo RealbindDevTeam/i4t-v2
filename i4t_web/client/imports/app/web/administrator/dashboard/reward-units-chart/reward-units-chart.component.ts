@@ -6,26 +6,32 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { Meteor } from 'meteor/meteor';
 import { Chart } from 'angular-highcharts';
-import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
-import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
+import { Reward } from '../../../../../../../both/models/establishment/reward.model';
+import { Rewards } from '../../../../../../../both/collections/establishment/reward.collection';
 import { Order } from '../../../../../../../both/models/establishment/order.model';
 import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
+
 
 @Component({
     selector: 'item-units-chart',
-    templateUrl: './item-units-chart.component.html',
-    styleUrls: ['./item-units-chart.component.scss']
+    templateUrl: './reward-units-chart.component.html',
+    styleUrls: ['./reward-units-chart.component.scss']
 })
 
-export class ItemUnitsChartComponent implements OnInit, OnDestroy {
+export class RewardUnitsChartComponent implements OnInit, OnDestroy {
 
     private _establishmentId: string = null;
-    private itemUnitsChart;
-    private _establishmentsSubscription: Subscription;
+    private rewardUnitsChart;
+    private _rewardsSubscription: Subscription;
     private _itemsSubscription: Subscription;
     private _ordersSubscription: Subscription;
+    private _establishmentsSubscription: Subscription;
+
+    private _rewards: Observable<Reward[]>;
     private _items: Observable<Item[]>;
     private _orders: Observable<Order[]>;
     private _establishment: Establishment = null;
@@ -45,14 +51,13 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
     private _lastThirtyDaysDateIni: Date;
     private _lastThirtyDaysDateEnd: Date;
 
-    private dateRangeLbl: string;
-
     /**
-   * @param {TranslateService} _translate 
-   * @param {NgZone} _ngZone 
-   * @param {Router} _router
-   * @param {UserLanguageService} _userLanguageService
-   */
+    * @param {TranslateService} _translate 
+    * @param {NgZone} _ngZone 
+    * @param {Router} _router
+    * @param {UserLanguageService} _userLanguageService
+    */
+
     constructor(private _activatedRoute: ActivatedRoute,
         private _translate: TranslateService,
         private _ngZone: NgZone,
@@ -85,12 +90,17 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
             });
         });
 
+        this._rewardsSubscription = MeteorObservable.subscribe('getRewardsToItems', this._establishmentId).subscribe(() => {
+            this._ngZone.run(() => {
+                this._rewards = Rewards.find({});
+            })
+        });
+
         this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishmentSortedByName', this._establishmentId).subscribe();
 
         this._ordersSubscription = MeteorObservable.subscribe('getOrdersByEstablishmentId', this._establishmentId, ['ORDER_STATUS.RECEIVED']).subscribe(() => {
             this._ngZone.run(() => {
                 this._orders = Orders.find({}).zone();
-
                 this._orders.subscribe(() => {
                     this.setBarChartData();
                 });
@@ -99,17 +109,17 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Set the chart data according to the initial conditions
+    * Set the chart data according to the initial conditions
      */
     setBarChartData() {
-        let chartTitle: string = this.itemNameTraduction('ITEM_UNIT_CHART.CHART_TITLE');
-        let chartSubtitle: string = this.itemNameTraduction('ITEM_UNIT_CHART.CHART_SUBTITLE');
-        let unitsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.UNITS_LBL');
-        let itemsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.ITEMS_LBL');
-        let todayLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.TODAY');
-        let yesterdayLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.YESTERDAY')
-        let lastSevenDaysLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.SEVEN_DAYS');
-        let lastThirtyDaysLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.THIRTY_DAYS');
+        let chartTitle: string = this.itemNameTraduction('REWARD_UNIT_CHART.CHART_TITLE');
+        let chartSubtitle: string = this.itemNameTraduction('REWARD_UNIT_CHART.CHART_SUBTITLE');
+        let unitsLbl: string = this.itemNameTraduction('REWARD_UNIT_CHART.UNITS_LBL');
+        let itemsLbl: string = this.itemNameTraduction('REWARD_UNIT_CHART.REWARDS_LBL');
+        let todayLbl: string = this.itemNameTraduction('REWARD_UNIT_CHART.TODAY');
+        let yesterdayLbl: string = this.itemNameTraduction('REWARD_UNIT_CHART.YESTERDAY')
+        let lastSevenDaysLbl: string = this.itemNameTraduction('REWARD_UNIT_CHART.SEVEN_DAYS');
+        let lastThirtyDaysLbl: string = this.itemNameTraduction('REWARD_UNIT_CHART.THIRTY_DAYS');
 
         this.xAxisArray = [];
         this.todaySeriesArray = [];
@@ -117,80 +127,33 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
         this.lastSevenDaysArray = [];
         this.lastThirtyDaysArray = [];
 
-        Items.collection.find({}).fetch().forEach((item) => {
+        Rewards.collection.find({}).fetch().forEach((reward) => {
+            let _item: Item;
             let _todayAggregate: number = 0;
             let _yesterdayAggregate: number = 0;
             let _lastSevenDaysAggregate: number = 0;
             let _lastThirtyDaysAggregate: number = 0;
 
-            this.xAxisArray.push(item.name);
+            console.log(reward.item_id);
+            console.log(this._establishmentId);
 
-            //Orders today
-            Orders.collection.find({
-                'items.itemId': item._id,
-                'creation_date': {
-                    $gte: new Date(this._todayDateIni.getFullYear(), this._todayDateIni.getMonth(), this._todayDateIni.getDate()),
-                    $lte: new Date(this._todayDateEnd.getFullYear(), this._todayDateEnd.getMonth(), this._todayDateEnd.getDate(), 23, 59, 59)
-                }
-            }).fetch().forEach((order) => {
-                order.items.forEach((orderItem) => {
-                    if (orderItem.itemId === item._id) {
-                        _todayAggregate = _todayAggregate + orderItem.quantity;
-                    }
-                })
-            });
-            this.todaySeriesArray.push(_todayAggregate);
+            Items.collection.find({ 'establishments.establishment_id': { $in: [this._establishmentId] }, _id: reward.item_id }).fetch().forEach((item) => {
+                this.xAxisArray.push(item.name);
 
-            //Orders yesterday
-            Orders.collection.find({
-                'items.itemId': item._id,
-                'creation_date': {
-                    $gte: new Date(this._yesterdayDateIni.getFullYear(), this._yesterdayDateIni.getMonth(), this._yesterdayDateIni.getDate()),
-                    $lte: new Date(this._yesterdayDateEnd.getFullYear(), this._yesterdayDateEnd.getMonth(), this._yesterdayDateEnd.getDate(), 23, 59, 59)
-                }
-            }).fetch().forEach((order) => {
-                order.items.forEach((orderItem) => {
-                    if (orderItem.itemId === item._id) {
-                        _yesterdayAggregate = _yesterdayAggregate + orderItem.quantity;
+                Orders.collection.find({
+                    'items.itemId': item._id,
+                    'creation_date': {
+                        $gte: new Date(this._todayDateIni.getFullYear(), this._todayDateIni.getMonth(), this._todayDateIni.getDate()),
+                        $lte: new Date(this._todayDateEnd.getFullYear(), this._todayDateEnd.getMonth(), this._todayDateEnd.getDate(), 23, 59, 59)
                     }
-                })
-            });
-            this.yesterdaySeriesArray.push(_yesterdayAggregate);
+                }).fetch().forEach(element => {
 
-            //Orders last seven days
-            Orders.collection.find({
-                'items.itemId': item._id,
-                'creation_date': {
-                    $gte: new Date(this._lastSevenDaysDateIni.getFullYear(), this._lastSevenDaysDateIni.getMonth(), this._lastSevenDaysDateIni.getDate()),
-                    $lte: new Date(this._lastSevenDaysDateEnd.getFullYear(), this._lastSevenDaysDateEnd.getMonth(), this._lastSevenDaysDateEnd.getDate(), 23, 59, 59)
-                }
-            }).fetch().forEach((order) => {
-                order.items.forEach((orderItem) => {
-                    if (orderItem.itemId === item._id) {
-                        _lastSevenDaysAggregate = _lastSevenDaysAggregate + orderItem.quantity;
-                    }
-                })
-            });
-            this.lastSevenDaysArray.push(_lastSevenDaysAggregate);
+                });
 
-            //Orders last thirty days
-            Orders.collection.find({
-                'items.itemId': item._id,
-                'creation_date': {
-                    $gte: new Date(this._lastThirtyDaysDateIni.getFullYear(), this._lastThirtyDaysDateIni.getMonth(), this._lastThirtyDaysDateIni.getDate()),
-                    $lte: new Date(this._lastThirtyDaysDateEnd.getFullYear(), this._lastThirtyDaysDateEnd.getMonth(), this._lastThirtyDaysDateEnd.getDate(), 23, 59, 59)
-                }
-            }).fetch().forEach((order) => {
-                order.items.forEach((orderItem) => {
-                    if (orderItem.itemId === item._id) {
-                        _lastThirtyDaysAggregate = _lastThirtyDaysAggregate + orderItem.quantity;
-                    }
-                })
             });
-            this.lastThirtyDaysArray.push(_lastThirtyDaysAggregate);
         });
 
-        this.itemUnitsChart = new Chart({
+        this.rewardUnitsChart = new Chart({
             chart: {
                 type: 'bar',
                 height: "100%"
@@ -239,45 +202,30 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
             },
             series: [{
                 name: todayLbl,
-                data: this.todaySeriesArray,
+                data: [10, 20],
                 color: '#2196F3'
-            }, {
-                name: yesterdayLbl,
-                data: this.yesterdaySeriesArray,
-                color: '#8BC34A'
-            }, {
-                name: lastSevenDaysLbl,
-                data: this.lastSevenDaysArray,
-                color: '#FF9800'
-            }, {
-                name: lastThirtyDaysLbl,
-                data: this.lastThirtyDaysArray,
-                color: '#9C27B0'
             }
             ]
         });
     }
 
+    removeSubscriptions(): void {
+        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
+        if (this._ordersSubscription) { this._ordersSubscription.unsubscribe(); }
+        if (this._establishmentsSubscription) { this._establishmentsSubscription.unsubscribe(); }
+        if (this._rewardsSubscription) { this._rewardsSubscription.unsubscribe(); }
+    }
 
     /**
-     * Return traduction
-     * @param {string} itemName 
-     */
+    * Return traduction
+    * @param {string} itemName 
+    */
     itemNameTraduction(itemName: string): string {
         var wordTraduced: string;
         this._translate.get(itemName).subscribe((res: string) => {
             wordTraduced = res;
         });
         return wordTraduced;
-    }
-
-    /**
-   * Remove all subscriptions
-   */
-    removeSubscriptions(): void {
-        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
-        if (this._ordersSubscription) { this._ordersSubscription.unsubscribe(); }
-        if (this._establishmentsSubscription) { this._establishmentsSubscription.unsubscribe(); }
     }
 
     /**

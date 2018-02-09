@@ -176,10 +176,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   * Go to charts detail by restaurant
   * @param _pEstablishmentId 
   */
-  goToCharts(_pEstablishmentId: string) {
+  goToItemUnitsCharts(_pEstablishmentId: string) {
     this._router.navigate(['/app/item-units-chart', _pEstablishmentId], { skipLocationChange: true });
   }
 
+  goToRewardUnitsCharts(_pEstablishment: string) {
+    this._router.navigate(['/app/reward-units-chart', _pEstablishment], { skipLocationChange: true });
+  }
   /**
    * Get GarnishFood Sold
    * @param {string} _pEstablishmentId

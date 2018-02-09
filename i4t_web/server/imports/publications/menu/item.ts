@@ -103,3 +103,16 @@ Meteor.publish('getItemsByUserEstablishmentWork', function (_userId: string) {
         return;
     }
 });
+
+
+/***
+ * Meteor publication return items sorted by item name
+ */
+/**
+ * Meteor publication return items with establishment condition
+ */
+Meteor.publish('itemsByEstablishmentSortedByName', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return Items.find({ 'establishments.establishment_id': { $in: [_establishmentId] }, is_active: true }, { sort: { name: 1 } });
+});
+
