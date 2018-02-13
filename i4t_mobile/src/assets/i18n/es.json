@@ -448,7 +448,7 @@
         "HOME-MENU": {
             "HOME": "Inicio",
             "ORDER_RESTAURANT": "Ordena en un Restaurante",
-            "PAYMENTS_HISTORY": "Historial de Pagos",
+            "POINTS": "Mis Puntos",
             "SETTINGS": "Ajustes"
         },
         "RESTAURANT_PROFILE": {
@@ -495,6 +495,13 @@
             "REWARD_DELETED": "Recompensa eliminada de la orden",
             "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden",
             "REWARDS_MSG": "Reclama una recompensa y el plato te sale gratis! Disfrutalo!"
+        },
+        "POINTS": {
+            "TITLE": "Mis Puntos",
+            "NO_POINTS_MSG": "Aún no has acumulado puntos en ningún restaurante. Animate!",
+            "ACCUMULATED_POINTS": "Puntos acumulados",
+            "YOU_HAVE": "Tienes",
+            "POINTS_FOR_EXPIRING": "puntos para vencer el día"
         }
     },
     "CURRENCIES": {

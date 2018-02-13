@@ -448,7 +448,7 @@
         "HOME-MENU": {
             "HOME": "Home",
             "ORDER_RESTAURANT": "Ordering in a restaurant",
-            "PAYMENTS_HISTORY": "Payments history",
+            "POINTS": "My points",
             "SETTINGS": "Settings"
         },
         "RESTAURANT_PROFILE": {
@@ -495,6 +495,13 @@
             "REWARD_DELETED": "Reward deleted from order",
             "ORDER_ERROR": "You can redeem maximum one reward per order",
             "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
+        },
+        "POINTS": {
+            "TITLE": "My points",
+            "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",
+            "ACCUMULATED_POINTS": "Accumulated points",
+            "YOU_HAVE": "You have",
+            "POINTS_FOR_EXPIRING": "points for expiring the day"
         }
     },
     "CURRENCIES": {

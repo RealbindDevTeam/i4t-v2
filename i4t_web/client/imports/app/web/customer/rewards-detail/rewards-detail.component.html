@@ -13,7 +13,7 @@
                             <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
                             <h4 mat-line>{{reward.item_quantity}} {{item.name}}</h4>
                             <mat-chip-list mat-line>
-                                <mat-chip style="color: white;background-color: #4CAF50;">{{reward.points}} {{'REWARD_DETAIL.POINTS' | translate}}</mat-chip>
+                                <mat-chip style="color: white;background-color: #4CAF50;height: 10px;">{{reward.points}} {{'REWARD_DETAIL.POINTS' | translate}}</mat-chip>
                             </mat-chip-list>
                             <p mat-line *ngIf="!getItemAvailability(item._id)" style="color: #D50000;font-weight: bold;">{{'REWARD_DETAIL.UNAVAILABLE' | translate}}</p>
                             <div *ngIf="_allowAddRewardsToOrder">

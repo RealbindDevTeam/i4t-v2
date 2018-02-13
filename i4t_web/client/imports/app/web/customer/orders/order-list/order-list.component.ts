@@ -100,7 +100,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _tableNumber: number;
     private _loading: boolean = false;
     private _showReedemPoints: boolean = true;
-    private _userRewardPoints: number;
+    private _userRewardPoints: number = 0;
 
     private _finalPoints: number = 0;
     private _unitRewardPoints: number = 0;
