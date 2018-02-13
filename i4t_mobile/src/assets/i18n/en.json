@@ -502,6 +502,13 @@
             "ACCUMULATED_POINTS": "Accumulated points",
             "YOU_HAVE": "You have",
             "POINTS_FOR_EXPIRING": "points for expiring the day"
+        },
+        "POINTS_DETAIL": {
+            "ORDER": "Order",
+            "YOU_EARNED": "You earned",
+            "POINTS": "Points",
+            "YOU_REDEEMED": "You redeemed",
+            "REWARD": "Reward"
         }
     },
     "CURRENCIES": {

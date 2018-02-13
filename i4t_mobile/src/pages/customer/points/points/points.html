@@ -30,8 +30,8 @@
                             </ion-thumbnail>
                             <h2>{{_establishment.name}}</h2>
                             <p>{{_establishment.address}}</p>
-                            <p style="color: green;font-weight: bold;">{{_points.points}} {{'MOBILE.POINTS.ACCUMULATED_POINTS' | translate}}</p>
-                            <p style="color: red;" *ngIf="validateEstablishmentExpirePoints(_establishment._id)">{{'MOBILE.POINTS.YOU_HAVE' | translate}} {{getEstablishmentExpirePoints(_establishment._id)}} {{'MOBILE.POINTS.POINTS_FOR_EXPIRING' | translate}} {{getEstablishmentExpirePointsDate(_establishment._id)|date:'MM/dd/yyyy'}}</p>
+                            <p class="accumulated-points">{{_points.points}} {{'MOBILE.POINTS.ACCUMULATED_POINTS' | translate}}</p>
+                            <p class="points-expiring" *ngIf="validateEstablishmentExpirePoints(_establishment._id)">{{'MOBILE.POINTS.YOU_HAVE' | translate}} {{getEstablishmentExpirePoints(_establishment._id)}} {{'MOBILE.POINTS.POINTS_FOR_EXPIRING' | translate}} {{getEstablishmentExpirePointsDate(_establishment._id)|date:'MM/dd/yyyy'}}</p>
                         </button>
                     </ion-list>
                     <br/>

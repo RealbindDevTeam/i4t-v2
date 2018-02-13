@@ -502,6 +502,13 @@
             "ACCUMULATED_POINTS": "Puntos acumulados",
             "YOU_HAVE": "Tienes",
             "POINTS_FOR_EXPIRING": "puntos para vencer el día"
+        },
+        "POINTS_DETAIL": {
+            "ORDER": "Orden",
+            "YOU_EARNED": "Ganaste",
+            "POINTS": "Puntos",
+            "YOU_REDEEMED": "Redimiste",
+            "REWARD": "Recompensa"
         }
     },
     "CURRENCIES": {

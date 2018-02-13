@@ -26,8 +26,6 @@ import { SendOrderDetailsPage } from "../pages/waiter/calls/send-order-detail/se
 import { ItemDetailSendOrderComponent } from "../pages/waiter/calls/send-order-detail/item-detail-send-order";
 import { GarnishSendOrderComponent } from "../pages/waiter/calls/send-order-detail/garnish-food";
 import { AdditionsSendOrderComponent } from "../pages/waiter/calls/send-order-detail/addition";
-import { PaymentsHistoryPage } from '../pages/customer/options/payments-history/payments-history';
-import { PaymentsHistoryDetailPage } from '../pages/customer/options/payments-history/payments-history-detail/payments-history-detail';
 import { Menu } from '../pages/waiter/menu/menu';
 import { ChangeTablePage } from '../pages/customer/options/table-change/table-change';
 import { AlphanumericCodeChangePage } from '../pages/customer/options/table-change/alphanumeric-code-change/alphanumeric-code-change';
@@ -44,6 +42,7 @@ import { ModalSchedule } from '../pages/customer/establishment-profile/modal-sch
 import { CustomerOrderConfirm } from "../pages/waiter/calls/customer-order-confirm/customer-order-confirm";
 import { RewardListComponent } from '../pages/customer/orders/reward-list';
 import { PointsPage } from '../pages/customer/points/points/points';
+import { PointsDetailPage } from '../pages/customer/points/points-detail/points-detail';
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -74,8 +73,6 @@ export const PAGES_DECLARATIONS = [
     ItemDetailSendOrderComponent,
     GarnishSendOrderComponent,
     AdditionsSendOrderComponent,
-    PaymentsHistoryPage,
-    PaymentsHistoryDetailPage,
     Menu,
     ChangeTablePage,
     AlphanumericCodeChangePage,
@@ -91,5 +88,6 @@ export const PAGES_DECLARATIONS = [
     ModalSchedule,
     CustomerOrderConfirm,
     RewardListComponent,
-    PointsPage
+    PointsPage,
+    PointsDetailPage
 ];

@@ -30,7 +30,7 @@
                     <h4 mat-line>{{itemNameCrop(item.item_name)}} ({{'POINTS_DETAIL.REWARD' | translate}})</h4>
                     <span class="app-flex-filler"></span>
                     <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                        <span class="price">{{item.price}}{{orderHistory.currency}}</span>
+                        <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
                     </p>
                 </mat-list-item>
                 <mat-list-item *ngIf="!item.is_reward">
@@ -38,7 +38,7 @@
                     <h4 mat-line>{{itemNameCrop(item.item_name)}}</h4>
                     <span class="app-flex-filler"></span>
                     <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                        <span class="price">{{item.price}}{{orderHistory.currency}}</span>
+                        <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
                     </p>
                 </mat-list-item>
                 <mat-divider></mat-divider>
@@ -49,7 +49,7 @@
                             <h4 mat-line>{{itemNameCrop(gf.garnish_food_name)}}</h4>
                             <span class="app-flex-filler"></span>
                             <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                                <span class="price">{{gf.price}} {{orderHistory.currency}}</span>
+                                <span class="price">{{gf.price * item.quantity}} {{orderHistory.currency}}</span>
                             </p>
                         </mat-list-item>
                         <mat-divider></mat-divider>
@@ -62,7 +62,7 @@
                             <h4 mat-line>{{itemNameCrop(ad.addition_name)}}</h4>
                             <span class="app-flex-filler"></span>
                             <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                                <span class="price">{{ad.price}} {{orderHistory.currency}}</span>
+                                <span class="price">{{ad.price * item.quantity}} {{orderHistory.currency}}</span>
                             </p>
                         </mat-list-item>
                         <mat-divider></mat-divider>
@@ -76,7 +76,7 @@
                     <h4 mat-line>{{itemNameCrop(addition.addition_name)}}</h4>
                     <span class="app-flex-filler"></span>
                     <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{addition.quantity}}
-                        <span class="price">{{addition.price}} {{orderHistory.currency}}</span>
+                        <span class="price">{{addition.price * addition.quantity}} {{orderHistory.currency}}</span>
                     </p>
                 </mat-list-item>
                 <mat-divider></mat-divider>

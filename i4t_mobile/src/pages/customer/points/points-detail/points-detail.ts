@@ -18,6 +18,7 @@ export class PointsDetailPage implements OnInit, OnDestroy {
 
     private _orderHistories: Observable<OrderHistory[]>;
     private _establishment_id: string;
+    private _orderIndex: number = 0;
 
     /**
      * PointsDetailPage constructor
@@ -55,6 +56,18 @@ export class PointsDetailPage implements OnInit, OnDestroy {
      */
     removeSubscriptions(): void {
         if (this._orderHistorySub) { this._orderHistorySub.unsubscribe(); }
+    }
+
+    /**
+     * Show order detail
+     * @param {number} _index
+     */
+    showDetail(_index:number) {
+        if (this._orderIndex === _index ) {
+            this._orderIndex = -1;
+        } else {
+            this._orderIndex = _index;
+        }
     }
 
     /**
