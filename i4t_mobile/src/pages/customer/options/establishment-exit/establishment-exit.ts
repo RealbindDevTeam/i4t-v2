@@ -69,14 +69,17 @@ export class EstablishmentExitPage implements OnInit, OnDestroy {
             this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe();
 
             this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED']).subscribe(() => {
-                    this._ngZone.run(() => {
-                        this._orders = Orders.find({}).zone();
-                    });
+                this._ngZone.run(() => {
+                    this._orders = Orders.find({}).zone();
                 });
+            });
             this._waiterCallDetSub = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).subscribe();
         }
     }
 
+    /**
+     * Allow user exit from establishment
+     */
     exitEstablishment() {
         let userDetailId = UserDetails.findOne({ user_id: Meteor.userId() })._id;
 
@@ -107,17 +110,36 @@ export class EstablishmentExitPage implements OnInit, OnDestroy {
                     }, {
                         text: this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.YES_CONFIRM'),
                         handler: () => {
-                            MeteorObservable.call('establishmentExit', Meteor.userId(), this._res_code, this._table_code).subscribe(() => {
-                                let _lMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.LEAVE_RESTAURANT_MSG');
+                            this.executeEstablishmentExit().then((result) => {
+                                if (result) {
+                                    let _lMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.LEAVE_RESTAURANT_MSG');
+                                    let toast = this._toastCtrl.create({
+                                        message: _lMessage,
+                                        duration: 1500,
+                                        position: 'middle'
+                                    });
+                                    toast.onDidDismiss(() => { });
+                                    toast.present();
+                                    this._navCtrl.setRoot(HomePage);
+                                } else {
+                                    let _lErrorMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.ERROR_LEAVE_RESTAURANT');
+                                    let toast = this._toastCtrl.create({
+                                        message: _lErrorMessage,
+                                        duration: 1500,
+                                        position: 'middle'
+                                    });
+                                    toast.onDidDismiss(() => { });
+                                    toast.present();
+                                }
+                            }).catch((err) => {
+                                let _lErrorMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.ERROR_LEAVE_RESTAURANT');
                                 let toast = this._toastCtrl.create({
-                                    message: _lMessage,
+                                    message: _lErrorMessage,
                                     duration: 1500,
                                     position: 'middle'
                                 });
-                                toast.onDidDismiss(() => {
-                                });
+                                toast.onDidDismiss(() => { });
                                 toast.present();
-                                this._navCtrl.setRoot(HomePage);
                             });
                         }
                     }
@@ -136,17 +158,37 @@ export class EstablishmentExitPage implements OnInit, OnDestroy {
                     }, {
                         text: this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.YES_CONFIRM'),
                         handler: () => {
-                            MeteorObservable.call('establishmentExitWithSelectedOrders', Meteor.userId(), this._res_code, this._table_code).subscribe(() => {
-                                let _lMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.LEAVE_RESTAURANT_MSG');
+                            this.executeEstablishmentExitWithSelectedOrders().then((result) => {
+                                if (result) {
+                                    let _lMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.LEAVE_RESTAURANT_MSG');
+                                    let toast = this._toastCtrl.create({
+                                        message: _lMessage,
+                                        duration: 1500,
+                                        position: 'middle'
+                                    });
+                                    toast.onDidDismiss(() => {
+                                    });
+                                    toast.present();
+                                    this._navCtrl.setRoot(HomePage);
+                                } else {
+                                    let _lErrorMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.ERROR_LEAVE_RESTAURANT');
+                                    let toast = this._toastCtrl.create({
+                                        message: _lErrorMessage,
+                                        duration: 1500,
+                                        position: 'middle'
+                                    });
+                                    toast.onDidDismiss(() => { });
+                                    toast.present();
+                                }
+                            }).catch((err) => {
+                                let _lErrorMessage: string = this.itemNameTraduction('MOBILE.RESTAURANT_EXIT.ERROR_LEAVE_RESTAURANT');
                                 let toast = this._toastCtrl.create({
-                                    message: _lMessage,
+                                    message: _lErrorMessage,
                                     duration: 1500,
                                     position: 'middle'
                                 });
-                                toast.onDidDismiss(() => {
-                                });
+                                toast.onDidDismiss(() => { });
                                 toast.present();
-                                this._navCtrl.setRoot(HomePage);
                             });
                         }
                     }
@@ -187,6 +229,44 @@ export class EstablishmentExitPage implements OnInit, OnDestroy {
             });
             confirm.present();
         }
+    }
+
+    /**
+     * Promise to validate user exit
+     */
+    executeEstablishmentExit(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            try {
+                MeteorObservable.call('establishmentExit', Meteor.userId(), this._res_code, this._table_code).subscribe((result) => {
+                    resolve(true);
+                }, (error) => {
+                    if (error.error === '300') {
+                        resolve(false);
+                    }
+                });
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    /**
+     * Promise to validate user exit with orders in selecting status
+     */
+    executeEstablishmentExitWithSelectedOrders(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            try {
+                MeteorObservable.call('establishmentExitWithSelectedOrders', Meteor.userId(), this._res_code, this._table_code).subscribe((result) => {
+                    resolve(true);
+                }, (error) => {
+                    if (error.error === '300') {
+                        resolve(false);
+                    }
+                });
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
     itemNameTraduction(itemName: string): string {

@@ -10,6 +10,15 @@
 </ion-header>
 
 <ion-content text-wrap>
+    <div *ngIf="!_thereIsUser" pading>
+        <div class="img">
+            <img src="assets/img/delivery-of-item.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{'MOBILE.ORDERS.TITTLE_CONTENT' | translate}}</h1>
+            <p>{{'MOBILE.ORDERS.CONTENT' | translate}}</p>
+        </div>
+    </div>
     <div *ngIf="_thereIsUser">
         <ion-list style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" *ngFor="let establishment of _establishments | async;">
             <button ion-item (click)="viewEstablishmentProfile(establishment)" style="background-image: url(assets/img/background_waiter.png);"
@@ -36,7 +45,8 @@
                             <ion-option value="other">{{'MOBILE.ORDERS.OTHER_ORDERS' | translate}}</ion-option>
                         </ion-select>
                     </ion-item>
-                    <button *ngIf="_showReedemPoints" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;" (click)="goToRewardList()">{{'MOBILE.ORDERS.REDEEM_POINTS' | translate}}
+                    <button *ngIf="_showReedemPoints" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;"
+                        (click)="goToRewardList()">{{'MOBILE.ORDERS.REDEEM_POINTS' | translate}}
                         <ion-icon name="trophy"></ion-icon>
                     </button>
                 </ion-list>
@@ -204,16 +214,6 @@
             </div>
         </div>
         <div style="height: 48px"></div>
-    </div>
-
-    <div *ngIf="!_thereIsUser" pading>
-        <div class="img">
-            <img src="assets/img/delivery-of-item.png">
-        </div>
-        <div class="content" style="text-align: center">
-            <h1>{{'MOBILE.ORDERS.TITTLE_CONTENT' | translate}}</h1>
-            <p>{{'MOBILE.ORDERS.CONTENT' | translate}}</p>
-        </div>
     </div>
 </ion-content>
 
