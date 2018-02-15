@@ -8,7 +8,8 @@ import { Device } from '@ionic-native/device';
 import { InitialComponent } from '../pages/auth/initial/initial';
 import { HomeMenu } from '../pages/customer/home-menu/home-menu';
 import { Menu } from '../pages/waiter/menu/menu';
-import { UserLogin  } from 'i4t_web/both/models/auth/user-login.model';
+import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
+import { HomePage } from '../pages/customer/home/home';
 
 @Component({
   templateUrl: 'app.html'
@@ -43,7 +44,7 @@ export class MyApp {
       MeteorObservable.call('getRole').subscribe((role) => {
         if (role == "400") {
           this.insertUserInfo();
-          this.rootPage = HomeMenu;
+          this.rootPage = HomePage;
         } else if (role == "200") {
           MeteorObservable.call('validateEstablishmentIsActive').subscribe((_restaruantActive) => {
             if (_restaruantActive) {

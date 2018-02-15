@@ -443,7 +443,11 @@
                 "1": "1. Ordena lo que deseas",
                 "2": "2. Revisa lo que cuesta tu orden",
                 "3": "3. Solicita un mesero"
-            }
+            },
+            "HEADER_TITLE": "Bienvenido a Iurest!, sigue adelante y disfruta ordenando",
+            "TITLE_LIST_BTN": "Mira nuestros aliados",
+            "TITLE_ORDER_BTN": "Ordena en un restaurante",
+            "TITLE_POINTS_BTN": "Revisa tus puntos acumulados"
         },
         "HOME-MENU": {
             "HOME": "Inicio",
