@@ -53,15 +53,13 @@
               <p *ngIf="!getItemAvailability()" class="item-paragraph-custom" style="margin-top: 15px;  color: #000">
                 {{'MOBILE.SECTIONS.ITEM_UNAVAILABLE' | translate}}
               </p>
-              <button [disabled]="!showActionsFooter()" ion-button clear block icon-left class="button-secundary btn-size-custom" *ngIf="item.observations && getItemAvailability() && (itemId.observations == '') && !itemId.is_reward"
+              <button [disabled]="!showActionsFooter()" ion-button outline block icon-left class="btn-size-custom" *ngIf="item.observations && getItemAvailability() && (itemId.observations == '') && !itemId.is_reward"
                 (click)="presentModal()" style="text-transform: inherit; margin-bottom: 15px">
-                <ion-icon name="chatboxes" *ngIf="_observations != null"></ion-icon>
                 {{_observations != null ? _observations.substring(0, 20)+ '...': 'MOBILE.SECTIONS.OBSERVATIONS' | translate}}
               </button>
 
-              <button [disabled]="!showActionsFooter()" ion-button clear block icon-left class="button-secundary btn-size-custom" *ngIf="item.observations && getItemAvailability() && (itemId.observations != '') && !itemId.is_reward"
+              <button [disabled]="!showActionsFooter()" ion-button outline block icon-left class="btn-size-custom" *ngIf="item.observations && getItemAvailability() && (itemId.observations != '') && !itemId.is_reward"
                 (click)="presentModal(itemId.observations)" style="text-transform: inherit; margin-bottom: 15px">
-                <ion-icon name="chatboxes" *ngIf="_observations != null || (itemId.observations && _auxCounter == 0)"></ion-icon>
                 {{_observations != null ? _observations.substring(0, 20)+ '...': (_auxCounter == 0 ? ( itemId.observations ? itemId.observations.substring(0,
                 20) + '...' : 'MOBILE.SECTIONS.OBSERVATIONS' | translate ) : 'MOBILE.SECTIONS.OBSERVATIONS' | translate)}}
               </button>
