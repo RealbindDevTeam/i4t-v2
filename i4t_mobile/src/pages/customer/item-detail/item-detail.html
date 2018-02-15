@@ -48,10 +48,8 @@
         <p *ngIf="!getItemAvailability()" class="item-paragraph-custom" style="margin-top: 15px;  color: #000">
           {{'MOBILE.SECTIONS.ITEM_UNAVAILABLE' | translate}}
         </p>
-        <button ion-button clear block icon-left class="button-secundary btn-size-custom" *ngIf="item.observations && getItemAvailability()"
-          (click)="presentModal()" style="text-transform: inherit; margin-bottom: 15px">
-          <ion-icon name="chatboxes" *ngIf="_observations != ''"></ion-icon>
-          {{_observations != '' ? _observations.substring(0, 20)+ '...': 'MOBILE.SECTIONS.OBSERVATIONS' | translate}}
+        <button ion-button block outline class="btn-size-custom" *ngIf="item.observations && getItemAvailability()" (click)="presentModal()">
+          {{_observations != '' ? ' ' + _observations.substring(0, 20)+ '...': 'MOBILE.SECTIONS.OBSERVATIONS' | translate}}
         </button>
         <form [formGroup]="_newOrderForm" *ngIf="getItemAvailability()">
           <div *ngIf="item.garnishFood.length > 0">
