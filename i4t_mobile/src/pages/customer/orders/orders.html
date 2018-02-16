@@ -41,15 +41,13 @@
 
         <ion-card *ngIf="!_thereAreOrders">
             <ion-card-content>
-                <ion-list no-lines>
-                    <ion-item>
-                        <ion-thumbnail item-start>
-                            <img src="assets/img/item.png">
-                        </ion-thumbnail>
-                        <h2>{{'MOBILE.ORDERS.MSG_1' | translate}}</h2>
-                        <p>{{'MOBILE.ORDERS.NO_ORDERS' | translate}}</p>
-                    </ion-item>
-                </ion-list>
+                <!--ion-list no-lines>
+                    <ion-item-->
+                <img src="assets/img/item.png" class="item">
+                <h2>{{'MOBILE.ORDERS.MSG_1' | translate}}</h2>
+                <p>{{'MOBILE.ORDERS.NO_ORDERS' | translate}}</p>
+                <!--/ion-item>
+                </ion-list-->
                 <button ion-button small clear icon-right style="float: right" (click)="goToRewardList()">{{'MOBILE.ORDERS.REDEEM_POINTS' | translate}}
                     <ion-icon name="trophy"></ion-icon>
                 </button>
@@ -213,10 +211,6 @@
     </div>
 </ion-content>
 
-<ion-footer>
-    <ion-fab right bottom>
-        <button ion-fab class="fab" (click)="goToNewOrder()">
-            <ion-icon name="add"></ion-icon>
-        </button>
-    </ion-fab>
+<ion-footer padding>
+    <button ion-button block outline (click)="goToNewOrder()">{{'MOBILE.ORDERS.ADD_BUTTON' | translate}}</button>
 </ion-footer>

@@ -195,7 +195,8 @@
             "USR_ORDER_CONFIRMED": "Confirmaste tu orden! Un mesero la atendera!",
             "NO_USR_ORDER_CONFIRMED": "Orden confirmada",
             "WIN": "Ganas",
-            "AVAILABLE_POINTS": "Puntos Disponibles"
+            "AVAILABLE_POINTS": "Puntos Disponibles",
+            "ADD_BUTTON": "Agregar plato"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirma aquellas ordenes que otros usuarios desean pagar por ti.",
