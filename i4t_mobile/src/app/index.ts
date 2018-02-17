@@ -43,6 +43,8 @@ import { CustomerOrderConfirm } from "../pages/waiter/calls/customer-order-confi
 import { RewardListComponent } from '../pages/customer/orders/reward-list';
 import { PointsPage } from '../pages/customer/points/points/points';
 import { PointsDetailPage } from '../pages/customer/points/points-detail/points-detail';
+import { TabsPage } from '../pages/customer/tabs/tabs';
+import { OptionsPage } from '../pages/customer/options/options';
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -89,5 +91,7 @@ export const PAGES_DECLARATIONS = [
     CustomerOrderConfirm,
     RewardListComponent,
     PointsPage,
-    PointsDetailPage
+    PointsDetailPage,
+    TabsPage,
+    OptionsPage
 ];
