@@ -1,0 +1,24 @@
+<ion-header>
+    <ion-navbar no-border-bottom>
+        <ion-title>
+            Gana comiendo!
+        </ion-title>
+    </ion-navbar>
+
+    <ion-toolbar no-border-top>
+        <ion-segment [(ngModel)]="_option">
+            <ion-segment-button value="orders">
+                Ordenes
+            </ion-segment-button>
+            <ion-segment-button value="options">
+                Opciones
+            </ion-segment-button>
+        </ion-segment>
+    </ion-toolbar>
+</ion-header>
+<ion-content text-wrap>
+    <div [ngSwitch]="_option">
+        <page-orders *ngSwitchCase="'orders'"></page-orders>
+        <page-options *ngSwitchCase="'options'"></page-options>
+    </div>
+</ion-content>

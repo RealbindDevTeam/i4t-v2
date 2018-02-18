@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { TabsPage } from '../tabs/tabs';
+import { SegmentsPage } from '../segments/segments';
 
 @Component({
     templateUrl: 'home.html'
@@ -24,7 +24,7 @@ export class HomePage implements OnInit, OnDestroy {
      * Go to ordering in a establishment
      */
     goToOrderInEstablishment() {
-        this._navCtrl.push(TabsPage);
+        this._navCtrl.push(SegmentsPage);
     }
 
     /**
