@@ -154,7 +154,15 @@ export class OrdersPage implements OnInit, OnDestroy {
 
     validateUser(): void {
         let _user: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-        _user.current_establishment !== '' && _user.current_table !== '' ? this._thereIsUser = true : this._thereIsUser = false;
+        if (_user) {
+            if (_user.current_establishment !== '' && _user.current_table !== '') {
+                this._thereIsUser = true;
+            } else {
+                this._thereIsUser = false;
+            }
+        } else {
+            this._thereIsUser = false
+        }
     }
 
     /**
@@ -168,7 +176,7 @@ export class OrdersPage implements OnInit, OnDestroy {
             if (_lRewardPoints) {
                 if (_lRewardPoints.length > 0) {
                     let _lPoints: UserRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this._res_code)[0];
-                    if(_lPoints){
+                    if (_lPoints) {
                         this._userRewardPoints = _lPoints.points;
                     } else {
                         this._userRewardPoints = 0;

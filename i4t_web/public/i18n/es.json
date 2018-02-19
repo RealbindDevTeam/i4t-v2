@@ -1443,7 +1443,8 @@
         "ACCEPT": "Aceptar",
         "GENERAL_ERROR": "Se ha producido un error. Intenta nuevamente.",
         "ORDERS_CONFIRMED": "Tienes Ordenes Confirmadas!",
-        "ORDERS_CONFIRMED_MSG": "Informa a un mesero que saldras del establecimiento para que cancele tus órdenes"
+        "ORDERS_CONFIRMED_MSG": "Informa a un mesero que saldras del establecimiento para que cancele tus órdenes",
+        "ERROR_LEAVE_RESTAURANT": "Ha ocurrido un problema. Por favor intenta nuevamente"
     },
     "EXIT_TABLE_CONFIRM": {
         "CUSTOMER": "Cliente",

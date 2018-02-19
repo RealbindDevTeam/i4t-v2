@@ -146,7 +146,7 @@ if (Meteor.isServer) {
             let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _pUserId });
             let _lTableAmountPeople: number = Tables.findOne({ _id: _pCurrentTable }).amount_people;
             let _tablesUpdated: number = Tables.collection.update({ _id: _pCurrentTable }, { $set: { amount_people: _lTableAmountPeople - 1 } });
-            
+
             if (_tablesUpdated === 1) {
                 let _lTableAux: Table = Tables.findOne({ _id: _pCurrentTable });
                 if (_lTableAux.amount_people === 0 && _lTableAux.status === 'BUSY') {
@@ -154,7 +154,10 @@ if (Meteor.isServer) {
                 }
             }
 
-            UserDetails.update({ _id: _lUserDetail._id }, { $set: { current_establishment: '', current_table: '' } });
+            let _usersUpdated: number = UserDetails.collection.update({ _id: _lUserDetail._id }, { $set: { current_establishment: '', current_table: '' } });
+            if (_usersUpdated === 0) {
+                throw new Meteor.Error('300');
+            }
         },
 
 
@@ -195,7 +198,7 @@ if (Meteor.isServer) {
                 });
                 Orders.update({ _id: order._id }, { $set: { status: 'ORDER_STATUS.CANCELED', modification_date: new Date() } });
             });
-            
+
             let _lTableAmountPeople: number = Tables.findOne({ _id: _pCurrentTable }).amount_people;
             let _tablesUpdated: number = Tables.collection.update({ _id: _pCurrentTable }, { $set: { amount_people: _lTableAmountPeople - 1 } });
             if (_tablesUpdated === 1) {
@@ -204,7 +207,10 @@ if (Meteor.isServer) {
                     Tables.update({ _id: _pCurrentTable }, { $set: { status: 'FREE' } });
                 }
             }
-            UserDetails.update({ _id: _lUserDetail._id }, { $set: { current_establishment: '', current_table: '' } });
+            let _usersUpdated: number = UserDetails.collection.update({ _id: _lUserDetail._id }, { $set: { current_establishment: '', current_table: '' } });
+            if (_usersUpdated === 0) {
+                throw new Meteor.Error('300');
+            }
         }
     });
 }

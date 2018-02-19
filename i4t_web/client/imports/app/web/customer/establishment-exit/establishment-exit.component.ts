@@ -35,8 +35,9 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
     private _dialogRef: MatDialogRef<any>;
     private titleMsg: string;
     private btnAcceptLbl: string;
-    //private _showWaiterCard: boolean = false;
     private _loading: boolean = false;
+    private _establishment_code: string = '';
+    private _table_code: string = '';
 
     /**
      * EstablishmentExitComponent Constructor
@@ -70,10 +71,10 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
             });
         });
         this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED']).subscribe(() => {
-                this._ngZone.run(() => {
-                    this._orders = Orders.find({}).zone();
-                });
+            this._ngZone.run(() => {
+                this._orders = Orders.find({}).zone();
             });
+        });
         this._waiterCallDetSub = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', this._user).subscribe();
         this._tablesSub = MeteorObservable.subscribe('getTableByCurrentTable', this._user).subscribe(() => {
             this._ngZone.run(() => {
@@ -95,7 +96,9 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
     /**
      * Allow user exit establishment table
      */
-    exitEstablishmentTable( _pCurrentEstablishment: string, _pCurrentTable: string): void {
+    exitEstablishmentTable(_pCurrentEstablishment: string, _pCurrentTable: string): void {
+        this._establishment_code = _pCurrentEstablishment;
+        this._table_code = _pCurrentTable;
 
         let _lOrdersSelectingStatus: number = Orders.collection.find({
             creation_user: this._user, establishment_id: _pCurrentEstablishment, tableId: _pCurrentTable,
@@ -129,11 +132,21 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
                 if (result.success) {
                     this._loading = true;
                     setTimeout(() => {
-                        MeteorObservable.call('establishmentExit', this._user, _pCurrentEstablishment, _pCurrentTable).subscribe(() => {
+                        this.executeEstablishmentExit().then((result) => {
+                            if (result) {
+                                this._loading = false;
+                                let _lMessage: string = this.itemNameTraduction('EXIT_TABLE.LEAVE_RESTAURANT_MSG');
+                                this._snackBar.open(_lMessage, '', { duration: 2500 });
+                                this.goToOrders();
+                            } else {
+                                this._loading = false;
+                                let _lErrorMessage: string = this.itemNameTraduction('EXIT_TABLE.ERROR_LEAVE_RESTAURANT');
+                                this._snackBar.open(_lErrorMessage, '', { duration: 2500 });
+                            }
+                        }).catch((err) => {
                             this._loading = false;
-                            let _lMessage: string = this.itemNameTraduction('EXIT_TABLE.LEAVE_RESTAURANT_MSG');
-                            this._snackBar.open(_lMessage, '', { duration: 2500 });
-                            this.goToOrders();
+                            let _lErrorMessage: string = this.itemNameTraduction('EXIT_TABLE.ERROR_LEAVE_RESTAURANT');
+                            this._snackBar.open(_lErrorMessage, '', { duration: 2500 });
                         });
                     }, 1500);
                 }
@@ -155,11 +168,21 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
                 if (result.success) {
                     this._loading = true;
                     setTimeout(() => {
-                        MeteorObservable.call('establishmentExitWithSelectedOrders', this._user, _pCurrentEstablishment, _pCurrentTable).subscribe(() => {
+                        this.executeEstablishmentExitWithSelectedOrders().then((result) => {
+                            if (result) {
+                                this._loading = false;
+                                let _lMessage: string = this.itemNameTraduction('EXIT_TABLE.LEAVE_RESTAURANT_MSG');
+                                this._snackBar.open(_lMessage, '', { duration: 2500 });
+                                this.goToOrders();
+                            } else {
+                                this._loading = false;
+                                let _lErrorMessage: string = this.itemNameTraduction('EXIT_TABLE.ERROR_LEAVE_RESTAURANT');
+                                this._snackBar.open(_lErrorMessage, '', { duration: 2500 });
+                            }
+                        }).catch((err) => {
                             this._loading = false;
-                            let _lMessage: string = this.itemNameTraduction('EXIT_TABLE.LEAVE_RESTAURANT_MSG');
-                            this._snackBar.open(_lMessage, '', { duration: 2500 });
-                            this.goToOrders();
+                            let _lErrorMessage: string = this.itemNameTraduction('EXIT_TABLE.ERROR_LEAVE_RESTAURANT');
+                            this._snackBar.open(_lErrorMessage, '', { duration: 2500 });
                         });
                     }, 1500);
                 }
@@ -201,6 +224,44 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    /**
+     * Promise to validate user exit
+     */
+    executeEstablishmentExit(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            try {
+                MeteorObservable.call('establishmentExit', this._user, this._establishment_code, this._table_code).subscribe((result) => {
+                    resolve(true);
+                }, (error) => {
+                    if (error.error === '300') {
+                        resolve(false);
+                    }
+                });
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    /**
+     * Promise to validate user exit with orders in selecting status
+     */
+    executeEstablishmentExitWithSelectedOrders(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            try {
+                MeteorObservable.call('establishmentExitWithSelectedOrders', this._user, this._establishment_code, this._table_code).subscribe((result) => {
+                    resolve(true);
+                }, (error) => {
+                    if (error.error === '300') {
+                        resolve(false);
+                    }
+                });
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
     /**
