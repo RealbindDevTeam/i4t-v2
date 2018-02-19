@@ -1443,7 +1443,8 @@
         "ACCEPT": "Accept",
         "GENERAL_ERROR": "An error has occurred. Try again.",
         "ORDERS_CONFIRMED": "You have orders confirmed!",
-        "ORDERS_CONFIRMED_MSG": "Tell a waiter/waitress that you will leave the establishment to cancel your orders"
+        "ORDERS_CONFIRMED_MSG": "Tell a waiter/waitress that you will leave the establishment to cancel your orders",
+        "ERROR_LEAVE_RESTAURANT": "A problem has occurred. Please try again"
     },
     "EXIT_TABLE_CONFIRM": {
         "CUSTOMER": "Customer",

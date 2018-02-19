@@ -205,7 +205,20 @@
                                     <span *ngFor="let item of _items | async">
                                         <span *ngFor="let it of or.items">
                                             <ng-template [ngIf]="item._id === it.itemId">
-                                                <mat-list-item>
+                                                <mat-list-item *ngIf="it.is_reward">
+                                                        <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
+                                                        <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
+                                                        <h4 mat-line>{{item.name}}</h4>
+                                                        <h5 mat-line>{{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}</h5>
+                                                        <h5 mat-line>{{'ORDER_LIST.FREE' | translate}}</h5>
+                                                    <mat-chip-list mat-line>
+                                                        <mat-chip style="background-color: #fff;color: #ffbf00;padding: 0;">{{'ORDER_LIST.ITEM' | translate}}
+                                                            <mat-icon style="margin-left: 5px;">redeem</mat-icon>
+                                                        </mat-chip>
+                                                    </mat-chip-list>
+                                                    <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
+                                                </mat-list-item>
+                                                <mat-list-item *ngIf="!it.is_reward">
                                                     <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
                                                     <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
                                                     <h4 mat-line>{{item.name}}</h4>
@@ -215,7 +228,8 @@
                                                         <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
                                                     </h5>
                                                     <mat-chip-list mat-line *ngIf="it.reward_points > 0">
-                                                        <mat-chip class="cust-color-chip">{{it.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                        <mat-chip style="background-color: #fff;color: #4CAF50;padding: 0;">{{it.reward_points}} {{'ORDER_CREATE.POINTS'| translate}}
+                                                            <mat-icon style="margin-left: 5px;">star</mat-icon>
                                                         </mat-chip>
                                                     </mat-chip-list>
                                                     <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
