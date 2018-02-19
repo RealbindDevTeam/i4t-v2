@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, MenuController } from 'ionic-angular';
 import { OrdersPage } from '../orders/orders';
 
 @Component({
@@ -10,7 +10,8 @@ export class HomePage implements OnInit, OnDestroy {
     /**
      * HomePage constructor
      */
-    constructor(public _navCtrl: NavController) {
+    constructor(public _navCtrl: NavController, _menuCtrl: MenuController) {
+        _menuCtrl.enable(true);
     }
 
     /**
