@@ -4,6 +4,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { IonicStorageModule } from '@ionic/storage';
 import { MomentModule } from 'angular2-moment';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
@@ -66,7 +67,8 @@ export function createTranslateLoader(http: HttpClient) {
     Device,
     UserLanguageServiceProvider,
     GoogleMaps,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    InAppBrowser
   ]
 })
 export class AppModule { }

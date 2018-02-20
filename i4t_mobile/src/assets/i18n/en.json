@@ -515,6 +515,11 @@
             "POINTS": "Points",
             "YOU_REDEEMED": "You redeemed",
             "REWARD": "Reward"
+        },
+        "POPOVER_OPTIONS": {
+            "SETTINGS": "Settings",
+            "TERMS": "Terms and conditions",
+            "POLICIES": "Privacy policy"
         }
     },
     "CURRENCIES": {

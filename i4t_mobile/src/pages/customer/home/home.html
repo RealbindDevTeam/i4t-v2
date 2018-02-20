@@ -4,8 +4,8 @@
             <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
         </ion-title>
         <ion-buttons end>
-            <button ion-button>
-                <ion-icon name="menu"></ion-icon>
+            <button ion-button icon-only (click)="presentPopover($event)">
+                <ion-icon name="more"></ion-icon>
             </button>
         </ion-buttons>
     </ion-navbar>

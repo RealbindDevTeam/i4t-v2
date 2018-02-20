@@ -515,6 +515,11 @@
             "POINTS": "Puntos",
             "YOU_REDEEMED": "Redimiste",
             "REWARD": "Recompensa"
+        },
+        "POPOVER_OPTIONS": {
+            "SETTINGS": "Ajustes",
+            "TERMS": "Términos y condiciones",
+            "POLICIES": "Política de privacidad"
         }
     },
     "CURRENCIES": {
