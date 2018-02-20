@@ -45,16 +45,19 @@ export class PopoverOptionsPage implements OnInit, OnDestroy {
 
     goToSettings() {
         this._navCtrl.push(SettingsPage);
+        this.close();
     }
 
     goToTerms() {
         let param: Parameter = Parameters.findOne({ name: 'terms_url' });
         const browser = this.iab.create(param.value);
+        this.close();
     }
 
     goToPolicy() {
         let param: Parameter = Parameters.findOne({ name: 'policy_url' });
         const browser = this.iab.create(param.value);
+        this.close();
     }
 
     /**
