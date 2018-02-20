@@ -196,7 +196,12 @@
             "NO_USR_ORDER_CONFIRMED": "Order confirmed",
             "WIN": "You win",
             "AVAILABLE_POINTS": "Available points",
-            "ADD_BUTTON": "Add dishes"
+            "ADD_BUTTON": "Add dishes",
+            "IS_CONSUMING": "is consuming",
+            "YOU_ARE_TABLE": "You are at the table",
+            "YOU_HAVE": "You have",
+            "POINTS_TO_REDEEM": "Points to redeem",
+            "SHOW_REWARDS": "Show rewards"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
@@ -515,6 +520,22 @@
             "POINTS": "Points",
             "YOU_REDEEMED": "You redeemed",
             "REWARD": "Reward"
+        },
+        "POPOVER_OPTIONS": {
+            "SETTINGS": "Settings",
+            "TERMS": "Terms and conditions",
+            "POLICIES": "Privacy policy"
+        },
+        "SEGMENTS": {
+            "WIN_EATING": "Win eating!",
+            "ORDERS": "Orders",
+            "OPTIONS": "Options"
+        },
+        "OPTIONS": {
+            "WAITER_CALL": "Call a waiter to attend to your concerns",
+            "TABLE_CHANGE": "Take your orders to a new table",
+            "ESTABLISHMENT_EXIT": "Retire from the restaurant whenever you want",
+            "PENDING_CALL": "You have a pending call"
         }
     },
     "CURRENCIES": {

@@ -196,7 +196,12 @@
             "NO_USR_ORDER_CONFIRMED": "Orden confirmada",
             "WIN": "Ganas",
             "AVAILABLE_POINTS": "Puntos Disponibles",
-            "ADD_BUTTON": "Agregar plato"
+            "ADD_BUTTON": "Agregar plato",
+            "IS_CONSUMING": "está consumiendo",
+            "YOU_ARE_TABLE": "Estás en la mesa",
+            "YOU_HAVE": "Tienes",
+            "POINTS_TO_REDEEM": "Puntos para redimir",
+            "SHOW_REWARDS": "Mira las recompensas"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirma aquellas ordenes que otros usuarios desean pagar por ti.",
@@ -515,6 +520,22 @@
             "POINTS": "Puntos",
             "YOU_REDEEMED": "Redimiste",
             "REWARD": "Recompensa"
+        },
+        "POPOVER_OPTIONS": {
+            "SETTINGS": "Ajustes",
+            "TERMS": "Términos y condiciones",
+            "POLICIES": "Política de privacidad"
+        },
+        "SEGMENTS": {
+            "WIN_EATING": "Gana comiendo!",
+            "ORDERS": "Ordenes",
+            "OPTIONS": "Opciones"
+        },
+        "OPTIONS": {
+            "WAITER_CALL": "Llama a un mesero para que atienda tus inquietudes",
+            "TABLE_CHANGE": "Lleva tus órdenes a una nueva mesa",
+            "ESTABLISHMENT_EXIT": "Retirate del restaurante cuando lo desees",
+            "PENDING_CALL": "Tienes un llamado pendiente"
         }
     },
     "CURRENCIES": {

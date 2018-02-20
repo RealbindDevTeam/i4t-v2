@@ -2,13 +2,15 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { UserDetail } from 'i4t_web/both/models/auth/user-detail.model';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { WaiterCallPage } from '../waiter-call/waiter-call';
 import { ChangeTablePage } from '../options/table-change/table-change';
 import { EstablishmentExitPage } from './establishment-exit/establishment-exit';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
+import { WaiterCallDetail } from 'i4t_web/both/models/establishment/waiter-call-detail.model';
+import { WaiterCallDetails } from 'i4t_web/both/collections/establishment/waiter-call-detail.collection';
 
 @Component({
     selector: 'page-options',
@@ -17,7 +19,11 @@ import { UserLanguageServiceProvider } from '../../../providers/user-language-se
 export class OptionsPage implements OnInit, OnDestroy {
 
     private _userDetailSub: Subscription;
+    private _waiterCallDetailSub: Subscription;
+
+    private _waiterCallsDetails: Observable<WaiterCallDetail[]>;
     private _userDetail: UserDetail;
+    private _showWaiterAlert: boolean = false;
 
     /**
      * OptionsPage constructor
@@ -52,6 +58,13 @@ export class OptionsPage implements OnInit, OnDestroy {
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
             });
         });
+        this._waiterCallDetailSub = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).subscribe(() => {
+            this._ngZone.run(() => {
+                this._waiterCallsDetails = WaiterCallDetails.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status: { $in: ["waiting", "completed"] } }).zone();
+                this.countWaiterCalls();
+                this._waiterCallsDetails.subscribe(() => { this.countWaiterCalls(); });
+            });
+        });
     }
 
     /**
@@ -59,6 +72,15 @@ export class OptionsPage implements OnInit, OnDestroy {
    */
     removeSubscriptions() {
         if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
+        if (this._waiterCallDetailSub) { this._waiterCallDetailSub.unsubscribe(); }
+    }
+
+    /**		
+    * Count Waiter Calls		
+    */
+    countWaiterCalls(): void {
+        let _lWaiterCalls: number = WaiterCallDetails.collection.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status: { $in: ["waiting", "completed"] } }).count();
+        _lWaiterCalls > 0 ? this._showWaiterAlert = true : this._showWaiterAlert = false;
     }
 
     /**

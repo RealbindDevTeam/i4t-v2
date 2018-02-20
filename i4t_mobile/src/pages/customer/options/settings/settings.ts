@@ -24,7 +24,6 @@ export class SettingsPage implements OnInit, OnDestroy {
   private _userSubscription       : Subscription;
   private _userDetailSubscription : Subscription;
   private _languagesSubscription  : Subscription;
-  private _userImageSubscription  : Subscription;
   private _userForm               : FormGroup = new FormGroup({});
 
   private _disabled     : boolean
@@ -87,7 +86,6 @@ export class SettingsPage implements OnInit, OnDestroy {
     this.removeSubscriptions();
     
     this._userSubscription = MeteorObservable.subscribe('getUserSettings').subscribe();
-    this._userImageSubscription = MeteorObservable.subscribe('getUserImages', Meteor.userId()).subscribe();
     
     this._languagesSubscription = MeteorObservable.subscribe('languages').subscribe(()=>{
       this._ngZone.run(() => {
@@ -238,7 +236,6 @@ export class SettingsPage implements OnInit, OnDestroy {
     if( this._userSubscription ){ this._userSubscription.unsubscribe(); }
     if( this._userDetailSubscription ){ this._userDetailSubscription.unsubscribe(); }
     if( this._languagesSubscription ){ this._languagesSubscription.unsubscribe(); }
-    if( this._userImageSubscription ){ this._userImageSubscription.unsubscribe(); }
   }
 
   /**

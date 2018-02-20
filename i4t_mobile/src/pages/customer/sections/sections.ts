@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { NavController, NavParams, Content, Select } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,6 +17,7 @@ import { AdditionsPage } from './additions/additions';
 import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 import { Storage } from '@ionic/storage';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
+import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
 
 @Component({
   selector: 'page-sections',
@@ -25,6 +26,7 @@ import { UserLanguageServiceProvider } from '../../../providers/user-language-se
 export class SectionsPage implements OnInit, OnDestroy {
 
   @ViewChild(Content) content: Content;
+  @ViewChild('select1') select1: Select;
 
   private _userLang: string;
   private _sections;
@@ -125,8 +127,17 @@ export class SectionsPage implements OnInit, OnDestroy {
     }
   }
 
+  ionViewWillEnter() { //or whatever method you want to use
+  }
+
   goTop() {
-    this.content.scrollToTop();
+
+    this.select1.open();
+    //this.content.scrollToTop();
+    setTimeout(() => {
+      
+    }, 150);
+
   }
 
   goToDetail(_itemId) {
@@ -140,6 +151,14 @@ export class SectionsPage implements OnInit, OnDestroy {
 
   goToAddAdditions() {
     this._navCtrl.push(AdditionsPage, { res_id: this._res_code, table_id: this._table_code });
+  }
+
+  /**
+    * Go to establishment profile
+    * @param _pEstablishment 
+    */
+  viewEstablishmentProfile(_pEstablishment: any) {
+    this._navCtrl.push(EstablishmentProfilePage, { establishment: _pEstablishment });
   }
 
   ngOnDestroy() {

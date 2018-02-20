@@ -6,23 +6,24 @@
 
 <ion-content text-wrap>
   <ion-list *ngIf="_establishments" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">
-    <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
+    <button ion-item (click)="viewEstablishmentProfile(_establishments)" style="background-image: url(assets/img/background_waiter.png);"
+      class="img-header">
       <ion-thumbnail item-left>
         <img *ngIf="_establishments.image" src="{{ _establishments.image.url }}">
         <img *ngIf="!_establishments.image" src="assets/img/default-restaurant.png">
       </ion-thumbnail>
       <h2>{{_establishments.name}}</h2>
-      <h2 *ngIf="_table">{{'MOBILE.ORDERS.TABLE' | translate}}: {{_table._number}}</h2>
       <p>{{_establishments.address}}</p>
-    </ion-item>
+      <p *ngIf="_table">{{'MOBILE.ORDERS.YOU_ARE_TABLE' | translate}} # {{_table._number}}</p>
+    </button>
   </ion-list>
 
-  <ion-card>
+  <ion-card [hidden]="true">
     <ion-card-content>
       <ion-list style="margin-bottom: 0px" no-lines>
         <ion-item>
           <ion-label>{{'MOBILE.SECTIONS.SELECTION' | translate}}</ion-label>
-          <ion-select [(ngModel)]="selected" interface="action-sheet" (ionChange)="validateSection(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
+          <ion-select #select1 [(ngModel)]="selected" interface="action-sheet" (ionChange)="validateSection(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
             class="custom-select">
             <ion-option value="all" selected="true">{{'MOBILE.SECTIONS.ALL' | translate}}</ion-option>
             <ion-option value="recommended" selected="true">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-option>
@@ -43,7 +44,6 @@
     </ion-card>
   </div>
 
-  <ion-label margin-start *ngIf="(_items | async)?.length > 0">{{'MOBILE.SECTIONS.MENU' | translate}}</ion-label>
   <div *ngFor="let section of _sections | async">
     <div *ngFor="let item of _items | async">
       <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
@@ -57,7 +57,7 @@
   </div>
 
   <ion-item-group *ngFor="let category of _categories | async">
-    <ion-label margin-start>{{category.name}}</ion-label>
+    <h5 margin-start>{{category.name}}</h5>
     <div *ngFor="let item of _items | async">
       <ion-card *ngIf="(item.categoryId == category._id) && item.subcategoryId == ''" (click)="goToDetail(item._id)">
         <ion-card-content>
@@ -67,7 +67,7 @@
     </div>
     <div *ngFor="let subcategory of _subcategories | async">
       <div *ngIf="subcategory.category == category._id">
-        <ion-label margin-start>{{subcategory.name}}</ion-label>
+        <h6 margin-start>{{subcategory.name}}</h6>
         <div *ngFor="let item of _items | async">
           <ion-card *ngIf="item.subcategoryId == subcategory._id" (click)="goToDetail(item._id)">
             <ion-card-content>
@@ -83,7 +83,7 @@
 <ion-footer>
   <ion-fab right bottom>
     <button style="bottom: 0px" ion-fab color="light" mini (click)="goTop()">
-      <ion-icon name="arrow-up"></ion-icon>
+      <ion-icon name="menu"></ion-icon>
     </button>
   </ion-fab>
 </ion-footer>

@@ -1,16 +1,31 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, PopoverController } from 'ionic-angular';
 import { SegmentsPage } from '../segments/segments';
+import { PopoverOptionsPage } from './popover-options/popover-options';
 
 @Component({
     templateUrl: 'home.html'
 })
 export class HomePage implements OnInit, OnDestroy {
+    
 
     /**
      * HomePage constructor
      */
-    constructor(public _navCtrl: NavController) {
+    constructor(public _navCtrl: NavController, public popoverCtrl: PopoverController) {
+    }
+
+    /**
+    * ngOnInit implementation
+    */
+    ngOnInit() {
+    }
+
+    presentPopover(myEvent) {
+        let popover = this.popoverCtrl.create(PopoverOptionsPage);
+        popover.present({
+            ev: myEvent
+        });
     }
 
     /**
@@ -32,12 +47,6 @@ export class HomePage implements OnInit, OnDestroy {
      */
     goToMyAccumulatedPoints() {
 
-    }
-
-    /**
-     * ngOnInit implementation
-     */
-    ngOnInit() {
     }
 
     /**
