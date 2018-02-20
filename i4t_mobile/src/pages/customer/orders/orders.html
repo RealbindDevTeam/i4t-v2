@@ -16,25 +16,18 @@
                 <img *ngIf="!establishment.image" src="assets/img/default-restaurant.png">
             </ion-thumbnail>
             <h2>{{establishment.name}}</h2>
-            <h2 *ngIf="_table">{{'MOBILE.ORDERS.TABLE' | translate}}: {{_table._number}}</h2>
-            <p>{{establishment.address}}</p>
-            <p style="color: #4CAF50;">{{_userRewardPoints}} {{'MOBILE.ORDERS.AVAILABLE_POINTS' | translate}}</p>
+            <p *ngIf="_table">{{'MOBILE.ORDERS.YOU_ARE_TABLE' | translate}} # {{_table._number}}</p>
         </button>
     </ion-list>
     <ion-card *ngIf="_thereAreOrders">
         <ion-card-content>
             <ion-list style="margin-bottom: 0px" no-lines>
-                <!--ion-item>
-                    <ion-label>{{'MOBILE.SECTIONS.SELECTION' | translate}}</ion-label>
-                    <ion-select [(ngModel)]="selected" interface="action-sheet" (ionChange)="filterOrders(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
-                        class="custom-select">
-                        <ion-option value="all" selected="true">{{'MOBILE.ORDERS.ALL_ORDERS' | translate}}</ion-option>
-                        <ion-option value="me">{{'MOBILE.ORDERS.MY_ORDERS' | translate}}</ion-option>
-                        <ion-option value="other">{{'MOBILE.ORDERS.OTHER_ORDERS' | translate}}</ion-option>
-                    </ion-select>
-                </ion-item-->
-                <button *ngIf="_showReedemPoints" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;"
-                    (click)="goToRewardList()">{{'MOBILE.ORDERS.REDEEM_POINTS' | translate}}
+                <button *ngIf="_userRewardPoints > 0" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;"
+                    (click)="goToRewardList()">{{'MOBILE.ORDERS.YOU_HAVE' | translate}} {{_userRewardPoints}} {{'MOBILE.ORDERS.POINTS_TO_REDEEM' | translate}}
+                    <ion-icon name="trophy"></ion-icon>
+                </button>
+                <button *ngIf="_userRewardPoints === 0" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;"
+                    (click)="goToRewardList()">{{'MOBILE.ORDERS.SHOW_REWARDS' | translate}}
                     <ion-icon name="trophy"></ion-icon>
                 </button>
             </ion-list>
@@ -62,16 +55,11 @@
                             <order-detail *ngIf="order" [order]="order" [isUser]="true" [currencyCode]="_currencyCode"></order-detail>
                         </button>
                     </ion-list>
-                    <div *ngIf="_orderIndex == i">
-                        <ion-row *ngIf="order?.status === 'ORDER_STATUS.SELECTING' && (order?.items?.length > 0 || order?.additions?.length > 0)"
-                            no-padding>
-                            <ion-col>
-                                <button ion-button small clear block text-left style="color: #5090ff" (click)="cancelOrder(order)">{{'MOBILE.ORDERS.CANCEL' | translate}}</button>
-                            </ion-col>
-                            <ion-col>
-                                <button ion-button small clear block text-right style="color: #5090ff" (click)="confirmOrder(order)">{{'MOBILE.ORDERS.CONFIRM' | translate}}</button>
-                            </ion-col>
-                        </ion-row>
+                    <div *ngIf="_orderCustomerIndex === i">
+                        <div style="text-align: center;" *ngIf="order?.status === 'ORDER_STATUS.SELECTING' && (order?.items?.length > 0 || order?.additions?.length > 0)">
+                            <button ion-button outline class="action" style="height: 25px;width: 120px;" (click)="cancelOrder(order)">{{'MOBILE.ORDERS.CANCEL' | translate}}</button>
+                            <button ion-button outline class="action" style="height: 25px;width: 120px;" (click)="confirmOrder(order)">{{'MOBILE.ORDERS.CONFIRM' | translate}}</button>
+                        </div>
                         <div *ngIf="order">
                             <div *ngFor="let itemId of order.items">
                                 <div class="item-divider-custom"></div>
@@ -134,11 +122,11 @@
             <ion-card>
                 <ion-card-content>
                     <ion-list no-lines style="margin: 0 -16px;">
-                        <button ion-item detail-none (click)="showDetail(i)">
+                        <button ion-item detail-none (click)="showOrderDetail(i)">
                             <order-detail [order]="order" [isUser]="false" [currencyCode]="_currencyCode"></order-detail>
                         </button>
                     </ion-list>
-                    <div *ngIf="_orderIndex == i">
+                    <div *ngIf="_orderOthersIndex === i">
                         <div *ngIf="order">
                             <div *ngFor="let itemId of order.items">
                                 <div class="item-divider-custom"></div>
@@ -150,10 +138,10 @@
                                     <p *ngIf="!itemId.is_reward" style="white-space: normal;">{{itemId.paymentItem}} {{_currencyCode}}</p>
                                     <p style="white-space: normal;" *ngIf="!getItemAvailability(itemId.itemId)" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
                                     <p style="white-space: normal;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{itemId.quantity}}</p>
-                                    <ion-badge *ngIf="itemId.reward_points > 0 && !itemId.is_reward" class="pts fn">{{itemId.reward_points}} pts
+                                    <ion-badge *ngIf="itemId.reward_points > 0 && !itemId.is_reward" style="background-color: #fff;color: #4CAF50;padding: 0;">{{itemId.reward_points}} pts
                                         <ion-icon name="star"></ion-icon>
                                     </ion-badge>
-                                    <ion-badge *ngIf="itemId.is_reward" class="pts fn">{{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}
+                                    <ion-badge *ngIf="itemId.is_reward" style="background-color: #fff;color: #ffbf00;padding: 0;">{{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}
                                         <ion-icon name="ribbon"></ion-icon>
                                     </ion-badge>
                                     <button *ngIf="order.creation_user === _currentUserId" ion-button icon-only clear item-right style="margin-right: 0px">
