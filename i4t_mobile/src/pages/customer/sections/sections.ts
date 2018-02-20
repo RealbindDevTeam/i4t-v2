@@ -17,6 +17,7 @@ import { AdditionsPage } from './additions/additions';
 import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 import { Storage } from '@ionic/storage';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
+import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
 
 @Component({
   selector: 'page-sections',
@@ -140,6 +141,14 @@ export class SectionsPage implements OnInit, OnDestroy {
 
   goToAddAdditions() {
     this._navCtrl.push(AdditionsPage, { res_id: this._res_code, table_id: this._table_code });
+  }
+
+  /**
+    * Go to establishment profile
+    * @param _pEstablishment 
+    */
+  viewEstablishmentProfile(_pEstablishment: any) {
+    this._navCtrl.push(EstablishmentProfilePage, { establishment: _pEstablishment });
   }
 
   ngOnDestroy() {

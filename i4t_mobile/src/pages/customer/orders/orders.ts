@@ -41,13 +41,16 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _currencySub: Subscription;
     private _rewardsSub: Subscription;
     private _rewardPointsSub: Subscription;
+    private _usersSub: Subscription;
+    private _otherUSerDetailSub: Subscription;
 
     private _userLang: string;
     private _table_code: string = "";
     private _res_code: string = "";
     private _statusArray: string[];
     private _currentUserId: string;
-    private _orderIndex: number = -1;
+    private _orderCustomerIndex: number = 1;
+    private _orderOthersIndex: number = -1;
     private selected: string = "";
     private _currencyCode: string = "";
     private _toastMsg: string;
@@ -68,7 +71,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _thereIsUser: boolean = true;
     private _thereAreOrders: boolean = true;
     private _showReedemPoints: boolean = true;
-    private _userRewardPoints: number;
+    private _userRewardPoints: number = 0;
 
     constructor(public _navCtrl: NavController,
         public _navParams: NavParams,
@@ -138,6 +141,9 @@ export class OrdersPage implements OnInit, OnDestroy {
 
                     this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).subscribe();
                 }
+
+                this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._userDetail.current_establishment, this._userDetail.current_table).subscribe();
+                this._otherUSerDetailSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._userDetail.current_establishment, this._userDetail.current_table).subscribe();
             });
         });
 
@@ -226,17 +232,27 @@ export class OrdersPage implements OnInit, OnDestroy {
     }
 
     showDetail(i) {
-        if (this._orderIndex == i) {
-            this._orderIndex = -1;
+        if (this._orderCustomerIndex == i) {
+            this._orderCustomerIndex = -1;
         } else {
-            this._orderIndex = i;
+            this._orderCustomerIndex = i;
         }
+        this._orderOthersIndex = -1;
+    }
+
+    showOrderDetail(i) {
+        if (this._orderOthersIndex == i) {
+            this._orderOthersIndex = -1;
+        } else {
+            this._orderOthersIndex = i;
+        }
+        this._orderCustomerIndex = -1;
     }
 
     ionViewDidLoad() {
     }
 
-    filterOrders(orders_selected) {
+    /*filterOrders(orders_selected) {
         if (orders_selected == 'all') {
             this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
             this._orderIndex = -1;
@@ -247,7 +263,7 @@ export class OrdersPage implements OnInit, OnDestroy {
             this._orderIndex = -1;
             this._orders = Orders.find({ creation_user: { $nin: [this._currentUserId] }, establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
         }
-    }
+    }*/
 
     itemNameTraduction(itemName: string): string {
         var wordTraduced: string;
@@ -314,7 +330,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                                     modification_date: new Date()
                                 }
                             });
-                            this._orderIndex = -1;
+                            this._orderCustomerIndex = -1;
 
                             this._toastMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CANCELED_MSG');
                             let toast = this.toastCtrl.create({
@@ -394,7 +410,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                                         alert(`Error: ${error}`);
                                     });
                                 }, 1500);
-                                this._orderIndex = -1;
+                                this._orderCustomerIndex = -1;
                             } else {
                                 alert(item_not);
                             }
@@ -539,5 +555,7 @@ export class OrdersPage implements OnInit, OnDestroy {
         if (this._additionsSub) { this._additionsSub.unsubscribe(); }
         if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
         if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
+        if (this._usersSub) { this._usersSub.unsubscribe(); }
+        if (this._otherUSerDetailSub) { this._otherUSerDetailSub.unsubscribe(); }
     }
 }
