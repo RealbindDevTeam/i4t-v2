@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { NavController, NavParams, Content, Select } from 'ionic-angular';
 import { Observable, Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ import { UserLanguageServiceProvider } from '../../../providers/user-language-se
 export class SectionsPage implements OnInit, OnDestroy {
 
   @ViewChild(Content) content: Content;
+  @ViewChild('select1') select1: Select;
 
   private _userLang: string;
   private _sections;
@@ -125,8 +126,17 @@ export class SectionsPage implements OnInit, OnDestroy {
     }
   }
 
+  ionViewWillEnter() { //or whatever method you want to use
+  }
+
   goTop() {
-    this.content.scrollToTop();
+
+    this.select1.open();
+    //this.content.scrollToTop();
+    setTimeout(() => {
+      
+    }, 150);
+
   }
 
   goToDetail(_itemId) {
