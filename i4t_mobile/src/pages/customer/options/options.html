@@ -5,7 +5,8 @@
                 <ion-thumbnail item-start>
                     <img src="assets/img/payment-pending.png">
                 </ion-thumbnail>
-                <h2>Llama a un mesero para que atienda tus inquietudes</h2>
+                <h2>{{'MOBILE.OPTIONS.WAITER_CALL' | translate}}</h2>
+                <p *ngIf="_showWaiterAlert" style="color: #Ef5350;">{{'MOBILE.OPTIONS.PENDING_CALL' | translate}}</p>
             </ion-item>
         </ion-card-content>
     </ion-card>
@@ -15,7 +16,7 @@
                 <ion-thumbnail item-end>
                     <img src="assets/img/change_table.png">
                 </ion-thumbnail>
-                <h2>Lleva tus ordenes a una nueva mesa</h2>
+                <h2>{{'MOBILE.OPTIONS.WAITER_CALL' | translate}}</h2>
             </ion-item>
         </ion-card-content>
     </ion-card>
@@ -25,7 +26,7 @@
                 <ion-thumbnail item-start>
                     <img src="assets/img/exit.png">
                 </ion-thumbnail>
-                <h2>Retirate del restaurante cuando lo desees</h2>
+                <h2>{{'MOBILE.OPTIONS.ESTABLISHMENT_EXIT' | translate}}</h2>
             </ion-item>
         </ion-card-content>
     </ion-card>
