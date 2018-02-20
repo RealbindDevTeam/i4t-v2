@@ -521,6 +521,11 @@
             "YOU_REDEEMED": "You redeemed",
             "REWARD": "Reward"
         },
+        "POPOVER_OPTIONS": {
+            "SETTINGS": "Settings",
+            "TERMS": "Terms and conditions",
+            "POLICIES": "Privacy policy"
+        },
         "SEGMENTS": {
             "WIN_EATING": "Win eating!",
             "ORDERS": "Orders",

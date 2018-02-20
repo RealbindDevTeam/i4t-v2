@@ -521,6 +521,11 @@
             "YOU_REDEEMED": "Redimiste",
             "REWARD": "Recompensa"
         },
+        "POPOVER_OPTIONS": {
+            "SETTINGS": "Ajustes",
+            "TERMS": "Términos y condiciones",
+            "POLICIES": "Política de privacidad"
+        },
         "SEGMENTS": {
             "WIN_EATING": "Gana comiendo!",
             "ORDERS": "Ordenes",
