@@ -15,6 +15,7 @@ import { Currencies } from 'i4t_web/both/collections/general/currency.collection
 import { RewardPoints } from 'i4t_web/both/collections/establishment/reward-point.collection';
 import { ItemEditPage } from '../../item-edit/item-edit';
 import { AdditionEditPage } from '../../addition-edit/addition-edit';
+import { SegmentsPage } from '../../segments/segments';
 
 @Component({
     selector: 'order-confirm',
@@ -265,10 +266,15 @@ export class OrderConfirmPage implements OnInit, OnDestroy {
                                 setTimeout(() => {
                                     MeteorObservable.call('findQueueByEstablishment', data).subscribe(() => {
                                         Orders.update({ _id: _order._id }, { $set: { status: 'ORDER_STATUS.CONFIRMED', modification_user: Meteor.userId(), modification_date: new Date() } });
-                                        const index = this._viewCtrl.index;
-                                        const index2 = this._viewCtrl.index - 1;
-                                        this._navCtrl.remove(index);
-                                        this._navCtrl.remove(index2);
+                                        this._navCtrl.push(SegmentsPage).then(() => {
+                                            const index = this._viewCtrl.index;
+                                            const index2 = this._viewCtrl.index - 1;
+                                            const index3 = this._viewCtrl.index - 2;
+                                            this._navCtrl.remove(index);
+                                            this._navCtrl.remove(index2);
+                                            this._navCtrl.remove(index3);
+                                        });
+
                                         loading.dismiss();
                                         this.presentToast();
                                     }, (error) => {
