@@ -57,6 +57,11 @@
                             <p *ngIf="item.description.length <= 50">{{item.description}}</p>
                             <mat-card-subtitle>{{showItemPrices(item.prices)}}</mat-card-subtitle>
                             <mat-card-subtitle>{{showItemTaxes(item.prices)}}</mat-card-subtitle>
+                            <mat-chip-list>
+                                <mat-chip class="cust-color-chip">{{item.reward_points}} {{'ORDER_CREATE.POINTS'
+                                    | translate}}
+                                </mat-chip>
+                            </mat-chip-list>
                         </section>
                         <img class="mdc-card-media-item" *ngIf="item.image" src="{{ item.image.url }}" alt="{{item.name}}">
                         <img class="mdc-card-media-item" *ngIf="!item.image" src="/images/default-plate.png" alt="{{item.name}}">
