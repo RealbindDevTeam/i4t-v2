@@ -59,3 +59,17 @@ Meteor.publish('garnishFoodByEstablishmentWork', function (_userId: string) {
         return;
     }
 });
+
+/**
+ * Meteor publication return garnish food with userId condition
+ * @param {string} _userId
+ */
+Meteor.publish('garnishFoodByCurrentEstablishment', function ( _userId : string ) {
+    check(_userId, String);
+    let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
+    if( _lUserDetail ){
+        return GarnishFoodCol.find({ 'establishments.establishment_id': { $in: [_lUserDetail.current_establishment] }, is_active: true });
+    } else {
+        return;
+    }
+});

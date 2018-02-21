@@ -18,6 +18,12 @@ import { Tables } from 'i4t_web/both/collections/establishment/table.collection'
 import { Storage } from '@ionic/storage';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
+import { Order } from 'i4t_web/both/models/establishment/order.model';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
+import { UserDetail, UserRewardPoints } from 'i4t_web/both/models/auth/user-detail.model';
+import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
+import { OrderConfirmPage } from '../orders/order-confirm/order-confirm';
+import { RewardListComponent } from '../orders/reward-list';
 
 @Component({
   selector: 'page-sections',
@@ -48,12 +54,20 @@ export class SectionsPage implements OnInit, OnDestroy {
   private _additionsSub: Subscription;
   private _table;
   private _tablesSub: Subscription;
+  private _userDetailSub: Subscription;
+  private _userDetails: Observable<UserDetail[]>;
+  private _orders: Observable<Order[]>;
+  private _ordersSub: Subscription;
 
+  private _userDetail: UserDetail;
   private _res_code: string = '';
   private _table_code: string = '';
   private selected: string;
   private _item_code: string;
   private _additionsShow: boolean = false;
+  private _statusArray = ['ORDER_STATUS.SELECTING'];
+  private _thereAreOrders: boolean = false;
+  private _userRewardPoints: number = 0;
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -105,6 +119,28 @@ export class SectionsPage implements OnInit, OnDestroy {
     this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).subscribe(() => {
       this._table = Tables.findOne({ _id: this._table_code });
     });
+
+    this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+      this._ngZone.run(() => {
+        this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
+        this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+        if (this._userDetail) {
+          this.verifyUserRewardPoints();
+          this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
+          this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
+            this._ngZone.run(() => {
+              this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).zone();
+              this.validateOrders();
+              this._orders.subscribe(() => { this.validateOrders(); });
+            });
+          });
+        }
+      });
+    });
+  }
+
+  validateOrders(): void {
+    Orders.collection.find({ creation_user: Meteor.userId(), establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).count() > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
   }
 
   validateSection(section_selected) {
@@ -127,6 +163,33 @@ export class SectionsPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+     * Verify user reward points
+     */
+  verifyUserRewardPoints(): void {
+    let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+    if (_lUserDetail) {
+      let _lRewardPoints: UserRewardPoints[] = _lUserDetail.reward_points;
+
+      if (_lRewardPoints) {
+        if (_lRewardPoints.length > 0) {
+          let _lPoints: UserRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this._res_code)[0];
+          if (_lPoints) {
+            this._userRewardPoints = _lPoints.points;
+          } else {
+            this._userRewardPoints = 0;
+          }
+        } else {
+          this._userRewardPoints = 0;
+        }
+      }
+    }
+  }
+
+  goToRewardList() {
+    this._navCtrl.push(RewardListComponent, { establishment: this._res_code });
+  }
+
   ionViewWillEnter() { //or whatever method you want to use
   }
 
@@ -135,7 +198,7 @@ export class SectionsPage implements OnInit, OnDestroy {
     this.select1.open();
     //this.content.scrollToTop();
     setTimeout(() => {
-      
+
     }, 150);
 
   }
@@ -161,6 +224,13 @@ export class SectionsPage implements OnInit, OnDestroy {
     this._navCtrl.push(EstablishmentProfilePage, { establishment: _pEstablishment });
   }
 
+  /**
+   * Go to confirm page 
+   */
+  viewConfirmPage() {
+    this._navCtrl.push(OrderConfirmPage);
+  }
+
   ngOnDestroy() {
     this.removeSubscriptions();
   }
@@ -178,5 +248,7 @@ export class SectionsPage implements OnInit, OnDestroy {
     if (this._itemSub) { this._itemSub.unsubscribe(); }
     if (this._additionsSub) { this._additionsSub.unsubscribe(); }
     if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+    if (this._ordersSub) { this._ordersSub.unsubscribe(); }
+    if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
   }
 }

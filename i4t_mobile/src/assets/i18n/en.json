@@ -348,7 +348,11 @@
             "TIME": "Cooking time:",
             "ADDITION": "Additions",
             "RECOMMENDED": "Recommended",
-            "GET_POINTS": "You get"
+            "GET_POINTS": "You get",
+            "CONFIRM_ORDER": "Confirm your order",
+            "FOOD_ACCOMPANIMENT": "Food accompaniment",
+            "ADDITION_LBL": "Addition",
+            "CONFIRM": "Confirma"
         },
         "ITEM_EDIT": {
             "MODIFY": "Modify",

@@ -19,20 +19,17 @@
             <p *ngIf="_table">{{'MOBILE.ORDERS.YOU_ARE_TABLE' | translate}} # {{_table._number}}</p>
         </button>
     </ion-list>
-    <ion-card *ngIf="_thereAreOrders">
-        <ion-card-content>
-            <ion-list style="margin-bottom: 0px" no-lines>
-                <button *ngIf="_userRewardPoints > 0" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;"
-                    (click)="goToRewardList()">{{'MOBILE.ORDERS.YOU_HAVE' | translate}} {{_userRewardPoints}} {{'MOBILE.ORDERS.POINTS_TO_REDEEM' | translate}}
-                    <ion-icon name="trophy"></ion-icon>
-                </button>
-                <button *ngIf="_userRewardPoints === 0" ion-button full icon-right outline style="float: right;color: #ffbf00;border-color: #ffbf00;"
-                    (click)="goToRewardList()">{{'MOBILE.ORDERS.SHOW_REWARDS' | translate}}
-                    <ion-icon name="trophy"></ion-icon>
-                </button>
-            </ion-list>
-        </ion-card-content>
-    </ion-card>
+
+    <div style="margin: 10px;">
+        <button *ngIf="_userRewardPoints > 0" ion-button block outline small style="color: #ffbf00;border-color: #ffbf00;;background-color: white;"
+            (click)="goToRewardList()">
+            <ion-icon name="trophy" style="margin-right: 6px;"></ion-icon>{{'MOBILE.ORDERS.YOU_HAVE' | translate}} {{_userRewardPoints}} {{'MOBILE.ORDERS.POINTS_TO_REDEEM' | translate}}
+        </button>
+        <button *ngIf="_userRewardPoints === 0" ion-button block outline small style="color: #ffbf00;border-color: #ffbf00;;background-color: white;"
+            (click)="goToRewardList()">
+            <ion-icon name="trophy" style="margin-right: 6px;"></ion-icon>{{'MOBILE.ORDERS.SHOW_REWARDS' | translate}}
+        </button>
+    </div>
 
     <ion-card *ngIf="!_thereAreOrders">
         <ion-card-content>
@@ -96,7 +93,7 @@
                                         <ion-thumbnail item-left>
                                             <img src="assets/img/default_addition.png">
                                         </ion-thumbnail>
-                                        <h2 style="white-space: normal;">{{getAdditionName(addition.additionId)}}</h2>
+                                        <h2 style="white-space: normal;">{{getAdditionName(addition.additionId)}} ({{'MOBILE.SECTIONS.ADDITION_LBL' | translate}})</h2>
                                         <p style="white-space: normal;">{{addition.paymentAddition}} {{_currencyCode}}</p>
                                         <p style="white-space: normal; margin-bottom: 11px;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{addition.quantity}}</p>
                                         <button *ngIf="order.creation_user === _currentUserId" ion-button icon-only clear item-right style="margin-right: 0px">
@@ -183,8 +180,7 @@
             </ion-card>
         </div>
     </div>
-    <div *ngIf="_thereAreOrders" style="height: 48px"></div>
 </div>
 <div style="margin: 10px;">
-    <button ion-button block outline (click)="goToNewOrder()">{{'MOBILE.ORDERS.ADD_BUTTON' | translate}}</button>
+    <button ion-button block outline small (click)="goToNewOrder()">{{'MOBILE.ORDERS.ADD_BUTTON' | translate}}</button>
 </div>
