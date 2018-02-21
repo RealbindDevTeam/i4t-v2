@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController, NavParams, PopoverController } from 'ionic-angular';
 import { SegmentsPage } from '../segments/segments';
+import { PointsPage } from '../points/points/points';
 import { PopoverOptionsPage } from './popover-options/popover-options';
 
 @Component({
     templateUrl: 'home.html'
 })
 export class HomePage implements OnInit, OnDestroy {
-    
+
 
     /**
      * HomePage constructor
@@ -46,7 +47,7 @@ export class HomePage implements OnInit, OnDestroy {
      * Function to go my acumulated points
      */
     goToMyAccumulatedPoints() {
-
+        this._navCtrl.push(PointsPage);
     }
 
     /**
