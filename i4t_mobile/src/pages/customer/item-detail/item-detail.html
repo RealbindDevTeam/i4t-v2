@@ -48,12 +48,12 @@
         <p *ngIf="!getItemAvailability()" class="item-paragraph-custom" style="margin-top: 15px;  color: #000">
           {{'MOBILE.SECTIONS.ITEM_UNAVAILABLE' | translate}}
         </p>
-        <button ion-button block outline class="btn-size-custom" *ngIf="item.observations && getItemAvailability()" (click)="presentModal()">
+        <button ion-button block outline class="btn-size-custom" style="text-transform: inherit; margin-bottom: 15px" *ngIf="item.observations && getItemAvailability()" (click)="presentModal()">
           {{_observations != '' ? ' ' + _observations.substring(0, 20)+ '...': 'MOBILE.SECTIONS.OBSERVATIONS' | translate}}
         </button>
         <form [formGroup]="_newOrderForm" *ngIf="getItemAvailability()">
           <div *ngIf="item.garnishFood.length > 0">
-            <h3 class="custom-padding">{{'MOBILE.SECTIONS.GARNISHES' | translate}}</h3>
+            <h3 class="custom-padding">{{'MOBILE.SECTIONS.FOOD_ACCOMPANIMENT' | translate}}</h3>
             <p>{{'MOBILE.SECTIONS.MAX_GARNISH' | translate}} {{item.garnishFoodQuantity}}</p>
             <div formGroupName="garnishFood">
               <div *ngFor="let itemGarnish of item.garnishFood">

@@ -66,7 +66,7 @@
 
               <form [formGroup]="_newOrderForm" *ngIf="!itemId.is_reward">
                 <div *ngIf="item.garnishFood.length > 0 && getItemAvailability()">
-                  <h3 class="custom-padding">{{'MOBILE.SECTIONS.GARNISHES' | translate}}</h3>
+                  <h3 class="custom-padding">{{'MOBILE.SECTIONS.FOOD_ACCOMPANIMENT' | translate}}</h3>
                   <p>{{'MOBILE.SECTIONS.MAX_GARNISH' | translate}} {{item.garnishFoodQuantity}}</p>
                   <div formGroupName="garnishFood">
                     <div *ngFor="let itemGarnish of item.garnishFood">

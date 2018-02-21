@@ -18,6 +18,11 @@ import { Tables } from 'i4t_web/both/collections/establishment/table.collection'
 import { Storage } from '@ionic/storage';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
+import { Order } from 'i4t_web/both/models/establishment/order.model';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
+import { UserDetail } from 'i4t_web/both/models/auth/user-detail.model';
+import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
+import { OrderConfirmPage } from '../orders/order-confirm/order-confirm';
 
 @Component({
   selector: 'page-sections',
@@ -48,12 +53,18 @@ export class SectionsPage implements OnInit, OnDestroy {
   private _additionsSub: Subscription;
   private _table;
   private _tablesSub: Subscription;
+  private _userDetailSub: Subscription;
+  private _orders: Observable<Order[]>;
+  private _ordersSub: Subscription;
 
+  private _userDetail: UserDetail;
   private _res_code: string = '';
   private _table_code: string = '';
   private selected: string;
   private _item_code: string;
   private _additionsShow: boolean = false;
+  private _statusArray = ['ORDER_STATUS.SELECTING'];
+  private _thereAreOrders: boolean = false;
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -105,6 +116,23 @@ export class SectionsPage implements OnInit, OnDestroy {
     this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).subscribe(() => {
       this._table = Tables.findOne({ _id: this._table_code });
     });
+
+    this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+      this._ngZone.run(() => {
+        this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
+          this._ngZone.run(() => {
+            this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).zone();
+            this.validateOrders();
+            this._orders.subscribe(() => { this.validateOrders(); });
+          });
+        });
+      });
+    });
+  }
+
+  validateOrders(): void {
+    Orders.collection.find({ creation_user: Meteor.userId(), establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).count() > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
   }
 
   validateSection(section_selected) {
@@ -135,7 +163,7 @@ export class SectionsPage implements OnInit, OnDestroy {
     this.select1.open();
     //this.content.scrollToTop();
     setTimeout(() => {
-      
+
     }, 150);
 
   }
@@ -161,6 +189,13 @@ export class SectionsPage implements OnInit, OnDestroy {
     this._navCtrl.push(EstablishmentProfilePage, { establishment: _pEstablishment });
   }
 
+  /**
+   * Go to confirm page 
+   */
+  viewConfirmPage() {
+    this._navCtrl.push(OrderConfirmPage);
+  }
+
   ngOnDestroy() {
     this.removeSubscriptions();
   }
@@ -178,5 +213,7 @@ export class SectionsPage implements OnInit, OnDestroy {
     if (this._itemSub) { this._itemSub.unsubscribe(); }
     if (this._additionsSub) { this._additionsSub.unsubscribe(); }
     if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+    if (this._ordersSub) { this._ordersSub.unsubscribe(); }
+    if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
   }
 }

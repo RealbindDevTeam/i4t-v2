@@ -35,6 +35,12 @@
     </ion-card-content>
   </ion-card>
 
+  <div *ngIf="_thereAreOrders" style="margin: 10px;">
+    <button ion-button block small outline style="color: darkorange;border-color: darkorange;background-color: white;" (click)="viewConfirmPage()">
+        <ion-icon name="checkmark" style="margin-right: 6px;"></ion-icon>{{'MOBILE.SECTIONS.CONFIRM_ORDER' | translate}}...
+    </button>
+  </div>
+  
   <ion-label margin-start *ngIf="(_itemsRecommended | async)?.length > 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-label>
   <div *ngFor="let item of _itemsRecommended | async">
     <ion-card (click)="goToDetail(item._id)">
@@ -82,7 +88,7 @@
 
 <ion-footer>
   <ion-fab right bottom>
-    <button style="bottom: 0px" ion-fab color="light" mini (click)="goTop()">
+    <button style="bottom: 0px;background-color: #ef5350;color: white;" ion-fab color="light" mini (click)="goTop()">
       <ion-icon name="menu"></ion-icon>
     </button>
   </ion-fab>
