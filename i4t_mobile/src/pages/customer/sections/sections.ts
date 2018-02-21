@@ -20,9 +20,10 @@ import { UserLanguageServiceProvider } from '../../../providers/user-language-se
 import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
 import { Order } from 'i4t_web/both/models/establishment/order.model';
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
-import { UserDetail } from 'i4t_web/both/models/auth/user-detail.model';
+import { UserDetail, UserRewardPoints } from 'i4t_web/both/models/auth/user-detail.model';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { OrderConfirmPage } from '../orders/order-confirm/order-confirm';
+import { RewardListComponent } from '../orders/reward-list';
 
 @Component({
   selector: 'page-sections',
@@ -54,6 +55,7 @@ export class SectionsPage implements OnInit, OnDestroy {
   private _table;
   private _tablesSub: Subscription;
   private _userDetailSub: Subscription;
+  private _userDetails: Observable<UserDetail[]>;
   private _orders: Observable<Order[]>;
   private _ordersSub: Subscription;
 
@@ -65,6 +67,7 @@ export class SectionsPage implements OnInit, OnDestroy {
   private _additionsShow: boolean = false;
   private _statusArray = ['ORDER_STATUS.SELECTING'];
   private _thereAreOrders: boolean = false;
+  private _userRewardPoints: number = 0;
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -119,14 +122,19 @@ export class SectionsPage implements OnInit, OnDestroy {
 
     this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
       this._ngZone.run(() => {
+        this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
         this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
-          this._ngZone.run(() => {
-            this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).zone();
-            this.validateOrders();
-            this._orders.subscribe(() => { this.validateOrders(); });
+        if (this._userDetail) {
+          this.verifyUserRewardPoints();
+          this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
+          this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
+            this._ngZone.run(() => {
+              this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).zone();
+              this.validateOrders();
+              this._orders.subscribe(() => { this.validateOrders(); });
+            });
           });
-        });
+        }
       });
     });
   }
@@ -153,6 +161,33 @@ export class SectionsPage implements OnInit, OnDestroy {
       this._categories = Categories.find({ section: section_selected });
       this._subcategories = Subcategories.find({});
     }
+  }
+
+  /**
+     * Verify user reward points
+     */
+  verifyUserRewardPoints(): void {
+    let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+    if (_lUserDetail) {
+      let _lRewardPoints: UserRewardPoints[] = _lUserDetail.reward_points;
+
+      if (_lRewardPoints) {
+        if (_lRewardPoints.length > 0) {
+          let _lPoints: UserRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this._res_code)[0];
+          if (_lPoints) {
+            this._userRewardPoints = _lPoints.points;
+          } else {
+            this._userRewardPoints = 0;
+          }
+        } else {
+          this._userRewardPoints = 0;
+        }
+      }
+    }
+  }
+
+  goToRewardList() {
+    this._navCtrl.push(RewardListComponent, { establishment: this._res_code });
   }
 
   ionViewWillEnter() { //or whatever method you want to use
