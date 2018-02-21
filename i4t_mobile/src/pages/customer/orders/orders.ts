@@ -252,19 +252,6 @@ export class OrdersPage implements OnInit, OnDestroy {
     ionViewDidLoad() {
     }
 
-    /*filterOrders(orders_selected) {
-        if (orders_selected == 'all') {
-            this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
-            this._orderIndex = -1;
-        } else if (orders_selected == 'me') {
-            this._orders = Orders.find({ creation_user: this._currentUserId, establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
-            this._orderIndex = -1;
-        } else if (orders_selected == 'other') {
-            this._orderIndex = -1;
-            this._orders = Orders.find({ creation_user: { $nin: [this._currentUserId] }, establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
-        }
-    }*/
-
     itemNameTraduction(itemName: string): string {
         var wordTraduced: string;
         this._translate.get(itemName).subscribe((res: string) => {

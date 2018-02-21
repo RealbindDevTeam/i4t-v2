@@ -46,6 +46,7 @@ import { PointsDetailPage } from '../pages/customer/points/points-detail/points-
 import { OptionsPage } from '../pages/customer/options/options';
 import { SegmentsPage } from '../pages/customer/segments/segments';
 import { PopoverOptionsPage } from '../pages/customer/home/popover-options/popover-options';
+import { OrderConfirmPage } from '../pages/customer/orders/order-confirm/order-confirm';
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -95,5 +96,6 @@ export const PAGES_DECLARATIONS = [
     PointsDetailPage,
     OptionsPage,
     SegmentsPage,
-    PopoverOptionsPage
+    PopoverOptionsPage,
+    OrderConfirmPage
 ];

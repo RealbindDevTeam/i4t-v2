@@ -155,8 +155,9 @@ if (Meteor.isServer) {
               } else {
                 let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _lOrder.establishment_id)[0];
                 if (_lPoints) {
+                  let _newPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(_lOrder.total_reward_points.toString());
                   UserDetails.update({ _id: _lConsumerDetail._id, 'reward_points.establishment_id': _lOrder.establishment_id },
-                    { $set: { 'reward_points.$.points': (_lPoints.points + _lOrder.total_reward_points) } });
+                    { $set: { 'reward_points.$.points': (_newPoints) } });
                 } else {
                   let _lUserRewardPoints: UserRewardPoints[] = [];
                   let _newIndex: number;
