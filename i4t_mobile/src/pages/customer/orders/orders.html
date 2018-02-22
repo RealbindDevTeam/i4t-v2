@@ -21,12 +21,10 @@
     </ion-list>
 
     <div style="margin: 10px;">
-        <button *ngIf="_userRewardPoints > 0" ion-button block outline small style="color: #ffbf00;border-color: #ffbf00;;background-color: white;"
-            (click)="goToRewardList()">
+        <button *ngIf="_userRewardPoints > 0" ion-button block outline (click)="goToRewardList()">
             <ion-icon name="trophy" style="margin-right: 6px;"></ion-icon>{{'MOBILE.ORDERS.YOU_HAVE' | translate}} {{_userRewardPoints}} {{'MOBILE.ORDERS.POINTS_TO_REDEEM' | translate}}
         </button>
-        <button *ngIf="_userRewardPoints === 0" ion-button block outline small style="color: #ffbf00;border-color: #ffbf00;;background-color: white;"
-            (click)="goToRewardList()">
+        <button *ngIf="_userRewardPoints === 0" ion-button block outline (click)="goToRewardList()">
             <ion-icon name="trophy" style="margin-right: 6px;"></ion-icon>{{'MOBILE.ORDERS.SHOW_REWARDS' | translate}}
         </button>
     </div>
@@ -179,5 +177,5 @@
     </div>
 </div>
 <div style="margin: 10px;">
-    <button ion-button block outline small (click)="goToNewOrder()">{{'MOBILE.ORDERS.ADD_BUTTON' | translate}}</button>
+    <button ion-button block outline (click)="goToNewOrder()">{{'MOBILE.ORDERS.ADD_BUTTON' | translate}}</button>
 </div>
