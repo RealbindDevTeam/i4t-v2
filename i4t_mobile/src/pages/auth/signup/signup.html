@@ -49,7 +49,7 @@
           <ion-icon name="gender"></ion-icon>
           {{'MOBILE.SIGNUP.GENDER' | translate}}
         </ion-label>
-        <ion-select formControlName="gender" [(ngModel)]="_selectedGender">
+        <ion-select formControlName="gender" [(ngModel)]="_selectedGender" style="color: white">
           <ion-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</ion-option>
         </ion-select>
       </ion-item>

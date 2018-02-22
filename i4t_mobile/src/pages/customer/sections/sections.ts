@@ -204,6 +204,7 @@ export class SectionsPage implements OnInit, OnDestroy {
   }
 
   goToDetail(_itemId) {
+    this.content.scrollToTop();
     this._navCtrl.push(ItemDetailPage, { item_id: _itemId, res_id: this._res_code, table_id: this._table_code });
   }
 
