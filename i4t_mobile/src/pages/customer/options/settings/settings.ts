@@ -206,21 +206,29 @@ export class SettingsPage implements OnInit, OnDestroy {
    * Return user image
    */
   getUsetImage(): string {
-    if (this._user.services && this._user.services.facebook) {
-      return "https://graph.facebook.com/" + this._user.services.facebook.id + "/picture/?type=large";
-    } else {
-      let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-      if (_lUserDetail) {
-        let _lUserDetailImage: UserDetailImage = _lUserDetail.image;
-        if (_lUserDetailImage) {
-          return _lUserDetailImage.url;
+    if (this._user) {
+      if (this._user.services) {
+        if (this._user.services.facebook) {
+          return "http://graph.facebook.com/" + this._user.services.facebook.id + "/picture/?type=large";
         } else {
-          return 'assets/img/user_default_image.png';
+          let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: this._user });
+          if (_lUserDetail) {
+            let _lUserDetailImage: UserDetailImage = _lUserDetail.image;
+            if (_lUserDetailImage) {
+              return _lUserDetailImage.url;
+            } else {
+              return 'assets/img/user_default_image.png';
+            }
+          }
+          else {
+            return 'assets/img/user_default_image.png';
+          }
         }
-      }
-      else {
+      } else {
         return 'assets/img/user_default_image.png';
       }
+    } else {
+      return 'assets/img/user_default_image.png';
     }
   }
 
