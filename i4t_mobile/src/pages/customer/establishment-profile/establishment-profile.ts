@@ -3,7 +3,7 @@ import { GoogleMaps, GoogleMap, GoogleMapsEvent, GoogleMapOptions, CameraPositio
 import { TranslateService } from '@ngx-translate/core';
 import { NavController, NavParams, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Country } from 'i4t_web/both/models/general/country.model';
 import { Countries } from 'i4t_web/both/collections/general/country.collection';
 import { City } from 'i4t_web/both/models/general/city.model';
@@ -26,6 +26,7 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
     private _citiesSubscription: Subscription;
     private _establishmentProfileSubscription: Subscription;
     private _paymentMethodsSubscription: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishmentsProfiles: Observable<EstablishmentProfile[]>;
     private _paymentMethods: Observable<PaymentMethod[]>;
@@ -59,33 +60,33 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSuscriptions();
-        this._establishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._establishmentParam._id).subscribe(() => {
+        this._establishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({ _id: this._establishmentParam._id }).zone();
                 this._establishments.subscribe(() => {
                     let establishment = Establishments.findOne({ _id: this._establishmentParam._id });
-                    this._paymentMethodsSubscription = MeteorObservable.subscribe('getPaymentMethodsByEstablishmentId', establishment._id).subscribe(() => {
+                    this._paymentMethodsSubscription = MeteorObservable.subscribe('getPaymentMethodsByEstablishmentId', establishment._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._paymentMethods = PaymentMethods.find({ _id: { $in: establishment.paymentMethods }, isActive: true }).zone();
                     });
                 });
             });
         });
 
-        this._countriesSubscription = MeteorObservable.subscribe('getCountryByEstablishmentId', this._establishmentParam._id).subscribe(() => {
+        this._countriesSubscription = MeteorObservable.subscribe('getCountryByEstablishmentId', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCountry: Country = Countries.findOne({ _id: this._establishmentParam.countryId });
                 this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
             });
         });
 
-        this._citiesSubscription = MeteorObservable.subscribe('getCityByEstablishmentId', this._establishmentParam._id).subscribe(() => {
+        this._citiesSubscription = MeteorObservable.subscribe('getCityByEstablishmentId', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCity: City = Cities.findOne({ _id: this._establishmentParam.cityId });
                 this._establishmentCity = this.itemNameTraduction(_lCity.name);
             });
         });
 
-        this._establishmentProfileSubscription = MeteorObservable.subscribe('getEstablishmentProfile', this._establishmentParam._id).subscribe(() => {
+        this._establishmentProfileSubscription = MeteorObservable.subscribe('getEstablishmentProfile', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishmentsProfiles = EstablishmentsProfile.find({ establishment_id: this._establishmentParam._id }).zone();
                 this._establishmentProfile = EstablishmentsProfile.findOne({ establishment_id: this._establishmentParam._id });
@@ -171,6 +172,7 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
      * ngOndestroy implementation
      */
     ngOnDestroy() {
-        this.removeSuscriptions();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }

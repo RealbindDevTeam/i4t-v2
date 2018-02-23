@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { AlertController, NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageServiceProvider } from '../../../../../providers/user-language-service/user-language-service';
@@ -17,6 +17,8 @@ export class AlphanumericCodeChangePage {
 
     private _ordersForm: FormGroup;
     private _tablesSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
+
     private _res_code: string = '';
     private _table_code: string = '';
     private _table;
@@ -50,7 +52,7 @@ export class AlphanumericCodeChangePage {
             qrCode: new FormControl('', [Validators.required, Validators.minLength(6)])
         });
         if (this._res_code !== '' && this._table_code !== '') {
-            this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).subscribe(() => {
+            this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
                 this._ngZone.run(() => {
                     this._table = Tables.findOne({ _id: this._table_code });
                 })
@@ -128,6 +130,7 @@ export class AlphanumericCodeChangePage {
     * Remove all subscriptions
     */
     removeSubscriptions() {
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }

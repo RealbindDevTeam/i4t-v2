@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LoadingController, NavController, NavParams } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { WaiterCallDetails } from 'i4t_web/both/collections/establishment/waiter-call-detail.collection';
@@ -16,6 +16,7 @@ export class WaiterCallPage implements OnInit, OnDestroy {
   private _userDetailSubscription: Subscription;
   private _waiterCallDetailSubscription: Subscription;
   private _waitersSubscription: Subscription;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   private _userDetail: any;
   private _userDetails: any;
@@ -46,7 +47,7 @@ export class WaiterCallPage implements OnInit, OnDestroy {
   ngOnInit() {
     this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
-    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       MeteorObservable.autorun().subscribe(() => {
         this._userDetails = UserDetails.find({ user_id: Meteor.userId() });
         this._userDetail = UserDetails.collection.find({ user_id: Meteor.userId() }).fetch()[0];
@@ -60,11 +61,11 @@ export class WaiterCallPage implements OnInit, OnDestroy {
       });
     });
 
-    this._waitersSubscription = MeteorObservable.subscribe('getWaitersByCurrentEstablishment', Meteor.userId()).subscribe(() => {
+    this._waitersSubscription = MeteorObservable.subscribe('getWaitersByCurrentEstablishment', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._waiters = UserDetails.find({ role_id: '200' });
     });
 
-    this._waiterCallDetailSubscription = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).subscribe(() => {
+    this._waiterCallDetailSubscription = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       MeteorObservable.autorun().subscribe(() => {
         if (this._userEstablishment && this._userDetail) {
           this._countDetails = WaiterCallDetails.collection.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status: { $in: ["waiting", "completed"] } }).count();
@@ -200,8 +201,7 @@ export class WaiterCallPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this._waiterCallDetailSubscription) { this._waiterCallDetailSubscription.unsubscribe(); }
-    if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-    if (this._waitersSubscription) { this._waitersSubscription.unsubscribe(); }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

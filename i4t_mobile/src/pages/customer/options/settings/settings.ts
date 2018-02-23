@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { App, LoadingController, ModalController, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 import { ChangeEmailPage } from './change-email/change-email';
 import { ChangePasswordPage } from './change-password/change-password';
@@ -26,6 +26,8 @@ export class SettingsPage implements OnInit, OnDestroy {
   private _userSubscription: Subscription;
   private _userDetailSubscription: Subscription;
   private _languagesSubscription: Subscription;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
+
   private _userForm: FormGroup = new FormGroup({});
 
   private _disabled: boolean
@@ -89,16 +91,16 @@ export class SettingsPage implements OnInit, OnDestroy {
 
     this.removeSubscriptions();
 
-    this._userSubscription = MeteorObservable.subscribe('getUserSettings').subscribe();
+    this._userSubscription = MeteorObservable.subscribe('getUserSettings').takeUntil(this.ngUnsubscribe).subscribe();
 
-    this._languagesSubscription = MeteorObservable.subscribe('languages').subscribe(() => {
+    this._languagesSubscription = MeteorObservable.subscribe('languages').takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this._languages = Languages.find({}).zone();
       });
     });
 
 
-    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this._user = Users.findOne({ _id: Meteor.userId() });;
         this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
@@ -293,9 +295,8 @@ export class SettingsPage implements OnInit, OnDestroy {
    * Remove all subscription
    */
   removeSubscriptions() {
-    if (this._userSubscription) { this._userSubscription.unsubscribe(); }
-    if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-    if (this._languagesSubscription) { this._languagesSubscription.unsubscribe(); }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   /**

@@ -2,7 +2,7 @@ import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
 import { OrderHistory } from 'i4t_web/both/models/establishment/order-history.model';
 import { OrderHistories } from 'i4t_web/both/collections/establishment/order-history.collection';
@@ -15,6 +15,7 @@ export class PointsDetailPage implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _orderHistorySub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _orderHistories: Observable<OrderHistory[]>;
     private _establishment_id: string;
@@ -43,7 +44,7 @@ export class PointsDetailPage implements OnInit, OnDestroy {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         this.removeSubscriptions();
         if (this._establishment_id !== null && this._establishment_id !== undefined) {
-            this._orderHistorySub = MeteorObservable.subscribe('getOrdersHistoryByUserId', this._user, this._establishment_id).subscribe(() => {
+            this._orderHistorySub = MeteorObservable.subscribe('getOrdersHistoryByUserId', this._user, this._establishment_id).takeUntil(this.ngUnsubscribe).subscribe(() => {
                 this._ngZone.run(() => {
                     this._orderHistories = OrderHistories.find({ customer_id: this._user, establishment_id: this._establishment_id }, { sort: { creation_date: -1 } }).zone();
                 });
@@ -100,6 +101,7 @@ export class PointsDetailPage implements OnInit, OnDestroy {
      * ngOnDestroy implementation
      */
     ngOnDestroy() {
-        this.removeSubscriptions();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }
