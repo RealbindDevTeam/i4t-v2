@@ -273,9 +273,11 @@ export class SettingsPage implements OnInit, OnDestroy {
     loading.present();
     setTimeout(() => {
       loading.dismiss();
-      this._navCtrl.pop();
-      this._app.getRootNavs()[0].setRoot(InitialComponent);
       Meteor.logout();
+      if (this._userDetail.role_id === '400') {
+        this._navCtrl.pop();
+      }
+      this._app.getRootNavs()[0].setRoot(InitialComponent);
     }, 1500);
   }
 

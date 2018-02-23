@@ -15,34 +15,29 @@
                 </ion-avatar>
                 <h2>{{ 'MOBILE.CUSTOMER_ORDER.ORDER' | translate }}: {{order.code}}</h2>
                 <h3>{{ 'MOBILE.CUSTOMER_ORDER.CONSUMMER' | translate }}: {{ getUserName(order.creation_user) }}</h3>
-                <p>{{ 'MOBILE.CUSTOMER_ORDER.TABLE' | translate }} {{_table?._number}} ({{ 'MOBILE.CUSTOMER_ORDER.ALPHANUMERIC_CODE'
-                    | translate }} {{_table?.QR_code}})</p>
+                <p>{{ 'MOBILE.CUSTOMER_ORDER.TABLE' | translate }} {{_table?._number}} ({{ 'MOBILE.CUSTOMER_ORDER.ALPHANUMERIC_CODE'| translate }} {{_table?.QR_code}})</p>
             </ion-item>
 
             <span *ngFor="let it of order.items">
                 <span *ngIf="it.is_reward">
-                    <button ion-item detail-none>
-                        <h2>{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
+                    <ion-item>
+                        <h2 style="font-weight: bold;">{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
                         <ion-badge style="background-color: #ffbf00;color: #fff;">{{ 'MOBILE.CUSTOMER_ORDER.ITEM_REDEEMED' | translate }}
                             <ion-icon name="ribbon"></ion-icon>
                         </ion-badge>
-                    </button>
+                    </ion-item>
                 </span>
                 <span *ngIf="!it.is_reward">
-                    <button ion-item detail-none>
-                        <h2>{{it.quantity}} {{getItemName(it.itemId)}}</h2>
+                    <ion-item>
+                        <h2 style="font-weight: bold;">{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
                         <h3>{{it.observations}}</h3>
-                    </button>
-                    <span *ngFor="let gr of it.garnishFood">
-                        <button ion-item detail-none>
+                        <span *ngFor="let gr of it.garnishFood">
                             <h2>{{getGarnishFoodName(gr)}}</h2>
-                        </button>
-                    </span>
-                    <span *ngFor="let ad of it.additions">
-                        <button ion-item detail-none>
+                        </span>
+                        <span *ngFor="let ad of it.additions">
                             <h2>{{getAdditionName(ad)}}</h2>
-                        </button>
-                    </span>
+                        </span>
+                    </ion-item>
                 </span>
             </span>
         </ion-list>

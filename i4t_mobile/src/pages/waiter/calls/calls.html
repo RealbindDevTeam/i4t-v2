@@ -1,8 +1,5 @@
 <ion-header>
     <ion-navbar>
-        <button ion-button menuToggle icon-only>
-            <ion-icon name='menu'></ion-icon>
-        </button>
         <ion-title class="logo">
             <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
         </ion-title>
@@ -22,7 +19,7 @@
         </ion-item>
     </ion-list>
 
-    <div *ngIf="!_thereAreCalls" style="padding: 0 16px;">
+    <div *ngIf="!_thereAreCalls" style="padding: 0 40px;">
         <div class="img">
             <img src="assets/img/sections.png">
         </div>
@@ -35,27 +32,22 @@
         <div *ngFor="let _table of _tables | async">
             <ion-card *ngIf="_table._id === _call.table_id">
                 <ion-card-content>
-                    <div class="item-block">
-                        <img *ngIf="_call.type == 'CUSTOMER_ORDER'" class="img-cards" src="assets/img/chef.png">
-                        <img *ngIf="_call.type == 'CALL_OF_CUSTOMER'" class="img-cards" src="assets/img/waiter-call.png">
-                        <div class="header-title">
-                            <div class="label">
-                                <span>
-                                    {{ 'MOBILE.WAITER_CALL.TABLE' | translate }} {{_table._number}}
-                                </span>
-                                <p *ngIf="_call.type == 'CUSTOMER_ORDER'">{{ 'MOBILE.WAITER_CALL.CALL_LABEL_SEND_ORDER' | translate }}</p>
-                                <p *ngIf="_call.type == 'CALL_OF_CUSTOMER'">{{ 'MOBILE.WAITER_CALL.CALL_LABEL_CUSTOMER' | translate }}</p>
-                            </div>
-                            <button ion-button small clear text-left style="color: #5090ff; height: 36px; font-size: 1.2rem;" (click)="showComfirmClose(_call)"
-                                *ngIf="_call.type == 'CALL_OF_CUSTOMER'">
-                                {{'MOBILE.CLOSE' | translate}}
-                            </button>
-                            <button ion-button small clear text-left *ngIf="_call.type == 'CUSTOMER_ORDER'" style="color: #5090ff; height: 36px; font-size: 1.2rem;"
-                                (click)="goToOrderCall(_call)">
-                                {{'MOBILE.VIEW' | translate}}
-                            </button>
-                        </div>
-                    </div>
+                    <button ion-item detail-none (click)="showComfirmClose(_call)" *ngIf="_call.type == 'CALL_OF_CUSTOMER'">
+                        <ion-thumbnail item-left>
+                            <img src="assets/img/waiter-call.png">
+                        </ion-thumbnail>
+                        <h2>{{ 'MOBILE.WAITER_CALL.TABLE' | translate }} {{_table._number}}</h2>
+                        <p>{{ 'MOBILE.WAITER_CALL.CALL_LABEL_CUSTOMER' | translate }}</p>
+                        <span style="float: right;color: #5090ff;">{{'MOBILE.CLOSE' | translate}}</span>
+                    </button>
+                    <button ion-item detail-none (click)="goToOrderCall(_call)" *ngIf="_call.type == 'CUSTOMER_ORDER'">
+                        <ion-thumbnail item-left>
+                            <img src="assets/img/chef.png">
+                        </ion-thumbnail>
+                        <h2>{{ 'MOBILE.WAITER_CALL.TABLE' | translate }} {{_table._number}}</h2>
+                        <p>{{ 'MOBILE.WAITER_CALL.CALL_LABEL_SEND_ORDER' | translate }}</p>
+                        <span style="float: right;color: #5090ff;">{{'MOBILE.VIEW' | translate}}</span>
+                    </button>
                 </ion-card-content>
             </ion-card>
         </div>

@@ -37,7 +37,7 @@ export function createTranslateLoader(http: HttpClient) {
           tabsHideOnSubPages: true
         },
         ios: {
-          tabsPlacement: 'top',
+          tabsPlacement: 'bottom',
           tabsHideOnSubPages: true,
           backButtonText: ''
         }
