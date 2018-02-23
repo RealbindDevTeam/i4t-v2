@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController, ViewController } from 'ionic-angular';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
@@ -19,6 +19,7 @@ import { Parameters } from 'i4t_web/both/collections/general/parameter.collectio
 export class PopoverOptionsPage implements OnInit, OnDestroy {
 
     private _parameterSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
     private _currentUserId: string;
 
     constructor(public _navCtrl: NavController,
@@ -40,7 +41,7 @@ export class PopoverOptionsPage implements OnInit, OnDestroy {
 
     init() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this.ngUnsubscribe).subscribe();
     }
 
     goToSettings() {
@@ -75,6 +76,7 @@ export class PopoverOptionsPage implements OnInit, OnDestroy {
     * Remove all subscriptions
     */
     removeSubscriptions(): void {
-        if (this._parameterSub) { this._parameterSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }

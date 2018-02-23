@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { ViewController, NavParams, ToastController, LoadingController, NavController } from 'ionic-angular';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -25,6 +25,8 @@ export class RewardListComponent {
     private _rewardsSub: Subscription;
     private _userDetailSub: Subscription;
     private _ordersSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
+
     private _items: Observable<Item[]>;
     private _rewards: Observable<Reward[]>;
     private _establishmentId: string;
@@ -49,20 +51,20 @@ export class RewardListComponent {
     ngOnInit() {
         this.removeSubscriptions();
 
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe();
-        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this._establishmentId).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this.ngUnsubscribe).subscribe();
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this._establishmentId).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
             });
         });
 
-        this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._establishmentId).subscribe(() => {
+        this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._establishmentId).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).zone();
             });
         });
 
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, this._statusArray).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, this._statusArray).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 Orders.collection.find({ creation_user: this._user }).fetch().forEach((order) => {
                     if (order.status === 'ORDER_STATUS.SELECTING') {
@@ -238,10 +240,8 @@ export class RewardListComponent {
 
 
     removeSubscriptions() {
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); };
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
 }

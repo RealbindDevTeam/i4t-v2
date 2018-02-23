@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertController, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
@@ -18,6 +18,8 @@ export class AdditionEditPage implements OnInit, OnDestroy {
 
     private _additionsSub: Subscription;
     private _ordersSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
+
     private _additionsDetailFormGroup: FormGroup = new FormGroup({});
     private _orderAddition: OrderAddition;
     private _currentOrder: Order;
@@ -63,11 +65,11 @@ export class AdditionEditPage implements OnInit, OnDestroy {
     ngOnInit() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         this.removeSubscriptions();
-        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', Meteor.userId()).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._additionDetails = Additions.find({ _id: this._orderAddition.additionId }).zone();
         });
 
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._establishmentId, this._tableId, this._statusArray).subscribe();
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._establishmentId, this._tableId, this._statusArray).takeUntil(this.ngUnsubscribe).subscribe();
         this._additionsDetailFormGroup = this._formBuilder.group({
             control: new FormControl(this._orderAddition.quantity, [Validators.minLength(1), Validators.maxLength(2)])
         });
@@ -266,7 +268,7 @@ export class AdditionEditPage implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }

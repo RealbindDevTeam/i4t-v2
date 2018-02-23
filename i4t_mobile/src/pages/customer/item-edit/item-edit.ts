@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { NavController, NavParams, ModalController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
@@ -71,6 +71,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _finalPoints: number = 0;
   private _unitRewardPoints: number = 0;
   private _showEditBtn: boolean;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -107,7 +108,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   ngOnInit() {
     this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
-    this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).subscribe(() => {
+    this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         MeteorObservable.autorun().subscribe(() => {
           this._items = Items.find({ _id: this._item_code }).zone();
@@ -125,7 +126,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       });
     });
 
-    this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._res_code, this._table_code, this._statusArray).subscribe(() => {
+    this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._res_code, this._table_code, this._statusArray).takeUntil(this.ngUnsubscribe).subscribe(() => {
       //MeteorObservable.autorun().subscribe(() => {
       this._orders = Orders.find({ _id: this._order_code, creation_user: this._creation_user });
       this._orderAux = Orders.collection.find({ _id: this._order_code, creation_user: this._creation_user }).fetch()[0];
@@ -143,7 +144,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       }
     });
 
-    this._garnishSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this._res_code).subscribe(() => {
+    this._garnishSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
 
       this._ngZone.run(() => {
         this._garnishes = GarnishFoodCol.find({});
@@ -189,7 +190,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       });
     });
 
-    this._additionSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).subscribe(() => {
+    this._additionSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this._additions = Additions.find({}).zone();
         this._createAdditions = Additions.collection.find({}).fetch();
@@ -235,7 +236,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
       });
     });
 
-    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).subscribe();
+    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).takeUntil(this.ngUnsubscribe).subscribe();
 
     this._newOrderForm = new FormGroup({
       quantity: new FormControl('', [Validators.required]),
@@ -244,7 +245,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
     });
     //
 
-    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._res_code]).subscribe(() => {
+    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._currencyCode = Currencies.collection.find({}).fetch()[0].code + ' ';
     });
   }
@@ -692,11 +693,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-    if (this._additionSub) { this._additionSub.unsubscribe(); }
-    if (this._garnishSub) { this._garnishSub.unsubscribe(); }
-    if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-    if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-    if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

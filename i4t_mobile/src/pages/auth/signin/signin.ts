@@ -8,7 +8,8 @@ import { Device } from '@ionic-native/device';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { Meteor } from 'meteor/meteor';
 import { HomeMenu } from '../../customer/home-menu/home-menu';
-import { Menu } from '../../waiter/menu/menu';
+//import { Menu } from '../../waiter/menu/menu';
+import { TabsPage } from '../../waiter/tabs/tabs';
 import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
 import { Accounts } from 'meteor/accounts-base';
 import { Facebook } from '@ionic-native/facebook';
@@ -90,7 +91,7 @@ export class SigninComponent implements OnInit {
                                             MeteorObservable.call('validateUserIsActive').subscribe((active) => {
                                                 if (active) {
                                                     this.insertUserInfo();
-                                                    this.navCtrl.push(Menu);
+                                                    this.navCtrl.push(TabsPage);
                                                 } else {
                                                     let contentMessage = this.itemNameTraduction("MOBILE.SIGNIN.USER_NO_ACTIVE");
                                                     this.showComfirm(contentMessage);

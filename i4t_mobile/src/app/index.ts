@@ -18,15 +18,11 @@ import { CallsPage } from '../pages/waiter/calls/calls';
 import { ItemCardComponent } from '../pages/customer/sections/item-card';
 import { OrderDetailComponent } from '../pages/customer/orders/order-detail';
 import { OrderItemDetailComponent } from '../pages/customer/orders/order-item-detail';
-import { PaymentConfirmPage } from "../pages/waiter/calls/payment-confirm/payment-confirm";
-import { PaymentDetailConfirmComponent } from "../pages/waiter/calls/payment-confirm/payment-detail-confirm";
-import { ItemDetailPaymentConfirmComponent } from "../pages/waiter/calls/payment-confirm/item-detail-payment-confirm";
 import { AdditionEditPage } from "../pages/customer/addition-edit/addition-edit";
 import { SendOrderDetailsPage } from "../pages/waiter/calls/send-order-detail/send-order-detail";
 import { ItemDetailSendOrderComponent } from "../pages/waiter/calls/send-order-detail/item-detail-send-order";
 import { GarnishSendOrderComponent } from "../pages/waiter/calls/send-order-detail/garnish-food";
 import { AdditionsSendOrderComponent } from "../pages/waiter/calls/send-order-detail/addition";
-import { Menu } from '../pages/waiter/menu/menu';
 import { ChangeTablePage } from '../pages/customer/options/table-change/table-change';
 import { AlphanumericCodeChangePage } from '../pages/customer/options/table-change/alphanumeric-code-change/alphanumeric-code-change';
 import { EstablishmentExitPage } from '../pages/customer/options/establishment-exit/establishment-exit';
@@ -36,7 +32,6 @@ import { EstablishmentMenuPage } from '../pages/waiter/establishment-menu/establ
 import { ItemCardWaiterComponent } from '../pages/waiter/establishment-menu/item-card-waiter';
 import { ItemDetailWaiterPage } from '../pages/waiter/item-detail-waiter/item-detail-waiter';
 import { AdditionsWaiterPage } from '../pages/waiter/establishment-menu/additions-waiter/additions-waiter';
-import { EstablishmentExitConfirmPage } from '../pages/waiter/calls/establishment-exit-confirm/establishment-exit-confirm';
 import { EstablishmentProfilePage } from '../pages/customer/establishment-profile/establishment-profile';
 import { ModalSchedule } from '../pages/customer/establishment-profile/modal-schedule/modal-schedule';
 import { CustomerOrderConfirm } from "../pages/waiter/calls/customer-order-confirm/customer-order-confirm";
@@ -47,6 +42,7 @@ import { OptionsPage } from '../pages/customer/options/options';
 import { SegmentsPage } from '../pages/customer/segments/segments';
 import { PopoverOptionsPage } from '../pages/customer/home/popover-options/popover-options';
 import { OrderConfirmPage } from '../pages/customer/orders/order-confirm/order-confirm';
+import { TabsPage } from '../pages/waiter/tabs/tabs';
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -69,15 +65,11 @@ export const PAGES_DECLARATIONS = [
     ItemCardComponent,
     OrderDetailComponent,
     OrderItemDetailComponent,
-    PaymentConfirmPage,
-    PaymentDetailConfirmComponent,
-    ItemDetailPaymentConfirmComponent,
     AdditionEditPage,
     SendOrderDetailsPage,
     ItemDetailSendOrderComponent,
     GarnishSendOrderComponent,
     AdditionsSendOrderComponent,
-    Menu,
     ChangeTablePage,
     AlphanumericCodeChangePage,
     EstablishmentExitPage,
@@ -87,7 +79,6 @@ export const PAGES_DECLARATIONS = [
     ItemCardWaiterComponent,
     ItemDetailWaiterPage,
     AdditionsWaiterPage,
-    EstablishmentExitConfirmPage,
     EstablishmentProfilePage,
     ModalSchedule,
     CustomerOrderConfirm,
@@ -97,5 +88,6 @@ export const PAGES_DECLARATIONS = [
     OptionsPage,
     SegmentsPage,
     PopoverOptionsPage,
-    OrderConfirmPage
+    OrderConfirmPage,
+    TabsPage
 ];

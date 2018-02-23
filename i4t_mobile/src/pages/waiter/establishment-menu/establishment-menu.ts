@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { NavController, Select } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
@@ -22,6 +22,8 @@ import { AdditionsWaiterPage } from './additions-waiter/additions-waiter';
 
 export class EstablishmentMenuPage implements OnInit, OnDestroy {
 
+    @ViewChild('select1') select1: Select;
+
     private _userEstablishmentSubscription: Subscription;
     private _userDetailSubscription: Subscription;
     private _sectionsSubscription: Subscription;
@@ -29,6 +31,7 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
     private _subcategoriesSubscription: Subscription;
     private _itemsSubscription: Subscription;
     private _additionsSubscription: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userDetail: any;
     private _establishments: any;
@@ -54,26 +57,26 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
     ngOnInit() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         this.removeSubscriptions();
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 if (this._userDetail) {
-                    this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).subscribe(() => {
+                    this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
                     });
-                    this._sectionsSubscription = MeteorObservable.subscribe('sectionsByEstablishment', this._userDetail.establishment_work).subscribe(() => {
+                    this._sectionsSubscription = MeteorObservable.subscribe('sectionsByEstablishment', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._sections = Sections.find({});
                     });
-                    this._categoriesSubscription = MeteorObservable.subscribe('categoriesByEstablishment', this._userDetail.establishment_work).subscribe(() => {
+                    this._categoriesSubscription = MeteorObservable.subscribe('categoriesByEstablishment', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._categories = Categories.find({});
                     });
-                    this._subcategoriesSubscription = MeteorObservable.subscribe('subcategoriesByEstablishment', this._userDetail.establishment_work).subscribe(() => {
+                    this._subcategoriesSubscription = MeteorObservable.subscribe('subcategoriesByEstablishment', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._subcategories = Subcategories.find({});
                     });
-                    this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._userDetail.establishment_work).subscribe(() => {
+                    this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._items = Items.find({});
                     });
-                    this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._userDetail.establishment_work).subscribe(() => {
+                    this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._additions = Additions.find({});
                         this._additions.subscribe(() => {
                             let _lAdditions: number = Additions.collection.find({}).count();
@@ -100,6 +103,12 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
         }
     }
 
+    goTop() {
+        this.select1.open();
+        setTimeout(() => {
+        }, 150);
+    }
+
     goToDetail(_itemId) {
         this._navCtrl.push(ItemDetailWaiterPage, { item_id: _itemId, res_id: this._userDetail.establishment_work });
     }
@@ -116,12 +125,7 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
     removeSubscriptions(): void {
-        if (this._userEstablishmentSubscription) { this._userEstablishmentSubscription.unsubscribe(); }
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-        if (this._sectionsSubscription) { this._sectionsSubscription.unsubscribe(); }
-        if (this._categoriesSubscription) { this._categoriesSubscription.unsubscribe(); }
-        if (this._subcategoriesSubscription) { this._subcategoriesSubscription.unsubscribe(); }
-        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
-        if (this._additionsSubscription) { this._additionsSubscription.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }

@@ -1,16 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { AlertController, LoadingController, NavController, ToastController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
 import { WaiterCallDetail } from 'i4t_web/both/models/establishment/waiter-call-detail.model';
 import { WaiterCallDetails } from 'i4t_web/both/collections/establishment/waiter-call-detail.collection';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
-import { PaymentConfirmPage } from "./payment-confirm/payment-confirm";
 import { SendOrderDetailsPage } from './send-order-detail/send-order-detail';
-import { EstablishmentExitConfirmPage } from './establishment-exit-confirm/establishment-exit-confirm';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { CustomerOrderConfirm } from "./customer-order-confirm/customer-order-confirm";
 
@@ -24,6 +22,7 @@ export class CallsPage implements OnInit, OnDestroy {
   private _userDetailSubscription: Subscription;
   private _callsDetailsSubscription: Subscription;
   private _tableSubscription: Subscription;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   private _userDetail: any;
   private _establishments: any;
@@ -47,7 +46,8 @@ export class CallsPage implements OnInit, OnDestroy {
     public _loadingCtrl: LoadingController,
     private _toastCtrl: ToastController,
     public _navCtrl: NavController,
-    private _userLanguageService: UserLanguageServiceProvider) {
+    private _userLanguageService: UserLanguageServiceProvider,
+    private _ngZone: NgZone) {
     _translate.setDefaultLang('en');
   }
 
@@ -57,26 +57,32 @@ export class CallsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
-    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
-      this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-      if (this._userDetail) {
-        this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).subscribe(() => {
-          this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
-        });
-      }
+    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
+      this._ngZone.run(() => {
+        this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+        if (this._userDetail) {
+          this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
+            this._ngZone.run(() => {
+              this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
+            });
+          });
+          this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
+            this._ngZone.run(() => {
+              this._tables = Tables.find({ establishment_id: this._userDetail.establishment_work, is_active: true });
+            });
+          });
+        }
+      });
     });
 
-    this._callsDetailsSubscription = MeteorObservable.subscribe('waiterCallDetailByWaiterId', Meteor.userId()).subscribe(() => {
-      this._waiterCallDetail = WaiterCallDetails.find({});
-      this._waiterCallDetailCollection = WaiterCallDetails.collection.find({}).fetch()[0];
-      this.countCalls();
-      this._waiterCallDetail.subscribe(() => { this.countCalls(); });
+    this._callsDetailsSubscription = MeteorObservable.subscribe('waiterCallDetailByWaiterId', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
+      this._ngZone.run(() => {
+        this._waiterCallDetail = WaiterCallDetails.find({ waiter_id: Meteor.userId(), status: "completed" }).zone();
+        this._waiterCallDetailCollection = WaiterCallDetails.collection.find({}).fetch()[0];
+        this.countCalls();
+        this._waiterCallDetail.subscribe(() => { this.countCalls(); });
+      });
     });
-
-    this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', Meteor.userId()).subscribe(() => {
-      this._tables = Tables.find({});
-    });
-
   }
 
   /**
@@ -164,29 +170,13 @@ export class CallsPage implements OnInit, OnDestroy {
     });
     return wordTraduced;
   }
-
-  /**
-  * This function allow navegate to PaymentConfirmPage
-  * @param {WaiterCallDetail} _call
-  */
-  goToPaymentConfirm(_call: WaiterCallDetail) {
-    this._navCtrl.push(PaymentConfirmPage, { call: _call });
-  }
-
+  
   /**
    * Go to view Order detail send
    * @param _call 
    */
   goToViewOrderDetailSend(_call: WaiterCallDetail) {
     this._navCtrl.push(SendOrderDetailsPage, { call: _call });
-  }
-
-
-  /**
-   * Go to cancel order
-   */
-  goToCancelOrder(_call: WaiterCallDetail) {
-    this._navCtrl.push(EstablishmentExitConfirmPage, { call: _call });
   }
 
   /**
@@ -207,10 +197,8 @@ export class CallsPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-    if (this._userEstablishmentSubscription) { this._userEstablishmentSubscription.unsubscribe(); }
-    if (this._callsDetailsSubscription) { this._callsDetailsSubscription.unsubscribe(); }
-    if (this._tableSubscription) { this._tableSubscription.unsubscribe(); }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
 }

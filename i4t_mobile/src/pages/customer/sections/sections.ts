@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
 import { NavController, NavParams, Content, Select } from 'ionic-angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
@@ -58,6 +58,7 @@ export class SectionsPage implements OnInit, OnDestroy {
   private _userDetails: Observable<UserDetail[]>;
   private _orders: Observable<Order[]>;
   private _ordersSub: Subscription;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   private _userDetail: UserDetail;
   private _res_code: string = '';
@@ -84,31 +85,31 @@ export class SectionsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
-    this._sectionsSub = MeteorObservable.subscribe('sectionsByEstablishment', this._res_code).subscribe(() => {
+    this._sectionsSub = MeteorObservable.subscribe('sectionsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._sections = Sections.find({});
     });
-    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).subscribe(() => {
+    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this._establishments = Establishments.findOne({});
       });
     });
-    this._citySub = MeteorObservable.subscribe('getCityByEstablishmentId', this._res_code).subscribe(() => {
+    this._citySub = MeteorObservable.subscribe('getCityByEstablishmentId', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._cities = Cities.find({});
     });
-    this._countrySub = MeteorObservable.subscribe('getCountryByEstablishmentId', this._res_code).subscribe(() => {
+    this._countrySub = MeteorObservable.subscribe('getCountryByEstablishmentId', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._countries = Countries.find({});
     });
-    this._categorySub = MeteorObservable.subscribe('categoriesByEstablishment', this._res_code).subscribe(() => {
+    this._categorySub = MeteorObservable.subscribe('categoriesByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._categories = Categories.find({});
     });
-    this._subcategorySub = MeteorObservable.subscribe('subcategoriesByEstablishment', this._res_code).subscribe(() => {
+    this._subcategorySub = MeteorObservable.subscribe('subcategoriesByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._subcategories = Subcategories.find({});
     });
-    this._itemSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).subscribe(() => {
+    this._itemSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._items = Items.find({});
       this._itemsRecommended = Items.find({ 'establishments.establishment_id': this._res_code, 'establishments.recommended': true }).zone();
     });
-    this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).subscribe(() => {
+    this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._additions = Additions.find({});
       this._additions.subscribe(() => {
         let _lAdditions: number = Additions.collection.find({}).count();
@@ -116,18 +117,18 @@ export class SectionsPage implements OnInit, OnDestroy {
       });
     });
 
-    this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).subscribe(() => {
+    this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._table = Tables.findOne({ _id: this._table_code });
     });
 
-    this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+    this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
         this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
         if (this._userDetail) {
           this.verifyUserRewardPoints();
           this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
-          this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
+          this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
               this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).zone();
               this.validateOrders();
@@ -240,16 +241,7 @@ export class SectionsPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-    if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-    if (this._citySub) { this._citySub.unsubscribe(); }
-    if (this._countrySub) { this._countrySub.unsubscribe(); }
-    if (this._categorySub) { this._categorySub.unsubscribe(); }
-    if (this._subcategorySub) { this._subcategorySub.unsubscribe(); }
-    if (this._itemSub) { this._itemSub.unsubscribe(); }
-    if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-    if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-    if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-    if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

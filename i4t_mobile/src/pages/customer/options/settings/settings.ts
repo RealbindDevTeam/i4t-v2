@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { App, LoadingController, ModalController, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 import { ChangeEmailPage } from './change-email/change-email';
 import { ChangePasswordPage } from './change-password/change-password';
@@ -26,6 +26,8 @@ export class SettingsPage implements OnInit, OnDestroy {
   private _userSubscription: Subscription;
   private _userDetailSubscription: Subscription;
   private _languagesSubscription: Subscription;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
+
   private _userForm: FormGroup = new FormGroup({});
 
   private _disabled: boolean
@@ -89,16 +91,16 @@ export class SettingsPage implements OnInit, OnDestroy {
 
     this.removeSubscriptions();
 
-    this._userSubscription = MeteorObservable.subscribe('getUserSettings').subscribe();
+    this._userSubscription = MeteorObservable.subscribe('getUserSettings').takeUntil(this.ngUnsubscribe).subscribe();
 
-    this._languagesSubscription = MeteorObservable.subscribe('languages').subscribe(() => {
+    this._languagesSubscription = MeteorObservable.subscribe('languages').takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this._languages = Languages.find({}).zone();
       });
     });
 
 
-    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this._user = Users.findOne({ _id: Meteor.userId() });;
         this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
@@ -206,21 +208,29 @@ export class SettingsPage implements OnInit, OnDestroy {
    * Return user image
    */
   getUsetImage(): string {
-    if (this._user.services && this._user.services.facebook) {
-      return "https://graph.facebook.com/" + this._user.services.facebook.id + "/picture/?type=large";
-    } else {
-      let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-      if (_lUserDetail) {
-        let _lUserDetailImage: UserDetailImage = _lUserDetail.image;
-        if (_lUserDetailImage) {
-          return _lUserDetailImage.url;
+    if (this._user) {
+      if (this._user.services) {
+        if (this._user.services.facebook) {
+          return "http://graph.facebook.com/" + this._user.services.facebook.id + "/picture/?type=large";
         } else {
-          return 'assets/img/user_default_image.png';
+          let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: this._user });
+          if (_lUserDetail) {
+            let _lUserDetailImage: UserDetailImage = _lUserDetail.image;
+            if (_lUserDetailImage) {
+              return _lUserDetailImage.url;
+            } else {
+              return 'assets/img/user_default_image.png';
+            }
+          }
+          else {
+            return 'assets/img/user_default_image.png';
+          }
         }
-      }
-      else {
+      } else {
         return 'assets/img/user_default_image.png';
       }
+    } else {
+      return 'assets/img/user_default_image.png';
     }
   }
 
@@ -263,9 +273,11 @@ export class SettingsPage implements OnInit, OnDestroy {
     loading.present();
     setTimeout(() => {
       loading.dismiss();
-      this._navCtrl.pop();
-      this._app.getRootNavs()[0].setRoot(InitialComponent);
       Meteor.logout();
+      if (this._userDetail.role_id === '400') {
+        this._navCtrl.pop();
+      }
+      this._app.getRootNavs()[0].setRoot(InitialComponent);
     }, 1500);
   }
 
@@ -285,9 +297,8 @@ export class SettingsPage implements OnInit, OnDestroy {
    * Remove all subscription
    */
   removeSubscriptions() {
-    if (this._userSubscription) { this._userSubscription.unsubscribe(); }
-    if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-    if (this._languagesSubscription) { this._languagesSubscription.unsubscribe(); }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   /**

@@ -2,7 +2,7 @@ import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
 import { Establishment } from 'i4t_web/both/models/establishment/establishment.model';
 import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
@@ -22,6 +22,7 @@ export class PointsPage implements OnInit, OnDestroy {
     private _userDetailsSub: Subscription;
     private _establishmentsSub: Subscription;
     private _rewardPointsSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userDetails: Observable<UserDetail[]>;
     private _establishments: Observable<Establishment[]>;
@@ -49,23 +50,22 @@ export class PointsPage implements OnInit, OnDestroy {
     ngOnInit() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         this.removeSubscriptions();
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({ user_id: this._user }).zone();
                 this.validateUserEstablishments();
                 this._userDetails.subscribe(() => { this.validateUserEstablishments(); });
             });
         });
-        this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).subscribe();
+        this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).takeUntil(this.ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._establishmentsSub) { this._establishmentsSub.unsubscribe(); }
-        if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     /**
@@ -81,7 +81,7 @@ export class PointsPage implements OnInit, OnDestroy {
                 UserDetails.findOne({ user_id: this._user }).reward_points.forEach((p) => {
                     _lEstablishmentsIds.push(p.establishment_id);
                 });
-                this._establishmentsSub = MeteorObservable.subscribe('getEstablishmentsByIds', _lEstablishmentsIds).subscribe(() => {
+                this._establishmentsSub = MeteorObservable.subscribe('getEstablishmentsByIds', _lEstablishmentsIds).takeUntil(this.ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
                         this._establishments = Establishments.find({}).zone();
                     });
@@ -136,7 +136,7 @@ export class PointsPage implements OnInit, OnDestroy {
      * @param {string} _establishmentId 
      */
     openEstablishmentDetail(_establishmentId: string): void {
-        this._navCtrl.push(PointsDetailPage, { _establishment_id : _establishmentId });
+        this._navCtrl.push(PointsDetailPage, { _establishment_id: _establishmentId });
     }
 
     /**

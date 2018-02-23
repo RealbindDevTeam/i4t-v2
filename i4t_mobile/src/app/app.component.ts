@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Device } from '@ionic-native/device';
 import { InitialComponent } from '../pages/auth/initial/initial';
 import { HomeMenu } from '../pages/customer/home-menu/home-menu';
-import { Menu } from '../pages/waiter/menu/menu';
+import { TabsPage } from '../pages/waiter/tabs/tabs';
 import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
 import { HomePage } from '../pages/customer/home/home';
 
@@ -51,7 +51,7 @@ export class MyApp {
               MeteorObservable.call('validateUserIsActive').subscribe((active) => {
                 if (active) {
                   this.insertUserInfo();
-                  this.rootPage = Menu;
+                  this.rootPage = TabsPage;
                 } else {
                   this.rootPage = InitialComponent;
                   let contentMessage = this.itemNameTraduction("MOBILE.SIGNIN.USER_NO_ACTIVE");

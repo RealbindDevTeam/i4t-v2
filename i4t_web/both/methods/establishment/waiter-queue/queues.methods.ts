@@ -100,12 +100,7 @@ if (Meteor.isServer) {
 
                     data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
                     if (data_detail === undefined || data_detail === null) {
-                        let dt: any = {
-                            job_id: job._doc._id,
-                            waiter_id: _data.waiter_id,
-                            waiter_call_id: _data.waiter_call_id
-                        }
-                        Meteor.call('waiterCall', queueName, true, dt);
+                        Meteor.call('waiterCall', queueName, false, _data);
                         data_detail = WaiterCallDetails.findOne({ job_id: job._doc._id });
                     }
 

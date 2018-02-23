@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { AlertController, LoadingController, NavController, NavParams } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { OrdersPage } from '../../orders/orders';
 import { AlphanumericCodeChangePage } from './alphanumeric-code-change/alphanumeric-code-change';
@@ -18,6 +18,7 @@ import { Tables } from 'i4t_web/both/collections/establishment/table.collection'
 export class ChangeTablePage implements OnInit, OnDestroy {
 
     private _tablesSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
     private _table;
     private _waitMsg: string;
 
@@ -50,7 +51,7 @@ export class ChangeTablePage implements OnInit, OnDestroy {
     init() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         if (this._res_code !== '' && this._table_code !== '') {
-            this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).subscribe(() => {
+            this._tablesSub = MeteorObservable.subscribe('getTableById', this._table_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
                 this._ngZone.run(() => {
                     this._table = Tables.findOne({ _id: this._table_code });
                 })
@@ -142,7 +143,8 @@ export class ChangeTablePage implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions() {
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
 }

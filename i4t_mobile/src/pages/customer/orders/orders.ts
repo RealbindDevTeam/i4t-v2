@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { App, NavController, NavParams, AlertController, LoadingController, ToastController, ModalController } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
 import { Order, OrderAddition } from 'i4t_web/both/models/establishment/order.model';
@@ -43,6 +43,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _rewardPointsSub: Subscription;
     private _usersSub: Subscription;
     private _otherUSerDetailSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userLang: string;
     private _table_code: string = "";
@@ -101,7 +102,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 
     init() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
                 this.validateUser();
@@ -111,19 +112,19 @@ export class OrdersPage implements OnInit, OnDestroy {
                     this._res_code = this._userDetail.current_establishment;
                     this.verifyUserRewardPoints();
                     this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
-                    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).subscribe(() => {
+                    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             this._establishments = Establishments.find({ _id: this._userDetail.current_establishment }).zone();
                         });
                     });
 
-                    this._tablesSub = MeteorObservable.subscribe('getTableById', this._userDetail.current_table).subscribe(() => {
+                    this._tablesSub = MeteorObservable.subscribe('getTableById', this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             this._table = Tables.findOne({ _id: this._userDetail.current_table });
                         });
                     });
 
-                    this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
+                    this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             this.getOrders();
                             this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
@@ -131,7 +132,7 @@ export class OrdersPage implements OnInit, OnDestroy {
                         });
                     });
 
-                    this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._userDetail.current_establishment).subscribe(() => {
+                    this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._userDetail.current_establishment).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             this._rewards = Rewards.find({ establishments: { $in: [this._userDetail.current_establishment] } }).zone();
                             this.countRewards();
@@ -139,17 +140,17 @@ export class OrdersPage implements OnInit, OnDestroy {
                         });
                     });
 
-                    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).subscribe();
+                    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).takeUntil(this.ngUnsubscribe).subscribe();
                 }
 
-                this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._userDetail.current_establishment, this._userDetail.current_table).subscribe();
-                this._otherUSerDetailSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._userDetail.current_establishment, this._userDetail.current_table).subscribe();
+                this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._userDetail.current_establishment, this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe();
+                this._otherUSerDetailSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._userDetail.current_establishment, this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe();
             });
         });
 
-        this._itemsSub = MeteorObservable.subscribe('itemsByUser', Meteor.userId()).subscribe();
-        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', Meteor.userId()).subscribe();
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', Meteor.userId()).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe();
+        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe();
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 if (Currencies.find({}).fetch().length > 0) {
                     this._currencyCode = Currencies.find({}).fetch()[0].code;
@@ -533,16 +534,7 @@ export class OrdersPage implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._rewardsSub) { this._rewardsSub.unsubscribe(); }
-        if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
-        if (this._usersSub) { this._usersSub.unsubscribe(); }
-        if (this._otherUSerDetailSub) { this._otherUSerDetailSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }
