@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { NavController, Select } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Subscription, Subject } from "rxjs";
@@ -21,6 +21,8 @@ import { AdditionsWaiterPage } from './additions-waiter/additions-waiter';
 })
 
 export class EstablishmentMenuPage implements OnInit, OnDestroy {
+
+    @ViewChild('select1') select1: Select;
 
     private _userEstablishmentSubscription: Subscription;
     private _userDetailSubscription: Subscription;
@@ -99,6 +101,12 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
             this._categories = Categories.find({ section: section_selected });
             this._subcategories = Subcategories.find({});
         }
+    }
+
+    goTop() {
+        this.select1.open();
+        setTimeout(() => {
+        }, 150);
     }
 
     goToDetail(_itemId) {
