@@ -7,7 +7,6 @@ import { WaiterGuard } from './web/services/navigation/waiter-guard.service';
 import { SupervisorGuard } from './web/services/navigation/supervisor-guard.service';
 import { CashierGuard } from './web/services/navigation/cashier-guard.service';
 import { DashboardComponent } from './web/administrator/dashboard/dashboard.component';
-import { LandingPageComponent } from './web/landing-page/landing-page.component';
 import { SectionComponent } from './web/administrator/menu/sections/section/section.component';
 import { SignupWebComponent } from './web/auth/signup/signup.web.component';
 import { SigninWebComponent } from './web/auth/signin/signin.web.component';
@@ -108,8 +107,7 @@ export const routes: Route[] = [
             { path: 'reward-units-chart/:param1', component: RewardUnitsChartComponent, canActivate: [AdminGuard] }
         ]
     },
-    { path: '', component: LandingPageComponent },
-    { path: 'signin', component: SigninWebComponent },
+    { path: '', component: SigninWebComponent },
     { path: 'signup', component: SignupWebComponent },
     { path: 'admin-signup', component: AdminSignupComponent },
     { path: 'reset-password/:tk', component: ResetPasswordWebComponent },
