@@ -108,12 +108,17 @@
       </ion-card-content>
     </ion-card>
   </div>
+  <ion-card style="margin: 0px !important;box-shadow: none;">
+      <ion-card-content></ion-card-content>
+  </ion-card>
 </ion-content>
-<ion-footer *ngIf="showActionsFooter()" class="ion-footer-custom" padding align="end">
-  <h2 *ngIf="_showEditBtn" class="fc">{{'MOBILE.SECTIONS.TOTAL' | translate}} {{_finalPrice}} {{_currencyCode}}</h2>
-  <ion-badge *ngIf="_finalPoints > 0 && _showEditBtn" class="pts">{{_finalPoints}} pts
-    <ion-icon name="star"></ion-icon>
-  </ion-badge>
+<ion-footer *ngIf="showActionsFooter()" style="background-color: #F5F5F5" class="ion-footer-custom" padding align="end">
+  <div style="text-align: left;">
+    <h2 style="display: inline;" *ngIf="_showEditBtn">{{'MOBILE.SECTIONS.TOTAL' | translate}} {{_finalPrice}} {{_currencyCode}}</h2>
+    <ion-badge *ngIf="_finalPoints > 0 && _showEditBtn" class="pts">{{_finalPoints}} pts
+      <ion-icon name="star"></ion-icon>
+    </ion-badge>
+  </div>
   <div *ngIf="_showEditBtn" class="action">
     <button ion-button outline class="action" (click)="deleteOrderItem()">{{'MOBILE.ITEM_EDIT.REMOVE' | translate}}</button>
     <button ion-button outline class="action" (click)="editOrderItem()" [disabled]="_disabledAddBtn">{{'MOBILE.ITEM_EDIT.MODIFY' | translate}}</button>

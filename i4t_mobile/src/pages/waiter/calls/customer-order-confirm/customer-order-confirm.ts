@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { MeteorObservable } from "meteor-rxjs";
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Table } from 'i4t_web/both/models/establishment/table.model';
 import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
@@ -30,6 +30,7 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
     private _itemsSubscription: Subscription;
     private _additionsSubscription: Subscription;
     private _garnishFoodSubscription: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _call: WaiterCallDetail;
     private _orders: any;
@@ -52,21 +53,21 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this._usersSubscription = MeteorObservable.subscribe('getUserByTableId', this._call.establishment_id, this._call.table_id).subscribe();
+        this._usersSubscription = MeteorObservable.subscribe('getUserByTableId', this._call.establishment_id, this._call.table_id).takeUntil(this.ngUnsubscribe).subscribe();
 
-        this._ordersSubscription = MeteorObservable.subscribe('getOrderById', this._call.order_id).subscribe(() => {
+        this._ordersSubscription = MeteorObservable.subscribe('getOrderById', this._call.order_id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._orders = Orders.find({}).zone();
         });
 
-        this._tablesSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._establishmentId).subscribe(() => {
+        this._tablesSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._establishmentId).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._table = Tables.findOne({ _id: this._tableId });
         });
 
-        this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._call.establishment_id).subscribe();
+        this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._call.establishment_id).takeUntil(this.ngUnsubscribe).subscribe();
 
-        this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._call.establishment_id).subscribe();
+        this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._call.establishment_id).takeUntil(this.ngUnsubscribe).subscribe();
 
-        this._garnishFoodSubscription = MeteorObservable.subscribe('garnishFoodByEstablishment', this._call.establishment_id).subscribe();
+        this._garnishFoodSubscription = MeteorObservable.subscribe('garnishFoodByEstablishment', this._call.establishment_id).takeUntil(this.ngUnsubscribe).subscribe();
     }
 
     /**
@@ -125,8 +126,8 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
         let btn_yes = this.itemNameTraduction('MOBILE.ORDERS.YES_ANSWER');
         let title = this.itemNameTraduction('MOBILE.SYSTEM_MSG');
         let content = "";
-        
-        if(_pType === "cancel"){
+
+        if (_pType === "cancel") {
             content = this.itemNameTraduction('MOBILE.CUSTOMER_ORDER.CONTENT_PROMPT');
         } else {
             content = this.itemNameTraduction('MOBILE.CUSTOMER_ORDER.RECEIVE_CONTENT_PROMPT');
@@ -269,12 +270,7 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._usersSubscription) { this._usersSubscription.unsubscribe(); }
-        if (this._ordersSubscription) { this._ordersSubscription.unsubscribe(); }
-        if (this._tablesSubscription) { this._tablesSubscription.unsubscribe(); }
-        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
-        if (this._additionsSubscription) { this._additionsSubscription.unsubscribe(); }
-        if (this._garnishFoodSubscription) { this._garnishFoodSubscription.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
-
 }

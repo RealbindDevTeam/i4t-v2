@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { NavController, LoadingController, ToastController, AlertController, ViewController } from 'ionic-angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
@@ -31,6 +31,7 @@ export class OrderConfirmPage implements OnInit, OnDestroy {
     private _garnishFoodSub: Subscription;
     private _currencySub: Subscription;
     private _rewardPointsSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _orders: Observable<Order[]>;
 
@@ -72,24 +73,24 @@ export class OrderConfirmPage implements OnInit, OnDestroy {
 
     init() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetail = UserDetails.findOne({ user_id: this._user });
                 if (this._userDetail) {
                     this._res_code = this._userDetail.current_establishment
-                    this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, this._statusArray).subscribe(() => {
+                    this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, this._statusArray).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             this._orders = Orders.find({ creation_user: this._user, establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
                         });
                     });
-                    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).subscribe();
+                    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).takeUntil(this.ngUnsubscribe).subscribe();
                 }
             });
         });
-        this._itemsSub = MeteorObservable.subscribe('itemsByUser', this._user).subscribe();
-        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', this._user).subscribe();
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByCurrentEstablishment', this._user).subscribe();
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', this._user).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByUser', this._user).takeUntil(this.ngUnsubscribe).subscribe();
+        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', this._user).takeUntil(this.ngUnsubscribe).subscribe();
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByCurrentEstablishment', this._user).takeUntil(this.ngUnsubscribe).subscribe();
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', this._user).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 if (Currencies.find({}).fetch().length > 0) {
                     this._currencyCode = Currencies.find({}).fetch()[0].code;
@@ -102,13 +103,8 @@ export class OrderConfirmPage implements OnInit, OnDestroy {
      * Remove all suscriptions
      */
     removeSubscriptions(): void {
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._rewardPointsSub) { this._rewardPointsSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     /**

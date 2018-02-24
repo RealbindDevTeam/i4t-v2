@@ -3,7 +3,7 @@ import { NavController, NavParams, ModalController, LoadingController, ToastCont
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
@@ -60,6 +60,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   private _currencyCode: string;
   private _finalPoints: number = 0;
   private _unitRewardPoints: number = 0;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   private _newOrderForm: FormGroup;
   private _garnishFormGroup: FormGroup = new FormGroup({});
@@ -87,7 +88,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
     this._res_code = this._navParams.get("res_id");
     this._table_code = this._navParams.get("table_id");
 
-    this._itemSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).subscribe(() => {
+    this._itemSub = MeteorObservable.subscribe('itemsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
 
       this._zone.run(() => {
         MeteorObservable.autorun().subscribe(() => {
@@ -113,7 +114,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       });
     });
 
-    this._additionSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).subscribe(() => {
+    this._additionSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._zone.run(() => {
 
         this._additions = Additions.find({}).zone();
@@ -125,7 +126,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       });
     });
 
-    this._garnishSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this._res_code).subscribe(() => {
+    this._garnishSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._zone.run(() => {
         this._garnishes = GarnishFoodCol.find({}).zone();
         this._garnishFoodList = GarnishFoodCol.collection.find().fetch();
@@ -141,7 +142,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       garnishFood: this._garnishFormGroup,
       additions: this._additionsFormGroup
     });
-    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._res_code]).subscribe(() => {
+    this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._currencyCode = Currencies.collection.find({}).fetch()[0].code + ' ';
     });
   }
@@ -384,9 +385,7 @@ export class ItemDetailPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this._itemSub) { this._itemSub.unsubscribe(); }
-    if (this._additionSub) { this._additionSub.unsubscribe(); }
-    if (this._garnishSub) { this._garnishSub.unsubscribe(); }
-    if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { UserDetail } from 'i4t_web/both/models/auth/user-detail.model';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { WaiterCallPage } from '../waiter-call/waiter-call';
@@ -20,6 +20,7 @@ export class OptionsPage implements OnInit, OnDestroy {
 
     private _userDetailSub: Subscription;
     private _waiterCallDetailSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _waiterCallsDetails: Observable<WaiterCallDetail[]>;
     private _userDetail: UserDetail;
@@ -53,12 +54,12 @@ export class OptionsPage implements OnInit, OnDestroy {
     init() {
         this.removeSubscriptions();
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
             });
         });
-        this._waiterCallDetailSub = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).subscribe(() => {
+        this._waiterCallDetailSub = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._waiterCallsDetails = WaiterCallDetails.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status: { $in: ["waiting", "completed"] } }).zone();
                 this.countWaiterCalls();
@@ -71,8 +72,8 @@ export class OptionsPage implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
     removeSubscriptions() {
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
-        if (this._waiterCallDetailSub) { this._waiterCallDetailSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     /**		
