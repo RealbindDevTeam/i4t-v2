@@ -38,6 +38,7 @@
         "VIEW": "View",
         "OK": "Ok",
         "SYSTEM_MSG": "System alert",
+        "NO_NAME": "Name unavailable",
         "LANGUAGE": {
             "es": "Spanish",
             "en": "English"

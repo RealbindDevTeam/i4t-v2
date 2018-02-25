@@ -43,6 +43,7 @@ import { SegmentsPage } from '../pages/customer/segments/segments';
 import { PopoverOptionsPage } from '../pages/customer/home/popover-options/popover-options';
 import { OrderConfirmPage } from '../pages/customer/orders/order-confirm/order-confirm';
 import { TabsPage } from '../pages/waiter/tabs/tabs';
+import { OrdersReceivedPage } from '../pages/waiter/orders-received/orders-received';
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -89,5 +90,6 @@ export const PAGES_DECLARATIONS = [
     SegmentsPage,
     PopoverOptionsPage,
     OrderConfirmPage,
-    TabsPage
+    TabsPage,
+    OrdersReceivedPage
 ];
