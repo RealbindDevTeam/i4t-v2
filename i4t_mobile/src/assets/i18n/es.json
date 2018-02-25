@@ -38,6 +38,7 @@
         "VIEW": "Ver",
         "OK": "Ok",
         "SYSTEM_MSG": "Mensaje del sistema",
+        "NO_NAME": "Nombre no disponible",
         "LANGUAGE": {
             "es": "Español",
             "en": "Ingles"
