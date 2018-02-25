@@ -124,7 +124,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   signOut() {
     Meteor.logout();
-    this._router.navigate(['signin']);
+    this._router.navigate(['']);
   }
 
 }
