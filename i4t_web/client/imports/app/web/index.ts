@@ -1,6 +1,5 @@
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './administrator/dashboard/dashboard.component';
-import { LandingPageComponent } from './landing-page/landing-page.component';
 import { SectionComponent } from './administrator/menu/sections/section/section.component';
 import { SignupWebComponent } from './auth/signup/signup.web.component';
 import { SigninWebComponent } from './auth/signin/signin.web.component';
@@ -94,7 +93,6 @@ import { RewardUnitsChartComponent } from './administrator/dashboard/reward-unit
 export const WEB_DECLARATIONS = [
     AppComponent,
     DashboardComponent,
-    LandingPageComponent,
     SigninWebComponent,
     SignupWebComponent,
     ResetPasswordWebComponent,

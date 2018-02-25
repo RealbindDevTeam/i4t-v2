@@ -54,3 +54,16 @@ Meteor.publish('getUsersByAdminUser', function (_pUserId: string) {
     });
     return Users.find({ _id: { $in: _lUsers } });
 });
+
+/**
+ * Meteor publication return users with establishment condition
+ * @param {string} _pEstablishmentId
+ */
+Meteor.publish('getUsersByEstablishmentId', function (_pEstablishmentId: string) {
+    check(_pEstablishmentId, String);
+    let _lUsers: string[] = [];
+    UserDetails.collection.find({ current_establishment: _pEstablishmentId }).fetch().forEach(function <UserDetail>(user, index, arr) {
+        _lUsers.push(user.user_id);
+    });
+    return Users.find({ _id: { $in: _lUsers } });
+});

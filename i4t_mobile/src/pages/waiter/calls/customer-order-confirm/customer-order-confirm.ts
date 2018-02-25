@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { MeteorObservable } from "meteor-rxjs";
 import { TranslateService } from '@ngx-translate/core';
@@ -45,7 +45,8 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
         public _loadingCtrl: LoadingController,
         public _navCtrl: NavController,
         private _toastCtrl: ToastController,
-        private _userLanguageService: UserLanguageServiceProvider) {
+        private _userLanguageService: UserLanguageServiceProvider,
+        private _ngZone: NgZone) {
         _translate.setDefaultLang('en');
         this._call = this._params.get('call');
         this._establishmentId = this._call.establishment_id;
@@ -56,11 +57,15 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
         this._usersSubscription = MeteorObservable.subscribe('getUserByTableId', this._call.establishment_id, this._call.table_id).takeUntil(this.ngUnsubscribe).subscribe();
 
         this._ordersSubscription = MeteorObservable.subscribe('getOrderById', this._call.order_id).takeUntil(this.ngUnsubscribe).subscribe(() => {
-            this._orders = Orders.find({}).zone();
+            this._ngZone.run(() => {
+                this._orders = Orders.find({ _id: this._call.order_id }).zone();
+            });
         });
 
         this._tablesSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._establishmentId).takeUntil(this.ngUnsubscribe).subscribe(() => {
-            this._table = Tables.findOne({ _id: this._tableId });
+            this._ngZone.run(() => {
+                this._table = Tables.findOne({ _id: this._tableId });
+            });
         });
 
         this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._call.establishment_id).takeUntil(this.ngUnsubscribe).subscribe();
@@ -75,14 +80,24 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
      * @param {string} _pUserId 
      */
     getUserName(_pUserId: string): string {
-        let _user: User = Users.collection.find({}).fetch().filter(u => u._id === _pUserId)[0];
+        let _msg: string = this.itemNameTraduction('MOBILE.NO_NAME');
+        let _user: User = Users.findOne({ _id: _pUserId });
         if (_user) {
             if (_user.username) {
                 return _user.username;
+            } else {
+                if (_user.services) {
+                    if (_user.services.facebook) {
+                        return _user.services.facebook.name;
+                    } else {
+                        return _msg;
+                    }
+                } else {
+                    return _msg;
+                }
             }
-            else if (_user.profile.name) {
-                return _user.profile.name;
-            }
+        } else {
+            return _msg;
         }
     }
 

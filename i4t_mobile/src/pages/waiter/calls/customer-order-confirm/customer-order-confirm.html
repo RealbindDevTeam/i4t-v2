@@ -13,9 +13,10 @@
                 <ion-avatar item-start>
                     <img src="assets/img/tables.png">
                 </ion-avatar>
-                <h2>{{ 'MOBILE.CUSTOMER_ORDER.ORDER' | translate }}: {{order.code}}</h2>
+                <h2>{{ 'MOBILE.CUSTOMER_ORDER.ORDER' | translate }} # {{order.code}}</h2>
                 <h3>{{ 'MOBILE.CUSTOMER_ORDER.CONSUMMER' | translate }}: {{ getUserName(order.creation_user) }}</h3>
-                <p>{{ 'MOBILE.CUSTOMER_ORDER.TABLE' | translate }} {{_table?._number}} ({{ 'MOBILE.CUSTOMER_ORDER.ALPHANUMERIC_CODE'| translate }} {{_table?.QR_code}})</p>
+                <p>{{ 'MOBILE.CUSTOMER_ORDER.TABLE' | translate }} {{_table?._number}} ({{ 'MOBILE.CUSTOMER_ORDER.ALPHANUMERIC_CODE'|
+                    translate }} {{_table?.QR_code}})</p>
             </ion-item>
 
             <span *ngFor="let it of order.items">
@@ -30,7 +31,7 @@
                 <span *ngIf="!it.is_reward">
                     <ion-item>
                         <h2 style="font-weight: bold;">{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
-                        <h3>{{it.observations}}</h3>
+                        <p>{{it.observations}}</p>
                         <span *ngFor="let gr of it.garnishFood">
                             <h2>{{getGarnishFoodName(gr)}}</h2>
                         </span>
@@ -39,6 +40,11 @@
                         </span>
                     </ion-item>
                 </span>
+            </span>
+            <span *ngFor="let addition of order.additions">
+                <ion-item>
+                    <h2 style="font-weight: bold;">{{addition.quantity}} - {{getAdditionName(addition.additionId)}}</h2>
+                </ion-item>
             </span>
         </ion-list>
     </div>
