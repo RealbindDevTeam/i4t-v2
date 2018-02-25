@@ -7,10 +7,11 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { Device } from '@ionic-native/device';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { Meteor } from 'meteor/meteor';
-import { HomeMenu } from '../../customer/home-menu/home-menu';
+//import { HomeMenu } from '../../customer/home-menu/home-menu';
+import { HomePage } from '../../customer/home/home';
 //import { Menu } from '../../waiter/menu/menu';
 import { TabsPage } from '../../waiter/tabs/tabs';
-import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
+import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
 import { Accounts } from 'meteor/accounts-base';
 import { Facebook } from '@ionic-native/facebook';
 
@@ -84,7 +85,7 @@ export class SigninComponent implements OnInit {
                                     //role 400 customer
                                     //this.addUserDevice();
                                     this.insertUserInfo();
-                                    this.navCtrl.push(HomeMenu);
+                                    this.navCtrl.push(HomePage);
                                 } else if (role == "200") {
                                     MeteorObservable.call('validateEstablishmentIsActive').subscribe((_establishmenttActive) => {
                                         if (_establishmenttActive) {
@@ -175,7 +176,7 @@ export class SigninComponent implements OnInit {
                         current_table: ''
                     });
                 }
-                this.navCtrl.push(HomeMenu);
+                this.navCtrl.push(HomePage);
             }, (error) => {
                 this.error;
             });
@@ -263,8 +264,8 @@ export class SigninComponent implements OnInit {
     /**
      * Insert User Info
      */
-    insertUserInfo():void{
-        let _lUserLogin:UserLogin = new UserLogin();
+    insertUserInfo(): void {
+        let _lUserLogin: UserLogin = new UserLogin();
         _lUserLogin.user_id = Meteor.userId();
         _lUserLogin.login_date = new Date();
         _lUserLogin.app_code_name = navigator.appCodeName;
@@ -277,7 +278,7 @@ export class SigninComponent implements OnInit {
         _lUserLogin.model = this._device.model;
         _lUserLogin.platform_device = this._device.platform;
         _lUserLogin.version = this._device.version;
-        MeteorObservable.call( 'insertUserLoginInfo', _lUserLogin ).subscribe();
+        MeteorObservable.call('insertUserLoginInfo', _lUserLogin).subscribe();
     }
 
     itemNameTraduction(itemName: string): string {
