@@ -180,6 +180,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this._router.navigate(['/app/item-units-chart', _pEstablishmentId], { skipLocationChange: true });
   }
 
+  /**
+   * Go to item units chart
+   * @param _pEstablishmentId
+   */
+  goToItemHistoryChart(_pEstablishmentId: string) {
+    this._router.navigate(['/app/item-history-chart', _pEstablishmentId], { skipLocationChange: true });
+  }
+
   goToRewardUnitsCharts(_pEstablishment: string) {
     this._router.navigate(['/app/reward-units-chart', _pEstablishment], { skipLocationChange: true });
   }
