@@ -1365,7 +1365,8 @@
         "THERE_NOT_RESTAURANTS": "Aún no hay restaurantes registrados",
         "RESTAURANT_REGISTER": "Registrar restaurante",
         "MESSAGE": "Regístra uno para habilitar esta opción",
-        "REWARDS": "Recompensas redimidas hoy"
+        "REWARDS": "Recompensas redimidas hoy",
+        "ITEMS_HISTORY": "Items ordenados históricamente"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Hoy",
@@ -1375,6 +1376,16 @@
         "THIRTY_DAYS": "Últimos 30 días",
         "FROM": "De",
         "TO": "a",
+        "CHART_TITLE": "Cantidad de items ordenados(pedidos) hoy ",
+        "UNITS_LBL": "Unidades",
+        "ITEMS_LBL": "Items",
+        "CHART_SUBTITLE": "Ordenados alfabéticamente"
+    },
+    "ITEM_HISTORY_CHART": {
+        "YESTERDAY": "Ayer",
+        "THIS_WEEK": "Esta semana",
+        "SEVEN_DAYS": "Últimos 7 días",
+        "THIRTY_DAYS": "Últimos 30 días",
         "CHART_TITLE": "Cantidad de items ordenados(pedidos) por rango de tiempo ",
         "UNITS_LBL": "Unidades",
         "ITEMS_LBL": "Items",
