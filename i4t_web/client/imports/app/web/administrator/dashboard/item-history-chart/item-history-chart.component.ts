@@ -8,10 +8,6 @@ import { Meteor } from 'meteor/meteor';
 import { Chart } from 'angular-highcharts';
 import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
-import { Item } from '../../../../../../../both/models/menu/item.model';
-import { Items } from '../../../../../../../both/collections/menu/item.collection';
-import { Order } from '../../../../../../../both/models/establishment/order.model';
-import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { OrderHistory } from '../../../../../../../both/models/establishment/order-history.model';
 import { OrderHistories } from '../../../../../../../both/collections/establishment/order-history.collection';
 
@@ -26,16 +22,11 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
     private _establishmentId: string = null;
     private itemUnitsChart;
     private _establishmentsSubscription: Subscription;
-    private _itemsSubscription: Subscription;
-    private _ordersSubscription: Subscription;
     private _orderHistorySubscription: Subscription;
-    private _items: Observable<Item[]>;
-    private _orders: Observable<Order[]>;
     private _ordersHistory: Observable<OrderHistory[]>;
     private _establishment: Establishment = null;
 
     private xAxisArray: string[] = [];
-    private todaySeriesArray: number[] = [];
     private yesterdaySeriesArray: number[] = [];
     private lastSevenDaysArray: number[] = [];
     private lastThirtyDaysArray: number[] = [];
@@ -91,18 +82,6 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishmentSortedByName', this._establishmentId).subscribe();
-
-        this._ordersSubscription = MeteorObservable.subscribe('getOrdersByEstablishmentId', this._establishmentId, ['ORDER_STATUS.RECEIVED']).subscribe(() => {
-            this._ngZone.run(() => {
-                this._orders = Orders.find({}).zone();
-
-                this._orders.subscribe(() => {
-                    //this.setBarChartData();
-                });
-            });
-        });
-
         this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishment', this._establishmentId).subscribe(() => {
             this._ngZone.run(() => {
                 this._ordersHistory = OrderHistories.find({ establishment_id: this._establishmentId }).zone();
@@ -128,7 +107,6 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
         let lastThirtyDaysLbl: string = this.itemNameTraduction('ITEM_HISTORY_CHART.THIRTY_DAYS');
 
         this.xAxisArray = [];
-        this.todaySeriesArray = [];
         this.yesterdaySeriesArray = [];
         this.lastSevenDaysArray = [];
         this.lastThirtyDaysArray = [];
@@ -144,15 +122,14 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
         });
         this.itemNameArray.sort();
         this.xAxisArray = this.itemNameArray;
-        console.log(this.xAxisArray);
 
         this.itemNameArray.forEach((itemName) => {
-
             let _todayAggregate: number = 0;
             let _yesterdayAggregate: number = 0;
             let _lastSevenDaysAggregate: number = 0;
             let _lastThirtyDaysAggregate: number = 0;
 
+            //Orders yesterday
             OrderHistories.collection.find({
                 'items.item_name': itemName,
                 'creation_date': {
@@ -162,17 +139,108 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
             }).fetch().forEach((orderHistory) => {
                 orderHistory.items.forEach((orderHistoryItem) => {
                     if (orderHistoryItem.item_name === itemName) {
-                        _todayAggregate = _todayAggregate + orderHistoryItem.quantity;
+                        _yesterdayAggregate = _yesterdayAggregate + orderHistoryItem.quantity;
                     }
                 });
             });
+            this.yesterdaySeriesArray.push(_yesterdayAggregate);
 
-            this.todaySeriesArray.push(_todayAggregate);
+            //Orders last seven days
+            OrderHistories.collection.find({
+                'items.item_name': itemName,
+                'creation_date': {
+                    $gte: new Date(this._lastSevenDaysDateIni.getFullYear(), this._lastSevenDaysDateIni.getMonth(), this._lastSevenDaysDateIni.getDate()),
+                    $lte: new Date(this._lastSevenDaysDateEnd.getFullYear(), this._lastSevenDaysDateEnd.getMonth(), this._lastSevenDaysDateEnd.getDate(), 23, 59, 59)
+                }
+            }).fetch().forEach((orderHistory) => {
+                orderHistory.items.forEach((orderHistoryItem) => {
+                    if (orderHistoryItem.item_name === itemName) {
+                        _lastSevenDaysAggregate = _lastSevenDaysAggregate + orderHistoryItem.quantity;
+                    }
+                });
+            });
+            this.lastSevenDaysArray.push(_lastSevenDaysAggregate);
 
-            console.log(this.todaySeriesArray);
+            //Orders last thirty days
+            OrderHistories.collection.find({
+                'items.item_name': itemName,
+                'creation_date': {
+                    $gte: new Date(this._lastThirtyDaysDateIni.getFullYear(), this._lastThirtyDaysDateIni.getMonth(), this._lastThirtyDaysDateIni.getDate()),
+                    $lte: new Date(this._lastThirtyDaysDateEnd.getFullYear(), this._lastThirtyDaysDateEnd.getMonth(), this._lastThirtyDaysDateEnd.getDate(), 23, 59, 59)
+                }
+            }).fetch().forEach((orderHistory) => {
+                orderHistory.items.forEach((orderHistoryItem) => {
+                    if (orderHistoryItem.item_name === itemName) {
+                        _lastThirtyDaysAggregate = _lastThirtyDaysAggregate + orderHistoryItem.quantity;
+                    }
+                });
+            });
+            this.lastThirtyDaysArray.push(_lastThirtyDaysAggregate);
+        });
+
+        this.itemUnitsChart = new Chart({
+            chart: {
+                type: 'bar',
+                height: "100%"
+            },
+            title: {
+                text: chartTitle,
+            },
+            subtitle: {
+                text: chartSubtitle
+            },
+            xAxis: {
+                categories: this.xAxisArray,
+                title: {
+                    text: itemsLbl
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: unitsLbl,
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' ' + unitsLbl
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                align: 'right',
+                verticalAlign: 'top',
+                layout: 'vertical',
+                x: 0,
+                y: 100
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: yesterdayLbl,
+                data: this.yesterdaySeriesArray,
+                color: '#8BC34A'
+            }, {
+                name: lastSevenDaysLbl,
+                data: this.lastSevenDaysArray,
+                color: '#FF9800'
+            }, {
+                name: lastThirtyDaysLbl,
+                data: this.lastThirtyDaysArray,
+                color: '#9C27B0'
+            }
+            ]
         });
     }
-
 
     /**
      * Return traduction
@@ -190,8 +258,6 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
     removeSubscriptions(): void {
-        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
-        if (this._ordersSubscription) { this._ordersSubscription.unsubscribe(); }
         if (this._establishmentsSubscription) { this._establishmentsSubscription.unsubscribe(); }
     }
 
