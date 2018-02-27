@@ -1,4 +1,4 @@
-<div *ngIf="!_thereIsUser" pading>
+<div *ngIf="!_thereIsUser" padding class="content-custom">
     <div style="text-align: center;">
         <img style="max-width: 75%;" src="assets/img/delivery-of-item.png">
     </div>
@@ -7,7 +7,7 @@
         <p>{{'MOBILE.ORDERS.CONTENT' | translate}}</p>
     </div>
 </div>
-<div *ngIf="_thereIsUser">
+<div *ngIf="_thereIsUser" class="content-custom">
     <ion-list style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" *ngFor="let establishment of _establishments | async;">
         <button ion-item (click)="viewEstablishmentProfile(establishment)" style="background-image: url(assets/img/background_waiter.png);"
             class="img-header">
@@ -176,6 +176,6 @@
         </div>
     </div>
 </div>
-<div style="margin: 10px;">
+<div padding class="footer-custom">
     <button ion-button block outline (click)="goToNewOrder()">{{'MOBILE.ORDERS.ADD_BUTTON' | translate}}</button>
 </div>
