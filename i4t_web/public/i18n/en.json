@@ -1365,7 +1365,8 @@
         "THERE_NOT_RESTAURANTS": "No restaurants registered yet",
         "RESTAURANT_REGISTER": "Restaurant registration",
         "MESSAGE": "Register one to enable this option",
-        "REWARDS": "Rewards redeemed today"
+        "REWARDS": "Rewards redeemed today",
+        "ITEMS_HISTORY": "Items ordered historically"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Today",
@@ -1375,6 +1376,16 @@
         "THIRTY_DAYS": "Last 30 days",
         "FROM": "From",
         "TO": "to",
+        "CHART_TITLE": "Units of items ordered today",
+        "UNITS_LBL": "Units",
+        "ITEMS_LBL": "Items",
+        "CHART_SUBTITLE": "Sorted alphabetically"
+    },
+    "ITEM_HISTORY_CHART": {
+        "YESTERDAY": "Yesterday",
+        "THIS_WEEK": "This week",
+        "SEVEN_DAYS": "Last 7 days",
+        "THIRTY_DAYS": "Last 30 days",
         "CHART_TITLE": "Units of items ordered by time range",
         "UNITS_LBL": "Units",
         "ITEMS_LBL": "Items",

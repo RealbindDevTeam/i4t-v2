@@ -89,6 +89,7 @@ import { CustomerPointsComponent } from './customer/points/points/customer-point
 import { PointsDetailComponent } from './customer/points/points-detail/points-detail.component';
 import { ItemUnitsChartComponent } from './administrator/dashboard/item-units-chart/item-units-chart.component';
 import { RewardUnitsChartComponent } from './administrator/dashboard/reward-units-chart/reward-units-chart.component';
+import { ItemHistoryChartComponent } from './administrator/dashboard/item-history-chart/item-history-chart.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -148,7 +149,8 @@ export const WEB_DECLARATIONS = [
     CustomerPointsComponent,
     PointsDetailComponent,
     ItemUnitsChartComponent,
-    RewardUnitsChartComponent
+    RewardUnitsChartComponent,
+    ItemHistoryChartComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [
