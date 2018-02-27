@@ -1366,7 +1366,8 @@
         "RESTAURANT_REGISTER": "Registrar restaurante",
         "MESSAGE": "Regístra uno para habilitar esta opción",
         "REWARDS": "Recompensas redimidas hoy",
-        "ITEMS_HISTORY": "Items ordenados históricamente"
+        "ITEMS_HISTORY": "Items ordenados históricamente",
+        "REWARDS_HISTORY": "Recompensas redimidas históricamente"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Hoy",
@@ -1395,6 +1396,15 @@
         "TODAY": "Hoy",
         "YESTERDAY": "Ayer",
         "THIS_WEEK": "Esta semana",
+        "SEVEN_DAYS": "Últimos 7 días",
+        "THIRTY_DAYS": "Últimos 30 días",
+        "CHART_TITLE": "Cantidad de recompensas redimidas hoy",
+        "UNITS_LBL": "Unidades",
+        "REWARDS_LBL": "Recompensas",
+        "CHART_SUBTITLE": "Ordenados alfabéticamente"
+    },
+    "REWARD_HISTORY_CHART": {
+        "YESTERDAY": "Ayer",
         "SEVEN_DAYS": "Últimos 7 días",
         "THIRTY_DAYS": "Últimos 30 días",
         "CHART_TITLE": "Cantidad de recompensas redimidas por rango de tiempo",

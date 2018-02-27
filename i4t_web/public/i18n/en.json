@@ -1366,7 +1366,8 @@
         "RESTAURANT_REGISTER": "Restaurant registration",
         "MESSAGE": "Register one to enable this option",
         "REWARDS": "Rewards redeemed today",
-        "ITEMS_HISTORY": "Items ordered historically"
+        "ITEMS_HISTORY": "Items ordered historically",
+        "REWARDS_HISTORY": "Rewards redeemed historically"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Today",
@@ -1397,10 +1398,19 @@
         "THIS_WEEK": "This week",
         "SEVEN_DAYS": "Last 7 days",
         "THIRTY_DAYS": "Last 30 days",
-        "CHART_TITLE": "Units of rewards redeemed by time range",
+        "CHART_TITLE": "Units of rewards redeemed today",
         "UNITS_LBL": "Units",
         "REWARDS_LBL": "Rewards",
         "CHART_SUBTITLE": "Sorted alphabetically"
+    },
+    "REWARD_HISTORY_CHART": {
+        "YESTERDAY": "Yesterday",
+        "SEVEN_DAYS": "Last 7 days",
+        "THIRTY_DAYS": "Last 30 days",
+        "CHART_TITLE": "Units of rewards redeemed by time range",
+        "UNITS_LBL": "Units",
+        "REWARDS_LBL": "Rewards",
+        "CHART_SUBTITLE": "Sorted alphabetically"    
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Enable/disable Item",

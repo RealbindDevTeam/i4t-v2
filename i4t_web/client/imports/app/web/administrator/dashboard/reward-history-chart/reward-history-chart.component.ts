@@ -12,19 +12,20 @@ import { OrderHistory } from '../../../../../../../both/models/establishment/ord
 import { OrderHistories } from '../../../../../../../both/collections/establishment/order-history.collection';
 
 @Component({
-    selector: 'item-history-chart',
-    templateUrl: './item-history-chart.component.html',
-    styleUrls: ['./item-history-chart.component.scss']
+    selector: 'reward-history-chart',
+    templateUrl: './reward-history-chart.component.html',
+    styleUrls: ['./reward-history-chart.component.scss']
 })
 
-export class ItemHistoryChartComponent implements OnInit, OnDestroy {
+export class RewardHistoryChartComponent implements OnInit, OnDestroy {
 
     private _establishmentId: string = null;
-    private itemUnitsChart;
+    private rewardHistoryChart;
     private _establishmentsSubscription: Subscription;
-    private _orderHistorySubscription: Subscription;
-    private _ordersHistory: Observable<OrderHistory[]>;
     private _establishment: Establishment = null;
+
+    private _orderHistoriesSubscription: Subscription;
+    private _ordersHistory: Observable<OrderHistory[]>;
 
     private xAxisArray: string[] = [];
     private yesterdaySeriesArray: number[] = [];
@@ -41,7 +42,7 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
     private _lastThirtyDaysDateEnd: Date;
 
     private dateRangeLbl: string;
-    private itemNameArray: string[];
+    private rewardNameArray: string[];
 
     /**
    * @param {TranslateService} _translate 
@@ -81,10 +82,9 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishment', this._establishmentId).subscribe(() => {
+        this._orderHistoriesSubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishment', this._establishmentId).subscribe(() => {
             this._ngZone.run(() => {
-                this._ordersHistory = OrderHistories.find({ establishment_id: this._establishmentId }).zone();
-
+                this._ordersHistory = OrderHistories.find({}).zone();
                 this._ordersHistory.subscribe(() => {
                     this.setBarChartData();
                 });
@@ -96,33 +96,34 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
      * Set the chart data according to the initial conditions
      */
     setBarChartData() {
-        let chartTitle: string = this.itemNameTraduction('ITEM_HISTORY_CHART.CHART_TITLE');
-        let chartSubtitle: string = this.itemNameTraduction('ITEM_HISTORY_CHART.CHART_SUBTITLE');
-        let unitsLbl: string = this.itemNameTraduction('ITEM_HISTORY_CHART.UNITS_LBL');
-        let itemsLbl: string = this.itemNameTraduction('ITEM_HISTORY_CHART.ITEMS_LBL');
-        let todayLbl: string = this.itemNameTraduction('ITEM_HISTORY_CHART.TODAY');
-        let yesterdayLbl: string = this.itemNameTraduction('ITEM_HISTORY_CHART.YESTERDAY')
-        let lastSevenDaysLbl: string = this.itemNameTraduction('ITEM_HISTORY_CHART.SEVEN_DAYS');
-        let lastThirtyDaysLbl: string = this.itemNameTraduction('ITEM_HISTORY_CHART.THIRTY_DAYS');
+        let chartTitle: string = this.itemNameTraduction('REWARD_HISTORY_CHART.CHART_TITLE');
+        let chartSubtitle: string = this.itemNameTraduction('REWARD_HISTORY_CHART.CHART_SUBTITLE');
+        let unitsLbl: string = this.itemNameTraduction('REWARD_HISTORY_CHART.UNITS_LBL');
+        let itemsLbl: string = this.itemNameTraduction('REWARD_HISTORY_CHART.REWARDS_LBL');
+        let yesterdayLbl: string = this.itemNameTraduction('REWARD_HISTORY_CHART.YESTERDAY')
+        let lastSevenDaysLbl: string = this.itemNameTraduction('REWARD_HISTORY_CHART.SEVEN_DAYS');
+        let lastThirtyDaysLbl: string = this.itemNameTraduction('REWARD_HISTORY_CHART.THIRTY_DAYS');
 
         this.xAxisArray = [];
         this.yesterdaySeriesArray = [];
         this.lastSevenDaysArray = [];
         this.lastThirtyDaysArray = [];
-        this.itemNameArray = [];
+        this.rewardNameArray = [];
 
         OrderHistories.collection.find({}).fetch().forEach((orderHistory) => {
             orderHistory.items.forEach((item) => {
-                let indexofvar = this.itemNameArray.indexOf(item.item_name);
-                if (indexofvar < 0) {
-                    this.itemNameArray.push(item.item_name);
+                if (item.is_reward) {
+                    let indexofvar = this.rewardNameArray.indexOf(item.item_name);
+                    if (indexofvar < 0) {
+                        this.rewardNameArray.push(item.item_name);
+                    }
                 }
             });
         });
-        this.itemNameArray.sort();
-        this.xAxisArray = this.itemNameArray;
+        this.rewardNameArray.sort();
+        this.xAxisArray = this.rewardNameArray;
 
-        this.itemNameArray.forEach((itemName) => {
+        this.rewardNameArray.forEach((itemName) => {
             let _yesterdayAggregate: number = 0;
             let _lastSevenDaysAggregate: number = 0;
             let _lastThirtyDaysAggregate: number = 0;
@@ -136,7 +137,7 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
                 }
             }).fetch().forEach((orderHistory) => {
                 orderHistory.items.forEach((orderHistoryItem) => {
-                    if (orderHistoryItem.item_name === itemName) {
+                    if ((orderHistoryItem.item_name === itemName) && orderHistoryItem.is_reward) {
                         _yesterdayAggregate = _yesterdayAggregate + orderHistoryItem.quantity;
                     }
                 });
@@ -152,7 +153,7 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
                 }
             }).fetch().forEach((orderHistory) => {
                 orderHistory.items.forEach((orderHistoryItem) => {
-                    if (orderHistoryItem.item_name === itemName) {
+                    if ((orderHistoryItem.item_name === itemName) && orderHistoryItem.is_reward) {
                         _lastSevenDaysAggregate = _lastSevenDaysAggregate + orderHistoryItem.quantity;
                     }
                 });
@@ -168,7 +169,7 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
                 }
             }).fetch().forEach((orderHistory) => {
                 orderHistory.items.forEach((orderHistoryItem) => {
-                    if (orderHistoryItem.item_name === itemName) {
+                    if ((orderHistoryItem.item_name === itemName) && orderHistoryItem.is_reward) {
                         _lastThirtyDaysAggregate = _lastThirtyDaysAggregate + orderHistoryItem.quantity;
                     }
                 });
@@ -176,7 +177,7 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
             this.lastThirtyDaysArray.push(_lastThirtyDaysAggregate);
         });
 
-        this.itemUnitsChart = new Chart({
+        this.rewardHistoryChart = new Chart({
             chart: {
                 type: 'bar',
                 height: "100%"
@@ -257,7 +258,7 @@ export class ItemHistoryChartComponent implements OnInit, OnDestroy {
    */
     removeSubscriptions(): void {
         if (this._establishmentsSubscription) { this._establishmentsSubscription.unsubscribe(); }
-        if (this._orderHistorySubscription) { this._orderHistorySubscription.unsubscribe(); }
+        if (this._orderHistoriesSubscription) { this._orderHistoriesSubscription.unsubscribe(); }
     }
 
     /**
