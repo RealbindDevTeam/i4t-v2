@@ -63,7 +63,7 @@
             "REQUIRED_CONFIRM": "Debes confirmar la contraseña",
             "PASSWORD_NOT_MATCH": "Las contraseñas no coinciden",
             "CONFIRM_TITLE": "Usuario creado",
-            "CONFIRM_SUBTITLE": "Ahora puedes disfrutar de iurest",
+            "CONFIRM_SUBTITLE": "Ahora puedes disfrutar de comeygana",
             "CONFIRM_BTN": "Aceptar",
             "OR": "ó",
             "SYSTEM_MSG": "Mensaje del sistema",
@@ -175,8 +175,8 @@
             "ADDITION_EDITED": "Adición editada correctamente",
             "QUANT": "Cant.",
             "TABLE_NOT_EXISTS": "La mesa no existe. Por favor verifica el código",
-            "TABLE_NO_ACTIVE": "La mesa no tiene el servicio de iurest activo. No es posible ingresar",
-            "IUREST_NO_ACTIVE": "El Restaurante no tiene el servicio de iurest activo. No es posible ingresar",
+            "TABLE_NO_ACTIVE": "La mesa no tiene el servicio de comeygana activo. No es posible ingresar",
+            "IUREST_NO_ACTIVE": "El Restaurante no tiene el servicio de comeygana activo. No es posible ingresar",
             "TABLE": "Mesa",
             "RESTAURANT_NOT_EXISTS": "El restaurante no existe. No es posible ingresar.",
             "MSG_1": "Puedes ordenar lo que deseas",
@@ -404,7 +404,7 @@
             "DIALOG_ALERT": "Mensaje",
             "CHANGE_TABLE_OK": "El cambio de mesa se ha realizado correctamente",
             "TABLE_DESTINY_NOT_EXISTS": "El código de la nueva mesa no existe. Por favor intenta nuevamente.",
-            "TABLE_DESTINY_NO_ACTIVE": "La mesa ingresada no esta activa para el servicio de iurest",
+            "TABLE_DESTINY_NO_ACTIVE": "La mesa ingresada no esta activa para el servicio de comeygana",
             "TABLE_DESTINY_NO_RESTAURANT": "El código de la mesa ingresada no pertenece al restaurante en el que te encuentras en este momento. Por favor intenta nuevamente.",
             "PENDING_ORDERS": "Tienes ordenes pendientes por confirmar que afectan tu pago. Por favor revisa e intenta nuevamente.",
             "ORDERS_PAY_PROCESS": "Tienes ordenes en proceso de pago. No es posible hacer el cambio de mesa.",
@@ -441,14 +441,14 @@
         },
         "SIGN_OUT": {
             "TITLE_CONFIRM": "Cerrar sesión",
-            "CONTENT_CONFIRM": "Estás seguro de salir de iurest?",
+            "CONTENT_CONFIRM": "Estás seguro de salir de comeygana?",
             "NO_BTN": "No",
             "YES_BTN": "Sí",
             "LOADING": "Por favor espera..."
         },
         "HOME": {
             "SLIDE-1": {
-                "WELCOME": "Bienvenido a iurest",
+                "WELCOME": "Bienvenido a comeygana",
                 "TEXT": "Ordena en tu restaurante favorito fácil y rápido"
             },
             "SLIDE-2": {
@@ -456,7 +456,7 @@
                 "2": "2. Revisa lo que cuesta tu orden",
                 "3": "3. Solicita un mesero"
             },
-            "HEADER_TITLE": "Bienvenido a Iurest!, sigue adelante y disfruta ordenando",
+            "HEADER_TITLE": "Bienvenido a comeygana!, sigue adelante y disfruta ordenando",
             "TITLE_LIST_BTN": "Mira los restaurantes donde puedes ganar puntos",
             "TITLE_ORDER_BTN": "Ordena en un restaurante",
             "TITLE_POINTS_BTN": "Revisa tus puntos acumulados"
