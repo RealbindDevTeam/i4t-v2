@@ -57,6 +57,7 @@ import { PointsDetailComponent } from './web/customer/points/points-detail/point
 import { ItemUnitsChartComponent } from './web/administrator/dashboard/item-units-chart/item-units-chart.component';
 import { RewardUnitsChartComponent } from 'client/imports/app/web/administrator/dashboard/reward-units-chart/reward-units-chart.component';
 import { ItemHistoryChartComponent } from './web/administrator/dashboard/item-history-chart/item-history-chart.component';
+import { RewardHistoryChartComponent } from './web/administrator/dashboard/reward-history-chart/reward-history-chart.component';
 
 export const routes: Route[] = [
     {
@@ -106,7 +107,8 @@ export const routes: Route[] = [
             { path: 'establishment-points/:param1', component: PointsDetailComponent, canActivate: [CustomerGuard] },
             { path: 'item-units-chart/:param1', component: ItemUnitsChartComponent, canActivate: [AdminGuard] },
             { path: 'reward-units-chart/:param1', component: RewardUnitsChartComponent, canActivate: [AdminGuard] },
-            { path: 'item-history-chart/:param1', component: ItemHistoryChartComponent, canActivate: [AdminGuard] }
+            { path: 'item-history-chart/:param1', component: ItemHistoryChartComponent, canActivate: [AdminGuard] },
+            { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] }
         ]
     },
     { path: '', component: SigninWebComponent },
