@@ -85,8 +85,8 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
             this._ngZone.run(() => {
-                this._establishments = Establishments.find({}).zone();
-                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                this._establishments = Establishments.find({ creation_user: this._user }).zone();
+                Establishments.collection.find({ creation_user: this._user }).fetch().forEach((establishment: Establishment) => {
                     this._lEstablishmentsId.push(establishment._id);
                 });
                 this.countEstablishments();

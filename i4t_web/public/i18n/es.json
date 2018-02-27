@@ -294,7 +294,10 @@
             "GARNISHFOOD": "Guarniciones",
             "ITEMS": "Items",
             "ITEMS_ENABLE": "Habilitar items",
-            "ORDERS_CHEF": "Ordenes"
+            "ORDERS_CHEF": "Ordenes",
+            "OPTIONS_VALUES": "Opciones y Valores",
+            "OPTIONS": "Opciones",
+            "VALUES": "Valores"
         },
         "ORDERS": "Ordenes",
         "WAITER_CALL": "Llamar mesero",
@@ -1685,5 +1688,27 @@
         "YOU_REDEEMED": "Redimiste",
         "QUANT": "Cant. ",
         "REWARD": "Recompensa"
+    },
+    "OPTIONS": {
+        "OPTION_CREATION": "Creación de opciones",
+        "OPTION_TEXT": "Crea las opciones que necesitas para tus items",
+        "OPTION_EDIT": "Edición de la opción",
+        "RESTAURANTS": "Restaurantes",
+        "NO_RESTAURANT": "No se han seleccionado restaurantes",
+        "RESTAURANT_OPTION": "Selecciona los restaurantes en donde se encontrara disponible la opción",
+        "NO_RESTAURANT_CREATED": "No se encuentran restaurantes registrados en el sistema",
+        "MODIFY": "Modificar",
+        "ACTIVATE": "Activar",
+        "INACTIVATE": "Inactivar",
+        "REMOVE": "Remover",
+        "OPCION_CREATED": "Opción creada correctamente",
+        "OPTION_EDITED": "Opción editada correctamente",
+        "THERE_NOT_RESTAURANTS": "Aún no hay restaurantes registrados",
+        "RESTAURANT_REGISTER": "Registrar restaurante",
+        "MESSAGE": "Registra uno para habilitar esta opción",
+        "REMOVE_TITLE": "Remover opción",
+        "REMOVE_MSG": "Deseas remover la opción?",
+        "OPTION_REMOVED": "Opción removida correctamente",
+        "OPTION_NOT_REMOVED": "La opción tiene valores asociados, no se ha podido remover"
     }
 }

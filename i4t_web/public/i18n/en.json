@@ -294,7 +294,10 @@
             "GARNISHFOOD": "Side dishes",
             "ITEMS": "Items",
             "ITEMS_ENABLE": "Available Items",
-            "ORDERS_CHEF": "Orders"
+            "ORDERS_CHEF": "Orders",
+            "OPTIONS_VALUES": "Options and Values",
+            "OPTIONS": "Options",
+            "VALUES": "Values"
         },
         "ORDERS": "Orders",
         "WAITER_CALL": "Waiter/waitress call",
@@ -1685,5 +1688,27 @@
         "YOU_REDEEMED": "You redeemed",
         "QUANT": "Quant. ",
         "REWARD": "Reward"
+    },
+    "OPTIONS": {
+        "OPTION_CREATION": "Create options",
+        "OPTION_TEXT": "Create the options you need for your items",
+        "OPTION_EDIT": "Option edition",
+        "RESTAURANTS": "Restaurants",
+        "NO_RESTAURANT": "No selected restaurant ",
+        "RESTAURANT_OPTION": "Select the restaurants where the option is available",
+        "NO_RESTAURANT_CREATED": "There are not restaurants created on the platform",
+        "MODIFY": "Edit",
+        "ACTIVATE": "Activate",
+        "INACTIVATE": "Inactivate",
+        "REMOVE": "Remove",
+        "OPCION_CREATED": "Option created correctly",
+        "OPTION_EDITED": "Option edited correctly",
+        "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
+        "RESTAURANT_REGISTER": "Register Restaurant",
+        "MESSAGE": "Register at least one restaurant to enable this option",
+        "REMOVE_TITLE": "Option remove",
+        "REMOVE_MSG": "Do you want to remove the option?",
+        "OPTION_REMOVED": "Option removed correctly",
+        "OPTION_NOT_REMOVED": "The option has associated values, it could not be removed"
     }
 }

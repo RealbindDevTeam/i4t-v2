@@ -6,6 +6,8 @@ import './imports/publications/menu/subcategories';
 import './imports/publications/menu/additions';
 import './imports/publications/menu/garnish-food';
 import './imports/publications/menu/item';
+import './imports/publications/menu/options';
+import './imports/publications/menu/option-values';
 import './imports/publications/auth/users';
 import './imports/publications/auth/roles';
 import './imports/publications/auth/menus';
