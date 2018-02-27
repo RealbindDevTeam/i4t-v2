@@ -15,6 +15,12 @@
                     {{'VIEW' | translate}}
                 </div>
             </div>
+            <div class="section" (click)="goToItemHistoryChart(establishment._id)">
+                <label>{{'ADMIN_DASHBOARD.ITEMS_HISTORY' | translate}}</label>
+                <div class="view">
+                    {{'VIEW' | translate}}
+                </div>
+            </div>
             <div class="section" (click)="goToRewardUnitsCharts(establishment._id)">
                 <label>{{'ADMIN_DASHBOARD.REWARDS' | translate}}</label>
                 <h1>{{getEstablishmentUsers( establishment._id )}}</h1>

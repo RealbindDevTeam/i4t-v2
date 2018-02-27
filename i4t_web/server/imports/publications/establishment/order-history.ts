@@ -13,3 +13,13 @@ Meteor.publish('getOrdersHistoryByUserId', function (_userId: string, _establish
     check(_establishmentId, String);
     return OrderHistories.find({ customer_id: _userId, establishment_id: _establishmentId });
 });
+
+/**
+ * Meteor publication return orders history by establishment Id
+ * @param {string} _establishmentId
+ */
+Meteor.publish('getOrderHistoryByEstablishment', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return OrderHistories.find({ establishment_id: _establishmentId })
+});
+
