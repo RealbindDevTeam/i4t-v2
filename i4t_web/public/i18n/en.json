@@ -52,7 +52,7 @@
     },
     "LANDING": {
         "HOME": "Home",
-        "ABOUT": "About come y gana",
+        "ABOUT": "About comeygana",
         "OWNER": "Restaurant owner",
         "CONTACT": "Contact",
         "SIGNIN": "Log In",
@@ -82,7 +82,7 @@
             "FIVE": "Request that you want to pay and a waiter will go to your table"
         },
         "OWNER_CONTENT": {
-            "TITLE1": "Do you have a restaurant and would you like use the come y gana service?",
+            "TITLE1": "Do you have a restaurant and would you like use the comeygana service?",
             "TEXT1": "",
             "TEXT2": "We offer a system that improve your business"
         },
@@ -365,7 +365,7 @@
         "GENERAL_INFO_TEXT": "Please enter the information of the restaurant. This information will be displayed to people on the internet and will give you greater visibility",
         "LEGAL_LABEL": "Legal",
         "LEGAL_INFO": "Restaurant's Legal Information",
-        "LEGAL_INFO_TEXT": "The legal information of the restaurant will be managed according to the regulations of the country to which it belongs. This will allow come y gana to help you with the accounts and expenses of your business.",
+        "LEGAL_INFO_TEXT": "The legal information of the restaurant will be managed according to the regulations of the country to which it belongs. This will allow comeygana to help you with the accounts and expenses of your business.",
         "ADD_LOCATION": "Enter the location of the establishment",
         "SCHEDULE_LABEL": "Schedule",
         "SCHEDULE_INFO": "Timing hours",
@@ -382,8 +382,8 @@
         "TABLES": "tables",
         "MORE": "more",
         "RESTAURANT_CREATION": "Restaurant creation",
-        "ACTIVATION_MESSAGE": "The monthly come y gana service charge will be activated per restaurant",
-        "CLARIFICATION_MESSAGE_1": "come y gana charges the service fee on the ",
+        "ACTIVATION_MESSAGE": "The monthly comeygana service charge will be activated per restaurant",
+        "CLARIFICATION_MESSAGE_1": "comeygana charges the service fee on the ",
         "CLARIFICATION_MESSAGE_2": " day of each month, the first charge is up to",
         "ACCEPT_CREATION": "Accept",
         "CANCEL_CREATION": "Cancel",
@@ -593,7 +593,7 @@
             "BUTTON": "Download"
         },
         "COLLABORATOR": {
-            "TITTLE": "Please signin from computer to enjoy come y gana",
+            "TITTLE": "Please signin from computer to enjoy comeygana",
             "BUTTON": "Return"
         }
     },
@@ -739,7 +739,7 @@
         "EMAIL": "Email",
         "LEGAL_LABEL": "Legal",
         "LEGAL_INFO": "Restaurant's Legal Information",
-        "LEGAL_INFO_TEXT": "Edit the legal information of the restaurant. This will allow come y gana to help you with business accounts and expenses",
+        "LEGAL_INFO_TEXT": "Edit the legal information of the restaurant. This will allow comeygana to help you with business accounts and expenses",
         "INVOICE_CODE": "Invoice code",
         "TIP_PERCENTAGE": "Tip Percentage",
         "TAX_PERCENTAGE": "Tax Percentage",
@@ -901,7 +901,7 @@
             "FULL_PAYMENT": "Total order payment",
             "RETURN_ORDER_USER": "Do you want to return the order to the user ",
             "ORDER_PENDING_STATUS": "You have orders pending to confirm. You must confirm them or wait til someone confirm",
-            "NO_ONLINE_PAYMENT": "Online payment is not available in come y gana yet",
+            "NO_ONLINE_PAYMENT": "Online payment is not available in comeygana yet",
             "PLEASE_SELECT_PAYMENT_METHOD": "Please select payment method",
             "PAYMENT_UNAVAILABLE": "Payment option is currently unavailable.",
             "WAITER_ATTEND": "A waiter/waitress will attend at your table soon",
@@ -973,7 +973,7 @@
     },
     "FINANCIAL_INFO": {
         "COLOMBIA": {
-            "INC": "According to Colombian laws, restaurants must discriminate in the pre invoice, cash receipt, invoice or equivalent document, the National Consumption Tax (INC), therefore, come y gana will calculate the INC equivalent to 8% at time to request the total value of the account for the customer.",
+            "INC": "According to Colombian laws, restaurants must discriminate in the pre invoice, cash receipt, invoice or equivalent document, the National Consumption Tax (INC), therefore, comeygana will calculate the INC equivalent to 8% at time to request the total value of the account for the customer.",
             "BUSINESS_NAME": "Enter surname and firstname (if natural person) or legal name (if legal person):",
             "BUSINESS_NAME_LABEL": "Names - Legal name",
             "NIT": "Enter NIT of who sells the ods or Services. Please include verification digit:",
@@ -993,15 +993,15 @@
         "MSG_1": "You can order what you prefer",
         "NO_ORDERS": "You do not have any orders yet, you can create a new order",
         "ORDER": "Order",
-        "TABLE_NO_ACTIVE": "The restaurant does not have this table active for the service of come y gana",
+        "TABLE_NO_ACTIVE": "The restaurant does not have this table active for the service of comeygana",
         "TABLE_NOT_EXISTS": "The table does not exist. Please check the code.",
-        "IUREST_NO_ACTIVE": "The restaurant does not have the come y gana service active. It is not possible to enter.",
+        "IUREST_NO_ACTIVE": "The restaurant does not have the comeygana service active. It is not possible to enter.",
         "RESTAURANT_NOT_EXISTS": "The restaurant does not exist. It is not possible to enter.",
         "PENALTY": "At the moment you do not have available the option to create orders. Try later",
         "REDEEM_POINTS": "Redeem points"
     },
     "MONTHLY_PAYMENT": {
-        "TITLE": "come y gana services",
+        "TITLE": "comeygana services",
         "SUBTITLE": "Here you can see the charges by restaurant and number of tables",
         "RESTAURANT_NAME": "Restaurant name",
         "RESTAURANT_PRICE": "Restaurant price",
@@ -1146,11 +1146,11 @@
         "ADDRESS_MAX": "The address cannot exceed 100 characters long",
         "PHONE_NUMBER": "Phone number *",
         "PHONE_NUMBER_MAX": "The phone number cannot exceed 20 characteres long",
-        "SECURITY_MSG": "* For security, come y gana doesn't save your credit card info",
+        "SECURITY_MSG": "* For security, comeygana doesn't save your credit card info",
         "CONTINUE_PAYMENT": "Continue",
         "DIALOG_TITLE": "Payment Confirm",
         "DIALOG_PLEASE": "Please verify the information before to confirm",
-        "IUREST_SERVICE": "come y gana service",
+        "IUREST_SERVICE": "comeygana service",
         "MONTHLY_SERVICE": "Monthly",
         "PERSONAL_INFO": "Billing information",
         "PERSONAL_TEL": "Tel. ",
@@ -1159,7 +1159,7 @@
         "PRICE": "Price: ",
         "PAY_CONFIRM": "Confirm",
         "PAY_CANCEL": "Cancel",
-        "ORDER_DESCRIPTION": "Monthly payment for come y gana service",
+        "ORDER_DESCRIPTION": "Monthly payment for comeygana service",
         "TRANSACTION_STATUS": "Transaction status",
         "TRANSACTION_APPROVED": "Payment has been approved",
         "TRANSACTION_DECLINED": "Payment has been rejected",
@@ -1173,7 +1173,7 @@
         "LAST_NAME": "Lastname",
         "UNAVAILABLE_PAYMENT": "The payment option is not available at this moment, please try later",
         "CC_PAYMENT_METHOD": "Credit card",
-        "DESCRIPTION": "Monthly come y gana service"
+        "DESCRIPTION": "Monthly comeygana service"
     },
     "RES_PAYMENT_HISTORY": {
         "TITLE": "Payment history",
@@ -1203,7 +1203,7 @@
         "DATE_LBL": "Fecha: ",
         "CUSTOMER_LBL": "Cliente",
         "DESCRIPTION_LBL": "Descripción",
-        "DESCRIPTION": "Servicio mensual come y gana",
+        "DESCRIPTION": "Servicio mensual comeygana",
         "PERIOD_LBL": "Periodo",
         "AMOUNT_LBL": "Valor sin IVA",
         "SUBTOTAL": "SubTotal: ",
@@ -1326,7 +1326,7 @@
         "PAYMENT_PLAN_INFO": {
             "HOW_ITS_WORKS": "How its works?",
             "FIRST_DAYS_TITLE": "First days",
-            "FIRST_DAYS_CONTENT": "Starting from the restaurant register day to the first day of the next month. you can able to use come y gana completely free.",
+            "FIRST_DAYS_CONTENT": "Starting from the restaurant register day to the first day of the next month. you can able to use comeygana completely free.",
             "FIRST_DAYS_SUGGEST": "We recommend that you register in the first days of the month in order to enjoy more the service.",
             "ABOUT_MONTHLY_PAYMENT": "About monthly payment",
             "ABOUT_MONTHLY_PAYMENT_TEXT_1": "Starting from 1 to 5 of each month, after you configure the number of tables that will be use by restaurant, you can able to pay just for the restaurants and tables that you are going to use in that month.",
@@ -1334,7 +1334,7 @@
             "ABOUT_MONTHLY_PAYMENT_TEXT_3": "The charge is:",
             "ABOUT_MONTHLY_PAYMENT_TEXT_4": "The price by restaurant",
             "ABOUT_MONTHLY_PAYMENT_TEXT_5": "The unit price of table * number of tables by restaurant",
-            "REACTIVATE_IUREST_SERVICE": "Reactivate come y gana service",
+            "REACTIVATE_IUREST_SERVICE": "Reactivate comeygana service",
             "REACTIVATE_IUREST_SERVICE_CONTENT": "If you can't able to pay in the normal payment period (1 to 5 of each month), you have the possibility to reactivate your restaurants in the remaining days of the month, the charge will be made for the total price of the month.",
             "CALCULATOR": "Pricing calculator",
             "RESTAURANT_PRICE": "Price by restaurant",
@@ -1343,7 +1343,7 @@
         }
     },
     "ADMIN_DASHBOARD": {
-        "TITLE": "Welcome to come y gana",
+        "TITLE": "Welcome to comeygana",
         "CARD_CONTENT": "Your best investment. Enjoy a new experience with the platform that will grow your business.",
         "LINK": {
             "NEW_RESTAURANT": "Restaurants",
@@ -1431,7 +1431,7 @@
         "ENTER": "Enter Code",
         "CHANGE_TABLE_OK": "Table change applied successfully",
         "TABLE_DESTINY_NOT_EXISTS": "The code for the new table does not exist. Please try again.",
-        "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the come y gana service",
+        "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the comeygana service",
         "TABLE_DESTINY_NO_RESTAURANT": "The code of the table entered does not belong to the restaurant where you are located. Please try again.",
         "WAITER_CALL_PENDING": "There are calls request to the waiter/waitress pending to be served. Once the call is attended you can change the table.",
         "TABLE_DESTINY_STATUS_ERROR": "An error has occurred while validating the status of the new table. Please try again.",
@@ -1502,7 +1502,7 @@
         "ORDER_PREPARED": "Cooked",
         "ORDER_DELIVERED": "Delivered",
         "ORDER_TRANSLATE": "In Transfer",
-        "PENALIZE_MSG": "Creating a penalty, will mark the user on come y gana system for notify the administrator when his/her is in establishment again",
+        "PENALIZE_MSG": "Creating a penalty, will mark the user on comeygana system for notify the administrator when his/her is in establishment again",
         "PENALIZE_TABLE": "The penalty will delete the user of the table",
         "PENALIZE_CONFIRM_MSG": "and cancel all his/her orders. Do you want to continue creating the penalty?",
         "ACCOUNT_ERROR": "An error has occurred with the user account. Please check if the user is still at the table with the option ADMINISTRATION -> TABLES CONTROL",
@@ -1575,7 +1575,7 @@
         "RESTAURANTS_PROFILE_MSG": "Create the profile of your restaurants for everyone to see",
         "SELECT_RESTAURANT": "Select Restaurant",
         "SELECT_RESTAURANT_TO_MODIFY": "Please select a restaurant to create or modify your profile",
-        "PROFILE_SUBTITLE": "Enter the following information so that people know you more when looking for you in come y gana. You can modify the information to keep it updated.",
+        "PROFILE_SUBTITLE": "Enter the following information so that people know you more when looking for you in comeygana. You can modify the information to keep it updated.",
         "GENERAL_INFO": "General Information",
         "DESCRIPTION": "Write about your restaurant. Tell us about your story, what motivates you, your food and your services",
         "DESCRIPTION_LBL": "Restaurant Description",
