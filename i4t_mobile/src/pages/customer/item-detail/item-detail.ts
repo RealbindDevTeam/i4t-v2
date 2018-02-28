@@ -14,6 +14,7 @@ import { Orders } from 'i4t_web/both/collections/establishment/order.collection'
 import { Item } from 'i4t_web/both/models/menu/item.model';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
+import { LightboxPage } from "../../../pages/general/lightbox/lightbox";
 
 /*
   Generated class for the ItemDetail page.
@@ -374,6 +375,15 @@ export class ItemDetailPage implements OnInit, OnDestroy {
     let _itemEstablishment = this._item[0];
     let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this._res_code);
     return aux.isAvailable;
+  }
+
+  /**
+   * open image if the item
+   * @param pItemImg {string}
+   */
+  openItemImage( pItemImg : string) {
+    let contactModal = this._modalCtrl.create(LightboxPage, { item_img:  pItemImg});
+    contactModal.present();
   }
 
 

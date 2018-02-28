@@ -204,6 +204,13 @@
             "POINTS_TO_REDEEM": "Puntos para redimir",
             "SHOW_REWARDS": "Mira las recompensas"
         },
+        "ORDERS_TODAY": {
+            "NO_RECORDS_FOUND": "No se encontrarón ordenes",
+            "TODAY": "Hoy",
+            "YESTERDAY": "Ayer",
+            "ORDERS_TODAY": "Ordenes de hoy",
+            "ORDERS_YESTERDAY": "Ordenes de ayer"
+        },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirma aquellas ordenes que otros usuarios desean pagar por ti.",
             "NO_ORDERS": "No se encuentran ordenes",

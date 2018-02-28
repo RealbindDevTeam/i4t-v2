@@ -85,7 +85,7 @@ export class SigninComponent implements OnInit {
                                     //role 400 customer
                                     //this.addUserDevice();
                                     this.insertUserInfo();
-                                    this.navCtrl.push(HomePage);
+                                    this.navCtrl.setRoot(HomePage);
                                 } else if (role == "200") {
                                     MeteorObservable.call('validateEstablishmentIsActive').subscribe((_establishmenttActive) => {
                                         if (_establishmenttActive) {
