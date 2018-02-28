@@ -15,8 +15,7 @@ export interface Item extends CollectionObject {
     prices: ItemPrice[];
     observations: boolean;
     image?: ItemImage;
-    garnishFoodQuantity: number;
-    garnishFood: string[];
+    options?: [ItemOption];
     additions: string[];
     has_reward?: boolean;
     reward_points?: string;
@@ -60,4 +59,24 @@ export interface ItemPrice {
     currencyId: string;
     price: number;
     itemTax?: number;
+}
+
+/**
+ * Item Option model
+ */
+export interface ItemOption {
+    option_id: string;
+    is_required: boolean;
+    values: [ItemOptionValue];
+    min_value?: number;
+    max_value?: number;
+}
+
+/**
+ * Item Option Value model
+ */
+export interface ItemOptionValue {
+    option_value_id: string;
+    have_price: boolean;
+    price?: number;
 }

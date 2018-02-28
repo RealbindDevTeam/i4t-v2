@@ -400,8 +400,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         prices: _lItemPricesToInsert,
                         observations: this._itemForm.value.observations,
                         image: this._itemImageToInsert,
-                        garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
-                        garnishFood: _lGarnishFoodToInsert,
+                        //garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
+                        //garnishFood: _lGarnishFoodToInsert,
                         additions: _lAdditionsToInsert,
                         has_reward: this._itemForm.value.acceptReward,
                         reward_points: rewardPointsAux
@@ -422,8 +422,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         establishments: _lItemEstablishmentsToInsert,
                         prices: _lItemPricesToInsert,
                         observations: this._itemForm.value.observations,
-                        garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
-                        garnishFood: _lGarnishFoodToInsert,
+                        //garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
+                        //garnishFood: _lGarnishFoodToInsert,
                         additions: _lAdditionsToInsert,
                         has_reward: this._itemForm.value.acceptReward,
                         reward_points: rewardPointsAux
