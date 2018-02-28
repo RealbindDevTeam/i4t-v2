@@ -517,7 +517,8 @@
             "LOADING_MSG": "Adding to your order ...",
             "REWARD_DELETED": "Reward deleted from order",
             "ORDER_ERROR": "You can redeem maximum one reward per order",
-            "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
+            "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!",
+            "NO_REWARDS": "The are no rewards"
         },
         "POINTS": {
             "TITLE": "My points",

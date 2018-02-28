@@ -33,6 +33,7 @@ export class RewardListComponent {
     private _userDetail: UserDetail;
     private _allowAddRewardsToOrder: boolean = true;
     private _statusArray: string[] = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
+    private _thereRewards: boolean = true;
 
     constructor(public viewCtrl: ViewController,
         public _translate: TranslateService,
@@ -61,6 +62,14 @@ export class RewardListComponent {
         this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._establishmentId).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).zone();
+                this._rewards.subscribe(()=>{
+                    let count = Rewards.collection.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).count();
+                    if(count > 0){
+                        this._thereRewards = false;
+                    } else {
+                        this._thereRewards = true;
+                    }
+                });
             });
         });
 
@@ -143,7 +152,7 @@ export class RewardListComponent {
      */
     isValidRewardPoints(_rewardPts: string): boolean {
         this._userDetail = UserDetails.findOne({ user_id: this._user });
-        if (this._userDetail) {
+        if (this._userDetail.reward_points) {
             let userPoints = this._userDetail.reward_points.find(element => element.establishment_id === this._establishmentId).points;
             if (userPoints > Number.parseInt(_rewardPts.toString())) {
                 return true;
