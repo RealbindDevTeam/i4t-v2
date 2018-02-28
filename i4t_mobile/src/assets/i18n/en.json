@@ -204,6 +204,13 @@
             "POINTS_TO_REDEEM": "Points to redeem",
             "SHOW_REWARDS": "Show rewards"
         },
+        "ORDERS_TODAY": {
+            "NO_RECORDS_FOUND": "No orders found",
+            "TODAY": "Today",
+            "YESTERDAY": "Yesterday",
+            "ORDERS_TODAY": "Orders of today",
+            "ORDERS_YESTERDAY": "Orders of yesterday"
+        },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
             "NO_ORDERS": "Orders not found",

@@ -6,6 +6,18 @@
     </ion-navbar>
 </ion-header>
 <ion-content text-wrap>
+    <div *ngIf="!_thereAreOrders" style="padding: 0 40px;">
+        <div class="img">
+            <img src="assets/img/orders-detail.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{ 'MOBILE.ORDERS_TODAY.NO_RECORDS_FOUND' | translate }}</h1>
+        </div>
+    </div>
+    
+    <h4 padding *ngIf="selected === 'today'">{{'MOBILE.ORDERS_TODAY.ORDERS_TODAY' | translate}}</h4>
+    <h4 padding *ngIf="selected === 'yesterday'">{{'MOBILE.ORDERS_TODAY.ORDERS_YESTERDAY' | translate}}</h4>
+
     <div *ngFor="let order of _orders | async; let i = index">
         <ion-card>
             <ion-card-content>
@@ -48,4 +60,27 @@
             </ion-card-content>
         </ion-card>
     </div>
+
+    <ion-card [hidden]="true">
+        <ion-card-content>
+            <ion-list style="margin-bottom: 0px" no-lines>
+                <ion-item>
+                    <ion-label>{{'MOBILE.SECTIONS.SELECTION' | translate}}</ion-label>
+                    <ion-select #select1 [(ngModel)]="selected" interface="action-sheet" (ionChange)="doFilter(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
+                        class="custom-select">
+                        <ion-option value="today" selected="true">{{'MOBILE.ORDERS_TODAY.TODAY' | translate}}</ion-option>
+                        <ion-option value="yesterday" selected="true">{{'MOBILE.ORDERS_TODAY.YESTERDAY' | translate}}</ion-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </ion-card-content>
+    </ion-card>
+
 </ion-content>
+<ion-footer>
+    <ion-fab right bottom>
+        <button style="bottom: 0px;background-color: #ef5350;color: white;" ion-fab color="light" mini (click)="showFilter()">
+            <ion-icon name="menu"></ion-icon>
+        </button>
+    </ion-fab>
+</ion-footer>
