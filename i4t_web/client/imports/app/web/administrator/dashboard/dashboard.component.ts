@@ -181,16 +181,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Go to item units chart
+   * Go to item history chart
    * @param _pEstablishmentId
    */
   goToItemHistoryChart(_pEstablishmentId: string) {
     this._router.navigate(['/app/item-history-chart', _pEstablishmentId], { skipLocationChange: true });
   }
 
+  /**
+   * Go to rewards history chart
+   * @param _pEstablishmentId
+   */
   goToRewardUnitsCharts(_pEstablishment: string) {
     this._router.navigate(['/app/reward-units-chart', _pEstablishment], { skipLocationChange: true });
   }
+
+  /**
+   * Go to rewards history chart
+   * @param _pEstablishmentId
+   */
+  goToRewardHistoryCharts(_pEstablishment: string) {
+    this._router.navigate(['/app/reward-history-chart', _pEstablishment], { skipLocationChange: true });
+  }
+
   /**
    * Get GarnishFood Sold
    * @param {string} _pEstablishmentId
