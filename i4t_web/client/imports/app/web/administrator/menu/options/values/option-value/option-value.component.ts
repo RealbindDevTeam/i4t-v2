@@ -139,7 +139,7 @@ export class OptionValueComponent implements OnInit, OnDestroy {
             });
 
             if (_lNewOptionValue) {
-                let _lMessage: string = '';// this.itemNameTraduction('CATEGORIES.CATEGORY_CREATED');
+                let _lMessage: string = this.itemNameTraduction('OPTION_VALUE.OPTION_VALUE_CREATED');
                 this._snackBar.open(_lMessage, '', { duration: 2500 });
             }
 
@@ -153,8 +153,8 @@ export class OptionValueComponent implements OnInit, OnDestroy {
      * @param {OptionValue} _pOptionValue 
      */
     confirmRemove(_pOptionValue: OptionValue) {
-        let dialogTitle = '';// "CATEGORIES.REMOVE_TITLE";
-        let dialogContent = '';//"CATEGORIES.REMOVE_MSG";
+        let dialogTitle = "OPTION_VALUE.REMOVE_TITLE";
+        let dialogContent = "OPTION_VALUE.REMOVE_MSG";
         let error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
 
         if (!Meteor.userId()) {
@@ -188,10 +188,10 @@ export class OptionValueComponent implements OnInit, OnDestroy {
         let _lMessage: string;
         if (!this.searchItemsByOptionValue(_pOptionValue._id)) {
             OptionValues.remove(_pOptionValue._id);
-            _lMessage = '';//this.itemNameTraduction('CATEGORIES.CATEGORY_REMOVED');
+            _lMessage = this.itemNameTraduction('OPTION_VALUE.OPTION_VALUE_REMOVED');
             this._snackBar.open(_lMessage, '', { duration: 2500 });
         } else {
-            _lMessage = '';// this.itemNameTraduction('CATEGORIES.CATEGORY_NOT_REMOVED');
+            _lMessage = this.itemNameTraduction('OPTION_VALUE.OPTION_VALUE_NOT_REMOVED');
             this._snackBar.open(_lMessage, '', { duration: 2500 });
             return;
         }

@@ -16,7 +16,7 @@ import { AlertConfirmComponent } from '../../../../../general/alert-confirm/aler
 import { OptionEditComponent } from '../option-edit/option-edit.component';
 
 @Component({
-    selector: 'option',
+    selector: 'option-component',
     templateUrl: './option.component.html',
     styleUrls: ['./option.component.scss']
 })

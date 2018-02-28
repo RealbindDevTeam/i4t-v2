@@ -1710,5 +1710,25 @@
         "REMOVE_MSG": "Do you want to remove the option?",
         "OPTION_REMOVED": "Option removed correctly",
         "OPTION_NOT_REMOVED": "The option has associated values, it could not be removed"
+    },
+    "OPTION_VALUE": {
+        "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
+        "RESTAURANT_REGISTER": "Register Restaurant",
+        "MESSAGE": "Register at least one restaurant to enable this option",
+        "OPTION_VALUE_CREATION": "Create Values",
+        "OPTION_SELECTION": "Select option",
+        "OPTION_VALUE_TEXT": "Create the values to the options, then you can use it when creating an item",
+        "OPTION_VALUE_EDIT": "Value edition",
+        "OPTION": "Option",
+        "MODIFY": "Edit",
+        "ACTIVATE": "Activate",
+        "INACTIVATE": "Inactivate",
+        "REMOVE": "Remove",
+        "OPTION_VALUE_CREATED": "Option created successfully",
+        "OPTION_VALUE_EDITED": "Option edited successfully",
+        "REMOVE_TITLE": "Option remove",
+        "REMOVE_MSG": "Do you want to remove option?",
+        "OPTION_VALUE_REMOVED": "Option removed correctly",
+        "OPTION_VALUE_NOT_REMOVED": "The option have items, it could not be removed"
     }
 }

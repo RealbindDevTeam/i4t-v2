@@ -1710,5 +1710,25 @@
         "REMOVE_MSG": "Deseas remover la opción?",
         "OPTION_REMOVED": "Opción removida correctamente",
         "OPTION_NOT_REMOVED": "La opción tiene valores asociados, no se ha podido remover"
+    },
+    "OPTION_VALUE": {
+        "THERE_NOT_RESTAURANTS": "Aún no hay restaurantes registrados",
+        "RESTAURANT_REGISTER": "Registrar restaurante",
+        "MESSAGE": "Registra uno para habilitar esta opción",
+        "OPTION_VALUE_CREATION": "Creación de valores",
+        "OPTION_SELECTION": "Selecciona opción",
+        "OPTION_VALUE_TEXT": "Crea los valores que pueden tener las opciones de tal forma que las puedas usar al crear un ítem",
+        "OPTION_VALUE_EDIT": "Edición del valor",
+        "OPTION": "Opción",
+        "MODIFY": "Modificar",
+        "ACTIVATE": "Activar",
+        "INACTIVATE": "Inactivar",
+        "REMOVE": "Remover",
+        "OPTION_VALUE_CREATED": "Valor creado correctamente",
+        "OPTION_VALUE_EDITED": "Valor editado correctamente",
+        "REMOVE_TITLE": "Remover valor",
+        "REMOVE_MSG": "Deseas remover el valor?",
+        "OPTION_VALUE_REMOVED": "Valor removido correctamente",
+        "OPTION_VALUE_NOT_REMOVED": "El valor tiene items, no se ha podido remover"
     }
 }
