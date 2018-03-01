@@ -66,7 +66,18 @@ export function createCrons() {
         Meteor.call('sendEmailRestExpired', country._id);
       }
     });
-
+    /**
+    * This cron validate the points expiration date
+    */
+    SyncedCron.add({
+      name: 'cronPointsExpire.' + country.name,
+      schedule: function (parser) {
+        return parser.cron(country.cronPointsExpire);
+      },
+      job: function () {
+        Meteor.call('checkPointsToExpire', country._id);
+      }
+    });
   });
 }
 

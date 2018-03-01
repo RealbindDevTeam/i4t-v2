@@ -20,4 +20,5 @@ export interface Country {
     cronEmailExpireSoon: string;
     cronEmailRestExpired: string;
     max_number_tables?: number;
+    cronPointsExpire: string
 }

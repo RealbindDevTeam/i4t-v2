@@ -91,7 +91,7 @@ export class SignupWebComponent extends AuthClass implements OnInit {
                             });
                             this.openDialog(this.titleMsg, '', confirmMsg, '', this.btnAcceptLbl, false);
                             Meteor.logout();
-                            this.router.navigate(['signin']);
+                            this.router.navigate(['']);
                         }
                     });
                 });
