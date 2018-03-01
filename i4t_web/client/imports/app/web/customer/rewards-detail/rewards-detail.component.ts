@@ -29,6 +29,7 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
 
     private _rewards: Observable<Reward[]>;
     private _items: Observable<Item[]>;
+    private _thereRewards: boolean = true;
 
     /**
      * RewardsDetailComponent constructor
@@ -54,6 +55,14 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this._rewards = Rewards.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).zone();
+        this._rewards.subscribe(() => {
+            let count = Rewards.collection.find({ establishments: { $in: [this._establishmentId] } }, { sort: { points: 1 } }).count();
+            if (count > 0) {
+                this._thereRewards = false;
+            } else {
+                this._thereRewards = true;
+            }
+        });
         this._items = Items.find({}).zone();
         Orders.collection.find({ creation_user: this._user }).fetch().forEach((order) => {
             if (order.status === 'ORDER_STATUS.SELECTING') {

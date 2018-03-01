@@ -517,7 +517,8 @@
             "LOADING_MSG": "Agregando a tu orden ...",
             "REWARD_DELETED": "Recompensa eliminada de la orden",
             "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden",
-            "REWARDS_MSG": "Reclama una recompensa y el plato te sale gratis! Disfrutalo!"
+            "REWARDS_MSG": "Reclama una recompensa y el plato te sale gratis! Disfrutalo!",
+            "NO_REWARDS": "No hay recompensas"
         },
         "POINTS": {
             "TITLE": "Mis Puntos",
