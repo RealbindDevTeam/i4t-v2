@@ -31,6 +31,8 @@ import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/ga
 import { AfterEstablishmentCreationComponent } from './after-establishment-creation/after-establishment-creation.component';
 import { PointValidity } from '../../../../../../../../both/models/general/point-validity.model';
 import { PointsValidity } from '../../../../../../../../both/collections/general/point-validity.collection';
+import { Parameter } from "../../../../../../../../both/models/general/parameter.model";
+import { Parameters } from "../../../../../../../../both/collections/general/parameter.collection";
 
 import * as QRious from 'qrious';
 import { UserDetails } from 'both/collections/auth/user-detail.collection';
@@ -332,7 +334,10 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 //Insert tables
                 let _lEstabl: Establishment = Establishments.findOne({ _id: _lNewEstablishment });
                 let _lTableNumber: number = this._establishmentForm.value.tables_number;
+                let _lParameterUrl: Parameter = Parameters.collection.findOne({ _id: "50000" });
+
                 this.establishmentCode = _lEstabl.establishment_code;
+                let _lUrl: string = _lParameterUrl.value;
 
                 for (let _i = 0; _i < _lTableNumber; _i++) {
                     let _lEstablishmentTableCode: string = '';
@@ -341,6 +346,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                     _lTableCode = this.generateTableCode();
                     _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
                     let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
+                    let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode() ;
 
                     let _lQrCode = new QRious({
                         background: 'white',
@@ -351,7 +357,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         mime: 'image/svg',
                         padding: null,
                         size: 150,
-                        value: _lCodeGenerator.getQRCode()
+                        value: _lUriRedirect
                     });
 
                     let _lNewTable: Table = {
@@ -368,7 +374,8 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         amount_people: 0,
                         status: 'FREE',
                         QR_URI: _lQrCode.toDataURL(),
-                        _number: _i + 1
+                        _number: _i + 1,
+                        uri_redirect: _lUriRedirect,
                     };
                     Tables.insert(_lNewTable);
                     Establishments.update({ _id: _lNewEstablishment }, { $set: { tables_quantity: _i + 1 } })

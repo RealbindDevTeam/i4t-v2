@@ -64,7 +64,10 @@ export class CodeTypeSelectPage {
     loader.present();
   }
 
-  goToSections(qr_code: string) {
+  goToSections(_pQRCode: string) {
+
+    var split = _pQRCode.split('qr/', 2);
+    var qr_code: string = split[1];
     MeteorObservable.call('getIdTableByQr', qr_code).subscribe((table: Table) => {
       if (table) {
         if (table.is_active) {

@@ -90,21 +90,6 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
         });
     }
 
-    /*validateSection(section_selected) {
-        if (section_selected == 'all') {
-            this._items = Items.find({});
-            this._categories = Categories.find({});
-            this._subcategories = Subcategories.find({});
-        } else if (section_selected === 'addition') {
-            this.goToAddAdditions();
-        }
-        else {
-            this._items = Items.find({ sectionId: section_selected });
-            this._categories = Categories.find({ section: section_selected });
-            this._subcategories = Subcategories.find({});
-        }
-    }*/
-
     validateSection(section_selected) {
         if (section_selected === 'all') {
             this._items = Items.find({});

@@ -15,8 +15,8 @@
         </div>
     </div>
     
-    <h4 padding *ngIf="selected === 'today'">{{'MOBILE.ORDERS_TODAY.ORDERS_TODAY' | translate}}</h4>
-    <h4 padding *ngIf="selected === 'yesterday'">{{'MOBILE.ORDERS_TODAY.ORDERS_YESTERDAY' | translate}}</h4>
+    <h4 padding *ngIf="selected === 'today' && _thereAreOrders">{{'MOBILE.ORDERS_TODAY.ORDERS_TODAY' | translate}}</h4>
+    <h4 padding *ngIf="selected === 'yesterday' && _thereAreOrders">{{'MOBILE.ORDERS_TODAY.ORDERS_YESTERDAY' | translate}}</h4>
 
     <div *ngFor="let order of _orders | async; let i = index">
         <ion-card>
