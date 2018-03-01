@@ -1410,7 +1410,7 @@
         "CHART_TITLE": "Units of rewards redeemed by time range",
         "UNITS_LBL": "Units",
         "REWARDS_LBL": "Rewards",
-        "CHART_SUBTITLE": "Sorted alphabetically"    
+        "CHART_SUBTITLE": "Sorted alphabetically"
     },
     "ENABLE_DISABLED": {
         "TITLE_TOGGLE_MSG": "Enable/disable Item",
@@ -1674,7 +1674,8 @@
         "REWARD_AGGREGATED": "Reward aggregated",
         "ERROR": "Error aggregating reward. Try again",
         "ORDER_ERROR": "You can redeem maximum one reward per order",
-        "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
+        "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!",
+        "NO_REWARDS": "The are no rewards"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",
