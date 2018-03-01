@@ -15,6 +15,10 @@ import { User } from '../../models/auth/user.model';
 import { Parameters } from '../../collections/general/parameter.collection';
 import { Parameter } from '../../models/general/parameter.model';
 import { SSR } from 'meteor/meteorhacks:ssr';
+import { RewardPoint } from '../../models/establishment/reward-point.model';
+import { RewardPoints } from '../../collections/establishment/reward-point.collection';
+import { UserDetail, UserRewardPoints } from '../../models/auth/user-detail.model';
+import { UserDetails } from '../../collections/auth/user-detail.collection';
 
 
 if (Meteor.isServer) {
@@ -167,7 +171,7 @@ if (Meteor.isServer) {
                 historyPayment = PaymentsHistory.collection.findOne({ establishment_ids: { $in: auxArray }, month: currentMonth, year: currentYear, status: 'TRANSACTION_STATUS.APPROVED' });
 
                 if (!historyPayment) {
-                    Establishments.collection.update({ _id: establishment._id, is_beta_tester: false}, { $set: { isActive: false, firstPay: false } });
+                    Establishments.collection.update({ _id: establishment._id, is_beta_tester: false }, { $set: { isActive: false, firstPay: false } });
 
                     Tables.collection.find({ establishment_id: establishment._id }).forEach(function <Table>(table, index, ar) {
                         Tables.collection.update({ _id: table._id }, { $set: { is_active: false } });
@@ -253,6 +257,38 @@ if (Meteor.isServer) {
             let month = _date.getMonth() + 1;
             let day = _date.getDate();
             return day.toString() + '/' + month.toString() + '/' + year.toString();
+        },
+        /**
+         * This function validate the date of points to expire 
+         */
+        checkPointsToExpire(_countryId: string) {
+            let currentDate = new Date();
+
+            Establishments.collection.find({ countryId: _countryId }).forEach(function <Establishment>(establishment, index, ar) {
+                RewardPoints.collection.find({ establishment_id: establishment._id, is_active: true }).forEach(function <RewardPoint>(rewardPoint, index, ar) {
+                    let rewardPointDayMore = rewardPoint.expire_date.getDate() + 1;
+                    let rewardPointDate = new Date(rewardPoint.expire_date.getFullYear(), rewardPoint.expire_date.getMonth(), rewardPointDayMore);
+
+                    if ((rewardPointDate.getFullYear() === currentDate.getFullYear()) &&
+                        (rewardPointDate.getMonth() === currentDate.getMonth()) &&
+                        (rewardPointDate.getDate() === currentDate.getDate())) {
+
+                        let valueToSubtract: number;
+                        if (rewardPoint.difference === 0 || rewardPoint.difference === null || rewardPoint.difference === undefined) {
+                            valueToSubtract = rewardPoint.points;
+                        } else {
+                            valueToSubtract = rewardPoint.difference;
+                        }
+
+                        RewardPoints.collection.update({ _id: rewardPoint._id }, { $set: { is_active: false } });
+                        let userDetail: UserDetail = UserDetails.findOne({ user_id: rewardPoint.id_user });
+                        let userRewardPoints: UserRewardPoints = userDetail.reward_points.find(usrPoints => usrPoints.establishment_id === rewardPoint.establishment_id);
+
+                        UserDetails.update({ user_id: rewardPoint.id_user, 'reward_points.establishment_id': rewardPoint.establishment_id },
+                            { $set: { 'reward_points.$.points': (userRewardPoints.points - valueToSubtract) } });
+                    }
+                });
+            });
         }
     });
 }

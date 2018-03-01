@@ -175,7 +175,7 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
                             });
                             this.openDialog(this.titleMsg, '', confirmMsg, '', this.btnAcceptLbl, false);
                             Meteor.logout();
-                            this.router.navigate(['signin']);
+                            this.router.navigate(['']);
                         }
                     });
                 });
