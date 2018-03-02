@@ -40,7 +40,7 @@ export function loadParameters() {
             { _id: '9200', name: 'payu_reference_code', value: 'M0N_P_', description: 'Prefix for reference code on payu transactions' },
             { _id: '2100', name: 'max_user_penalties', value: '3', description: 'Max number of user penalties' },
             { _id: '2200', name: 'penalty_days', value: '30', description: 'User penalty days' },
-            { _id: '8000', name: 'date_test_monthly_pay', value: 'January 6, 2018', description: 'Date test for monthly payment of iurest service' },
+            { _id: '8000', name: 'date_test_monthly_pay', value: 'March 5, 2018', description: 'Date test for monthly payment of iurest service' },
             { _id: '10000', name: 'payu_payments_url_prod', value: 'https://api.payulatam.com/payments-api/4.0/service.cgi', description: 'url for connect prod payu payments API' },
             { _id: '20000', name: 'payu_reports_url_prod', value: 'https://api.payulatam.com/reports-api/4.0/service.cgi', description: 'url for connect prod payu reports API' },
             { _id: '8500', name: 'date_test_reactivate', value: 'January 6, 2018', description: 'Date test for reactivate restaurant for pay' },
