@@ -46,7 +46,7 @@ export function loadParameters() {
             { _id: '8500', name: 'date_test_reactivate', value: 'January 6, 2018', description: 'Date test for reactivate restaurant for pay' },
             { _id: '30000', name: 'terms_url', value: 'http://www.tsti4t-1935943095.com/signin/', description: 'url to see terms and conditions' },
             { _id: '40000', name: 'policy_url', value: 'http://www.tsti4t-1935943095.com/signup/', description: 'url to see privacy policy'},
-            { _id: '50000', name: 'QR_code_url', value: 'http://www.tsti4t-1935943095.com/qr/', description: 'This url redirect to page the comeygana/download when scanned QR code from other application'}
+            { _id: '50000', name: 'QR_code_url', value: 'http://www.tsti4t-1935943095.com/qr?', description: 'This url redirect to page the comeygana/download when scanned QR code from other application'}
         ];
         parameters.forEach((parameter: Parameter) => Parameters.insert(parameter));
     }
