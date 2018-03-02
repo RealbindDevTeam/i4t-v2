@@ -88,16 +88,109 @@
                 <mat-card-title>Restaurantes</mat-card-title>
                 <mat-card-subtitle>Selecciona los restaurantes donde estara disponible el item y el precio</mat-card-subtitle>
                 <mat-card-content>
-                    <mat-selection-list>
-                        <mat-list-option [checkboxPosition]="before" *ngFor="let establishment of _establishmentList">
-                            {{establishment.name}} - {{establishment.address}}
-                        </mat-list-option>
-                    </mat-selection-list>
+                    <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
+                    <div class="establishments">
+                        <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
+                        <div *ngIf="_showEstablishments" formGroupName="establishments">
+                            <p *ngFor="let establishment of _establishmentList">
+                                <mat-checkbox [formControlName]="establishment._id" [class.invalid]="!_itemForm.controls.establishments.valid" class="checkbox"
+                                    (change)="onCheckEstablishment(establishment.name, $event)">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <p *ngIf="!_showCurrencies">{{'ITEMS.NO_RESTAURANTS_SELECTED' | translate}}</p>
+                        <p *ngIf="_showCurrencies" class="label">{{'ITEMS.ENTER_PRICE' | translate}}</p>
+                        <p *ngIf="_showTaxes" class="label">{{'ITEMS.ENTER_TAX' | translate}}</p>
+                        <div *ngFor="let currency of _currencies | async">
+                            <div *ngIf="_showCurrencies" formGroupName="currencies" class="currencies">
+                                <div *ngFor="let cur of _establishmentCurrencies">
+                                    <mat-form-field *ngIf="currency._id === cur" class="currency">
+                                        <input matInput required [formControlName]="cur" [class.invalid]="!_itemForm.controls.currencies.valid" type="number" placeholder="{{'ITEMS.ITEM_PRICE' | translate}}"
+                                            min="0" [step]="currency.decimal">
+                                        <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div *ngIf="_showTaxes" formGroupName="taxes" class="taxes">
+                                <div *ngFor="let tax of _establishmentTaxes">
+                                    <mat-form-field *ngIf="currency._id === tax" class="tax">
+                                        <input matInput required [formControlName]="tax" [class.invalid]="!_itemForm.controls.taxes.valid" type="number" placeholder="{{'ITEMS.TAXES' | translate}}"
+                                            min="0" max="100">
+                                        <span matSuffix>% {{currency.code}} - {{currency.name | translate}} </span>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </mat-card-content>
             </mat-card>
             <div>
                 <button mat-button matStepperPrevious>{{'BACK' | translate}}</button>
                 <button mat-button matStepperNext>{{'NEXT' | translate}}</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="_itemForm">
+        <form [formGroup]="_itemForm">
+            <ng-template matStepLabel>Opciones y Adiciones</ng-template>
+            <mat-card style="box-shadow: none;margin-bottom: 0px;">
+                <mat-card-title>{{'ITEMS.ADDITION_GARNISHFOOD_TITLE' | translate}}</mat-card-title>
+                <mat-card-subtitle>{{'ITEMS.ADDITION_GARNISHFOOD_SUBTITLE' | translate}}</mat-card-subtitle>
+                <mat-card-content>
+                    <mat-accordion [multi]="true">
+                        <mat-expansion-panel *ngFor="let option of _options | async; let i = index">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title style="font-weight: bold;">{{option.name}}</mat-panel-title>
+                                <mat-panel-description></mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-divider class="divider"></mat-divider>
+                            <table style="margin-bottom: 10px;" cellspacing="0">
+                                <tr>
+                                    <td style="width: 20%;">
+                                        <mat-checkbox>Usar esta opcion</mat-checkbox>
+                                    </td>
+                                    <td style="width: 25%;">
+                                        <mat-checkbox>La opcion es requerida?</mat-checkbox>
+                                    </td>
+                                    <td>
+                                        <mat-form-field style="width: 30%;">
+                                            <input matInput placeholder="Cant. Minima" type="number">
+                                        </mat-form-field>
+                                        <mat-form-field style="width: 30%;margin-left: 1rem;">
+                                            <input matInput placeholder="Cant. Maxima" type="number">
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </table>
+                            <mat-divider class="divider"></mat-divider>
+                            <div *ngFor="let value of _optionValues | async">
+                                <div *ngIf="value.option_id === option._id">
+                                    <table style="margin-left: 5%;" cellspacing="0">
+                                        <tr>
+                                            <td style="width: 50%;">
+                                                <mat-checkbox>{{value.name}}</mat-checkbox>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <mat-checkbox>Ingresar Precio</mat-checkbox>
+                                            </td>
+                                            <td>
+                                                <mat-form-field style="width: 40%;">
+                                                    <input matInput placeholder="Precio" type="number">
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <mat-divider class="divider"></mat-divider>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-card-content>
+            </mat-card>
+            <div>
+                <button mat-button matStepperPrevious>{{'BACK' | translate}}</button>
+                <button mat-button>{{'FINISH' | translate}}</button>
             </div>
         </form>
     </mat-step>

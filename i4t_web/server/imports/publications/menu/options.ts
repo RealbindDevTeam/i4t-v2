@@ -16,7 +16,6 @@ Meteor.publish('getAdminOptions', function (_userId: string) {
  * Meteor publication establishments options 
  * @param {string} _establishmentId
 */
-Meteor.publish('optionsByEstablishment', function (_establishmentId: string) {
-    check(_establishmentId, String);
-    return Options.find({ establishments: { $in: [_establishmentId] }, is_active: true });
+Meteor.publish('optionsByEstablishment', function (_establishmentsId: string[]) {
+    return Options.find({ establishments: { $in: _establishmentsId }, is_active: true });
 });

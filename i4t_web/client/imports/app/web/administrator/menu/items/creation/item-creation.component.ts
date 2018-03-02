@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,6 +31,10 @@ import { CookingTimes } from '../../../../../../../../both/collections/general/c
 import { CookingTime } from '../../../../../../../../both/models/general/cooking-time.model';
 import { Points } from '../../../../../../../../both/collections/general/point.collection';
 import { Point } from '../../../../../../../../both/models/general/point.model';
+import { Option } from '../../../../../../../../both/models/menu/option.model';
+import { Options } from '../../../../../../../../both/collections/menu/option.collection';
+import { OptionValue } from '../../../../../../../../both/models/menu/option-value.model';
+import { OptionValues } from '../../../../../../../../both/collections/menu/option-value.collection';
 
 @Component({
     selector: 'item-creation',
@@ -55,6 +59,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     private _currencies: Observable<Currency[]>;
     private _cookingTimes: Observable<CookingTime[]>;
     private _points: Observable<Point[]>;
+    private _options: Observable<Option[]>;
+    private _optionValues: Observable<OptionValue[]>;
 
     private _itemsSub: Subscription;
     private _sectionsSub: Subscription;
@@ -67,6 +73,9 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     private _countriesSub: Subscription;
     private _cookingTimeSub: Subscription;
     private _pointsSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishmentList: Establishment[] = [];
     private _establishmentCurrencies: string[] = [];
@@ -128,6 +137,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
         let _establishmentsId: string[] = [];
+        let _optionIds: string[] = [];
         this._itemForm = new FormGroup({
             section: new FormControl('', [Validators.required]),
             category: new FormControl(''),
@@ -147,34 +157,50 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             rewardValue: new FormControl('')
         });
 
-        this._sectionsSub = MeteorObservable.subscribe('sections', this._user).subscribe(() => {
+        this._sectionsSub = MeteorObservable.subscribe('sections', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sections = Sections.find({ is_active: true }).zone();
             });
         });
-        this._categorySub = MeteorObservable.subscribe('categories', this._user).subscribe();
-        this._subcategorySub = MeteorObservable.subscribe('subcategories', this._user).subscribe();
-        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._categorySub = MeteorObservable.subscribe('categories', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._subcategorySub = MeteorObservable.subscribe('subcategories', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 Establishments.collection.find({}).fetch().forEach((res) => {
                     _establishmentsId.push(res._id);
                 });
-                this._countriesSub = MeteorObservable.subscribe('getCountriesByEstablishmentsId', _establishmentsId).subscribe();
-                this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _establishmentsId).subscribe();
-                this._currencies = Currencies.find({}).zone();
+                this._countriesSub = MeteorObservable.subscribe('getCountriesByEstablishmentsId', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
+                this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                    this._ngZone.run(() => {
+                        this._currencies = Currencies.find({}).zone();
+                    });
+                });
+                this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                    this._ngZone.run(() => {
+                        this._options = Options.find({ creation_user: this._user, establishments: { $in: _establishmentsId }, is_active: true }).zone();
+                        Options.find({ creation_user: this._user, establishments: { $in: _establishmentsId }, is_active: true }).fetch().forEach((opt) => {
+                            _optionIds.push(opt._id);
+                        });
+                        this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                            this._ngZone.run(() => {
+                                this._optionValues = OptionValues.find({ creation_user: this._user }).zone();
+                            });
+                        });
+                    });
+                });
             });
         });
-        this._itemsSub = MeteorObservable.subscribe('items', this._user).subscribe();
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).subscribe();
-        this._additionSub = MeteorObservable.subscribe('additions', this._user).subscribe();
+        this._itemsSub = MeteorObservable.subscribe('items', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._additionSub = MeteorObservable.subscribe('additions', this._user).takeUntil(this._ngUnsubscribe).subscribe();
 
-        this._cookingTimeSub = MeteorObservable.subscribe('cookingTimes').subscribe(() => {
+        this._cookingTimeSub = MeteorObservable.subscribe('cookingTimes').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._cookingTimes = CookingTimes.find({}).zone();
             });
         });
 
-        this._pointsSub = MeteorObservable.subscribe('points').subscribe(() => {
+        this._pointsSub = MeteorObservable.subscribe('points').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._points = Points.find({}).zone();
             });
@@ -185,15 +211,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-        if (this._categorySub) { this._categorySub.unsubscribe(); }
-        if (this._subcategorySub) { this._subcategorySub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._additionSub) { this._additionSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-        if (this._countriesSub) { this._countriesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
