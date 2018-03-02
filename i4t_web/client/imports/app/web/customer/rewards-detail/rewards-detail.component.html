@@ -29,9 +29,12 @@
                             <mat-chip style="color: white;background-color: #4CAF50;height: 10px;">{{reward.points}} {{'REWARD_DETAIL.POINTS' | translate}}</mat-chip>
                         </mat-chip-list>
                         <p mat-line *ngIf="!getItemAvailability(item._id)" style="color: #D50000;font-weight: bold;">{{'REWARD_DETAIL.UNAVAILABLE' | translate}}</p>
-                        <div mat-line *ngIf="_allowAddRewardsToOrder">
-                            <button mat-button class="primary-button" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">{{'REWARD_DETAIL.REDEEM' | translate}}</button>
-                            <button mat-button disabled *ngIf="reward.points > _userRewardPoints" style="color:#4CAF50">{{'REWARD_DETAIL.GET_POINTS' | translate}}!</button>
+                        <div *ngIf="_allowAddRewardsToOrder">
+                            <button mat-button class="primary-button button-show" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">{{'REWARD_DETAIL.REDEEM' | translate}}</button>
+                            <button mat-icon-button class="icon-button" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">
+                                <mat-icon aria-label="Example icon-button with a heart icon">redeem</mat-icon>
+                            </button>
+                            <button mat-line mat-button disabled *ngIf="reward.points > _userRewardPoints" style="color:#4CAF50">{{'REWARD_DETAIL.GET_POINTS' | translate}}!</button>
                         </div>
                     </mat-list-item>
                     <mat-divider class="divider"></mat-divider>
