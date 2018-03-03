@@ -3,7 +3,7 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialogRef, MatDialog, MatSnackBar, MatStepper } from '@angular/material';
 import { Router } from '@angular/router';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
@@ -46,11 +46,18 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _itemForm: FormGroup;
+
+    private _sectionsFormGroup: FormGroup;
+    private _generalFormGroup: FormGroup;
+    private _optionAdditionsFormGroup: FormGroup;
+
     private _garnishFormGroup: FormGroup = new FormGroup({});
     private _additionsFormGroup: FormGroup = new FormGroup({});
     private _establishmentsFormGroup: FormGroup = new FormGroup({});
     private _currenciesFormGroup: FormGroup = new FormGroup({});
     private _taxesFormGroup: FormGroup = new FormGroup({});
+    private _optionsFormGroup: FormGroup = new FormGroup({});
+    private _optionValuesFormGroup: FormGroup = new FormGroup({});
     private _mdDialogRef: MatDialogRef<any>;
 
     private _sections: Observable<Section[]>;
@@ -90,6 +97,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     private _showCurrencies: boolean = false;
     private _showTaxes: boolean = false;
     private _loading: boolean = false;
+    private _showOptions: boolean = false;
+    private _showGeneralError: boolean = false;
 
     public _selectedIndex: number = 0;
     private _itemImageToInsert: ItemImage;
@@ -138,23 +147,52 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         this.removeSubscriptions();
         let _establishmentsId: string[] = [];
         let _optionIds: string[] = [];
-        this._itemForm = new FormGroup({
+        this._sectionsFormGroup = new FormGroup({
             section: new FormControl('', [Validators.required]),
             category: new FormControl(''),
-            subcategory: new FormControl(''),
+            subcategory: new FormControl('')
+        });
+
+        this._generalFormGroup = new FormGroup({
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(55)]),
             description: new FormControl(''),
             cookingTime: new FormControl(''),
+            observations: new FormControl(false),
+            acceptReward: new FormControl(false),
+            rewardValue: new FormControl(''),
+            image: new FormControl(''),
             establishments: this._establishmentsFormGroup,
             currencies: this._currenciesFormGroup,
-            taxes: this._taxesFormGroup,
-            observations: new FormControl(false),
-            image: new FormControl(''),
+            taxes: this._taxesFormGroup
+        });
+
+        this._optionAdditionsFormGroup = new FormGroup({
+            options: this._optionsFormGroup,
+            option_values: this._optionValuesFormGroup,
+            additions: this._additionsFormGroup
+        });
+
+
+
+        this._itemForm = new FormGroup({
+            //section: new FormControl('', [Validators.required]),
+            //category: new FormControl(''),
+            //subcategory: new FormControl(''),
+            //name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(55)]),
+            //description: new FormControl(''),
+            //cookingTime: new FormControl(''),
+            //establishments: this._establishmentsFormGroup,
+            //currencies: this._currenciesFormGroup,
+            //taxes: this._taxesFormGroup,
+            //observations: new FormControl(false),
+            //image: new FormControl(''),
             garnishFoodQuantity: new FormControl('0'),
             garnishFood: this._garnishFormGroup,
-            additions: this._additionsFormGroup,
-            acceptReward: new FormControl(false),
-            rewardValue: new FormControl('')
+            //additions: this._additionsFormGroup,
+            //acceptReward: new FormControl(false),
+            //rewardValue: new FormControl(''),
+            //options: this._optionsFormGroup,
+            //option_values: this._optionValuesFormGroup
         });
 
         this._sectionsSub = MeteorObservable.subscribe('sections', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
@@ -217,18 +255,18 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
     /**
      * This function get selectedIndex
-     */
+     
     get selectedIndex(): number {
         return this._selectedIndex;
-    }
+    }*/
 
     /**
      * This function set selectedIndex
      * @param {number} _selectedIndex
-     */
+     
     set selectedIndex(_selectedIndex: number) {
         this._selectedIndex = _selectedIndex;
-    }
+    }*/
 
     /**
      * This function allow move in wizard tabs
@@ -237,36 +275,56 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     canMove(_index: number): boolean {
         switch (_index) {
             case 0:
-                return true;
-            case 1:
-                if (this._itemForm.controls['section'].valid) {
+                if (this._sectionsFormGroup.controls['section'].valid) {
                     return true;
                 } else {
                     return false;
                 }
-            case 2:
-                if (this._itemForm.controls['name'].valid && this._establishmentsSelectedCount > 0) {
+            case 1:
+                if (this._generalFormGroup.controls['name'].valid && this._establishmentsSelectedCount > 0) {
+                    this._showGeneralError = false;
                     return true
                 } else {
+                    this._showGeneralError = true;
                     return false;
                 }
+            case 2:
+                return true;
             default:
                 return true;
         }
     }
 
     /**
-     * This function move to the next tab
+     * Function to go back in the stepper
+     * @param {MatStepper} _stepper 
      */
-    next(): void {
-        if (this.canMove(this._selectedIndex + 1)) {
-            this._selectedIndex++;
+    goBack(_stepper: MatStepper) {
+        _stepper.previous();
+    }
+
+    /**
+     * Function to go forward in the stepper
+     * @param {MatStepper} _stepper 
+     */
+    goForward(_stepper: MatStepper) {
+        if (this.canMove(_stepper.selectedIndex)) {
+            _stepper.next();
         }
     }
 
     /**
+     * This function move to the next tab
+     
+    next(): void {
+        if (this.canMove(this._selectedIndex + 1)) {
+            this._selectedIndex++;
+        }
+    }*/
+
+    /**
      * This function move to the previous tab
-     */
+     
     previous(): void {
         if (this._selectedIndex === 0) {
             return;
@@ -274,7 +332,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         if (this.canMove(this._selectedIndex - 1)) {
             this._selectedIndex--;
         }
-    }
+    }*/
 
     /**
      * This fuction allow wizard to create item
@@ -285,7 +343,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
     /**
      * Show Garnish Food Quantity Message
-     */
+     
     showGarnishFoodQuantityMsg(): boolean {
         let arrGarnishFood: any[] = Object.keys(this._itemForm.value.garnishFood);
         let _lGarnish: string[] = [];
@@ -306,7 +364,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             _lGarnishQuantOk = true;
         }
         return _lGarnishQuantOk;
-    }
+    }*/
 
     /**
      * Function to add Item
@@ -463,7 +521,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         let _establishmentSectionsIds: string[] = [];
         this._establishmentList = [];
         this._selectedSectionValue = _section;
-        this._itemForm.controls['section'].setValue(_section);
+        this._sectionsFormGroup.controls['section'].setValue(_section);
 
         this._categories = Categories.find({ section: _section, is_active: true }).zone();
         if (this._categories.isEmpty) { this._selectedCategoryValue = ""; }
@@ -483,6 +541,34 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             });
         }
 
+        if (Options.collection.find({ creation_user: this._user, establishments: { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
+            Options.collection.find({ creation_user: this._user, establishments: { $in: _establishmentSectionsIds }, is_active: true }).fetch().forEach((opt) => {
+                let _availableControl: FormControl = new FormControl(false);
+                this._optionsFormGroup.addControl('av_' + opt._id, _availableControl);
+
+                let _requiredControl: FormControl = new FormControl({ value: false, disabled: true });
+                this._optionsFormGroup.addControl('req_' + opt._id, _requiredControl);
+
+                let _minValueControl: FormControl = new FormControl({ value: '1', disabled: true });
+                this._optionsFormGroup.addControl('minVal_' + opt._id, _minValueControl);
+
+                let _maxValueControl: FormControl = new FormControl({ value: '1', disabled: true });
+                this._optionsFormGroup.addControl('maxVal_' + opt._id, _maxValueControl);
+            });
+            this._showOptions = true;
+
+            OptionValues.collection.find({ creation_user: this._user }).fetch().forEach((val) => {
+                let _valControl: FormControl = new FormControl(false);
+                this._optionValuesFormGroup.addControl('val_' + val._id, _valControl);
+
+                let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
+                this._optionValuesFormGroup.addControl('havPri_' + val._id, _havePriceControl);
+
+                let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
+                this._optionValuesFormGroup.addControl('pri_' + val._id, _priceControl);
+            });
+        }
+
         if (GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
             this._showGarnishFood = true;
             GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch().forEach((gar) => {
@@ -493,12 +579,71 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         }
 
         if (Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
-            this._showAdditions = true;
             Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch().forEach((ad) => {
                 let control: FormControl = new FormControl(false);
                 this._additionsFormGroup.addControl(ad._id, control);
             });
             this._additions = Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch();
+            this._showAdditions = true;
+        }
+    }
+
+    /**
+     * This function allow use the option
+     * @param {string} _pOptionId 
+     * @param {any} _pEvent 
+     */
+    onCheckAvailableOption(_pOptionId: string, _pEvent: any): void {
+        if (_pEvent.checked) {
+            this._optionsFormGroup.controls['req_' + _pOptionId].enable();
+        } else {
+            this._optionsFormGroup.controls['req_' + _pOptionId].disable();
+            this._optionsFormGroup.controls['req_' + _pOptionId].setValue(false);
+        }
+    }
+
+    /**
+     * This function allow write min and max quantity
+     * @param {string} _pOptionId 
+     * @param {any} _pEvent 
+     */
+    onCheckRequiredOption(_pOptionId: string, _pEvent: any): void {
+        if (_pEvent.checked) {
+            this._optionsFormGroup.controls['minVal_' + _pOptionId].enable();
+            this._optionsFormGroup.controls['maxVal_' + _pOptionId].enable();
+        } else {
+            this._optionsFormGroup.controls['minVal_' + _pOptionId].disable();
+            this._optionsFormGroup.controls['minVal_' + _pOptionId].setValue('1');
+            this._optionsFormGroup.controls['maxVal_' + _pOptionId].disable();
+            this._optionsFormGroup.controls['maxVal_' + _pOptionId].setValue('1');
+        }
+    }
+
+    /**
+     * This function allow item use the option
+     * @param {string} _pValueId 
+     * @param {any} _pEvent 
+     */
+    onCheckOptionValue(_pValueId: string, _pEvent: any): void {
+        if (_pEvent.checked) {
+            this._optionValuesFormGroup.controls['havPri_' + _pValueId].enable();
+        } else {
+            this._optionValuesFormGroup.controls['havPri_' + _pValueId].disable();
+            this._optionValuesFormGroup.controls['havPri_' + _pValueId].setValue(false);
+        }
+    }
+
+    /**
+     * This function allow write value price
+     * @param {string} _pValueId 
+     * @param {any} _pEvent 
+     */
+    onCheckHavePriceOptionValue(_pValueId: string, _pEvent: any): void {
+        if (_pEvent.checked) {
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].enable();
+        } else {
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].disable();
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].setValue('0');
         }
     }
 
@@ -510,6 +655,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     onCheckEstablishment(_pEstablishmentName: string, _pEvent: any): void {
         let _lEstablishment: Establishment = this._establishmentList.filter(r => r.name === _pEstablishmentName)[0];
         if (_pEvent.checked) {
+            this._showGeneralError = false;
             this._establishmentsSelectedCount++;
             let _lCountry: Country = Countries.findOne({ _id: _lEstablishment.countryId });
             if (this._establishmentCurrencies.indexOf(_lEstablishment.currencyId) <= -1) {
@@ -535,9 +681,9 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             this._establishmentsSelectedCount--;
             let _aux: number = 0;
             let _auxTax: number = 0;
-            let arr: any[] = Object.keys(this._itemForm.value.establishments);
+            let arr: any[] = Object.keys(this._generalFormGroup.value.establishments);
             arr.forEach((est) => {
-                if (this._itemForm.value.establishments[est]) {
+                if (this._generalFormGroup.value.establishments[est]) {
                     let _lRes: Establishment = this._establishmentList.filter(r => r.name === est)[0];
                     if (_lEstablishment.currencyId === _lRes.currencyId) {
                         _aux++;
@@ -607,7 +753,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     /**
      * Allow mark all garnish food
      * @param {any} _event
-     */
+     
     markAllGarnishFood(_event: any): void {
         if (_event.checked) {
             GarnishFoodCol.collection.find({}).fetch().forEach((gar) => {
@@ -622,7 +768,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                 }
             });
         }
-    }
+    }*/
 
     /**
      * Allow mark all additions

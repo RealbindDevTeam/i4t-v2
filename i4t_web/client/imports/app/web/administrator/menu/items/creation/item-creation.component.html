@@ -1,6 +1,6 @@
-<mat-horizontal-stepper [linear]="false" #stepper="matHorizontalStepper">
-    <mat-step [stepControl]="_itemForm">
-        <form [formGroup]="_itemForm">
+<mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
+    <mat-step [stepControl]="_sectionsFormGroup">
+        <form [formGroup]="_sectionsFormGroup">
             <ng-template matStepLabel>{{'ITEMS.SECTIONS_CATEGORIES' | translate}}</ng-template>
             <mat-card style="box-shadow: none;margin-bottom: 0px;">
                 <mat-card-title>{{'ITEMS.SECTIONS_CATEGORIES' | translate}}</mat-card-title>
@@ -27,12 +27,12 @@
             </mat-card>
             <div>
                 <button mat-button (click)="cancel()">{{'CANCEL' | translate}}</button>
-                <button mat-button matStepperNext>{{'NEXT' | translate}}</button>
+                <button mat-button (click)="goForward(stepper)">{{'NEXT' | translate}}</button>
             </div>
         </form>
     </mat-step>
-    <mat-step [stepControl]="_itemForm">
-        <form [formGroup]="_itemForm">
+    <mat-step [stepControl]="_generalFormGroup">
+        <form [formGroup]="_generalFormGroup">
             <ng-template matStepLabel>{{'ITEMS.GENERAL' | translate}}</ng-template>
             <mat-card style="box-shadow: none;margin-bottom: 0px;">
                 <mat-card-title>{{'ITEMS.GENERAL_INFORMATION' | translate}}</mat-card-title>
@@ -52,7 +52,8 @@
                             <mat-option *ngFor="let time of _cookingTimes | async" value="{{time.cooking_time}}">{{time.cooking_time}}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <mat-slide-toggle formControlName="observations">{{'ITEMS.OBSERVATIONS' | translate}}</mat-slide-toggle>
+                    <mat-checkbox formControlName="observations">{{'ITEMS.OBSERVATIONS' | translate}} (Al habilitar esta opción tus clientes podran dar instrucciones
+                        adicionales en el plato)</mat-checkbox>
                     <div>
                         <mat-checkbox formControlName="acceptReward" [(ngModel)]="_rewardEnable">{{'ITEMS.REWARD_LABEL' | translate}}</mat-checkbox>
                         <mat-form-field style="margin-left: 5%;width: 25%;">
@@ -73,28 +74,14 @@
                             <span *ngIf="_createImage">{{_nameImageFile}}&hellip;</span>
                         </label>
                     </div>
-                </mat-card-content>
-            </mat-card>
-            <div>
-                <button mat-button matStepperPrevious>{{'BACK' | translate}}</button>
-                <button mat-button matStepperNext>{{'NEXT' | translate}}</button>
-            </div>
-        </form>
-    </mat-step>
-    <mat-step [stepControl]="_itemForm">
-        <form [formGroup]="_itemForm">
-            <ng-template matStepLabel>Restaurantes</ng-template>
-            <mat-card style="box-shadow: none;margin-bottom: 0px;">
-                <mat-card-title>Restaurantes</mat-card-title>
-                <mat-card-subtitle>Selecciona los restaurantes donde estara disponible el item y el precio</mat-card-subtitle>
-                <mat-card-content>
                     <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
+
                     <div class="establishments">
                         <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
+                        <h3 *ngIf="_showEstablishments">Selecciona los restaurantes donde estara disponible el item y el precio</h3>
                         <div *ngIf="_showEstablishments" formGroupName="establishments">
                             <p *ngFor="let establishment of _establishmentList">
-                                <mat-checkbox [formControlName]="establishment._id" [class.invalid]="!_itemForm.controls.establishments.valid" class="checkbox"
-                                    (change)="onCheckEstablishment(establishment.name, $event)">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
+                                <mat-checkbox [formControlName]="establishment._id" [class.invalid]="!_generalFormGroup.controls.establishments.valid" (change)="onCheckEstablishment(establishment.name, $event)">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
                             </p>
                         </div>
                     </div>
@@ -106,8 +93,8 @@
                             <div *ngIf="_showCurrencies" formGroupName="currencies" class="currencies">
                                 <div *ngFor="let cur of _establishmentCurrencies">
                                     <mat-form-field *ngIf="currency._id === cur" class="currency">
-                                        <input matInput required [formControlName]="cur" [class.invalid]="!_itemForm.controls.currencies.valid" type="number" placeholder="{{'ITEMS.ITEM_PRICE' | translate}}"
-                                            min="0" [step]="currency.decimal">
+                                        <input matInput required [formControlName]="cur" [class.invalid]="!_generalFormGroup.controls.currencies.valid" type="number"
+                                            placeholder="{{'ITEMS.ITEM_PRICE' | translate}}" min="0" [step]="currency.decimal">
                                         <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
                                     </mat-form-field>
                                 </div>
@@ -115,50 +102,52 @@
                             <div *ngIf="_showTaxes" formGroupName="taxes" class="taxes">
                                 <div *ngFor="let tax of _establishmentTaxes">
                                     <mat-form-field *ngIf="currency._id === tax" class="tax">
-                                        <input matInput required [formControlName]="tax" [class.invalid]="!_itemForm.controls.taxes.valid" type="number" placeholder="{{'ITEMS.TAXES' | translate}}"
-                                            min="0" max="100">
+                                        <input matInput required [formControlName]="tax" [class.invalid]="!_generalFormGroup.controls.taxes.valid" type="number"
+                                            placeholder="{{'ITEMS.TAXES' | translate}}" min="0" max="100">
                                         <span matSuffix>% {{currency.code}} - {{currency.name | translate}} </span>
                                     </mat-form-field>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <p *ngIf="_showGeneralError" style="color:red">Por favor ingresa el nombre del item y selecciona por lo menos un restaurante</p>
                 </mat-card-content>
             </mat-card>
             <div>
-                <button mat-button matStepperPrevious>{{'BACK' | translate}}</button>
-                <button mat-button matStepperNext>{{'NEXT' | translate}}</button>
+                <button mat-button (click)="goBack(stepper)">{{'BACK' | translate}}</button>
+                <button mat-button (click)="goForward(stepper)">{{'NEXT' | translate}}</button>
             </div>
         </form>
     </mat-step>
-    <mat-step [stepControl]="_itemForm">
-        <form [formGroup]="_itemForm">
+    <mat-step [stepControl]="_optionAdditionsFormGroup">
+        <form [formGroup]="_optionAdditionsFormGroup">
             <ng-template matStepLabel>Opciones y Adiciones</ng-template>
             <mat-card style="box-shadow: none;margin-bottom: 0px;">
-                <mat-card-title>{{'ITEMS.ADDITION_GARNISHFOOD_TITLE' | translate}}</mat-card-title>
-                <mat-card-subtitle>{{'ITEMS.ADDITION_GARNISHFOOD_SUBTITLE' | translate}}</mat-card-subtitle>
+                <mat-card-title>Opciones</mat-card-title>
+                <mat-card-subtitle>Habilita las opciones que necesites para el item</mat-card-subtitle>
                 <mat-card-content>
-                    <mat-accordion [multi]="true">
+                    <p *ngIf="!_showOptions">No se encuentran opciones creadas para los restaurantes seleccionados</p>
+                    <mat-accordion *ngIf="_showOptions" [multi]="true">
                         <mat-expansion-panel *ngFor="let option of _options | async; let i = index">
                             <mat-expansion-panel-header>
                                 <mat-panel-title style="font-weight: bold;">{{option.name}}</mat-panel-title>
                                 <mat-panel-description></mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-divider class="divider"></mat-divider>
-                            <table style="margin-bottom: 10px;" cellspacing="0">
+                            <table style="margin-bottom: 10px;" cellspacing="0" formGroupName="options">
                                 <tr>
-                                    <td style="width: 20%;">
-                                        <mat-checkbox>Usar esta opcion</mat-checkbox>
+                                    <td style="width: 15%;">
+                                        <mat-checkbox [formControlName]="'av_'+option._id" (change)="onCheckAvailableOption(option._id, $event)">Habilitar</mat-checkbox>
                                     </td>
-                                    <td style="width: 25%;">
-                                        <mat-checkbox>La opcion es requerida?</mat-checkbox>
+                                    <td style="width: 20%;">
+                                        <mat-checkbox [formControlName]="'req_'+option._id" (change)="onCheckRequiredOption(option._id, $event)">es requerido?</mat-checkbox>
                                     </td>
                                     <td>
-                                        <mat-form-field style="width: 30%;">
-                                            <input matInput placeholder="Cant. Minima" type="number">
+                                        <mat-form-field style="width: 25%;">
+                                            <input matInput [formControlName]="'minVal_'+option._id" placeholder="Cant. Minima" type="number">
                                         </mat-form-field>
-                                        <mat-form-field style="width: 30%;margin-left: 1rem;">
-                                            <input matInput placeholder="Cant. Maxima" type="number">
+                                        <mat-form-field style="width: 25%;margin-left: 1rem;">
+                                            <input matInput [formControlName]="'maxVal_'+option._id" placeholder="Cant. Maxima" type="number">
                                         </mat-form-field>
                                     </td>
                                 </tr>
@@ -166,17 +155,17 @@
                             <mat-divider class="divider"></mat-divider>
                             <div *ngFor="let value of _optionValues | async">
                                 <div *ngIf="value.option_id === option._id">
-                                    <table style="margin-left: 5%;" cellspacing="0">
+                                    <table style="margin-left: 5%;" cellspacing="0" formGroupName="option_values">
                                         <tr>
                                             <td style="width: 50%;">
-                                                <mat-checkbox>{{value.name}}</mat-checkbox>
+                                                <mat-checkbox [formControlName]="'val_'+value._id" (change)="onCheckOptionValue(value._id, $event)">{{value.name}}</mat-checkbox>
                                             </td>
                                             <td style="width: 20%;">
-                                                <mat-checkbox>Ingresar Precio</mat-checkbox>
+                                                <mat-checkbox [formControlName]="'havPri_'+value._id" (change)="onCheckHavePriceOptionValue(value._id, $event)">Tiene Precio?</mat-checkbox>
                                             </td>
                                             <td>
                                                 <mat-form-field style="width: 40%;">
-                                                    <input matInput placeholder="Precio" type="number">
+                                                    <input matInput [formControlName]="'pri_'+value._id" placeholder="Precio" type="number">
                                                 </mat-form-field>
                                             </td>
                                         </tr>
@@ -187,9 +176,24 @@
                         </mat-expansion-panel>
                     </mat-accordion>
                 </mat-card-content>
+                <br/>
+                <mat-card-title>Adiciones</mat-card-title>
+                <mat-card-subtitle>{{'ITEMS.ADDITION_GARNISHFOOD_SUBTITLE' | translate}}</mat-card-subtitle>
+                <mat-card-content>
+                    <p *ngIf="!_showAdditions">{{'ITEMS.NOT_ADDITIONS' | translate}}</p>
+                    <div *ngIf="_showAdditions">
+                        <mat-checkbox style="font-weight: bold;" (change)="markAllAdditions($event)">{{'ITEMS.SELECT_ALL_ADDITIONS' | translate}}</mat-checkbox>
+                        <br/>
+                        <div formGroupName="additions">
+                            <p *ngFor="let addition of _additions">
+                                <mat-checkbox [formControlName]="addition._id" [class.invalid]="!_optionAdditionsFormGroup.controls.additions.valid">{{addition.name}}</mat-checkbox>
+                            </p>
+                        </div>
+                    </div>
+                </mat-card-content>
             </mat-card>
             <div>
-                <button mat-button matStepperPrevious>{{'BACK' | translate}}</button>
+                <button mat-button (click)="goBack(stepper)">{{'BACK' | translate}}</button>
                 <button mat-button>{{'FINISH' | translate}}</button>
             </div>
         </form>
