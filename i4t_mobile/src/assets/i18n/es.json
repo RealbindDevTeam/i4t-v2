@@ -476,7 +476,8 @@
         },
         "RESTAURANT_PROFILE": {
             "MENU_BTN": "Menú",
-            "PAYMENT_METHODS": "Métodos de pago"
+            "PAYMENT_METHODS": "Métodos de pago",
+            "NO_PROFILE": "Lo sentimos. Este restaurante no ha configurado su perfil."
         },
         "SCHEDULE": {
             "SCHEDULE": "Horario de atención",
