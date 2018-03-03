@@ -4,17 +4,27 @@
             <div class="dmpc">
                 <mat-form-field style="display: block">
                     <mat-select placeholder="{{'ORDER_CREATE.SEARCH_MENU' | translate}}">
-                        <mat-option (click)="showAllItems()">{{'ORDER_CREATE.SHOW_ALL' | translate}}</mat-option>
-                        <mat-option (click)="evaluateId({type : 're'})">{{'ORDER_CREATE.RECOMMENDED' | translate}}</mat-option>
-                        <mat-optgroup *ngFor="let menu of _orderMenus" [label]="menu.title">
-                            <mat-option (click)="evaluateId(menu.iurestId)">{{menu.title}}</mat-option>
-                            <mat-option *ngFor="let children of menu.children" [value]="children.iurestId" (click)="evaluateId(children.iurestId)">- {{ children.title }}</mat-option>
-                        </mat-optgroup>
-                        <mat-option *ngIf="_showAdditionsOption" (click)="evaluateId({'type':'Ad'})">{{'ORDER_CREATE.ADDITIONS' | translate}}</mat-option>
+                        <mat-nav-list class="side-navigation">
+                            <mat-option class="so" mat-list-item (click)="validateSection('all', '')" [value]="all">
+                                {{'ORDER_CREATE.SHOW_ALL' | translate}}
+                            </mat-option>
+                            <mat-option class="so" mat-list-item (click)="validateSection('recommended', '')" [value]="recommended">
+                                {{'ORDER_CREATE.RECOMMENDED' | translate}}
+                            </mat-option>
+                            <a class="so" *ngFor="let menu of _orderMenus">
+                                <mat-option class="so" mat-list-item [value]="menu.iurestId" (click)="validateSection('section', menu.iurestId.id)">{{menu.title}}</mat-option>
+                                <mat-nav-list class="nav-children active mat-nav-children">
+                                    <mat-option class="mat-option-chilren" *ngFor="let children of menu.children" [value]="children.iurestId" (click)="validateSection('category', children.iurestId.id)">{{ children.title }}</mat-option>
+                                </mat-nav-list>
+                            </a>
+                            <mat-option *ngIf="_showAdditionsOption" class="so" mat-list-item (click)="validateSection('addition', '')">
+                                <span class="title">{{'ORDER_CREATE.ADDITIONS' | translate}}</span>
+                            </mat-option>
+                        </mat-nav-list>
                     </mat-select>
                 </mat-form-field>
 
-                <h3 *ngIf="(_itemsRecommended | async)?.length > 0">{{'ORDER_CREATE.RECOMMENDED' | translate}}</h3>
+                <h1 class="section" *ngIf="(_itemsRecommended | async)?.length > 0">{{'ORDER_CREATE.RECOMMENDED' | translate}}</h1>
                 <mat-card class="item-consumer" *ngFor="let item of _itemsRecommended | async">
                     <img mat-card-image *ngIf="item.image" src="{{ item.image.url }}" alt="{{item.name}}">
                     <img mat-card-image *ngIf="!item.image" src="/images/default-plate.png" alt="{{item.name}}">
@@ -44,8 +54,8 @@
                     </mat-card-actions>
                 </mat-card>
 
-                <h3 *ngIf="(_items | async)?.length > 0">{{'ORDER_CREATE.MENU' | translate}}</h3>
                 <span *ngFor="let section of _sections | async">
+                    <h1 class="section">{{section.name}}</h1>
                     <span *ngFor="let item of _items | async">
                         <ng-template [ngIf]="item.sectionId === section._id && item.categoryId === '' && item.subcategoryId === ''">
                             <mat-card class="item-consumer">
@@ -70,7 +80,8 @@
                                     <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
                                     <span class="app-flex-filler"></span>
                                     <mat-chip-list *ngIf="item.has_reward">
-                                        <mat-chip class="cust-color-chip">{{'ORDER_CREATE.GET_POINTS' | translate}} {{item.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                        <mat-chip class="cust-color-chip">{{'ORDER_CREATE.GET_POINTS' | translate}} {{item.reward_points}} {{'ORDER_CREATE.POINTS'
+                                            | translate}}
                                             <mat-icon style="margin-left: 5px;">star</mat-icon>
                                         </mat-chip>
                                     </mat-chip-list>
@@ -80,7 +91,7 @@
                     </span>
                     <span *ngFor="let category of _categories | async">
                         <ng-template [ngIf]="category.section === section._id">
-                            <h3>{{category.name}}</h3>
+                            <h2 class="category">{{category.name}}</h2>
                             <span *ngFor="let item of _items | async">
                                 <ng-template [ngIf]="item.sectionId === section._id && item.categoryId === category._id && item.subcategoryId === ''">
                                     <mat-card class="item-consumer">
@@ -105,7 +116,8 @@
                                             <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
                                             <span class="app-flex-filler"></span>
                                             <mat-chip-list *ngIf="item.has_reward">
-                                                <mat-chip class="cust-color-chip">{{'ORDER_CREATE.GET_POINTS' | translate}} {{item.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                <mat-chip class="cust-color-chip">{{'ORDER_CREATE.GET_POINTS' | translate}} {{item.reward_points}} {{'ORDER_CREATE.POINTS'
+                                                    | translate}}
                                                     <mat-icon style="margin-left: 5px;">star</mat-icon>
                                                 </mat-chip>
                                             </mat-chip-list>
@@ -115,7 +127,7 @@
                             </span>
                             <span *ngFor="let subcategory of _subcategories | async">
                                 <ng-template [ngIf]="subcategory.category === category._id">
-                                    <h3>{{subcategory.name}}</h3>
+                                    <h2 class="category">{{subcategory.name}}</h2>
                                     <span *ngFor="let item of _items | async">
                                         <ng-template [ngIf]="item.sectionId === section._id && item.categoryId === category._id && item.subcategoryId === subcategory._id">
                                             <mat-card class="item-consumer">
@@ -140,7 +152,8 @@
                                                     <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
                                                     <span class="app-flex-filler"></span>
                                                     <mat-chip-list *ngIf="item.has_reward">
-                                                        <mat-chip class="cust-color-chip">{{'ORDER_CREATE.GET_POINTS' | translate}} {{item.reward_points}} {{'ORDER_CREATE.POINTS' | translate}}
+                                                        <mat-chip class="cust-color-chip">{{'ORDER_CREATE.GET_POINTS' | translate}} {{item.reward_points}}
+                                                            {{'ORDER_CREATE.POINTS' | translate}}
                                                             <mat-icon style="margin-left: 5px;">star</mat-icon>
                                                         </mat-chip>
                                                     </mat-chip-list>

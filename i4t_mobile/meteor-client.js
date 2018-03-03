@@ -1,7 +1,7 @@
 __meteor_runtime_config__ = {
   "meteorEnv": {},
-  "DDP_DEFAULT_CONNECTION_URL": "http://www.tsti4t-1935943095.com/",
-  "ROOT_URL": "http://www.tsti4t-1935943095.com/"
+  "DDP_DEFAULT_CONNECTION_URL": "http://192.168.0.13:3000/",
+  "ROOT_URL": "http://192.168.0.13:3000/"
 };
 
 //////////////////////////////////////////////////////////////////////////

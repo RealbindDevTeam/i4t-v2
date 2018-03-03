@@ -63,3 +63,28 @@ mat-tab-group {
     background-color: darkorange;
     height: 10px;
 }
+
+.mat-nav-children {
+    background-color: whitesmoke;
+}
+
+.mat-option-chilren {
+    padding: 0 16px 0 32px;
+}
+
+mat-nav-list.mat-nav-children::before, mat-nav-list.mat-nav-children::after {
+    width: 100%;
+}
+
+h1.section {
+    color: #3c4145;
+}
+
+h2.category {
+    color: #696969;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px;
+    margin-bottom: 20px;
+    max-width: 940px;
+}
