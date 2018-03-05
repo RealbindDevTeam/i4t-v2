@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,13 +16,17 @@ import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
 import { OrderMenu } from '../order-navigation/order-menu';
 import { OrderNavigationService } from '../../../services/navigation/order-navigation.service';
-import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
-import { GarnishFoodCol } from '../../../../../../../both/collections/menu/garnish-food.collection';
+//import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
+//import { GarnishFoodCol } from '../../../../../../../both/collections/menu/garnish-food.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
 import { Order, OrderItem, OrderAddition } from '../../../../../../../both/models/establishment/order.model';
 import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
+import { Option } from '../../../../../../../both/models/menu/option.model';
+import { Options } from '../../../../../../../both/collections/menu/option.collection';
+import { OptionValue } from '../../../../../../../both/models/menu/option-value.model';
+import { OptionValues } from '../../../../../../../both/collections/menu/option-value.collection';
 import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/alert-confirm.component';
 
 @Component({
@@ -38,7 +42,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     @Output() finishOrdenCreation = new EventEmitter();
 
     private _newOrderForm: FormGroup;
-    private _garnishFormGroup: FormGroup = new FormGroup({});
+    //private _garnishFormGroup: FormGroup = new FormGroup({});
     private _additionsFormGroup: FormGroup = new FormGroup({});
     private _additionsDetailFormGroup: FormGroup = new FormGroup({});
     private _mdDialogRef: MatDialogRef<any>;
@@ -47,10 +51,13 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     private _categoriesSub: Subscription;
     private _subcategoriesSub: Subscription;
     private _itemsSub: Subscription;
-    private _garnishFoodSub: Subscription;
+    //private _garnishFoodSub: Subscription;
     private _additionsSub: Subscription;
     private _ordersSub: Subscription;
     private _currenciesSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _sections: Observable<Section[]>;
     private _categories: Observable<Category[]>;
@@ -58,14 +65,16 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     private _items: Observable<Item[]>;
     private _itemsRecommended: Observable<Item[]>;
     private _itemDetail: Observable<Item[]>;
-    private _garnishFoodCol: Observable<GarnishFood[]>;
+    //private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
+    private _options: Observable<Option[]>;
+    private _optionValues: Observable<OptionValue[]>;
 
     private _finalPrice: number = 0;
-    private _maxGarnishFoodElements: number = 0;
-    private _garnishFoodElementsCount: number = 0;
+    //private _maxGarnishFoodElements: number = 0;
+    //private _garnishFoodElementsCount: number = 0;
     private _numberColums: number = 3;
-    private _showGarnishFoodError: boolean = false;
+    //private _showGarnishFoodError: boolean = false;
     private _unitPrice: number = 0;
     private _lastQuantity: number = 1;
     private _quantityCount: number = 1;
@@ -120,15 +129,16 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * ngOnInit implementation
      */
     ngOnInit() {
+        let _optionIds: string[] = [];
         this.removeSubscriptions();
-        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.establishmentId).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
                 this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
             });
         });
-        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.SELECTING']).subscribe(() => { });
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.establishmentId).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.SELECTING']).takeUntil(this._ngUnsubscribe).subscribe(() => { });
+        /*this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFoodCol = GarnishFoodCol.find({}).zone();
                 GarnishFoodCol.collection.find({}).fetch().forEach((gar) => {
@@ -136,40 +146,54 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                     this._garnishFormGroup.addControl(gar._id, control);
                 });
             });
-        });
-        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.establishmentId).subscribe(() => {
+        });*/
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
                 this._additions.subscribe(() => { this.buildCustomerMenu(); this.buildAdditionsForms(); });
             });
         });
-        this._sectionsSub = MeteorObservable.subscribe('sectionsByEstablishment', this.establishmentId).subscribe(() => {
+        this._sectionsSub = MeteorObservable.subscribe('sectionsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sections = Sections.find({}).zone();
                 this._sections.subscribe(() => { this.buildCustomerMenu(); });
             });
         });
-        this._categoriesSub = MeteorObservable.subscribe('categoriesByEstablishment', this.establishmentId).subscribe(() => {
+        this._categoriesSub = MeteorObservable.subscribe('categoriesByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._categories = Categories.find({}).zone();
                 this._categories.subscribe(() => { this.buildCustomerMenu(); });
             });
         });
-        this._subcategoriesSub = MeteorObservable.subscribe('subcategoriesByEstablishment', this.establishmentId).subscribe(() => {
+        this._subcategoriesSub = MeteorObservable.subscribe('subcategoriesByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._subcategories = Subcategories.find({}).zone();
                 this._subcategories.subscribe(() => { this.buildCustomerMenu(); });
             });
         });
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.establishmentId]).subscribe(() => {
+        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._currencyCode = Currencies.findOne({ _id: this.establishmentCurrency }).code + ' ';
             });
         });
 
+        this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
+            this._ngZone.run(() => {
+                this._options = Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).zone();
+                Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).fetch().forEach((opt) => {
+                    _optionIds.push(opt._id);
+                });
+                this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                    this._ngZone.run(() => {
+                        this._optionValues = OptionValues.find({ option_id: { $in: _optionIds } }).zone();
+                    });
+                });
+            });
+        });
+
         this._newOrderForm = new FormGroup({
             observations: new FormControl('', [Validators.maxLength(50)]),
-            garnishFood: this._garnishFormGroup,
+            //garnishFood: this._garnishFormGroup,
             additions: this._additionsFormGroup
         });
     }
@@ -178,14 +202,8 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-        if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
-        if (this._subcategoriesSub) { this._subcategoriesSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -405,8 +423,8 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     resetItemDetailVariables(): void {
         this._lastQuantity = 1;
         this._quantityCount = 1;
-        this._showGarnishFoodError = false;
-        this._garnishFoodElementsCount = 0;
+        //this._showGarnishFoodError = false;
+        //this._garnishFoodElementsCount = 0;
         this._newOrderForm.reset();
     }
 
@@ -414,7 +432,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * Calculate final price when garnish food is selected
      * @param {any} _event 
      * @param {number} _price 
-     */
+     
     calculateFinalPriceGarnishFood(_event: any, _pGarnishFood: GarnishFood): void {
         let _price = _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
         if (_event.checked) {
@@ -426,7 +444,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             this._garnishFoodElementsCount -= 1;
             this.validateGarnishFoodElements();
         }
-    }
+    }*/
 
     /**
      * Calculate final price when addition is selected
@@ -477,10 +495,10 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     calculateFinalPriceQuantity(): void {
         if (Number.isFinite(this._quantityCount)) {
             this._finalPrice = this._unitPrice * this._quantityCount;
-            this._garnishFoodElementsCount = 0;
-            this._garnishFormGroup.reset();
+            //this._garnishFoodElementsCount = 0;
+            //this._garnishFormGroup.reset();
             this._additionsFormGroup.reset();
-            this._showGarnishFoodError = false;
+            //this._showGarnishFoodError = false;
         }
     }
 
@@ -495,14 +513,14 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
 
     /**
      * Validate Garnish food selections and show message error if count is greater than item.garnishFoodQuantity
-     */
+     
     validateGarnishFoodElements(): void {
         if (this._garnishFoodElementsCount > this._maxGarnishFoodElements) {
             this._showGarnishFoodError = true;
         } else {
             this._showGarnishFoodError = false;
         }
-    }
+    }*/
 
     /**
      * Return _finalPrice
@@ -514,10 +532,10 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     /**
      * Set max garnish food elements
      * @param {number} _pGarnishFoodQuantity
-     */
+     
     setMaxGarnishFoodElements(_pGarnishFoodQuantity: number): void {
         this._maxGarnishFoodElements = _pGarnishFoodQuantity;
-    }
+    }*/
 
     /**
      * Return addition information
@@ -530,10 +548,10 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     /**
      * Return garnish food information
      * @param {GarnishFood} _pGarnishFood
-     */
+     
     getGarnishFoodInformation(_pGarnishFood: GarnishFood): string {
         return _pGarnishFood.name + ' - ' + _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
-    }
+    }*/
 
     /**
      * Return traduction

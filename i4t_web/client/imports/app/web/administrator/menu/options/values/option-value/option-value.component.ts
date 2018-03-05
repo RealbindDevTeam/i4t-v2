@@ -73,7 +73,7 @@ export class OptionValueComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
         this._optionValueForm = new FormGroup({
-            name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
+            name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]),
             option: new FormControl('')
         });
         this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
