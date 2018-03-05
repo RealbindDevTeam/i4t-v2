@@ -7,7 +7,7 @@ import { MatDialogRef, MatDialog, MatSnackBar, MatStepper } from '@angular/mater
 import { Router } from '@angular/router';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
-import { ItemEstablishment, ItemPrice, ItemImage } from '../../../../../../../../both/models/menu/item.model';
+import { ItemEstablishment, ItemPrice, ItemImage, ItemOption, ItemOptionValue } from '../../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../../both/collections/menu/item.collection';
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
 import { Section } from '../../../../../../../../both/models/menu/section.model';
@@ -17,8 +17,8 @@ import { Subcategory } from '../../../../../../../../both/models/menu/subcategor
 import { Subcategories } from '../../../../../../../../both/collections/menu/subcategory.collection';
 import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
-import { GarnishFood } from '../../../../../../../../both/models/menu/garnish-food.model';
-import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/garnish-food.collection';
+//import { GarnishFood } from '../../../../../../../../both/models/menu/garnish-food.model';
+//import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/garnish-food.collection';
 import { Addition } from '../../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../../both/collections/menu/addition.collection';
 import { Currency } from '../../../../../../../../both/models/general/currency.model';
@@ -45,13 +45,13 @@ import { OptionValues } from '../../../../../../../../both/collections/menu/opti
 export class ItemCreationComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
-    private _itemForm: FormGroup;
+    //private _itemForm: FormGroup;
 
     private _sectionsFormGroup: FormGroup;
     private _generalFormGroup: FormGroup;
     private _optionAdditionsFormGroup: FormGroup;
 
-    private _garnishFormGroup: FormGroup = new FormGroup({});
+    //private _garnishFormGroup: FormGroup = new FormGroup({});
     private _additionsFormGroup: FormGroup = new FormGroup({});
     private _establishmentsFormGroup: FormGroup = new FormGroup({});
     private _currenciesFormGroup: FormGroup = new FormGroup({});
@@ -87,7 +87,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     private _establishmentList: Establishment[] = [];
     private _establishmentCurrencies: string[] = [];
     private _establishmentTaxes: string[] = [];
-    private _garnishFood: GarnishFood[] = [];
+    //private _garnishFood: GarnishFood[] = [];
     private _additions: Addition[] = [];
 
     private _showGarnishFood: boolean = false;
@@ -174,7 +174,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
 
 
-        this._itemForm = new FormGroup({
+        /*this._itemForm = new FormGroup({
             //section: new FormControl('', [Validators.required]),
             //category: new FormControl(''),
             //subcategory: new FormControl(''),
@@ -186,14 +186,14 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             //taxes: this._taxesFormGroup,
             //observations: new FormControl(false),
             //image: new FormControl(''),
-            garnishFoodQuantity: new FormControl('0'),
-            garnishFood: this._garnishFormGroup,
+            //garnishFoodQuantity: new FormControl('0'),
+            //garnishFood: this._garnishFormGroup,
             //additions: this._additionsFormGroup,
             //acceptReward: new FormControl(false),
             //rewardValue: new FormControl(''),
             //options: this._optionsFormGroup,
             //option_values: this._optionValuesFormGroup
-        });
+        });*/
 
         this._sectionsSub = MeteorObservable.subscribe('sections', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
@@ -336,10 +336,10 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
     /**
      * This fuction allow wizard to create item
-     */
+     
     canFinish(): boolean {
         return this._itemForm.valid;
-    }
+    }*/
 
     /**
      * Show Garnish Food Quantity Message
@@ -376,24 +376,21 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (this._itemForm.valid) {
-            this._loading = true;
-            setTimeout(() => {
-                this.createNewItem().then((item_id) => {
-                    this._loading = false;
-                    let _lMessage: string = this.itemNameTraduction('ITEMS.ITEM_CREATED');
-                    this._snackBar.open(_lMessage, '', { duration: 2500 });
-                    this._router.navigate(['app/items']);
-                }).catch((err) => {
-                    this._loading = false;
-                    this._router.navigate(['app/items']);
-                    var error: string = this.itemNameTraduction('ITEMS.CREATION_ERROR');
-                    this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
-                });
-            }, 2000);
-        } else {
-            this.cancel();
-        }
+        this._loading = true;
+        setTimeout(() => {
+            this.createNewItem().then((item_id) => {
+                this._loading = false;
+                let _lMessage: string = this.itemNameTraduction('ITEMS.ITEM_CREATED');
+                this._snackBar.open(_lMessage, '', { duration: 2500 });
+                //this._router.navigate(['app/items']);
+            }).catch((err) => {
+                this.cancel();
+                this._loading = false;
+                //this._router.navigate(['app/items']);
+                var error: string = this.itemNameTraduction('ITEMS.CREATION_ERROR');
+                this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+            });
+        }, 2000);
     }
 
     /**
@@ -404,83 +401,141 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
         return new Promise((resolve, reject) => {
             try {
-                let arrCur: any[] = Object.keys(this._itemForm.value.currencies);
+                let arrCur: any[] = Object.keys(this._generalFormGroup.value.currencies);
                 let _lItemEstablishmentsToInsert: ItemEstablishment[] = [];
                 let _lItemPricesToInsert: ItemPrice[] = [];
 
                 arrCur.forEach((cur) => {
                     let find: Establishment[] = this._establishmentList.filter(r => r.currencyId === cur);
                     for (let es of find) {
-                        if (this._itemForm.value.establishments[es._id]) {
+                        if (this._generalFormGroup.value.establishments[es._id]) {
                             let _lItemEstablishment: ItemEstablishment = { establishment_id: '', price: 0, isAvailable: true, recommended: false };
 
                             _lItemEstablishment.establishment_id = es._id;
-                            _lItemEstablishment.price = this._itemForm.value.currencies[cur];
+                            _lItemEstablishment.price = this._generalFormGroup.value.currencies[cur];
 
-                            if (this._itemForm.value.taxes[cur] !== undefined) {
-                                _lItemEstablishment.itemTax = this._itemForm.value.taxes[cur];
+                            if (this._generalFormGroup.value.taxes[cur] !== undefined) {
+                                _lItemEstablishment.itemTax = this._generalFormGroup.value.taxes[cur];
                             }
 
                             _lItemEstablishmentsToInsert.push(_lItemEstablishment);
                         }
                     }
-                    if (cur !== null && this._itemForm.value.currencies[cur] !== null) {
+                    if (cur !== null && this._generalFormGroup.value.currencies[cur] !== null) {
                         let _lItemPrice: ItemPrice = { currencyId: '', price: 0 };
                         _lItemPrice.currencyId = cur;
-                        _lItemPrice.price = this._itemForm.value.currencies[cur];
-                        if (this._itemForm.value.taxes[cur] !== undefined) {
-                            _lItemPrice.itemTax = this._itemForm.value.taxes[cur];
+                        _lItemPrice.price = this._generalFormGroup.value.currencies[cur];
+                        if (this._generalFormGroup.value.taxes[cur] !== undefined) {
+                            _lItemPrice.itemTax = this._generalFormGroup.value.taxes[cur];
                         }
                         _lItemPricesToInsert.push(_lItemPrice);
                     }
                 });
 
-                let arr: any[] = Object.keys(this._itemForm.value.garnishFood);
+                let rewardPointsAux: string;
+                if (this._generalFormGroup.value.acceptReward) {
+                    rewardPointsAux = this._generalFormGroup.value.rewardValue
+                } else {
+                    rewardPointsAux = "0";
+                }
+
+                /*let arr: any[] = Object.keys(this._itemForm.value.garnishFood);
                 let _lGarnishFoodToInsert: string[] = [];
 
                 arr.forEach((gar) => {
                     if (this._itemForm.value.garnishFood[gar]) {
                         _lGarnishFoodToInsert.push(gar);
                     }
-                });
+                });*/
 
-                let arrAdd: any[] = Object.keys(this._itemForm.value.additions);
+                let arrOptions: any[] = Object.keys(this._optionAdditionsFormGroup.value.options);
+                let _optionsToInsert: ItemOption[] = [];
+                let _lItemOption: ItemOption = { option_id: '', is_required: false, values: [] };
+
+                arrOptions.forEach((opt) => {
+                    if (this._optionAdditionsFormGroup.value.options[opt]) {
+                        let _lControl: string[] = opt.split('_');
+
+                        if (_lItemOption.option_id !== _lControl[1]) {
+                            _lItemOption = { option_id: '', is_required: false, values: [] };
+                            _optionsToInsert.push(_lItemOption);
+
+                            if (_lControl[0] === 'av' && this._optionsFormGroup.controls[opt].value) {
+                                _lItemOption.option_id = _lControl[1];
+                            }
+
+                            let arrOptionValues: any[] = Object.keys(this._optionAdditionsFormGroup.value.option_values);
+                            console.log(arrOptionValues);
+                            let _valuesToInsert: ItemOptionValue[] = [];
+                            let _lItemOptionValue: ItemOptionValue = { option_value_id: '', have_price: false };
+
+                            arrOptionValues.forEach((val) => {
+                                if (this._optionAdditionsFormGroup.value.option_values[val]) {
+                                    let _lvalueControl: string[] = val.split('_');
+                                    let _optionValue: OptionValue = OptionValues.findOne({ _id: _lvalueControl[1] });
+
+                                    if (_optionValue.option_id === _lItemOption.option_id) {
+                                        if (_lItemOptionValue.option_value_id !== _optionValue.option_id) {
+                                            _lItemOptionValue = { option_value_id: '', have_price: false };
+                                            _valuesToInsert.push(_lItemOptionValue);
+
+                                            if (_lvalueControl[0] === 'val_') {
+                                                _lItemOptionValue.option_value_id = _optionValue.option_id;
+                                            }
+                                        } else {
+                                            // to do
+                                        }
+                                    }
+                                }
+                            });
+
+                        } else {
+                            if (_lControl[0] === 'req' && this._optionsFormGroup.controls[opt].value === true) {
+                                _lItemOption.is_required = true;
+                            }
+                            if (_lControl[0] === 'minVal') {
+                                _lItemOption.min_value = Number.parseInt(this._optionsFormGroup.controls[opt].value.toString());
+                            }
+                            if (_lControl[0] === 'maxVal') {
+                                _lItemOption.max_value = Number.parseInt(this._optionsFormGroup.controls[opt].value.toString());
+                            }
+                        }
+                    }
+                });
+                console.log('array final');
+                console.log(_optionsToInsert);
+
+                let arrAdd: any[] = Object.keys(this._optionAdditionsFormGroup.value.additions);
                 let _lAdditionsToInsert: string[] = [];
 
                 arrAdd.forEach((add) => {
-                    if (this._itemForm.value.additions[add]) {
+                    if (this._optionAdditionsFormGroup.value.additions[add]) {
                         _lAdditionsToInsert.push(add);
                     }
                 });
 
-                let rewardPointsAux: string;
-                if (this._itemForm.value.acceptReward) {
-                    rewardPointsAux = this._itemForm.value.rewardValue
-                } else {
-                    rewardPointsAux = "0";
-                }
-
-                if (this._createImage) {
+                /*if (this._createImage) {
                     _lNewItem = Items.collection.insert({
                         creation_user: this._user,
                         creation_date: new Date(),
                         modification_user: '-',
                         modification_date: new Date(),
                         is_active: true,
-                        sectionId: this._itemForm.value.section,
-                        categoryId: this._itemForm.value.category,
-                        subcategoryId: this._itemForm.value.subcategory,
-                        name: this._itemForm.value.name,
-                        time: this._itemForm.value.cookingTime,
-                        description: this._itemForm.value.description,
+                        sectionId: this._sectionsFormGroup.value.section,
+                        categoryId: this._sectionsFormGroup.value.category,
+                        subcategoryId: this._sectionsFormGroup.value.subcategory,
+                        name: this._generalFormGroup.value.name,
+                        time: this._generalFormGroup.value.cookingTime,
+                        description: this._generalFormGroup.value.description,
                         establishments: _lItemEstablishmentsToInsert,
                         prices: _lItemPricesToInsert,
-                        observations: this._itemForm.value.observations,
+                        observations: this._generalFormGroup.value.observations,
                         image: this._itemImageToInsert,
                         //garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
                         //garnishFood: _lGarnishFoodToInsert,
+                        options: _optionsToInsert,
                         additions: _lAdditionsToInsert,
-                        has_reward: this._itemForm.value.acceptReward,
+                        has_reward: this._generalFormGroup.value.acceptReward,
                         reward_points: rewardPointsAux
                     });
                 } else {
@@ -490,22 +545,23 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         modification_user: '-',
                         modification_date: new Date(),
                         is_active: true,
-                        sectionId: this._itemForm.value.section,
-                        categoryId: this._itemForm.value.category,
-                        subcategoryId: this._itemForm.value.subcategory,
-                        name: this._itemForm.value.name,
-                        time: this._itemForm.value.cookingTime,
-                        description: this._itemForm.value.description,
+                        sectionId: this._sectionsFormGroup.value.section,
+                        categoryId: this._sectionsFormGroup.value.category,
+                        subcategoryId: this._sectionsFormGroup.value.subcategory,
+                        name: this._generalFormGroup.value.name,
+                        time: this._generalFormGroup.value.cookingTime,
+                        description: this._generalFormGroup.value.description,
                         establishments: _lItemEstablishmentsToInsert,
                         prices: _lItemPricesToInsert,
-                        observations: this._itemForm.value.observations,
+                        observations: this._generalFormGroup.value.observations,
                         //garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
                         //garnishFood: _lGarnishFoodToInsert,
+                        options: _optionsToInsert,
                         additions: _lAdditionsToInsert,
-                        has_reward: this._itemForm.value.acceptReward,
+                        has_reward: this._generalFormGroup.value.acceptReward,
                         reward_points: rewardPointsAux
                     });
-                }
+                }*/
                 resolve(_lNewItem);
             } catch (e) {
                 reject(e);
@@ -569,14 +625,14 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             });
         }
 
-        if (GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
+        /*if (GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
             this._showGarnishFood = true;
             GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch().forEach((gar) => {
                 let control: FormControl = new FormControl(false);
                 this._garnishFormGroup.addControl(gar._id, control);
             });
             this._garnishFood = GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch();
-        }
+        }*/
 
         if (Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
             Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch().forEach((ad) => {
@@ -599,6 +655,10 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         } else {
             this._optionsFormGroup.controls['req_' + _pOptionId].disable();
             this._optionsFormGroup.controls['req_' + _pOptionId].setValue(false);
+            this._optionsFormGroup.controls['minVal_' + _pOptionId].disable();
+            this._optionsFormGroup.controls['minVal_' + _pOptionId].setValue('1');
+            this._optionsFormGroup.controls['maxVal_' + _pOptionId].disable();
+            this._optionsFormGroup.controls['maxVal_' + _pOptionId].setValue('1');
         }
     }
 
@@ -708,7 +768,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
      */
     changeCategory(_category): void {
         this._selectedCategoryValue = _category;
-        this._itemForm.controls['category'].setValue(_category);
+        this._sectionsFormGroup.controls['category'].setValue(_category);
         this._subcategories = Subcategories.find({ category: _category, is_active: true }).zone();
 
         if (this._subcategories.isEmpty) { this._selectedSubcategoryValue = ""; }
@@ -720,7 +780,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
      */
     changeSubcategory(_subcategory): void {
         this._selectedSubcategoryValue = _subcategory;
-        this._itemForm.controls['subcategory'].setValue(_subcategory);
+        this._sectionsFormGroup.controls['subcategory'].setValue(_subcategory);
     }
 
     /**
@@ -731,7 +791,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         if (this._selectedCategoryValue !== "") { this._selectedCategoryValue = ""; }
         if (this._selectedSubcategoryValue !== "") { this._selectedSubcategoryValue = ""; }
         this._createImage = false;
-        this._itemForm.reset();
+        //this._itemForm.reset();
         this._router.navigate(['app/items']);
     }
 

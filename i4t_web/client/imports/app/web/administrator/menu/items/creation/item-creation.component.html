@@ -127,7 +127,7 @@
                 <mat-card-subtitle>Habilita las opciones que necesites para el item</mat-card-subtitle>
                 <mat-card-content>
                     <p *ngIf="!_showOptions">No se encuentran opciones creadas para los restaurantes seleccionados</p>
-                    <mat-accordion *ngIf="_showOptions" [multi]="true">
+                    <mat-accordion *ngIf="_showOptions" [multi]="false">
                         <mat-expansion-panel *ngFor="let option of _options | async; let i = index">
                             <mat-expansion-panel-header>
                                 <mat-panel-title style="font-weight: bold;">{{option.name}}</mat-panel-title>
@@ -194,7 +194,7 @@
             </mat-card>
             <div>
                 <button mat-button (click)="goBack(stepper)">{{'BACK' | translate}}</button>
-                <button mat-button>{{'FINISH' | translate}}</button>
+                <button mat-button (click)="addItem()">{{'FINISH' | translate}}</button>
             </div>
         </form>
     </mat-step>

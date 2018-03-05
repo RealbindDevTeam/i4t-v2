@@ -15,7 +15,7 @@ export interface Item extends CollectionObject {
     prices: ItemPrice[];
     observations: boolean;
     image?: ItemImage;
-    options?: [ItemOption];
+    options: ItemOption[];
     additions: string[];
     has_reward?: boolean;
     reward_points?: string;
@@ -67,7 +67,7 @@ export interface ItemPrice {
 export interface ItemOption {
     option_id: string;
     is_required: boolean;
-    values: [ItemOptionValue];
+    values: ItemOptionValue[];
     min_value?: number;
     max_value?: number;
 }
