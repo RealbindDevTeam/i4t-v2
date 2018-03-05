@@ -52,7 +52,7 @@
     },
     "LANDING": {
         "HOME": "Inicio",
-        "ABOUT": "Acerca de iurest",
+        "ABOUT": "Acerca de comeygana",
         "OWNER": "Propietario de restaurante",
         "CONTACT": "Contácto",
         "SIGNIN": "Iniciar sesión",
@@ -82,7 +82,7 @@
             "FIVE": "Indica que vas a pagar y un mesero ira a tu mesa"
         },
         "OWNER_CONTENT": {
-            "TITLE1": "Tienes un restaurante y te gustaría usar el servicio iurest?",
+            "TITLE1": "Tienes un restaurante y te gustaría usar el servicio comeygana?",
             "TEXT1": "",
             "TEXT2": "Ofrecemos un sistema que va a mejorar tu negocio"
         },
@@ -368,7 +368,7 @@
         "GENERAL_INFO_TEXT": "Por favor ingresa la información del restaurante. Dicha información será visualizada por las personas en internet y te dará mayor visivilidad",
         "LEGAL_LABEL": "Legal",
         "LEGAL_INFO": "Información legal del restaurante",
-        "LEGAL_INFO_TEXT": "La información legal del restaurante será establecida de acuerdo al país al cual pertenece. Esto le permitirá a iurest ayudarte con las cuentas y gastos de tu negocio.",
+        "LEGAL_INFO_TEXT": "La información legal del restaurante será establecida de acuerdo al país al cual pertenece. Esto le permitirá a comeygana ayudarte con las cuentas y gastos de tu negocio.",
         "ADD_LOCATION": "Ingresa la ubicación del establecimiento",
         "SCHEDULE_LABEL": "Horario",
         "SCHEDULE_INFO": "Horario de atención",
@@ -385,8 +385,8 @@
         "TABLES": "mesas",
         "MORE": "más",
         "RESTAURANT_CREATION": "Creación de restaurante",
-        "ACTIVATION_MESSAGE": "Se activará el cobro mensual del servicio iurest por restaurante",
-        "CLARIFICATION_MESSAGE_1": "iurest realiza el cobro de servicio el ",
+        "ACTIVATION_MESSAGE": "Se activará el cobro mensual del servicio comeygana por restaurante",
+        "CLARIFICATION_MESSAGE_1": "comeygana realiza el cobro de servicio el ",
         "CLARIFICATION_MESSAGE_2": " día de cada mes, el primer cobro es sobre el ",
         "ACCEPT_CREATION": "Aceptar",
         "CANCEL_CREATION": "Cancelar",
@@ -596,7 +596,7 @@
             "BUTTON": "Descargar"
         },
         "COLLABORATOR": {
-            "TITTLE": "Por favor ingresa desde tu computador, para disfrutar de iurest",
+            "TITTLE": "Por favor ingresa desde tu computador, para disfrutar de comeygana",
             "BUTTON": "Regresar"
         }
     },
@@ -755,7 +755,7 @@
         "EMAIL": "Correo electrónico",
         "LEGAL_LABEL": "Legal",
         "LEGAL_INFO": "Información legal del restaurante",
-        "LEGAL_INFO_TEXT": "Edita la información legal del restaurante. Esto le permitirá a iurest ayudarte con las cuentas y gastos del negocio.",
+        "LEGAL_INFO_TEXT": "Edita la información legal del restaurante. Esto le permitirá a comeygana ayudarte con las cuentas y gastos del negocio.",
         "INVOICE_CODE": "Código de factura",
         "TIP_PERCENTAGE": "Porcentaje de propina",
         "TAX_PERCENTAGE": "Porcentaje de impuestos",
@@ -917,7 +917,7 @@
             "FULL_PAYMENT": "Pago total de la orden",
             "RETURN_ORDER_USER": "Desea devolver la orden al usuario ",
             "ORDER_PENDING_STATUS": "Tienes ordenes con estado pendiente por confirmación. Debes confirmarlas o esperar a que te confirmen.",
-            "NO_ONLINE_PAYMENT": "El pago online aún no se encuentra habilitado en iurest",
+            "NO_ONLINE_PAYMENT": "El pago online aún no se encuentra habilitado en comeygana",
             "PLEASE_SELECT_PAYMENT_METHOD": "Por favor selecciona un medio de pago",
             "PAYMENT_UNAVAILABLE": "La opción de pagos no se encuentra disponible por el momento.",
             "WAITER_ATTEND": "En un momento un mesero te atenderá en tu mesa",
@@ -989,7 +989,7 @@
     },
     "FINANCIAL_INFO": {
         "COLOMBIA": {
-            "INC": "De acuerdo a la ley Colombiana, los restaurantes deben discriminar en la cuenta de cobro, tiquete de registradora, factura o documento equivalente, el Impuesto Nacional al Consumo (INC), por lo tanto, iurest realizara el cálculo del INC equivalente al 8% al momento de solicitar el valor total de la cuenta por parte del cliente.",
+            "INC": "De acuerdo a la ley Colombiana, los restaurantes deben discriminar en la cuenta de cobro, tiquete de registradora, factura o documento equivalente, el Impuesto Nacional al Consumo (INC), por lo tanto, comeygana realizara el cálculo del INC equivalente al 8% al momento de solicitar el valor total de la cuenta por parte del cliente.",
             "BUSINESS_NAME": "Ingresa Apellidos y Nombres (si es persona natural) o Razón Social (si es persona jurídica):",
             "BUSINESS_NAME_LABEL": "Nombres - Razón Social",
             "NIT": "Ingresa NIT de quien vende los Bienes o Servicios. Por favor incluya dígito de verificación:",
@@ -1009,16 +1009,16 @@
         "MSG_1": "Puedes ordenar lo que deseas",
         "NO_ORDERS": "Aún no tienes ordenes, puedes crear una orden nueva",
         "ORDER": "Ordenar",
-        "TABLE_NO_ACTIVE": "El restaurante no tiene la mesa activa para el servicio de iurest",
+        "TABLE_NO_ACTIVE": "El restaurante no tiene la mesa activa para el servicio de comeygana",
         "TABLE_NOT_EXISTS": "La mesa no existe. Por favor verifíque el código.",
-        "IUREST_NO_ACTIVE": "El restaurante no tiene el servicio de iurest activo. No es posible ingresar.",
+        "IUREST_NO_ACTIVE": "El restaurante no tiene el servicio de comeygana activo. No es posible ingresar.",
         "RESTAURANT_NOT_EXISTS": "El restaurante no existe. No es posible ingresar.",
         "PENALTY": "En el momento no tienes disponible la opción para crear ordenes. Intenta de nuevo después del ",
         "REDEEM_POINTS": "Redimir puntos"
     },
     "MONTHLY_PAYMENT": {
-        "TITLE": "Pago del servicio mensual de iurest",
-        "SUBTITLE": "Aquí puedes visualizar el costo total por el servicio iurest por restaurante y número de mesas",
+        "TITLE": "Pago del servicio mensual de comeygana",
+        "SUBTITLE": "Aquí puedes visualizar el costo total por el servicio comeygana por restaurante y número de mesas",
         "RESTAURANT_NAME": "Nombre del restaurante",
         "RESTAURANT_PRICE": "Precio del restaurante",
         "TABLES_NUMBER": "Número de mesas",
@@ -1162,11 +1162,11 @@
         "ADDRESS_MAX": "La dirección debe tener máximo 100 caracteres",
         "PHONE_NUMBER": "Número de teléfono *",
         "PHONE_NUMBER_MAX": "El número de teléfono debe tener máximo 20 caracteres",
-        "SECURITY_MSG": "* Por seguridad, iurest no guarda la información de tu tarjeta de crédito",
+        "SECURITY_MSG": "* Por seguridad, comeygana no guarda la información de tu tarjeta de crédito",
         "CONTINUE_PAYMENT": "Continuar",
         "DIALOG_TITLE": "Confirmación de pago",
         "DIALOG_PLEASE": "Por favor revisa la información antes de confirmar",
-        "IUREST_SERVICE": "Servicio iurest",
+        "IUREST_SERVICE": "Servicio comeygana",
         "MONTHLY_SERVICE": "Mensual",
         "PERSONAL_INFO": "Información de facturación",
         "PERSONAL_TEL": "Tel. ",
@@ -1175,7 +1175,7 @@
         "PRICE": "Precio: ",
         "PAY_CONFIRM": "Confirmar",
         "PAY_CANCEL": "Cancelar",
-        "ORDER_DESCRIPTION": "Pago mensual de servicio iurest",
+        "ORDER_DESCRIPTION": "Pago mensual de servicio comeygana",
         "TRANSACTION_STATUS": "Estado de la transacción",
         "TRANSACTION_APPROVED": "El pago ha sido aprobado",
         "TRANSACTION_DECLINED": "El pago ha sido rechazado",
@@ -1189,7 +1189,7 @@
         "LAST_NAME": "Apellidos",
         "UNAVAILABLE_PAYMENT": "La opción de pago no esta disponible por el momento, por favor intenta mas tarde",
         "CC_PAYMENT_METHOD": "Tarjeta de crédito",
-        "DESCRIPTION": "Servicio mensual de Iurest"
+        "DESCRIPTION": "Servicio mensual de comeygana"
     },
     "RES_PAYMENT_HISTORY": {
         "TITLE": "Historial de pagos",
@@ -1219,9 +1219,9 @@
         "DATE_LBL": "Fecha: ",
         "CUSTOMER_LBL": "Cliente",
         "DESCRIPTION_LBL": "Descripción",
-        "DESCRIPTION": "Servicio mensual iurest",
+        "DESCRIPTION": "Licencia de software para el desarrollo comercial de contenidos digitales. Servicio mensual comeygana",
         "PERIOD_LBL": "Periodo",
-        "AMOUNT_LBL": "Valor sin IVA",
+        "AMOUNT_LBL": "Valor",
         "SUBTOTAL": "SubTotal: ",
         "IVA": "IVA: ",
         "TOTAL": "Total: ",
@@ -1342,7 +1342,7 @@
         "PAYMENT_PLAN_INFO": {
             "HOW_ITS_WORKS": "Como funciona?",
             "FIRST_DAYS_TITLE": "Primeros días",
-            "FIRST_DAYS_CONTENT": "A partir del día en que registres tu restaurante, hasta el primer día del siguiente mes, podrás utilizar iurest completamente gratis.",
+            "FIRST_DAYS_CONTENT": "A partir del día en que registres tu restaurante, hasta el primer día del siguiente mes, podrás utilizar comeygana completamente gratis.",
             "FIRST_DAYS_SUGGEST": "Te recomendamos registrarte los primeros días del mes para disfrutar más del servicio.",
             "ABOUT_MONTHLY_PAYMENT": "Respecto al cobro mensual",
             "ABOUT_MONTHLY_PAYMENT_TEXT_1": "Del 1 al 5 de cada mes, después de configurar la cantidad de mesas que vas a usar por restaurante, tienes la posibilidad de realizar el pago correspondiente únicamente por los restaurantes y mesas que vayas a usar durante ese mes.",
@@ -1350,7 +1350,7 @@
             "ABOUT_MONTHLY_PAYMENT_TEXT_3": "El valor cobrado se compone de:",
             "ABOUT_MONTHLY_PAYMENT_TEXT_4": "El costo por restaurante",
             "ABOUT_MONTHLY_PAYMENT_TEXT_5": "El costo de la mesa por la cantidad de mesas por restaurante",
-            "REACTIVATE_IUREST_SERVICE": "Reactivación del servicio iurest",
+            "REACTIVATE_IUREST_SERVICE": "Reactivación del servicio comeygana",
             "REACTIVATE_IUREST_SERVICE_CONTENT": "Si no realizas el pago dentro del plazo establecido (1 a 5 de cada mes), tienes la posibilidad de reactivar tus restaurantes en los días restantes del mes, pero el cobro se realizará por el valor total del mes.",
             "CALCULATOR": "Calcula el costo mensual apróximado",
             "RESTAURANT_PRICE": "Precio por restaurante",
@@ -1359,7 +1359,7 @@
         }
     },
     "ADMIN_DASHBOARD": {
-        "TITLE": "Te damos la bienvenida a iurest",
+        "TITLE": "Te damos la bienvenida a comeygana",
         "CARD_CONTENT": "Tu mejor inversión. Disfruta una nueva experiencia con la herramienta que hará crecer tu negocio.",
         "LINK": {
             "NEW_RESTAURANT": "Restaurantes",
@@ -1382,7 +1382,8 @@
         "RESTAURANT_REGISTER": "Registrar restaurante",
         "MESSAGE": "Regístra uno para habilitar esta opción",
         "REWARDS": "Recompensas redimidas hoy",
-        "ITEMS_HISTORY": "Items ordenados históricamente"
+        "ITEMS_HISTORY": "Items ordenados históricamente",
+        "REWARDS_HISTORY": "Recompensas redimidas históricamente"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Hoy",
@@ -1411,6 +1412,15 @@
         "TODAY": "Hoy",
         "YESTERDAY": "Ayer",
         "THIS_WEEK": "Esta semana",
+        "SEVEN_DAYS": "Últimos 7 días",
+        "THIRTY_DAYS": "Últimos 30 días",
+        "CHART_TITLE": "Cantidad de recompensas redimidas hoy",
+        "UNITS_LBL": "Unidades",
+        "REWARDS_LBL": "Recompensas",
+        "CHART_SUBTITLE": "Ordenados alfabéticamente"
+    },
+    "REWARD_HISTORY_CHART": {
+        "YESTERDAY": "Ayer",
         "SEVEN_DAYS": "Últimos 7 días",
         "THIRTY_DAYS": "Últimos 30 días",
         "CHART_TITLE": "Cantidad de recompensas redimidas por rango de tiempo",
@@ -1447,7 +1457,7 @@
         "ENTER": "Ingresar código",
         "CHANGE_TABLE_OK": "El cambio de mesa se ha realizado correctamente",
         "TABLE_DESTINY_NOT_EXISTS": "El código de la nueva mesa no existe. Por favor intenta nuevamente.",
-        "TABLE_DESTINY_NO_ACTIVE": "La mesa ingresada no esta activa para el servicio de iurest",
+        "TABLE_DESTINY_NO_ACTIVE": "La mesa ingresada no esta activa para el servicio de comeygana",
         "TABLE_DESTINY_NO_RESTAURANT": "El código de la mesa ingresada no pertenece al restaurante en el que te encuentras en este momento. Por favor intenta nuevamente.",
         "WAITER_CALL_PENDING": "Se encuentran llamados al mesero pendientes por atender. Una vez se atienda el llamado puedes realizar el cambio de mesa.",
         "TABLE_DESTINY_STATUS_ERROR": "Se ha producido un error validando el estado de la nueva mesa. Por favor intenta nuevamente.",
@@ -1518,7 +1528,7 @@
         "ORDER_PREPARED": "Preparadas",
         "ORDER_DELIVERED": "Entregadas",
         "ORDER_TRANSLATE": "En Traslado",
-        "PENALIZE_MSG": "Al crear una penalización, este usuario quedara marcado para que iurest lo tenga presente al momento de entrar en un restaurante y le notifique a sus administradores.",
+        "PENALIZE_MSG": "Al crear una penalización, este usuario quedara marcado para que comeygana lo tenga presente al momento de entrar en un restaurante y le notifique a sus administradores.",
         "PENALIZE_TABLE": "La penalización retirara al usuario de la mesa",
         "PENALIZE_CONFIRM_MSG": "y cancelara todas sus ordenes. Deseas continuar creando la penalización?",
         "ACCOUNT_ERROR": "Se ha producido un error con la cuenta del usuario. Por favor verifique si el usuario aún se encuentra en la mesa con la opción ADMINISTRACION -> CONTROL DE MESAS",
@@ -1591,7 +1601,7 @@
         "RESTAURANTS_PROFILE_MSG": "Crea el perfil de tus restaurantes para que todos lo vean",
         "SELECT_RESTAURANT": "Selecciona restaurante",
         "SELECT_RESTAURANT_TO_MODIFY": "Por favor selecciona un restaurante para crear o modificar su perfil",
-        "PROFILE_SUBTITLE": "Ingresa la siguiente información para que las personas te conozcan más al momento de buscarte en iurest. Puedes modificar la información para mantenerla actualizada.",
+        "PROFILE_SUBTITLE": "Ingresa la siguiente información para que las personas te conozcan más al momento de buscarte en comeygana. Puedes modificar la información para mantenerla actualizada.",
         "GENERAL_INFO": "Información General",
         "DESCRIPTION": "Escribe sobre tu restaurante. Cuéntanos sobre tu historia, lo que te motiva, tu comida y tus servicios",
         "DESCRIPTION_LBL": "Descripción de tu restaurante",
@@ -1680,7 +1690,8 @@
         "REWARD_AGGREGATED": "Recompensa agregada",
         "ERROR": "Error agregando la recompensa. Intenta nuevamente",
         "ORDER_ERROR": "Puedes redimir máximo una recompensa por orden",
-        "REWARDS_MSG": "Reclama una recompensa y el plato te sale gratis! Disfrutalo!"
+        "REWARDS_MSG": "Reclama una recompensa y el plato te sale gratis! Disfrutalo!",
+        "NO_REWARDS": "No hay recompensas"
     },
     "CUSTOMER_POINTS": {
         "NO_POINTS_MSG": "Aún no has acumulado puntos en ningún restaurante. Animate!",

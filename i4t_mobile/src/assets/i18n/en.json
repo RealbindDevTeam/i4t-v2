@@ -63,7 +63,7 @@
             "REQUIRED_CONFIRM": "Your must confirm password",
             "PASSWORD_NOT_MATCH": "Passwords doesn't match",
             "CONFIRM_TITLE": "User created",
-            "CONFIRM_SUBTITLE": "Now you can enjoy iurest",
+            "CONFIRM_SUBTITLE": "Now you can enjoy comeygana",
             "CONFIRM_BTN": "Ok",
             "OR": "or",
             "SYSTEM_MSG": "System alert",
@@ -175,8 +175,8 @@
             "ADDITION_EDITED": "Addition edited successfullIy",
             "QUANT": "Units",
             "TABLE_NOT_EXISTS": "The table doesn't exist. Please check the code",
-            "TABLE_NO_ACTIVE": "The restaurant doesn't have this table active for the service of iurest",
-            "IUREST_NO_ACTIVE": "The restaurant doesn't have the iurest service active. It is not possible to enter.",
+            "TABLE_NO_ACTIVE": "The restaurant doesn't have this table active for the service of comeygana",
+            "IUREST_NO_ACTIVE": "The restaurant doesn't have the comeygana service active. It is not possible to enter.",
             "TABLE": "Table",
             "RESTAURANT_NOT_EXISTS": "The restaurant doen't exist. It is not possible to enter.",
             "MSG_1": "You can order what you prefer",
@@ -203,6 +203,13 @@
             "YOU_HAVE": "You have",
             "POINTS_TO_REDEEM": "Points to redeem",
             "SHOW_REWARDS": "Show rewards"
+        },
+        "ORDERS_TODAY": {
+            "NO_RECORDS_FOUND": "No orders found",
+            "TODAY": "Today",
+            "YESTERDAY": "Yesterday",
+            "ORDERS_TODAY": "Orders of today",
+            "ORDERS_YESTERDAY": "Orders of yesterday"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
@@ -404,7 +411,7 @@
             "DIALOG_ALERT": "System alert",
             "CHANGE_TABLE_OK": "Table change applied successfully",
             "TABLE_DESTINY_NOT_EXISTS": "The code for the new table does not exist. Please try again.",
-            "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the iurest service",
+            "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the comeygana service",
             "TABLE_DESTINY_NO_RESTAURANT": "The code of the table entered does not belong to the restaurant where you are located. Please try again.",
             "PENDING_ORDERS": "You have orders pending to confirm affecting your payment. Please check and try again.",
             "ORDERS_PAY_PROCESS": "You have orders in process of payment. It is not possible to change of table.",
@@ -441,14 +448,14 @@
         },
         "SIGN_OUT": {
             "TITLE_CONFIRM": "Sign Out",
-            "CONTENT_CONFIRM": "Are you sure to leave iurest?",
+            "CONTENT_CONFIRM": "Are you sure to leave comeygana?",
             "NO_BTN": "No",
             "YES_BTN": "Yes",
             "LOADING": "Please wait..."
         },
         "HOME": {
             "SLIDE-1": {
-                "WELCOME": "Welcome to iurest",
+                "WELCOME": "Welcome to comeygana",
                 "TEXT": "Order fast and easy in your favorite restaurant"
             },
             "SLIDE-2": {
@@ -456,7 +463,7 @@
                 "2": "2. See your order cost",
                 "3": "3. Call a waiter/waitress"
             },
-            "HEADER_TITLE": "Welcome to Iurest!, go ahead and enjoy ordering",
+            "HEADER_TITLE": "Welcome to comeygana!, go ahead and enjoy ordering",
             "TITLE_LIST_BTN": "Look at the restaurant where you can get points",
             "TITLE_ORDER_BTN": "Ordering in a restaurant",
             "TITLE_POINTS_BTN": "Check your points accumulated"
@@ -469,7 +476,8 @@
         },
         "RESTAURANT_PROFILE": {
             "MENU_BTN": "Menu",
-            "PAYMENT_METHODS": "Payment methods"
+            "PAYMENT_METHODS": "Payment methods",
+            "NO_PROFILE": "This restaurant has not configured its profile"
         },
         "SCHEDULE": {
             "SCHEDULE": "Schedule",
@@ -510,7 +518,8 @@
             "LOADING_MSG": "Adding to your order ...",
             "REWARD_DELETED": "Reward deleted from order",
             "ORDER_ERROR": "You can redeem maximum one reward per order",
-            "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!"
+            "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!",
+            "NO_REWARDS": "The are no rewards"
         },
         "POINTS": {
             "TITLE": "My points",

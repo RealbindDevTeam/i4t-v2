@@ -10,7 +10,6 @@
         <div class="layout-row">
             <div class="section" (click)="goToItemUnitsCharts(establishment._id)">
                 <label>{{'ADMIN_DASHBOARD.ITEMS' | translate}}</label>
-                <h1>{{getItemsSold( establishment._id )}}</h1>
                 <div class="view">
                     {{'VIEW' | translate}}
                 </div>
@@ -23,14 +22,12 @@
             </div>
             <div class="section" (click)="goToRewardUnitsCharts(establishment._id)">
                 <label>{{'ADMIN_DASHBOARD.REWARDS' | translate}}</label>
-                <h1>{{getEstablishmentUsers( establishment._id )}}</h1>
                 <div class="view">
                     {{'VIEW' | translate}}
                 </div>
             </div>
-            <div class="section">
-                <label>{{'ADMIN_DASHBOARD.USERS' | translate}}</label>
-                <h1>{{getEstablishmentUsers( establishment._id )}}</h1>
+            <div class="section" (click)="goToRewardHistoryCharts(establishment._id)">
+                <label>{{'ADMIN_DASHBOARD.REWARDS_HISTORY' | translate}}</label>
                 <div class="view">
                     {{'VIEW' | translate}}
                 </div>

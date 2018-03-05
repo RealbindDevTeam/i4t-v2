@@ -94,6 +94,7 @@ import { OptionsComponent } from './administrator/menu/options/options/option/op
 import { OptionEditComponent } from './administrator/menu/options/options/option-edit/option-edit.component';
 import { OptionValueComponent } from './administrator/menu/options/values/option-value/option-value.component';
 import { OptionValueEditComponent } from './administrator/menu/options/values/option-value-edit/option-value-edit.component';
+import { RewardHistoryChartComponent } from './administrator/dashboard/reward-history-chart/reward-history-chart.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -156,7 +157,8 @@ export const WEB_DECLARATIONS = [
     RewardUnitsChartComponent,
     ItemHistoryChartComponent,
     OptionsComponent,
-    OptionValueComponent
+    OptionValueComponent,
+    RewardHistoryChartComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [

@@ -19,6 +19,7 @@ import { UserLanguageServiceProvider } from '../../../providers/user-language-se
 import { UserDetail, UserRewardPoints } from 'i4t_web/both/models/auth/user-detail.model';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { RewardPoints } from 'i4t_web/both/collections/establishment/reward-point.collection';
+import { LightboxPage } from "../../../pages/general/lightbox/lightbox";
 
 @Component({
   selector: 'page-item-edit',
@@ -683,6 +684,15 @@ export class ItemEditPage implements OnInit, OnDestroy {
     });
 
     alertConfirm.present();
+  }
+
+  /**
+   * open image if the item
+   * @param pItemImg {string}
+   */
+  openItemImage(pItemImg: string) {
+    let contactModal = this._modalCtrl.create(LightboxPage, { item_img: pItemImg });
+    contactModal.present();
   }
 
   ngOnDestroy() {

@@ -85,15 +85,17 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
         let unitsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.UNITS_LBL');
         let itemsLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.ITEMS_LBL');
         let todayLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.TODAY');
-        let yesterdayLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.YESTERDAY')
-        let lastSevenDaysLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.SEVEN_DAYS');
-        let lastThirtyDaysLbl: string = this.itemNameTraduction('ITEM_UNIT_CHART.THIRTY_DAYS');
 
         this.xAxisArray = [];
         this.todaySeriesArray = [];
         this.itemNameArray = [];
 
-        OrderHistories.collection.find({}).fetch().forEach((orderHistory) => {
+        OrderHistories.collection.find({
+            'creation_date': {
+                $gte: new Date(this._todayDateIni.getFullYear(), this._todayDateIni.getMonth(), this._todayDateIni.getDate()),
+                $lte: new Date(this._todayDateEnd.getFullYear(), this._todayDateEnd.getMonth(), this._todayDateEnd.getDate(), 23, 59, 59)
+            }
+        }).fetch().forEach((orderHistory) => {
             orderHistory.items.forEach((item) => {
                 let indexofvar = this.itemNameArray.indexOf(item.item_name);
                 if (indexofvar < 0) {
@@ -196,6 +198,7 @@ export class ItemUnitsChartComponent implements OnInit, OnDestroy {
    */
     removeSubscriptions(): void {
         if (this._establishmentsSubscription) { this._establishmentsSubscription.unsubscribe(); }
+        if (this._orderHistorySubscription) { this._orderHistorySubscription.unsubscribe(); }
     }
 
     /**

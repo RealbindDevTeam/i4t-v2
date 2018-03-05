@@ -87,4 +87,20 @@ page-orders {
         margin: 0 auto;
         width: 50%;
     }
+
+    .content-custom {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 84px;
+        overflow: scroll;
+    }
+
+    .footer-custom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
 }

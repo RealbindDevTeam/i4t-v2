@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Select } from 'ionic-angular';
 import { MeteorObservable } from "meteor-rxjs";
 import { Observable, Subscription, Subject } from "rxjs";
 import { Order } from 'i4t_web/both/models/establishment/order.model';
@@ -25,6 +26,8 @@ import { subscriptionLogsToBeFn } from 'rxjs/testing/TestScheduler';
 })
 export class OrdersReceivedPage implements OnInit, OnDestroy {
 
+    @ViewChild('select1') select1: Select;
+
     private _user = Meteor.userId();
     private _orderSub: Subscription;
     private _userDetailSub: Subscription;
@@ -38,6 +41,8 @@ export class OrdersReceivedPage implements OnInit, OnDestroy {
     private _orders: Observable<Order[]>;
     private _userDetail: UserDetail;
     private _orderIndex: number = -1;
+    private _thereAreOrders: boolean = true;
+    private selected: string;
 
     /**
      * OrdersReceivedPage Constructor
@@ -49,6 +54,7 @@ export class OrdersReceivedPage implements OnInit, OnDestroy {
         private _userLanguageService: UserLanguageServiceProvider,
         private _ngZone: NgZone) {
         _translate.setDefaultLang('en');
+        this.selected = 'today';
     }
 
     /**
@@ -63,7 +69,7 @@ export class OrdersReceivedPage implements OnInit, OnDestroy {
                 if (this._userDetail) {
                     this._orderSub = MeteorObservable.subscribe('getOrdersByEstablishmentWork', this._user, ['ORDER_STATUS.RECEIVED']).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
-                            this._orders = Orders.find({ establishment_id: this._userDetail.establishment_work }, { sort: { code: -1 } }).zone();
+                            this.doFilter(this.selected);
                         });
                     });
                     this._usersSub = MeteorObservable.subscribe('getUsersByEstablishmentId', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe();
@@ -191,6 +197,47 @@ export class OrdersReceivedPage implements OnInit, OnDestroy {
             wordTraduced = res;
         });
         return wordTraduced;
+    }
+    /** 
+     * Show filter
+     */
+    showFilter() {
+        this.select1.open();
+        setTimeout(() => {
+        }, 150);
+    }
+
+    /**
+     * Method that allow find Orders by day
+     * @param _pFilter 
+     */
+    doFilter(_pFilter: string) {
+        let initDate: Date;
+        let endDate: Date;
+        initDate = new Date();
+        endDate = new Date();
+        initDate.setSeconds(0);
+        initDate.setHours(0);
+        initDate.setMinutes(0);
+        endDate.setSeconds(59);
+        endDate.setHours(23);
+        endDate.setMinutes(59);
+        this._orders = null;
+        if (_pFilter === "today") {
+            let tomorrow: number = endDate.getDate() + 1;
+            endDate.setDate(tomorrow);
+        } else if (_pFilter === "yesterday") {
+            let yesterday: number = initDate.getDate() - 1;
+            initDate.setDate(yesterday);
+            endDate.setDate(yesterday);
+        }
+        this._orders = Orders.find({
+            establishment_id: this._userDetail.establishment_work, "creation_date": { $gt: initDate, $lt: endDate },
+        }, { sort: { code: -1 } }).zone();
+        this._orders.subscribe(() => {
+            let _lOrders: number = Orders.collection.find({ establishment_id: this._userDetail.establishment_work, "creation_date": { $gt: initDate, $lt: endDate } }).count();
+            _lOrders > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
+        })
     }
 
     /**

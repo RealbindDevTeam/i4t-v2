@@ -37,6 +37,7 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
     private _establishments: any;
     private _sections: any;
     private _items: any;
+    private _itemsRecommended;
     private _categories: any;
     private _subcategories: any;
     private _itemImagesThumbs: any;
@@ -75,6 +76,7 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
                     });
                     this._itemsSubscription = MeteorObservable.subscribe('itemsByEstablishment', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._items = Items.find({});
+                        this._itemsRecommended = Items.find({ 'establishments.establishment_id': this._userDetail.establishment_work, 'establishments.recommended': true }).zone();
                     });
                     this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._userDetail.establishment_work).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._additions = Additions.find({});
@@ -89,14 +91,19 @@ export class EstablishmentMenuPage implements OnInit, OnDestroy {
     }
 
     validateSection(section_selected) {
-        if (section_selected == 'all') {
+        if (section_selected === 'all') {
             this._items = Items.find({});
+            this._itemsRecommended = Items.find({ 'establishments.establishment_id': this._userDetail.establishment_work, 'establishments.recommended': true }).zone();
             this._categories = Categories.find({});
             this._subcategories = Subcategories.find({});
         } else if (section_selected === 'addition') {
             this.goToAddAdditions();
+        } else if (section_selected === 'recommended') {
+            this._items = null;
+            this._itemsRecommended = Items.find({ 'establishments.establishment_id': this._userDetail.establishment_work, 'establishments.recommended': true }).zone();
         }
         else {
+            this._itemsRecommended = null;
             this._items = Items.find({ sectionId: section_selected });
             this._categories = Categories.find({ section: section_selected });
             this._subcategories = Subcategories.find({});

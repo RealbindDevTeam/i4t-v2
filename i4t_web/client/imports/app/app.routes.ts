@@ -59,6 +59,7 @@ import { RewardUnitsChartComponent } from 'client/imports/app/web/administrator/
 import { ItemHistoryChartComponent } from './web/administrator/dashboard/item-history-chart/item-history-chart.component';
 import { OptionsComponent } from './web/administrator/menu/options/options/option/option.component';
 import { OptionValueComponent } from './web/administrator/menu/options/values/option-value/option-value.component';
+import { RewardHistoryChartComponent } from './web/administrator/dashboard/reward-history-chart/reward-history-chart.component';
 
 export const routes: Route[] = [
     {
@@ -110,7 +111,8 @@ export const routes: Route[] = [
             { path: 'reward-units-chart/:param1', component: RewardUnitsChartComponent, canActivate: [AdminGuard] },
             { path: 'item-history-chart/:param1', component: ItemHistoryChartComponent, canActivate: [AdminGuard] },
             { path: 'options', component: OptionsComponent, canActivate: [AdminGuard] },
-            { path: 'option-values', component: OptionValueComponent, canActivate: [AdminGuard] }            
+            { path: 'option-values', component: OptionValueComponent, canActivate: [AdminGuard] },            
+            { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] }
         ]
     },
     { path: '', component: SigninWebComponent },

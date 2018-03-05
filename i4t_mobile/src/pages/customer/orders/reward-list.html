@@ -14,6 +14,15 @@
         {{'MOBILE.REWARD_LIST.ORDER_ERROR' | translate}}
     </ion-card-header>
 
+    <div *ngIf="_thereRewards" padding class="content-custom">
+        <div style="text-align: center;">
+            <img style="max-width: 75%;" src="assets/img/reward.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{'MOBILE.REWARD_LIST.NO_REWARDS' | translate}}</h1>
+        </div>
+    </div>
+
     <ion-list>
         <div *ngFor="let reward of _rewards | async">
             <ion-card *ngIf="showReward(reward.item_id)">

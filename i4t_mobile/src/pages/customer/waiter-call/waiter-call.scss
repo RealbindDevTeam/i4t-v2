@@ -229,25 +229,28 @@ page-waiter-call {
 
     #loading {
         position:absolute;
-        left:calc(50% - 60px);
-        top:calc(50% - 25px);
+        left:calc(50% - 50px);
+        top:calc(50% - 150px);
         z-index:9999
     }
     
     .uil-ripple {
         position:absolute;
         left:calc(50% - 90px);
-        top:calc(50% - 90px);
+        top:calc(50% - 180px);
         opacity:.5;
         z-index:999
     }
 
-    .ld-i {opacity:0;animation: ld-in 3s 0.0s ease infinite;}
-    .ld-u {opacity:0;animation: ld-in 3s 0.1s ease infinite;}
-    .ld-r {opacity:0;animation: ld-in 3s 0.2s ease infinite;}
+    .ld-c {opacity:0;animation: ld-in 3s 0.0s ease infinite;}
+    .ld-o {opacity:0;animation: ld-in 3s 0.1s ease infinite;}
+    .ld-m {opacity:0;animation: ld-in 3s 0.2s ease infinite;}
     .ld-e {opacity:0;animation: ld-in 3s 0.3s ease infinite;}
-    .ld-s {opacity:0;animation: ld-in 3s 0.4s ease infinite;}
-    .ld-t {opacity:0;animation: ld-in 3s 0.5s ease infinite;}
+    .ld-y {opacity:0;animation: ld-in 3s 0.4s ease infinite;}
+    .ld-g {opacity:0;animation: ld-in 3s 0.5s ease infinite;}
+    .ld-a {opacity:0;animation: ld-in 3s 0.6s ease infinite;}
+    .ld-n {opacity:0;animation: ld-in 3s 0.7s ease infinite;}
+    .ld-a2 {opacity:0;animation: ld-in 3s 0.8s ease infinite;}
 
     @keyframes ld-in {
         0% {opacity:0;transform:scale(0);}

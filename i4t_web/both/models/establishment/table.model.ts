@@ -12,7 +12,8 @@ export interface Table extends CollectionObject {
     amount_people:number;
     status:string;
     QR_URI: string;
-    _number: number;    
+    _number: number;
+    uri_redirect: string;    
 }
 
 /**

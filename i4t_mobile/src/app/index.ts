@@ -44,6 +44,7 @@ import { PopoverOptionsPage } from '../pages/customer/home/popover-options/popov
 import { OrderConfirmPage } from '../pages/customer/orders/order-confirm/order-confirm';
 import { TabsPage } from '../pages/waiter/tabs/tabs';
 import { OrdersReceivedPage } from '../pages/waiter/orders-received/orders-received';
+import { LightboxPage } from "../pages/general/lightbox/lightbox";
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -91,5 +92,6 @@ export const PAGES_DECLARATIONS = [
     PopoverOptionsPage,
     OrderConfirmPage,
     TabsPage,
-    OrdersReceivedPage
+    OrdersReceivedPage,
+    LightboxPage
 ];

@@ -57,7 +57,7 @@
                             <p *ngIf="item.description.length <= 50">{{item.description}}</p>
                             <mat-card-subtitle>{{showItemPrices(item.prices)}}</mat-card-subtitle>
                             <mat-card-subtitle>{{showItemTaxes(item.prices)}}</mat-card-subtitle>
-                            <mat-chip-list>
+                            <mat-chip-list *ngIf="item.has_reward">
                                 <mat-chip class="cust-color-chip">{{item.reward_points}} {{'ORDER_CREATE.POINTS'
                                     | translate}}
                                 </mat-chip>

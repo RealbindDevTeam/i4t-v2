@@ -16,6 +16,8 @@ import { Tables } from '../../../../../../../../../both/collections/establishmen
 import { AlertConfirmComponent } from '../../../../../../web/general/alert-confirm/alert-confirm.component';
 import { Country } from '../../../../../../../../../both/models/general/country.model';
 import { Countries } from '../../../../../../../../../both/collections/general/country.collection';
+import { Parameter } from "../../../../../../../../../both/models/general/parameter.model";
+import { Parameters } from "../../../../../../../../../both/collections/general/parameter.collection";
 
 import * as QRious from 'qrious';
 
@@ -36,6 +38,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
     private _establishmentSub: Subscription;
     private _tableSub: Subscription;
     private _countrySub: Subscription;
+    private _parameterSubscription: Subscription;
 
     private _establishments: Observable<Establishment[]>;
     private _tables: Observable<Table[]>;
@@ -93,6 +96,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                 this._tables = this._tables = Tables.find({ establishment_id: this.establishmentId }).zone();
             });
         });
+        this._parameterSubscription = MeteorObservable.subscribe('getParameters').subscribe();
     }
 
     /**
@@ -102,6 +106,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
         if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
         if (this._tableSub) { this._tableSub.unsubscribe(); }
         if (this._countrySub) { this._countrySub.unsubscribe(); }
+        if (this._parameterSubscription) { this._parameterSubscription.unsubscribe(); }
     }
 
     /**
@@ -118,8 +123,11 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
         if (this._tableForm.valid) {
             let _lEstablishment: Establishment = Establishments.findOne({ _id: this.establishmentId });
             let _lTableNumber: number = this._tableForm.value.tables_number;
+            let _lParameterUrl: Parameter = Parameters.collection.findOne({ _id: "50000" });
+
             this.establishmentCode = _lEstablishment.establishment_code;
             this.tables_count = Tables.collection.find({ establishment_id: this.establishmentId }).count();
+            let _lUrl: string = _lParameterUrl.value;
 
             for (let _i = 0; _i < _lTableNumber; _i++) {
                 let _lEstablishmentTableCode: string = '';
@@ -129,6 +137,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
 
                 _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
                 let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
+                let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode() ;
 
                 let _lQrCode = new QRious({
                     background: 'white',
@@ -139,7 +148,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                     mime: 'image/svg',
                     padding: null,
                     size: 150,
-                    value: _lCodeGenerator.getQRCode()
+                    value: _lUriRedirect
                 });
 
                 let _lNewTable: Table = {
@@ -156,7 +165,8 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                     amount_people: 0,
                     status: 'FREE',
                     QR_URI: _lQrCode.toDataURL(),
-                    _number: this.tables_count + (_i + 1)
+                    _number: this.tables_count + (_i + 1),
+                    uri_redirect: _lUriRedirect,
                 };
                 Tables.insert(_lNewTable);
                 Establishments.update({ _id: this.establishmentId }, { $set: { tables_quantity: _lEstablishment.tables_quantity + (_i + 1) } })

@@ -36,6 +36,15 @@
         </ion-card-content>
     </ion-card>
 
+    <ion-label margin-start *ngIf="(_itemsRecommended | async)?.length > 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-label>
+    <div *ngFor="let item of _itemsRecommended | async">
+        <ion-card >
+            <ion-card-content>
+                <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
     <div *ngFor="let section of _sections | async">
         <div *ngFor="let item of _items | async">
             <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
