@@ -476,7 +476,8 @@
         },
         "RESTAURANT_PROFILE": {
             "MENU_BTN": "Menu",
-            "PAYMENT_METHODS": "Payment methods"
+            "PAYMENT_METHODS": "Payment methods",
+            "NO_PROFILE": "This restaurant has not configured its profile"
         },
         "SCHEDULE": {
             "SCHEDULE": "Schedule",

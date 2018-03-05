@@ -487,11 +487,11 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
         tx_value.currency = this._currency;
         additionalValues.TX_VALUE = tx_value;
 
-        tx_tax.value = this.getValueTax();
+        tx_tax.value = 0;
         tx_tax.currency = this._currency;
         additionalValues.TX_TAX = tx_tax;
 
-        tx_tax_return_base.value = this.getReturnBase();
+        tx_tax_return_base.value = 0;
         tx_tax_return_base.currency = this._currency;
         additionalValues.TX_TAX_RETURN_BASE = tx_tax_return_base;
 

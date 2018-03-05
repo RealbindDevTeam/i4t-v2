@@ -1,5 +1,9 @@
 page-establishment-profile {
 
+    .initial {
+        display: initial;
+    }
+
     ion-fab {
         top: -56px !important;
     }
@@ -23,7 +27,7 @@ page-establishment-profile {
     }
 
     ion-slides {
-        max-height: 200px;
+        max-height: 250px;
         margin-bottom: -10px;
     }
 
@@ -60,5 +64,9 @@ page-establishment-profile {
         display: block;
         height: 200px;
         width: 100%;
+    }
+
+    .img{
+        margin: 0 auto;
     }
 }

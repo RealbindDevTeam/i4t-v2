@@ -45,6 +45,7 @@ import { OrderConfirmPage } from '../pages/customer/orders/order-confirm/order-c
 import { TabsPage } from '../pages/waiter/tabs/tabs';
 import { OrdersReceivedPage } from '../pages/waiter/orders-received/orders-received';
 import { LightboxPage } from "../pages/general/lightbox/lightbox";
+import { EstablishmentListPage } from "../pages/customer/establishment-list/establishment-list";
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -93,5 +94,6 @@ export const PAGES_DECLARATIONS = [
     OrderConfirmPage,
     TabsPage,
     OrdersReceivedPage,
-    LightboxPage
+    LightboxPage,
+    EstablishmentListPage
 ];
