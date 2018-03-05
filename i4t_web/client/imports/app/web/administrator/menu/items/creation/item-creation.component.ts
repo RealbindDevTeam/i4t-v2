@@ -17,8 +17,6 @@ import { Subcategory } from '../../../../../../../../both/models/menu/subcategor
 import { Subcategories } from '../../../../../../../../both/collections/menu/subcategory.collection';
 import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
-//import { GarnishFood } from '../../../../../../../../both/models/menu/garnish-food.model';
-//import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/garnish-food.collection';
 import { Addition } from '../../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../../both/collections/menu/addition.collection';
 import { Currency } from '../../../../../../../../both/models/general/currency.model';
@@ -45,13 +43,10 @@ import { OptionValues } from '../../../../../../../../both/collections/menu/opti
 export class ItemCreationComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
-    //private _itemForm: FormGroup;
-
     private _sectionsFormGroup: FormGroup;
     private _generalFormGroup: FormGroup;
     private _optionAdditionsFormGroup: FormGroup;
 
-    //private _garnishFormGroup: FormGroup = new FormGroup({});
     private _additionsFormGroup: FormGroup = new FormGroup({});
     private _establishmentsFormGroup: FormGroup = new FormGroup({});
     private _currenciesFormGroup: FormGroup = new FormGroup({});
@@ -87,7 +82,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     private _establishmentList: Establishment[] = [];
     private _establishmentCurrencies: string[] = [];
     private _establishmentTaxes: string[] = [];
-    //private _garnishFood: GarnishFood[] = [];
     private _additions: Addition[] = [];
 
     private _showGarnishFood: boolean = false;
@@ -147,6 +141,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         this.removeSubscriptions();
         let _establishmentsId: string[] = [];
         let _optionIds: string[] = [];
+
         this._sectionsFormGroup = new FormGroup({
             section: new FormControl('', [Validators.required]),
             category: new FormControl(''),
@@ -172,34 +167,12 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             additions: this._additionsFormGroup
         });
 
-
-
-        /*this._itemForm = new FormGroup({
-            //section: new FormControl('', [Validators.required]),
-            //category: new FormControl(''),
-            //subcategory: new FormControl(''),
-            //name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(55)]),
-            //description: new FormControl(''),
-            //cookingTime: new FormControl(''),
-            //establishments: this._establishmentsFormGroup,
-            //currencies: this._currenciesFormGroup,
-            //taxes: this._taxesFormGroup,
-            //observations: new FormControl(false),
-            //image: new FormControl(''),
-            //garnishFoodQuantity: new FormControl('0'),
-            //garnishFood: this._garnishFormGroup,
-            //additions: this._additionsFormGroup,
-            //acceptReward: new FormControl(false),
-            //rewardValue: new FormControl(''),
-            //options: this._optionsFormGroup,
-            //option_values: this._optionValuesFormGroup
-        });*/
-
         this._sectionsSub = MeteorObservable.subscribe('sections', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sections = Sections.find({ is_active: true }).zone();
             });
         });
+
         this._categorySub = MeteorObservable.subscribe('categories', this._user).takeUntil(this._ngUnsubscribe).subscribe();
         this._subcategorySub = MeteorObservable.subscribe('subcategories', this._user).takeUntil(this._ngUnsubscribe).subscribe();
         this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
@@ -254,21 +227,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * This function get selectedIndex
-     
-    get selectedIndex(): number {
-        return this._selectedIndex;
-    }*/
-
-    /**
-     * This function set selectedIndex
-     * @param {number} _selectedIndex
-     
-    set selectedIndex(_selectedIndex: number) {
-        this._selectedIndex = _selectedIndex;
-    }*/
-
-    /**
      * This function allow move in wizard tabs
      * @param {number} _index
      */
@@ -314,59 +272,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * This function move to the next tab
-     
-    next(): void {
-        if (this.canMove(this._selectedIndex + 1)) {
-            this._selectedIndex++;
-        }
-    }*/
-
-    /**
-     * This function move to the previous tab
-     
-    previous(): void {
-        if (this._selectedIndex === 0) {
-            return;
-        }
-        if (this.canMove(this._selectedIndex - 1)) {
-            this._selectedIndex--;
-        }
-    }*/
-
-    /**
-     * This fuction allow wizard to create item
-     
-    canFinish(): boolean {
-        return this._itemForm.valid;
-    }*/
-
-    /**
-     * Show Garnish Food Quantity Message
-     
-    showGarnishFoodQuantityMsg(): boolean {
-        let arrGarnishFood: any[] = Object.keys(this._itemForm.value.garnishFood);
-        let _lGarnish: string[] = [];
-        let _lGarnishQuantOk: boolean = false;
-
-        arrGarnishFood.forEach((gar) => {
-            if (this._itemForm.value.garnishFood[gar]) {
-                _lGarnish.push(gar);
-            }
-        });
-        if (_lGarnish.length > 0) {
-            if (this._itemForm.value.garnishFoodQuantity === '0' || this._itemForm.value.garnishFoodQuantity === 0) {
-                _lGarnishQuantOk = false;
-            } else {
-                _lGarnishQuantOk = true;
-            }
-        } else {
-            _lGarnishQuantOk = true;
-        }
-        return _lGarnishQuantOk;
-    }*/
-
-    /**
      * Function to add Item
      */
     addItem(): void {
@@ -382,11 +287,11 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                 this._loading = false;
                 let _lMessage: string = this.itemNameTraduction('ITEMS.ITEM_CREATED');
                 this._snackBar.open(_lMessage, '', { duration: 2500 });
-                //this._router.navigate(['app/items']);
+                this._router.navigate(['app/items']);
             }).catch((err) => {
                 this.cancel();
                 this._loading = false;
-                //this._router.navigate(['app/items']);
+                this._router.navigate(['app/items']);
                 var error: string = this.itemNameTraduction('ITEMS.CREATION_ERROR');
                 this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
             });
@@ -439,15 +344,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                     rewardPointsAux = "0";
                 }
 
-                /*let arr: any[] = Object.keys(this._itemForm.value.garnishFood);
-                let _lGarnishFoodToInsert: string[] = [];
-
-                arr.forEach((gar) => {
-                    if (this._itemForm.value.garnishFood[gar]) {
-                        _lGarnishFoodToInsert.push(gar);
-                    }
-                });*/
-
                 let arrOptions: any[] = Object.keys(this._optionAdditionsFormGroup.value.options);
                 let _optionsToInsert: ItemOption[] = [];
                 let _lItemOption: ItemOption = { option_id: '', is_required: false, values: [] };
@@ -465,7 +361,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                             }
 
                             let arrOptionValues: any[] = Object.keys(this._optionAdditionsFormGroup.value.option_values);
-                            console.log(arrOptionValues);
                             let _valuesToInsert: ItemOptionValue[] = [];
                             let _lItemOptionValue: ItemOptionValue = { option_value_id: '', have_price: false };
 
@@ -475,20 +370,25 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                                     let _optionValue: OptionValue = OptionValues.findOne({ _id: _lvalueControl[1] });
 
                                     if (_optionValue.option_id === _lItemOption.option_id) {
-                                        if (_lItemOptionValue.option_value_id !== _optionValue.option_id) {
+                                        if (_lItemOptionValue.option_value_id !== _lvalueControl[1]) {
                                             _lItemOptionValue = { option_value_id: '', have_price: false };
                                             _valuesToInsert.push(_lItemOptionValue);
 
-                                            if (_lvalueControl[0] === 'val_') {
-                                                _lItemOptionValue.option_value_id = _optionValue.option_id;
+                                            if (_lvalueControl[0] === 'val') {
+                                                _lItemOptionValue.option_value_id = _optionValue._id;
                                             }
                                         } else {
-                                            // to do
+                                            if (_lvalueControl[0] === 'havPri' && this._optionValuesFormGroup.controls[val].value === true) {
+                                                _lItemOptionValue.have_price = true;
+                                            }
+                                            if (_lvalueControl[0] === 'pri') {
+                                                _lItemOptionValue.price = Number.parseInt(this._optionValuesFormGroup.controls[val].value.toString());
+                                            }
                                         }
                                     }
                                 }
                             });
-
+                            _lItemOption.values = _valuesToInsert;
                         } else {
                             if (_lControl[0] === 'req' && this._optionsFormGroup.controls[opt].value === true) {
                                 _lItemOption.is_required = true;
@@ -502,8 +402,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         }
                     }
                 });
-                console.log('array final');
-                console.log(_optionsToInsert);
 
                 let arrAdd: any[] = Object.keys(this._optionAdditionsFormGroup.value.additions);
                 let _lAdditionsToInsert: string[] = [];
@@ -514,7 +412,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                     }
                 });
 
-                /*if (this._createImage) {
+                if (this._createImage) {
                     _lNewItem = Items.collection.insert({
                         creation_user: this._user,
                         creation_date: new Date(),
@@ -531,8 +429,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         prices: _lItemPricesToInsert,
                         observations: this._generalFormGroup.value.observations,
                         image: this._itemImageToInsert,
-                        //garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
-                        //garnishFood: _lGarnishFoodToInsert,
                         options: _optionsToInsert,
                         additions: _lAdditionsToInsert,
                         has_reward: this._generalFormGroup.value.acceptReward,
@@ -554,14 +450,12 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                         establishments: _lItemEstablishmentsToInsert,
                         prices: _lItemPricesToInsert,
                         observations: this._generalFormGroup.value.observations,
-                        //garnishFoodQuantity: this._itemForm.value.garnishFoodQuantity,
-                        //garnishFood: _lGarnishFoodToInsert,
                         options: _optionsToInsert,
                         additions: _lAdditionsToInsert,
                         has_reward: this._generalFormGroup.value.acceptReward,
                         reward_points: rewardPointsAux
                     });
-                }*/
+                }
                 resolve(_lNewItem);
             } catch (e) {
                 reject(e);
@@ -624,15 +518,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                 this._optionValuesFormGroup.addControl('pri_' + val._id, _priceControl);
             });
         }
-
-        /*if (GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
-            this._showGarnishFood = true;
-            GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch().forEach((gar) => {
-                let control: FormControl = new FormControl(false);
-                this._garnishFormGroup.addControl(gar._id, control);
-            });
-            this._garnishFood = GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch();
-        }*/
 
         if (Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
             Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).fetch().forEach((ad) => {
@@ -713,7 +598,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
      * @param {any} _pEvent 
      */
     onCheckEstablishment(_pEstablishmentName: string, _pEvent: any): void {
-        let _lEstablishment: Establishment = this._establishmentList.filter(r => r.name === _pEstablishmentName)[0];
+        let _lEstablishment: Establishment = this._establishmentList.find(r => r.name === _pEstablishmentName);
         if (_pEvent.checked) {
             this._showGeneralError = false;
             this._establishmentsSelectedCount++;
@@ -744,7 +629,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             let arr: any[] = Object.keys(this._generalFormGroup.value.establishments);
             arr.forEach((est) => {
                 if (this._generalFormGroup.value.establishments[est]) {
-                    let _lRes: Establishment = this._establishmentList.filter(r => r.name === est)[0];
+                    let _lRes: Establishment = this._establishmentList.find(r => r.name === est);
                     if (_lEstablishment.currencyId === _lRes.currencyId) {
                         _aux++;
                     }
@@ -791,7 +676,9 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         if (this._selectedCategoryValue !== "") { this._selectedCategoryValue = ""; }
         if (this._selectedSubcategoryValue !== "") { this._selectedSubcategoryValue = ""; }
         this._createImage = false;
-        //this._itemForm.reset();
+        this._sectionsFormGroup.reset();
+        this._generalFormGroup.reset();
+        this._optionAdditionsFormGroup.reset();
         this._router.navigate(['app/items']);
     }
 
@@ -809,26 +696,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
         });
     }
-
-    /**
-     * Allow mark all garnish food
-     * @param {any} _event
-     
-    markAllGarnishFood(_event: any): void {
-        if (_event.checked) {
-            GarnishFoodCol.collection.find({}).fetch().forEach((gar) => {
-                if (this._garnishFormGroup.contains(gar._id)) {
-                    this._garnishFormGroup.controls[gar._id].setValue(true);
-                }
-            });
-        } else {
-            GarnishFoodCol.collection.find({}).fetch().forEach((gar) => {
-                if (this._garnishFormGroup.contains(gar._id)) {
-                    this._garnishFormGroup.controls[gar._id].setValue(false);
-                }
-            });
-        }
-    }*/
 
     /**
      * Allow mark all additions
