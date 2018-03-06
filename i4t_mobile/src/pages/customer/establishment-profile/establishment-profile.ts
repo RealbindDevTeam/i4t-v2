@@ -75,7 +75,9 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
         this._countriesSubscription = MeteorObservable.subscribe('getCountryByEstablishmentId', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCountry: Country = Countries.findOne({ _id: this._establishmentParam.countryId });
-                this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
+                if(_lCountry){
+                    this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
+                }
             });
         });
 

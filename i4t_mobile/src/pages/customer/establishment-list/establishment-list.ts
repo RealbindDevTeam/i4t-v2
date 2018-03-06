@@ -6,7 +6,7 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { Establishment } from 'i4t_web/both/models/establishment/establishment.model';
 import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { Cities } from 'i4t_web/both/collections/general/city.collection';
-import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
+import { EstablishmentListDetailPage } from "./establishment-list-detail/establishment-list-detail";
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 
 @Component({
@@ -52,7 +52,7 @@ export class EstablishmentListPage implements OnInit, OnDestroy {
     * @param _pEstablishment 
     */
     viewEstablishmentProfile(_pEstablishment: any) {
-        this._navCtrl.push(EstablishmentProfilePage, { establishment: _pEstablishment });
+        this._navCtrl.push(EstablishmentListDetailPage, { establishment: _pEstablishment });
     }
 
     ngOnDestroy() {
