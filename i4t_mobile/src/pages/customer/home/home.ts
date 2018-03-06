@@ -3,6 +3,7 @@ import { NavController, NavParams, PopoverController } from 'ionic-angular';
 import { SegmentsPage } from '../segments/segments';
 import { PointsPage } from '../points/points/points';
 import { PopoverOptionsPage } from './popover-options/popover-options';
+import { EstablishmentListPage } from "../establishment-list/establishment-list";
 
 @Component({
     templateUrl: 'home.html'
@@ -33,7 +34,7 @@ export class HomePage implements OnInit, OnDestroy {
      * Function to go to establishments 
      */
     goToEstablishmentList() {
-
+        this._navCtrl.push(EstablishmentListPage);
     }
 
     /**

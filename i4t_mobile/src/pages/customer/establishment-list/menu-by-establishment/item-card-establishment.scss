@@ -1,10 +1,4 @@
-page-sections, item-card, menu-by-establishment-page {
-    .img-header{
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-
+item-card-stablishment {
     .custom-item-divider {
         color: #000;
         background: #fff;
@@ -16,6 +10,16 @@ page-sections, item-card, menu-by-establishment-page {
 
     .item-ios.item-block .item-inner {
         border-bottom: 0px;
+    }
+
+    .item-md {
+        padding-left: 0px;
+    }
+
+    .item-ios {
+        padding-left: 0px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .custom-select{
@@ -39,13 +43,5 @@ page-sections, item-card, menu-by-establishment-page {
      height: 34px;
     }
 
-    .item-divider-custom {
-        border-bottom: 0.55px solid #c8c7cc; 
-        width: 90%; 
-        margin: auto;
-    }
-
-    .text-align-center {
-        text-align: center;
-    }
 }
+

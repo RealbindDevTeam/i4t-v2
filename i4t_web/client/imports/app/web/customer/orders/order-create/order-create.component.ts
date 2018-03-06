@@ -256,18 +256,33 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * This function evaluate Id returned in the menu and filter item collection
      * @param {any} _any 
      */
-    evaluateId(_any: any): void {
+    validateSection(_pSelected: string, _pId: string): void {
         this._items = null;
         this._itemsRecommended = null;
-        if (_any.type === 'Se') {
-            this._items = Items.find({ sectionId: { $in: ['' + _any.id + ''] } }).zone();
-        } else if (_any.type === 'Ca') {
-            this._items = Items.find({ categoryId: { $in: ['' + _any.id + ''] } }).zone();
-        } else if (_any.type === 'Sub') {
-            this._items = Items.find({ subcategoryId: { $in: ['' + _any.id + ''] } }).zone();
-        } else if (_any.type === 're') {
+
+        if (_pSelected === 'all') {
+            this._items = Items.find({});
             this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
-        } else if (_any.type === 'Ad') {
+            this._sections = Sections.find({});
+            this._categories = Categories.find({});
+            this._subcategories = Subcategories.find({});
+        } else if (_pSelected === 'recommended') {
+            this._sections = null;
+            this._categories = null;
+            this._subcategories = null;
+            this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
+        } else if (_pSelected === 'section') {
+            this._itemsRecommended = null;
+            this._sections = Sections.find({ _id: _pId }).zone();
+            this._categories = Categories.find({ section: _pId }).zone();
+            this._items = Items.find({ sectionId: _pId }).zone();
+        } else if (_pSelected === 'category') {
+            let category = Categories.findOne({_id: _pId});
+            this._sections = Sections.find({ _id: category.section }).zone();
+            this._categories = Categories.find({ _id: _pId }).zone();
+            this._items = Items.find({ categoryId: _pId }).zone();
+        }
+        else if (_pSelected === 'addition') {
             this.showAllItems();
             this._additionsDetailFormGroup.reset();
             this.viewItemDetail('item-selected', true);
