@@ -68,8 +68,6 @@ export interface ItemOption {
     option_id: string;
     is_required: boolean;
     values: ItemOptionValue[];
-    min_value?: number;
-    max_value?: number;
 }
 
 /**

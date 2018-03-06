@@ -393,12 +393,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                             if (_lControl[0] === 'req' && this._optionsFormGroup.controls[opt].value === true) {
                                 _lItemOption.is_required = true;
                             }
-                            if (_lControl[0] === 'minVal') {
-                                _lItemOption.min_value = Number.parseInt(this._optionsFormGroup.controls[opt].value.toString());
-                            }
-                            if (_lControl[0] === 'maxVal') {
-                                _lItemOption.max_value = Number.parseInt(this._optionsFormGroup.controls[opt].value.toString());
-                            }
                         }
                     }
                 });
@@ -498,12 +492,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
                 let _requiredControl: FormControl = new FormControl({ value: false, disabled: true });
                 this._optionsFormGroup.addControl('req_' + opt._id, _requiredControl);
-
-                let _minValueControl: FormControl = new FormControl({ value: '1', disabled: true });
-                this._optionsFormGroup.addControl('minVal_' + opt._id, _minValueControl);
-
-                let _maxValueControl: FormControl = new FormControl({ value: '1', disabled: true });
-                this._optionsFormGroup.addControl('maxVal_' + opt._id, _maxValueControl);
             });
             this._showOptions = true;
 
@@ -540,27 +528,6 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         } else {
             this._optionsFormGroup.controls['req_' + _pOptionId].disable();
             this._optionsFormGroup.controls['req_' + _pOptionId].setValue(false);
-            this._optionsFormGroup.controls['minVal_' + _pOptionId].disable();
-            this._optionsFormGroup.controls['minVal_' + _pOptionId].setValue('1');
-            this._optionsFormGroup.controls['maxVal_' + _pOptionId].disable();
-            this._optionsFormGroup.controls['maxVal_' + _pOptionId].setValue('1');
-        }
-    }
-
-    /**
-     * This function allow write min and max quantity
-     * @param {string} _pOptionId 
-     * @param {any} _pEvent 
-     */
-    onCheckRequiredOption(_pOptionId: string, _pEvent: any): void {
-        if (_pEvent.checked) {
-            this._optionsFormGroup.controls['minVal_' + _pOptionId].enable();
-            this._optionsFormGroup.controls['maxVal_' + _pOptionId].enable();
-        } else {
-            this._optionsFormGroup.controls['minVal_' + _pOptionId].disable();
-            this._optionsFormGroup.controls['minVal_' + _pOptionId].setValue('1');
-            this._optionsFormGroup.controls['maxVal_' + _pOptionId].disable();
-            this._optionsFormGroup.controls['maxVal_' + _pOptionId].setValue('1');
         }
     }
 

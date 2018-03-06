@@ -87,7 +87,7 @@ export class AdditionComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
         this._additionForm = new FormGroup({
-            name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
+            name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]),
             currencies: this._currenciesFormGroup,
             taxes: this._taxesFormGroup
         });

@@ -16,8 +16,6 @@ import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
 import { OrderMenu } from '../order-navigation/order-menu';
 import { OrderNavigationService } from '../../../services/navigation/order-navigation.service';
-//import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
-//import { GarnishFoodCol } from '../../../../../../../both/collections/menu/garnish-food.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
 import { Order, OrderItem, OrderAddition } from '../../../../../../../both/models/establishment/order.model';
@@ -42,7 +40,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     @Output() finishOrdenCreation = new EventEmitter();
 
     private _newOrderForm: FormGroup;
-    //private _garnishFormGroup: FormGroup = new FormGroup({});
+    private _optionsFormGroup: FormGroup = new FormGroup({});
     private _additionsFormGroup: FormGroup = new FormGroup({});
     private _additionsDetailFormGroup: FormGroup = new FormGroup({});
     private _mdDialogRef: MatDialogRef<any>;
@@ -51,7 +49,6 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     private _categoriesSub: Subscription;
     private _subcategoriesSub: Subscription;
     private _itemsSub: Subscription;
-    //private _garnishFoodSub: Subscription;
     private _additionsSub: Subscription;
     private _ordersSub: Subscription;
     private _currenciesSub: Subscription;
@@ -65,16 +62,12 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     private _items: Observable<Item[]>;
     private _itemsRecommended: Observable<Item[]>;
     private _itemDetail: Observable<Item[]>;
-    //private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
     private _options: Observable<Option[]>;
     private _optionValues: Observable<OptionValue[]>;
 
     private _finalPrice: number = 0;
-    //private _maxGarnishFoodElements: number = 0;
-    //private _garnishFoodElementsCount: number = 0;
     private _numberColums: number = 3;
-    //private _showGarnishFoodError: boolean = false;
     private _unitPrice: number = 0;
     private _lastQuantity: number = 1;
     private _quantityCount: number = 1;
@@ -138,15 +131,22 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             });
         });
         this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.SELECTING']).takeUntil(this._ngUnsubscribe).subscribe(() => { });
-        /*this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
+        this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._garnishFoodCol = GarnishFoodCol.find({}).zone();
-                GarnishFoodCol.collection.find({}).fetch().forEach((gar) => {
-                    let control: FormControl = new FormControl(false);
-                    this._garnishFormGroup.addControl(gar._id, control);
+                this._options = Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).zone();
+                this._options.subscribe(() => {
+                    this.buildOptionForm();
+                    Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).fetch().forEach((opt) => {
+                        _optionIds.push(opt._id);
+                    });
+                    this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._optionValues = OptionValues.find({ option_id: { $in: _optionIds }, is_active: true }).zone();
+                        });
+                    });
                 });
             });
-        });*/
+        });
         this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
@@ -177,23 +177,9 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
-            this._ngZone.run(() => {
-                this._options = Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).zone();
-                Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).fetch().forEach((opt) => {
-                    _optionIds.push(opt._id);
-                });
-                this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
-                    this._ngZone.run(() => {
-                        this._optionValues = OptionValues.find({ option_id: { $in: _optionIds } }).zone();
-                    });
-                });
-            });
-        });
-
         this._newOrderForm = new FormGroup({
             observations: new FormControl('', [Validators.maxLength(50)]),
-            //garnishFood: this._garnishFormGroup,
+            options: this._optionsFormGroup,
             additions: this._additionsFormGroup
         });
     }
@@ -266,6 +252,20 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             } else {
                 let control: FormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(2)]);
                 this._additionsDetailFormGroup.addControl(add._id, control);
+            }
+        });
+    }
+
+    /**
+     * Build controls in option form
+     */
+    buildOptionForm(): void {
+        Options.collection.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).fetch().forEach((opt) => {
+            if (this._optionsFormGroup.contains(opt._id)) {
+                this._optionsFormGroup.controls[opt._id].setValue(false);
+            } else {
+                let control: FormControl = new FormControl(false);
+                this._optionsFormGroup.addControl(opt._id, control);
             }
         });
     }
@@ -423,28 +423,17 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     resetItemDetailVariables(): void {
         this._lastQuantity = 1;
         this._quantityCount = 1;
-        //this._showGarnishFoodError = false;
-        //this._garnishFoodElementsCount = 0;
         this._newOrderForm.reset();
     }
 
-    /**
-     * Calculate final price when garnish food is selected
-     * @param {any} _event 
-     * @param {number} _price 
-     
-    calculateFinalPriceGarnishFood(_event: any, _pGarnishFood: GarnishFood): void {
-        let _price = _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
-        if (_event.checked) {
-            this._finalPrice = (Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount));
-            this._garnishFoodElementsCount += 1;
-            this.validateGarnishFoodElements();
+    calculateFinalPriceOptionValue(_pEvent: any, _pOptionValuePrice: number): void {
+        console.log(_pEvent);
+        if (_pEvent.checked) {
+            this._finalPrice = this._finalPrice + (_pOptionValuePrice * this._quantityCount);
         } else {
-            this._finalPrice = Number.parseInt(this._finalPrice.toString()) - (Number.parseInt(_price.toString()) * this._quantityCount);
-            this._garnishFoodElementsCount -= 1;
-            this.validateGarnishFoodElements();
+            this._finalPrice = this._finalPrice - (_pOptionValuePrice * this._quantityCount);
         }
-    }*/
+    }
 
     /**
      * Calculate final price when addition is selected
@@ -495,10 +484,8 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     calculateFinalPriceQuantity(): void {
         if (Number.isFinite(this._quantityCount)) {
             this._finalPrice = this._unitPrice * this._quantityCount;
-            //this._garnishFoodElementsCount = 0;
-            //this._garnishFormGroup.reset();
+            this._optionsFormGroup.reset();
             this._additionsFormGroup.reset();
-            //this._showGarnishFoodError = false;
         }
     }
 
@@ -512,30 +499,11 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate Garnish food selections and show message error if count is greater than item.garnishFoodQuantity
-     
-    validateGarnishFoodElements(): void {
-        if (this._garnishFoodElementsCount > this._maxGarnishFoodElements) {
-            this._showGarnishFoodError = true;
-        } else {
-            this._showGarnishFoodError = false;
-        }
-    }*/
-
-    /**
      * Return _finalPrice
      */
     get finalPrice(): number {
         return this._finalPrice;
     }
-
-    /**
-     * Set max garnish food elements
-     * @param {number} _pGarnishFoodQuantity
-     
-    setMaxGarnishFoodElements(_pGarnishFoodQuantity: number): void {
-        this._maxGarnishFoodElements = _pGarnishFoodQuantity;
-    }*/
 
     /**
      * Return addition information
@@ -544,14 +512,6 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     getAdditionInformation(_pAddition: Addition): string {
         return _pAddition.name + ' - ' + _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
-
-    /**
-     * Return garnish food information
-     * @param {GarnishFood} _pGarnishFood
-     
-    getGarnishFoodInformation(_pGarnishFood: GarnishFood): string {
-        return _pGarnishFood.name + ' - ' + _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
-    }*/
 
     /**
      * Return traduction

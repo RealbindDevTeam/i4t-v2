@@ -16,5 +16,5 @@ Meteor.publish('getAdminOptionValues', function (_userId: string) {
  * @param {string} _userId
  */
 Meteor.publish('getOptionValuesByOptionIds', function (_pOptionIds: string[]) {
-    return OptionValues.find({ option_id: { $in: _pOptionIds } });
+    return OptionValues.find({ option_id: { $in: _pOptionIds }, is_active: true });
 });

@@ -135,19 +135,11 @@
                             <mat-divider class="divider"></mat-divider>
                             <table style="margin-bottom: 10px;" cellspacing="0" formGroupName="options">
                                 <tr>
-                                    <td style="width: 15%;">
+                                    <td style="width: 2%;">
                                         <mat-checkbox [formControlName]="'av_'+option._id" (change)="onCheckAvailableOption(option._id, $event)">{{'ITEMS.AVAILABLE' | translate}}</mat-checkbox>
                                     </td>
                                     <td style="width: 20%;">
-                                        <mat-checkbox [formControlName]="'req_'+option._id" (change)="onCheckRequiredOption(option._id, $event)">{{'ITEMS.IS_REQUIRED' | translate}}</mat-checkbox>
-                                    </td>
-                                    <td>
-                                        <mat-form-field style="width: 25%;">
-                                            <input matInput [formControlName]="'minVal_'+option._id" placeholder="{{'ITEMS.QUANT_MIN' | translate}}" type="number">
-                                        </mat-form-field>
-                                        <mat-form-field style="width: 25%;margin-left: 1rem;">
-                                            <input matInput [formControlName]="'maxVal_'+option._id" placeholder="{{'ITEMS.QUANT_MAX' | translate}}" type="number">
-                                        </mat-form-field>
+                                        <mat-checkbox [formControlName]="'req_'+option._id">{{'ITEMS.IS_REQUIRED' | translate}}</mat-checkbox>
                                     </td>
                                 </tr>
                             </table>
