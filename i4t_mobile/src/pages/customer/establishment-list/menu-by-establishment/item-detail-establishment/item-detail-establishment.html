@@ -1,0 +1,72 @@
+<ion-header>
+    <ion-navbar>
+      <ion-title>{{getItemName(_item_code)}}</ion-title>
+    </ion-navbar>
+  </ion-header>
+  
+  <ion-content>
+    <div *ngFor="let item of _items | async">
+      <div class="crop">
+        <img *ngIf="item.image" src="{{item.image.url}}" style="display:inline-block">
+        <img *ngIf="!item.image" src="assets/img/default-plate.png" style="display:inline-block">
+      </div>
+      <ion-card class="ion-card-custom">
+        <ion-card-content>
+          <ion-card-title>{{item.name}}</ion-card-title>
+          <p class="item-paragraph-custom" style="margin-bottom: 10px">
+            {{item.description}}
+          </p>
+          <div>{{setMaxGarnishFoodElements(item.garnishFoodQuantity)}}</div>
+          <ion-list>
+            <ion-item style="padding-left: 0px">
+              <ion-label>
+                {{'MOBILE.SECTIONS.UNIT_PRICE' | translate}} <span style="color: #666"> {{ getItemPrice( item ) }} {{_currencyCode}}</span>
+              </ion-label>
+            </ion-item>
+            <ion-item style="padding-left: 0px">
+              <ion-label>
+                {{'MOBILE.SECTIONS.TIME' | translate}} <span style="color: #666"> {{ item.time }} </span>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+  
+          <p *ngIf="!getItemAvailability()" class="item-paragraph-custom" style="margin-top: 15px;  color: #000">
+            {{'MOBILE.SECTIONS.ITEM_UNAVAILABLE' | translate}}
+          </p>
+          <form [formGroup]="_newOrderForm" *ngIf="getItemAvailability()">
+            <div *ngIf="item.garnishFood.length > 0">
+              <h3 class="custom-padding">{{'MOBILE.SECTIONS.GARNISHES' | translate}}</h3>
+              <div formGroupName="garnishFood">
+                <div *ngFor="let itemGarnish of item.garnishFood">
+                  <div *ngFor="let garnish of _garnishes | async">
+                    <ion-item class="ion-item-cust" style="padding-left: 0px" *ngIf="itemGarnish ==  garnish._id">
+                      <ion-label style="white-space: normal">{{garnish.name}} - <span style="color: #666">{{ getGarnishFoodPrice( garnish ) }} {{_currencyCode}} </span></ion-label>
+                    </ion-item>
+                  </div>
+                </div>
+              </div>
+              <p *ngIf="_showGarnishFoodError" style="color: #ef5350; margin-bottom: 5px">{{'MOBILE.SECTIONS.SELECT_MAX_VALID' | translate}} {{item.garnishFoodQuantity}} {{'MOBILE.SECTIONS.GARNISHES'
+                | translate}}</p>
+            </div>
+            <br/>
+            <div *ngIf="item.additions.length > 0">
+              <h3 class="custom-padding">{{'MOBILE.SECTIONS.ADDITIONS' | translate}}</h3>
+              <div formGroupName="additions">
+                <div *ngFor="let itemAddition of item.additions">
+                  <div *ngFor="let addition of _additions | async">
+                    <ion-item class="ion-item-cust" style="padding-left: 0px" *ngIf="itemAddition ==  addition._id">
+                      <ion-label style="white-space: normal">{{addition.name}} - <span style="color: #666">{{ getAdditionsPrice( addition ) }} {{_currencyCode}}</span></ion-label>
+                    </ion-item>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </ion-content>
+  
+  <ion-footer class="ion-footer-custom" padding>
+    <ion-label style="float: left; font-size: large; margin-top: 0px">{{'MOBILE.SECTIONS.TOTAL' | translate}}{{_finalPrice}} {{_currencyCode}} </ion-label>
+  </ion-footer>
