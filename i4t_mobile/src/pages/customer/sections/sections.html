@@ -36,7 +36,7 @@
   </ion-card>
 
   <div *ngIf="_thereAreOrders" style="margin: 10px;">
-    <button ion-button block outline (click)="viewConfirmPage()">
+    <button ion-button block outline (click)="viewConfirmPage()" class="magictime puffIn">
       <ion-icon name="checkmark" style="margin-right: 6px;"></ion-icon>{{'MOBILE.SECTIONS.CONFIRM_ORDER' | translate}}...
     </button>
   </div>

@@ -50,6 +50,7 @@ import { EstablishmentListDetailPage } from "../pages/customer/establishment-lis
 import { MenuByEstablishmentPage } from "../pages/customer/establishment-list/menu-by-establishment/menu-by-establishment";
 import { ItemCardEstablishmentComponent } from "../pages/customer/establishment-list/menu-by-establishment/item-card-establishment";
 import { ItemDetailEstablishmentPage } from "../pages/customer/establishment-list/menu-by-establishment/item-detail-establishment/item-detail-establishment";
+import { AdditionsEstablishmentPage } from "../pages/customer/establishment-list/additions-establishment/additions-establishment";
 
 
 export const PAGES_DECLARATIONS = [
@@ -104,5 +105,6 @@ export const PAGES_DECLARATIONS = [
     EstablishmentListDetailPage,
     MenuByEstablishmentPage,
     ItemCardEstablishmentComponent,
-    ItemDetailEstablishmentPage
+    ItemDetailEstablishmentPage,
+    AdditionsEstablishmentPage
 ];

@@ -4,7 +4,7 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content text-wrap>
     <ion-card *ngFor="let establishment of _establishments | async" (click)="viewEstablishmentProfile(establishment)">
         <ion-card-content>
             <button ion-item detail-none>
