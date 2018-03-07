@@ -18,7 +18,7 @@ import { OrderMenu } from '../order-navigation/order-menu';
 import { OrderNavigationService } from '../../../services/navigation/order-navigation.service';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
-import { Order, OrderItem, OrderAddition, OptionReference, ValueReference } from '../../../../../../../both/models/establishment/order.model';
+import { Order, OrderItem, OrderAddition, OptionReference, ValueReference, OrderOption } from '../../../../../../../both/models/establishment/order.model';
 import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
 import { Option } from '../../../../../../../both/models/menu/option.model';
@@ -391,14 +391,21 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 _lOrderItemIndex = 1;
             }
 
-            /*let arr: any[] = Object.keys(this._newOrderForm.value.garnishFood);
-            let _lGarnishFoodToInsert: string[] = [];
+            let _arrOption: any[] = Object.keys(this._newOrderForm.value.options);
+            let _lOptionsToInsert: OrderOption[] = [];
 
-            arr.forEach((gar) => {
-                if (this._newOrderForm.value.garnishFood[gar]) {
-                    _lGarnishFoodToInsert.push(gar);
+            _arrOption.forEach((opt) => {
+                if (this._newOrderForm.value.options[opt]) {
+                    let _lOrderOption: OrderOption = { option_id: opt, value_id: '' };
+                    let _reference: OptionReference = this._radioReferences.find(ref => ref.option_id === opt);
+                    _reference.values.forEach((val) => {
+                        if (val.in_use) {
+                            _lOrderOption.value_id = val.value_id;
+                        }
+                    });
+                    _lOptionsToInsert.push(_lOrderOption);
                 }
-            });*/
+            });
 
             let arrAdd: any[] = Object.keys(this._newOrderForm.value.additions);
             let _lAdditionsToInsert: string[] = [];
@@ -414,7 +421,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 itemId: _pItemToInsert,
                 quantity: this._quantityCount,
                 observations: this._newOrderForm.value.observations,
-                garnishFood: [],
+                options: _lOptionsToInsert,
                 additions: _lAdditionsToInsert,
                 paymentItem: this._finalPrice,
                 reward_points: this._finalPoints,

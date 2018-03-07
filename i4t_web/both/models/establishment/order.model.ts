@@ -23,12 +23,20 @@ export interface OrderItem {
     itemId: string;
     quantity: number;
     observations: string;
-    garnishFood: string[];
+    options: OrderOption[];
     additions: string[];
     paymentItem: number;
     reward_points?: number;
     is_reward?: boolean;
     redeemed_points?: number;
+}
+
+/**
+ * Order Option Model
+ */
+export interface OrderOption {
+    option_id: string;
+    value_id: string;
 }
 
 /**
