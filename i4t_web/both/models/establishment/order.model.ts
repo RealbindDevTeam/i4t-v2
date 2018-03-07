@@ -46,6 +46,7 @@ export interface OrderAddition {
  */
 export interface OptionReference {
     option_id: string;
+    is_required: boolean;
     values: ValueReference[];
 }
 

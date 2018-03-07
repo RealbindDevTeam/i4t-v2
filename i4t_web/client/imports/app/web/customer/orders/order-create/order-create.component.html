@@ -256,6 +256,7 @@
                                     </mat-chip>
                                 </mat-chip-list>
                             </div>
+                            <p *ngIf="_showOptionsError" style="color: #EF5350;">{{'ORDER_CREATE.OPTIONS_ERROR' | translate}}</p>
                             <button *ngIf="getItemAvailability(itemDet._id)" mat-button class="primary-button" [disabled]="!_newOrderForm.valid" (click)="AddItemToOrder(itemDet._id)">{{'ORDER_CREATE.ADD_ITEM' | translate}}</button>
                         </div>
                     </div>

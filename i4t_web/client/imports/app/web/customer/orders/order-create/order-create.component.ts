@@ -82,6 +82,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     private _finalPoints: number = 0;
     private _unitRewardPoints: number = 0;
     private _radioReferences: OptionReference[] = [];
+    private _showOptionsError: boolean = false;
 
     /**
      * OrderCreateComponent Constructor
@@ -317,6 +318,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
         this._finalPoints = this.getItemPoints(_pItem);
         this._unitRewardPoints = this.getItemPoints(_pItem);
         this.createOptionsReferences(_pItem);
+        this._showOptionsError = false;
     }
 
     /**
@@ -326,9 +328,10 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     createOptionsReferences(_pItem: Item): void {
         this._radioReferences = [];
         _pItem.options.forEach((item_option) => {
-            let _reference: OptionReference = { option_id: '', values: [] };
+            let _reference: OptionReference = { option_id: '', is_required: false, values: [] };
             let _valuesRef: ValueReference[] = [];
             _reference.option_id = item_option.option_id;
+            _reference.is_required = item_option.is_required;
             item_option.values.forEach((item_option_value) => {
                 let _value: ValueReference = { value_id: item_option_value.option_value_id, price: 0, in_use: false };
                 if (item_option_value.have_price) {
@@ -367,7 +370,18 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (this._newOrderForm.valid) {
+        this._radioReferences.forEach((option) => {
+            if (option.is_required) {
+                let valid: ValueReference[] = option.values.filter(val => val.in_use === true);
+                if (valid.length === 0) {
+                    this._showOptionsError = true;
+                } else {
+                    this._showOptionsError = false;
+                }
+            }
+        });
+
+        if (this._newOrderForm.valid && !this._showOptionsError) {
             let _lOrderItemIndex: number = 0;
             let _lOrder: Order = Orders.collection.find({ creation_user: Meteor.userId(), establishment_id: this.establishmentId }).fetch()[0];
 
@@ -377,14 +391,14 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 _lOrderItemIndex = 1;
             }
 
-            let arr: any[] = Object.keys(this._newOrderForm.value.garnishFood);
+            /*let arr: any[] = Object.keys(this._newOrderForm.value.garnishFood);
             let _lGarnishFoodToInsert: string[] = [];
 
             arr.forEach((gar) => {
                 if (this._newOrderForm.value.garnishFood[gar]) {
                     _lGarnishFoodToInsert.push(gar);
                 }
-            });
+            });*/
 
             let arrAdd: any[] = Object.keys(this._newOrderForm.value.additions);
             let _lAdditionsToInsert: string[] = [];
@@ -400,13 +414,14 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 itemId: _pItemToInsert,
                 quantity: this._quantityCount,
                 observations: this._newOrderForm.value.observations,
-                garnishFood: _lGarnishFoodToInsert,
+                garnishFood: [],
                 additions: _lAdditionsToInsert,
                 paymentItem: this._finalPrice,
                 reward_points: this._finalPoints,
                 is_reward: false
             };
             MeteorObservable.call('AddItemToOrder', _lOrderItem, this.establishmentId, this.tableQRCode, this.finalPrice, this._finalPoints).subscribe(() => {
+                this._showOptionsError = false;
                 let _lMessage: string = this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
                 this.snackBar.open(_lMessage, '', {
                     duration: 2500

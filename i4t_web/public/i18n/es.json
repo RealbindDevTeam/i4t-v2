@@ -830,7 +830,8 @@
         "POINTS": "puntos",
         "TOTAL_ITEM_POINTS": "Total",
         "MENU": "Menú",
-        "GET_POINTS": "Obtienes"
+        "GET_POINTS": "Obtienes",
+        "OPTIONS_ERROR": "Por favor completa la información para agregar el ítem a la orden"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Ordenes de la mesa",
