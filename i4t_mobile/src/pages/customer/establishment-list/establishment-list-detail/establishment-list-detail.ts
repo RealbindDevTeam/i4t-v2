@@ -12,13 +12,14 @@ import { PaymentMethod } from 'i4t_web/both/models/general/paymentMethod.model';
 import { PaymentMethods } from 'i4t_web/both/collections/general/paymentMethod.collection';
 import { Establishment, EstablishmentProfile, EstablishmentProfileImage } from 'i4t_web/both/models/establishment/establishment.model';
 import { Establishments, EstablishmentsProfile } from 'i4t_web/both/collections/establishment/establishment.collection';
-import { ModalSchedule } from './modal-schedule/modal-schedule';
+import { ModalSchedule } from '../../establishment-profile/modal-schedule/modal-schedule';
+import { MenuByEstablishmentPage } from "../menu-by-establishment/menu-by-establishment";
 
 @Component({
-    selector: 'page-establishment-profile',
-    templateUrl: 'establishment-profile.html'
+    selector: 'page-establishment-list-detail',
+    templateUrl: 'establishment-list-detail.html'
 })
-export class EstablishmentProfilePage implements OnInit, OnDestroy {
+export class EstablishmentListDetailPage implements OnInit, OnDestroy {
 
     private _map: GoogleMap;
     private _establishmentSubscription: Subscription;
@@ -48,6 +49,7 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
      * @param _ngZone 
      */
     constructor(public _navParams: NavParams,
+        public _navCtrl: NavController,
         public _translate: TranslateService,
         public _modalCtrl: ModalController,
         private googleMaps: GoogleMaps,
@@ -75,7 +77,7 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
         this._countriesSubscription = MeteorObservable.subscribe('getCountryByEstablishmentId', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCountry: Country = Countries.findOne({ _id: this._establishmentParam.countryId });
-                if(_lCountry){
+                if (_lCountry) {
                     this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
                 }
             });
@@ -91,21 +93,12 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
         this._establishmentProfileSubscription = MeteorObservable.subscribe('getEstablishmentProfile', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishmentsProfiles = EstablishmentsProfile.find({ establishment_id: this._establishmentParam._id }).zone();
-                this.verifyEstablishmentProfile();
-                this._establishmentsProfiles.subscribe(() => { this.verifyEstablishmentProfile(); });
                 this._establishmentProfile = EstablishmentsProfile.findOne({ establishment_id: this._establishmentParam._id });
                 if (this._establishmentProfile) {
                     this.loadMap();
                 }
             });
         });
-    }
-
-    /**
-     * Verify establishment profile changes
-     */
-    verifyEstablishmentProfile(): void {
-        this._establishmentProfile = EstablishmentsProfile.findOne({ establishment_id: this._establishmentParam._id });
     }
 
     /**
@@ -127,6 +120,12 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
         if (this._establishmentProfile && this._establishmentProfile.location && this._establishmentProfile.location.lat && this._establishmentProfile.location.lng) {
 
             let mapOptions: GoogleMapOptions = {
+                gestures: {
+                    rotate: false,
+                    tilt: false,
+                    scroll: false,
+                    zoom: false
+                },
                 camera: {
                     target: {
                         lat: this._establishmentProfile.location.lat,
@@ -137,6 +136,7 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
                 }
             };
             this._map = GoogleMaps.create('map_canvas', mapOptions);
+            this._map.setAllGesturesEnabled(true);
             this._map.one(GoogleMapsEvent.MAP_READY).then(() => {
                 this._map.addMarker({
                     title: this._establishmentParam.name,
@@ -166,6 +166,14 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
             establishment: this._establishmentParam
         });
         contactModal.present();
+    }
+
+    /**
+     * Go to Menu by establishment id
+     * @param _pEstablishmentId 
+     */
+    goToMenuByEstablishment(_pEstablishmentId: string) {
+        this._navCtrl.push(MenuByEstablishmentPage, { establishment_id: _pEstablishmentId });
     }
 
     /**

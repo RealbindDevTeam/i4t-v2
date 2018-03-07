@@ -117,3 +117,10 @@ Meteor.publish('getEstablishmentProfile', function (_establishmentId: string) {
 Meteor.publish('getEstablishmentsByIds', function (_pIds: string[]) {
     return Establishments.find({ _id: { $in: _pIds } });
 });
+
+/**
+ * Meteor publication return establishments
+ */
+Meteor.publish('getEstablishments', function () {
+    return Establishments.find({});
+});

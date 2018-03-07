@@ -36,6 +36,7 @@ export class SectionsPage implements OnInit, OnDestroy {
 
   private _userLang: string;
   private _sections;
+  private _sectionsFilter;
   private _sectionsSub: Subscription;
   private _establishments: any;
   private _establishmentSub: Subscription;
@@ -87,6 +88,7 @@ export class SectionsPage implements OnInit, OnDestroy {
     this.removeSubscriptions();
     this._sectionsSub = MeteorObservable.subscribe('sectionsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._sections = Sections.find({});
+      this._sectionsFilter = Sections.find({});
     });
     this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
@@ -148,16 +150,21 @@ export class SectionsPage implements OnInit, OnDestroy {
     if (section_selected === 'all') {
       this._items = Items.find({});
       this._itemsRecommended = Items.find({ 'establishments.establishment_id': this._res_code, 'establishments.recommended': true }).zone();
+      this._sections = Sections.find({});
       this._categories = Categories.find({});
       this._subcategories = Subcategories.find({});
     } else if (section_selected === 'addition') {
       this.goToAddAdditions();
     } else if (section_selected === 'recommended') {
       this._items = null;
+      this._sections = null;
+      this._categories = null;
+      this._subcategories = null;
       this._itemsRecommended = Items.find({ 'establishments.establishment_id': this._res_code, 'establishments.recommended': true }).zone();
     }
     else {
       this._itemsRecommended = null;
+      this._sections = Sections.find({ _id: section_selected });
       this._items = Items.find({ sectionId: section_selected });
       this._categories = Categories.find({ section: section_selected });
       this._subcategories = Subcategories.find({});

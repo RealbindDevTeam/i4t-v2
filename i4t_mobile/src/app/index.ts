@@ -45,6 +45,13 @@ import { OrderConfirmPage } from '../pages/customer/orders/order-confirm/order-c
 import { TabsPage } from '../pages/waiter/tabs/tabs';
 import { OrdersReceivedPage } from '../pages/waiter/orders-received/orders-received';
 import { LightboxPage } from "../pages/general/lightbox/lightbox";
+import { EstablishmentListPage } from "../pages/customer/establishment-list/establishment-list";
+import { EstablishmentListDetailPage } from "../pages/customer/establishment-list/establishment-list-detail/establishment-list-detail";
+import { MenuByEstablishmentPage } from "../pages/customer/establishment-list/menu-by-establishment/menu-by-establishment";
+import { ItemCardEstablishmentComponent } from "../pages/customer/establishment-list/menu-by-establishment/item-card-establishment";
+import { ItemDetailEstablishmentPage } from "../pages/customer/establishment-list/menu-by-establishment/item-detail-establishment/item-detail-establishment";
+import { AdditionsEstablishmentPage } from "../pages/customer/establishment-list/additions-establishment/additions-establishment";
+
 
 export const PAGES_DECLARATIONS = [
     InitialComponent,
@@ -93,5 +100,11 @@ export const PAGES_DECLARATIONS = [
     OrderConfirmPage,
     TabsPage,
     OrdersReceivedPage,
-    LightboxPage
+    LightboxPage,
+    EstablishmentListPage,
+    EstablishmentListDetailPage,
+    MenuByEstablishmentPage,
+    ItemCardEstablishmentComponent,
+    ItemDetailEstablishmentPage,
+    AdditionsEstablishmentPage
 ];

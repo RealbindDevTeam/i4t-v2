@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar>
-        <ion-title style="width: 90%;" *ngFor="let _establishment of _establishments | async;">{{_establishment?.name}}</ion-title>
+        <ion-title *ngFor="let _establishment of _establishments | async;">{{_establishment?.name}}</ion-title>
     </ion-navbar>
 </ion-header>
 
@@ -41,8 +41,8 @@
         <ion-card *ngFor="let _establishment of _establishments | async;" class="card-nm">
             <ion-card-content>
                 <ion-item>
-                    <ion-card-title style="white-space: normal;">{{_establishment?.name}}</ion-card-title>
-                    <!--button ion-button outline item-end>{{'MOBILE.RESTAURANT_PROFILE.MENU_BTN' | translate}}</button-->
+                    <!--ion-card-title style="white-space: normal;">{{_establishment?.name}}</ion-card-title-->
+                    <button ion-button outline item-end (click)="goToMenuByEstablishment(_establishment._id)">{{'MOBILE.RESTAURANT_PROFILE.MENU_BTN' | translate}}</button>
                 </ion-item>
                 <ion-list inset class="margin" no-lines>
                     <ion-item>

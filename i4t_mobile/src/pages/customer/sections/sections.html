@@ -27,7 +27,7 @@
             class="custom-select">
             <ion-option value="all" selected="true">{{'MOBILE.SECTIONS.ALL' | translate}}</ion-option>
             <ion-option value="recommended" selected="true">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-option>
-            <ion-option *ngFor="let section of _sections | async" value="{{section._id}}">{{section.name}}</ion-option>
+            <ion-option *ngFor="let sectionFilter of _sectionsFilter | async" value="{{sectionFilter._id}}">{{sectionFilter.name}}</ion-option>
             <ion-option *ngIf="_additionsShow" value="addition">{{'MOBILE.SECTIONS.ADDITION' | translate}}</ion-option>
           </ion-select>
         </ion-item>
@@ -36,7 +36,7 @@
   </ion-card>
 
   <div *ngIf="_thereAreOrders" style="margin: 10px;">
-    <button ion-button block outline (click)="viewConfirmPage()">
+    <button ion-button block outline (click)="viewConfirmPage()" class="magictime puffIn">
       <ion-icon name="checkmark" style="margin-right: 6px;"></ion-icon>{{'MOBILE.SECTIONS.CONFIRM_ORDER' | translate}}...
     </button>
   </div>
@@ -50,7 +50,7 @@
     </button>
   </div>
 
-  <ion-label margin-start *ngIf="(_itemsRecommended | async)?.length > 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-label>
+  <h4 class="text-align-center" *ngIf="(_itemsRecommended | async)?.length > 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</h4>
   <div *ngFor="let item of _itemsRecommended | async">
     <ion-card (click)="goToDetail(item._id)">
       <ion-card-content>
@@ -60,6 +60,7 @@
   </div>
 
   <div *ngFor="let section of _sections | async">
+    <h4 class="text-align-center">{{section.name}}</h4>
     <div *ngFor="let item of _items | async">
       <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
         <ion-card>
