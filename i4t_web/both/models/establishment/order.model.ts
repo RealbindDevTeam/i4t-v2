@@ -39,3 +39,22 @@ export interface OrderAddition {
     quantity: number;
     paymentAddition: number;
 }
+
+/**
+ * OptionReference Model
+ * Used to reference radio buttons in order detail
+ */
+export interface OptionReference {
+    option_id: string;
+    values: ValueReference[];
+}
+
+/**
+ * ValueReference Model
+ * Used to reference radio buttons in order detail
+ */
+export interface ValueReference {
+    value_id: string;
+    price: number;
+    in_use: boolean;
+}

@@ -195,10 +195,10 @@
                                         <span>{{'ORDER_CREATE.QUANTITY' | translate}}: {{ _quantityCount }}</span>
                                     </div>
                                     <div class="inline-block">
-                                        <button mat-button class="quantity-button" (click)="removeCount()">
+                                        <button mat-button class="quantity-button" (click)="removeCount(itemDet)">
                                             <mat-icon>remove</mat-icon>
                                         </button>
-                                        <button mat-button class="quantity-button" (click)="addCount()">
+                                        <button mat-button class="quantity-button" (click)="addCount(itemDet)">
                                             <mat-icon>add</mat-icon>
                                         </button>
                                     </div>
@@ -218,24 +218,13 @@
                                                             <span *ngFor="let value of _optionValues | async">
                                                                 <span *ngFor="let val of opt.values">
                                                                     <div *ngIf="value._id === val.option_value_id" style="display: flex;">
-                                                                        <mat-radio-button style="margin: 5px;" *ngIf="!val.have_price" [value]="value._id">{{value.name}}</mat-radio-button>
-                                                                        <mat-radio-button style="margin: 5px;" *ngIf="val.have_price" [value]="value._id" (change)="calculateFinalPriceOptionValue($event, val.price)">{{value.name}}</mat-radio-button>
+                                                                        <mat-radio-button style="margin: 5px;" [value]="value._id" (change)="calculateFinalPriceOptionValue(option._id, $event)">{{value.name}}</mat-radio-button>
                                                                         <span class="app-flex-filler"></span>
                                                                         <span *ngIf="val.have_price" style="line-height: 32px;">{{val.price}} {{_currencyCode}}</span>
                                                                     </div>
                                                                 </span>
                                                             </span>
                                                         </mat-radio-group>
-                                                        <!--div *ngFor="let value of _optionValues | async">
-                                                            <div *ngFor="let val of opt.values">
-                                                                <div *ngIf="value._id === val.option_value_id" style="display: flex;">
-                                                                    <mat-checkbox [formControlName]="value._id" *ngIf="!val.have_price">{{value.name}}</mat-checkbox>
-                                                                    <mat-checkbox [formControlName]="value._id" *ngIf="val.have_price" (change)="calculateFinalPriceOptionValue($event, val.price)">{{value.name}}</mat-checkbox>
-                                                                    <span class="app-flex-filler"></span>
-                                                                    <span *ngIf="val.have_price" style="line-height: 24px;">{{val.price}} {{_currencyCode}}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div-->
                                                     </ng-template>
                                                 </span>
                                             </div>

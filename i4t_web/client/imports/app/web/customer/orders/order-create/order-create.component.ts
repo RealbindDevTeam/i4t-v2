@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
-import { MatSnackBar, MatDialogRef, MatDialog, _MatListOptionMixinBase } from '@angular/material';
+import { MatSnackBar, MatDialogRef, MatDialog } from '@angular/material';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { Section } from '../../../../../../../both/models/menu/section.model';
 import { Sections } from '../../../../../../../both/collections/menu/section.collection';
@@ -18,7 +18,7 @@ import { OrderMenu } from '../order-navigation/order-menu';
 import { OrderNavigationService } from '../../../services/navigation/order-navigation.service';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
-import { Order, OrderItem, OrderAddition } from '../../../../../../../both/models/establishment/order.model';
+import { Order, OrderItem, OrderAddition, OptionReference, ValueReference } from '../../../../../../../both/models/establishment/order.model';
 import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
 import { Option } from '../../../../../../../both/models/menu/option.model';
@@ -81,6 +81,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
 
     private _finalPoints: number = 0;
     private _unitRewardPoints: number = 0;
+    private _radioReferences: OptionReference[] = [];
 
     /**
      * OrderCreateComponent Constructor
@@ -315,6 +316,29 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
         //reward points
         this._finalPoints = this.getItemPoints(_pItem);
         this._unitRewardPoints = this.getItemPoints(_pItem);
+        this.createOptionsReferences(_pItem);
+    }
+
+    /**
+     * Create radio button options references
+     * @param {Item} _pItem 
+     */
+    createOptionsReferences(_pItem: Item): void {
+        this._radioReferences = [];
+        _pItem.options.forEach((item_option) => {
+            let _reference: OptionReference = { option_id: '', values: [] };
+            let _valuesRef: ValueReference[] = [];
+            _reference.option_id = item_option.option_id;
+            item_option.values.forEach((item_option_value) => {
+                let _value: ValueReference = { value_id: item_option_value.option_value_id, price: 0, in_use: false };
+                if (item_option_value.have_price) {
+                    _value.price = item_option_value.price;
+                }
+                _valuesRef.push(_value);
+            });
+            _reference.values = _valuesRef;
+            this._radioReferences.push(_reference);
+        });
     }
 
     /**
@@ -426,13 +450,23 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
         this._newOrderForm.reset();
     }
 
-    calculateFinalPriceOptionValue(_pEvent: any, _pOptionValuePrice: number): void {
-        console.log(_pEvent);
-        if (_pEvent.checked) {
-            this._finalPrice = this._finalPrice + (_pOptionValuePrice * this._quantityCount);
-        } else {
-            this._finalPrice = this._finalPrice - (_pOptionValuePrice * this._quantityCount);
-        }
+    /**
+     * Calculate final price when option value is selected
+     * @param {string} _pOptionId 
+     * @param {any} _pEvent 
+     */
+    calculateFinalPriceOptionValue(_pOptionId: string, _pEvent: any): void {
+        let _lReference: OptionReference = this._radioReferences.find(reference => reference.option_id === _pOptionId);
+        _lReference.values.forEach((value) => {
+            if (value.in_use) {
+                this._finalPrice = this._finalPrice - (value.price * this._quantityCount);
+                value.in_use = false;
+            }
+            if (_pEvent.value === value.value_id) {
+                this._finalPrice = this._finalPrice + (value.price * this._quantityCount);
+                value.in_use = true;
+            }
+        });
     }
 
     /**
@@ -459,31 +493,32 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     /**
      * Add quantity item
      */
-    addCount(): void {
+    addCount(_pItem: Item): void {
         this._lastQuantity = this._quantityCount;
         this._quantityCount += 1;
-        this.calculateFinalPriceQuantity();
+        this.calculateFinalPriceQuantity(_pItem);
         this.calculateFinalPointsQuantity();
     }
 
     /**
      * Subtract quantity item
      */
-    removeCount(): void {
+    removeCount(_pItem: Item): void {
         if (this._quantityCount > 1) {
             this._lastQuantity = this._quantityCount;
             this._quantityCount -= 1;
         }
-        this.calculateFinalPriceQuantity();
+        this.calculateFinalPriceQuantity(_pItem);
         this.calculateFinalPointsQuantity();
     }
 
     /**
      * Calculate final price when item quantity is entered
      */
-    calculateFinalPriceQuantity(): void {
+    calculateFinalPriceQuantity(_pItem: Item): void {
         if (Number.isFinite(this._quantityCount)) {
             this._finalPrice = this._unitPrice * this._quantityCount;
+            this.createOptionsReferences(_pItem);
             this._optionsFormGroup.reset();
             this._additionsFormGroup.reset();
         }
