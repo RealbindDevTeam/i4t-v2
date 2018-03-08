@@ -305,10 +305,10 @@
                                                 <span>{{'ORDER_LIST.QUANTITY' | translate}}: {{ _quantityCount }}</span>
                                             </div>
                                             <div *ngIf="_customerCanEdit" class="inline-block">
-                                                <button mat-button class="quantity-button" (click)="removeCount()">
+                                                <button mat-button class="quantity-button" (click)="removeCount(item)">
                                                     <mat-icon>remove</mat-icon>
                                                 </button>
-                                                <button mat-button class="quantity-button" (click)="addCount()">
+                                                <button mat-button class="quantity-button" (click)="addCount(item)">
                                                     <mat-icon>add</mat-icon>
                                                 </button>
                                             </div>
@@ -346,41 +346,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!--mat-tab-group *ngIf="(item.garnishFood.length > 0) || (item.additions.length > 0)">
-                                                <mat-tab *ngIf="(item.garnishFood.length > 0)" label="{{'ORDER_LIST.GARNISH_FOOD' | translate}}">
-                                                    <p>{{'ORDER_LIST.SELECT_MAX' | translate}} {{item.garnishFoodQuantity}}:</p>
-                                                    <div formGroupName="garnishFood">
-                                                        <p *ngFor="let garnish of _garnishFoodCol | async">
-                                                            <span *ngFor="let gar of item.garnishFood">
-                                                                <ng-template [ngIf]="garnish._id === gar">
-                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="garnish._id" (change)="calculateFinalPriceGarnishFood($event, garnish)"
-                                                                        [class.invalid]="!_editOrderItemForm.controls.garnishFood.valid">{{ getGarnishFoodInformation(garnish) }} {{_currencyCode}}
-                                                                        <div class="inline-block"> x {{_quantityCount}}</div>
-                                                                    </mat-checkbox>
-                                                                </ng-template>
-                                                            </span>
-                                                        </p>
-                                                    </div>
-                                                    <p *ngIf="_showGarnishFoodError" class="available-button">{{'ORDER_LIST.SELECT_MAX_VALID' | translate}} {{item.garnishFoodQuantity}}
-                                                        {{'ORDER_LIST.ELEMENTS' | translate}}</p>
-                                                </mat-tab>
-                                                <mat-tab *ngIf="(item.additions.length > 0)" label="{{'ORDER_LIST.ADDITIONS' | translate}}">
-                                                    <p>{{'ORDER_LIST.SELECT_ADDITIONS' | translate}}:</p>
-                                                    <div formGroupName="additions">
-                                                        <p *ngFor="let addition of _additions | async">
-                                                            <span *ngFor="let add of item.additions">
-                                                                <ng-template [ngIf]="addition._id === add">
-                                                                    <mat-checkbox [disabled]="!_customerCanEdit" [formControlName]="addition._id" (change)="calculateFinalPriceAddition($event, addition)"
-                                                                        [class.invalid]="!_editOrderItemForm.controls.additions.valid">{{ getAdditionInformation(addition) }} {{_currencyCode}}
-                                                                        <div class="inline-block">
-                                                                            x {{_quantityCount}}</div>
-                                                                    </mat-checkbox>
-                                                                </ng-template>
-                                                            </span>
-                                                        </p>
-                                                    </div>
-                                                </mat-tab>
-                                            </mat-tab-group-->
                                             <div *ngIf="(item.additions.length > 0)">
                                                 <p style="font-weight:bold">{{'ORDER_LIST.SELECT_ADDITIONS' | translate}}:</p>
                                                 <div formGroupName="additions">
@@ -408,6 +373,7 @@
                                             </mat-chip>
                                         </mat-chip-list>
                                     </div>
+                                    <p *ngIf="_showOptionsError" style="color: #EF5350;">{{'ORDER_LIST.OPTIONS_ERROR' | translate}}</p>
                                     <div>
                                         <button mat-button class="primary-button" *ngIf="_customerCanEdit" [disabled]="!_editOrderItemForm.valid || _showGarnishFoodError"
                                             (click)="deleteOrderItem(item._id)">{{'ORDER_LIST.DELETE_ITEM' | translate}}</button>

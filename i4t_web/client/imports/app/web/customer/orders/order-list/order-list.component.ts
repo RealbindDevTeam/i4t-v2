@@ -11,8 +11,6 @@ import { Order, OrderItem, OrderAddition, OptionReference, ValueReference, Order
 import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
-//import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
-//import { GarnishFoodCol } from '../../../../../../../both/collections/menu/garnish-food.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
 import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
@@ -46,7 +44,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
     private _ordersSub: Subscription;
     private _itemsSub: Subscription;
-    //private _garnishFoodSub: Subscription;
     private _additionsSub: Subscription;
     private _currenciesSub: Subscription;
     private _establishmentSub: Subscription;
@@ -63,7 +60,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _ordersTable: Observable<Order[]>;
     private _items: Observable<Item[]>;
     private _itemsToShowDetail: Observable<Item[]>;
-    //private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
     private _additionDetails: Observable<Addition[]>;
     private _establishments: Observable<Establishment[]>;
@@ -78,19 +74,14 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _showDetails: boolean = false;
 
     private _editOrderItemForm: FormGroup;
-    //private _garnishFormGroup: FormGroup = new FormGroup({});
     private _optionsFormGroup: FormGroup = new FormGroup({});
     private _additionsFormGroup: FormGroup = new FormGroup({});
     private _additionsDetailFormGroup: FormGroup = new FormGroup({});
 
-    //private _orderItemGarnishFood: string[] = [];
     private _orderItemAdditions: string[] = [];
     private _orderItemOptions: OrderOption[] = [];
     private _radioReferences: OptionReference[] = [];
-
-    //private _maxGarnishFoodElements: number = 0;
-    //private _garnishFoodElementsCount: number = 0;
-    //private _showGarnishFoodError: boolean = false;
+    private _showOptionsError: boolean = false;
 
     private _lastQuantity: number = 1;
     private _quantityCount: number = 1;
@@ -180,11 +171,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             additions: this._additionsFormGroup
         });
 
-        /*this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.establishmentId).subscribe(() => {
-            this._ngZone.run(() => {
-                this._garnishFoodCol = GarnishFoodCol.find({}).zone();
-            });
-        });*/
         this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
@@ -506,7 +492,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._orderItemIndex = _pOrderItem.index;
         this._quantityCount = _pOrderItem.quantity;
         this._editOrderItemForm.controls['observations'].setValue(_pOrderItem.observations);
-        //this._orderItemGarnishFood = _pOrderItem.garnishFood;
         this._orderItemAdditions = _pOrderItem.additions;
         this._orderItemOptions = _pOrderItem.options;
         this._finalPrice = _pOrderItem.paymentItem;
@@ -516,9 +501,9 @@ export class OrdersListComponent implements OnInit, OnDestroy {
 
         let _lItem: Item = Items.findOne({ _id: _pOrderItem.itemId });
         this.prepareOptionsToEdit();
-        this.createOptionsReferences(_lItem);
-        //this.prepareGarnishFoodToEdit();
+        this.createOptionsReferences(_lItem, true);
         this.prepareAdditionsToEdit();
+        this._showOptionsError = false;
 
         this._showOrderItemDetail = true;
         this.viewItemDetail('addition-detail', true);
@@ -547,10 +532,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
      */
     resetEditionValues(): void {
         this._editOrderItemForm.reset();
-        //this._garnishFormGroup.reset();
         this._optionsFormGroup.reset();
         this._additionsFormGroup.reset();
-        //this._orderItemGarnishFood = [];
         this._orderItemOptions = [];
         this._orderItemAdditions = [];
         this._quantityCount = 1;
@@ -558,36 +541,10 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * When orderItem is in edited mode, this function prepare their garnish food elements
-     
-    prepareGarnishFoodToEdit(): void {
-        GarnishFoodCol.collection.find({}).fetch().forEach((gar) => {
-            let _lGarnishFood: GarnishFood = gar;
-            let find = this._orderItemGarnishFood.filter(g => g === _lGarnishFood._id);
-
-            if (find.length > 0) {
-                if (this._garnishFormGroup.contains(gar._id)) {
-                    this._garnishFormGroup.controls[gar._id].setValue(true);
-                } else {
-                    let control: FormControl = new FormControl(true);
-                    this._garnishFormGroup.addControl(gar._id, control);
-                }
-            } else {
-                if (this._garnishFormGroup.contains(gar._id)) {
-                    this._garnishFormGroup.controls[gar._id].setValue(false);
-                } else {
-                    let control: FormControl = new FormControl(false);
-                    this._garnishFormGroup.addControl(gar._id, control);
-                }
-            }
-        });
-    }*/
-
-    /**
      * Create radio button options references
      * @param {Item} _pItem 
      */
-    createOptionsReferences(_pItem: Item): void {
+    createOptionsReferences(_pItem: Item, _pValidateInitialOptions: boolean): void {
         this._radioReferences = [];
         _pItem.options.forEach((item_option) => {
             let _reference: OptionReference = { option_id: '', is_required: false, values: [] };
@@ -596,12 +553,15 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             _reference.is_required = item_option.is_required;
             item_option.values.forEach((item_option_value) => {
                 let _value: ValueReference = { value_id: item_option_value.option_value_id, price: 0, in_use: false };
-                let _lOrderItemOption: OrderOption = this._orderItemOptions.find(op => op.value_id === item_option_value.option_value_id);
                 if (item_option_value.have_price) {
                     _value.price = item_option_value.price;
                 }
-                if (_lOrderItemOption) {
-                    _value.in_use = true;
+                if (_pValidateInitialOptions) {
+                    let _lOrderItemOption: OrderOption = this._orderItemOptions.find(op => op.value_id === item_option_value.option_value_id);
+                    if (_lOrderItemOption) {
+                        _value.in_use = true;
+                        this._optionsFormGroup.controls[_lOrderItemOption.option_id].setValue(true);
+                    }
                 }
                 _valuesRef.push(_value);
             });
@@ -651,14 +611,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Set max garnish food elements in order item detail
-     * @param {number} _pGarnishFoodQuantity
-     
-    setMaxGarnishFoodElements(_pGarnishFoodQuantity: number): void {
-        this._maxGarnishFoodElements = _pGarnishFoodQuantity;
-    }*/
-
-    /**
      * Set item unit price
      * @param {number} _pItemPrice
      */
@@ -666,18 +618,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this._unitPrice = this.getItemPrice(_pItemPrice);
         this._unitRewardPoints = this.getItemRewardPoints(_pItemPrice);
     }
-
-    /**
-     * Validate Garnish food selections and show message error if count is greater than item.garnishFoodQuantity
-     * in order item edition
-     
-    validateGarnishFoodElements(): void {
-        if (this._garnishFoodElementsCount > this._maxGarnishFoodElements) {
-            this._showGarnishFoodError = true;
-        } else {
-            this._showGarnishFoodError = false;
-        }
-    }*/
 
     /**
      * Return _quantityCount
@@ -689,36 +629,34 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     /**
      * Add quantity item
      */
-    addCount(): void {
+    addCount(_pItem: Item): void {
         this._lastQuantity = this._quantityCount;
         this._quantityCount += 1;
-        this.calculateFinalPriceQuantity();
+        this.calculateFinalPriceQuantity(_pItem);
         this.calculateFinalPointsQuantity();
     }
 
     /**
      * Subtract quantity item
      */
-    removeCount(): void {
+    removeCount(_pItem: Item): void {
         if (this._quantityCount > 1) {
             this._lastQuantity = this._quantityCount;
             this._quantityCount -= 1;
         }
-        this.calculateFinalPriceQuantity();
+        this.calculateFinalPriceQuantity(_pItem);
         this.calculateFinalPointsQuantity();
     }
 
     /**
      * Calculate final price when item quantity is entered
      */
-    calculateFinalPriceQuantity(): void {
+    calculateFinalPriceQuantity(_pItem: Item): void {
         if (Number.isFinite(this._quantityCount)) {
             this._finalPrice = this._unitPrice * this._quantityCount;
-            //this._garnishFoodElementsCount = 0;
-            //this._garnishFormGroup.reset();
+            this.createOptionsReferences(_pItem, false);
             this._optionsFormGroup.reset();
             this._additionsFormGroup.reset();
-            //this._showGarnishFoodError = false;
         }
     }
 
@@ -730,24 +668,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             this._finalPoints = this._unitRewardPoints * this._quantityCount;
         }
     }
-
-    /**
-     * Calculate final price when garnish food is selected
-     * @param {any} _event 
-     * @param {number} _price 
-     
-    calculateFinalPriceGarnishFood(_event: any, _pGarnishFood: GarnishFood): void {
-        let _price = _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
-        if (_event.checked) {
-            this._finalPrice = (Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount));
-            this._garnishFoodElementsCount += 1;
-            this.validateGarnishFoodElements();
-        } else {
-            this._finalPrice = Number.parseInt(this._finalPrice.toString()) - (Number.parseInt(_price.toString()) * this._quantityCount);
-            this._garnishFoodElementsCount -= 1;
-            this.validateGarnishFoodElements();
-        }
-    }*/
 
     /**
      * Calculate final price when option value is selected
@@ -793,16 +713,18 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (this._editOrderItemForm.valid) {
-            /*let arr: any[] = Object.keys(this._editOrderItemForm.value.garnishFood);
-            let _lGarnishFoodToInsert: string[] = [];
-
-            arr.forEach((gar) => {
-                if (this._editOrderItemForm.value.garnishFood[gar]) {
-                    _lGarnishFoodToInsert.push(gar);
+        this._radioReferences.forEach((option) => {
+            if (option.is_required) {
+                let valid: ValueReference[] = option.values.filter(val => val.in_use === true);
+                if (valid.length === 0) {
+                    this._showOptionsError = true;
+                } else {
+                    this._showOptionsError = false;
                 }
-            });*/
+            }
+        });
 
+        if (this._editOrderItemForm.valid && !this._showOptionsError) {
             let _arrOption: any[] = Object.keys(this._editOrderItemForm.value.options);
             let _lOptionsToInsert: OrderOption[] = [];
 
@@ -833,7 +755,6 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 itemId: _pItemToInsert,
                 quantity: this._quantityCount,
                 observations: this._editOrderItemForm.value.observations,
-                //garnishFood: _lGarnishFoodToInsert,
                 options: _lOptionsToInsert,
                 additions: _lAdditionsToInsert,
                 paymentItem: this._finalPrice,
@@ -876,6 +797,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
             );
             this._currentOrder = Orders.findOne({ _id: this._currentOrder._id });
             this._showOrderItemDetail = false;
+            this._showOptionsError = false;
             this.viewItemDetail('item-selected', true);
             let _lMessage: string = this.itemNameTraduction('ORDER_LIST.ITEM_EDITED');
             this.snackBar.open(_lMessage, '', {
@@ -1132,13 +1054,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Return garnish food information
-     * @param {GarnishFood} _pGarnishFood
-     
-    getGarnishFoodInformation(_pGarnishFood: GarnishFood): string {
-        return _pGarnishFood.name + ' - ' + _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
-    }*/
-
+     * Create new order event
+     */
     createNewOrderEvent(): void {
         this.createNewOrder.emit(true);
     }

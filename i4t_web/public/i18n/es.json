@@ -891,7 +891,8 @@
         "ORDER_LBL": "Orden",
         "USR_ORDER_CONFIRMED": "Confirmaste tu orden! Un mesero la atendera!",
         "NO_USR_ORDER_CONFIRMED": "Orden confirmada",
-        "WIN": "Ganas"
+        "WIN": "Ganas",
+        "OPTIONS_ERROR": "Por favor completa la información para agregar el ítem a la orden"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "No te encuentras en un restaurante",

@@ -891,7 +891,8 @@
         "ORDER_LBL": "Order",
         "USR_ORDER_CONFIRMED": "You confirmed your order! A waiter/waitress will attend it",
         "NO_USR_ORDER_CONFIRMED": "Order confirmed",
-        "WIN": "You win"
+        "WIN": "You win",
+        "OPTIONS_ERROR": "Please complete the information to add the item to the order"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "You are not in any restaurant",
