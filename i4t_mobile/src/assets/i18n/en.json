@@ -340,14 +340,14 @@
             "QUANTITY": "Units:",
             "ENTER_NUMBER": "Enter number",
             "OBSERVATIONS": "Add comments",
-            "ADDITIONS": "Additions",
+            "ADDITIONS": "Select the additions",
             "GARNISHES": "Side dishes",
             "MODAL_CANCEL": "Cancel",
             "MODEL_INDICATION": "Add your comments (e.g., no onion...)",
             "SAVE_OBS": "Save",
             "ITEM_UNAVAILABLE": "At this time the item is not available to add to the order",
             "UNIT_PRICE": "Unit price: ",
-            "TOTAL": "Total:",
+            "TOTAL": "Price:",
             "MAX_GARNISH": "Please select max ",
             "SELECT_MAX_VALID": "You have selected more than ",
             "LOADING_MSG": "Adding to order ...",
@@ -360,7 +360,8 @@
             "CONFIRM_ORDER": "Confirm your order",
             "FOOD_ACCOMPANIMENT": "Food accompaniment",
             "ADDITION_LBL": "Addition",
-            "CONFIRM": "Confirma"
+            "CONFIRM": "Confirm",
+            "OPTIONS_ERROR": "Please complete the information to add the item to the order"
         },
         "ITEM_EDIT": {
             "MODIFY": "Modify",

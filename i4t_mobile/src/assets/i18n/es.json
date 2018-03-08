@@ -340,7 +340,7 @@
             "QUANTITY": "Cantidad:",
             "ENTER_NUMBER": "Ingresa número",
             "OBSERVATIONS": "Agregar comentarios",
-            "ADDITIONS": "Adiciones",
+            "ADDITIONS": "Selecciona las adiciones que desees",
             "GARNISHES": "Guarniciones",
             "MODAL_CANCEL": "Cancelar",
             "MODEL_INDICATION": "Agrega tus comentarios (por ejemplo, sin cebolla...)",
@@ -360,7 +360,8 @@
             "CONFIRM_ORDER": "Confirma tu orden",
             "FOOD_ACCOMPANIMENT": "Acompañamientos",
             "ADDITION_LBL": "Adición",
-            "CONFIRM": "Confirmar"
+            "CONFIRM": "Confirmar",
+            "OPTIONS_ERROR": "Por favor completa la información para agregar el ítem a la orden"
         },
         "ITEM_EDIT": {
             "MODIFY": "Modificar",
