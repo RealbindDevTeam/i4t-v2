@@ -34,7 +34,6 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _userLang: string;
   private _itemsSub: Subscription;
   private _additionSub: Subscription;
-  //private _garnishSub: Subscription;
   private _rewardPointsSub: Subscription;
   private _ordersSub: Subscription;
   private _currenciesSub: Subscription;
@@ -58,7 +57,6 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _currentUserId: string;
   private _statusArray: string[];
   private _additions;
-  //private _garnishes;
   private _createAdditions: any[];
   private _maxGarnishFoodElements: number = 0;
   private _quantityCount: number;
@@ -66,19 +64,14 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _letChange: boolean = true;
   private _disabledMinusBtn: boolean = true;
   private _observations: string = null;
-  //private _garnishFoodElementsCount: number = 0;
   private _disabledAddBtn: boolean = false;
-  //private _showGarnishFoodError = false;
   private _orders;
   private _auxCounter: number = 0;
   private _orderAux;
-  //private _createdGarnishFood: any[];
-  //private _orderItemGarnishFood: any[];
   private _orderAdditions: any[];
   private _showCancelBtn: boolean = false;
   private _newOrderForm: FormGroup;
   private _optionsFormGroup: FormGroup = new FormGroup({});
-  //private _garnishFormGroup: FormGroup = new FormGroup({});
   private _additionsFormGroup: FormGroup = new FormGroup({});
   private _currencyCode: string;
   private _finalPoints: number = 0;
@@ -87,6 +80,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _optionsList: Option[] = [];
   private _radioReferences: OptionReference[] = [];
   private _orderItemOptions: OrderOption[] = [];
+  private _showOptionsError: boolean = false;
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -104,9 +98,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
     this._currentUserId = Meteor.userId();
     this._statusArray = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
 
-    //this._createdGarnishFood = [];
     this._createAdditions = [];
-    //this._orderItemGarnishFood = [];
     this._orderAdditions = [];
 
     this._order_code = this._navParams.get("order_id");
@@ -132,11 +124,9 @@ export class ItemEditPage implements OnInit, OnDestroy {
             this._unitPrice = this.getItemPrice(item);
             this._unitRewardPoints = item.reward_points;
           }
-          //this._showGarnishFoodError = false;
           this._maxGarnishFoodElements = 0;
           this._disabledAddBtn = false;
           this._additionsFormGroup.reset();
-          //this._garnishFormGroup.reset();
           this._optionsFormGroup.reset();
           this._orderItemOptions = [];
         });
@@ -144,7 +134,6 @@ export class ItemEditPage implements OnInit, OnDestroy {
     });
 
     this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._res_code, this._table_code, this._statusArray).takeUntil(this.ngUnsubscribe).subscribe(() => {
-      //MeteorObservable.autorun().subscribe(() => {
       this._orders = Orders.find({ _id: this._order_code, creation_user: this._creation_user });
       this._orderAux = Orders.collection.find({ _id: this._order_code, creation_user: this._creation_user }).fetch()[0];
       for (let itemOrder of this._orderAux.items) {
@@ -152,88 +141,68 @@ export class ItemEditPage implements OnInit, OnDestroy {
           this._quantityCount = itemOrder.quantity;
           this._finalPrice = itemOrder.paymentItem;
           this._finalPoints = itemOrder.reward_points;
-          this._orderItemOptions = itemOrder.options;
-          //this._garnishFoodElementsCount = itemOrder.garnishFood.length;
 
           if (itemOrder.quantity > 1) {
             this._disabledMinusBtn = false;
           }
         }
       }
-    });
 
-    let _optionIds: string[] = [];
-    this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
-      this._ngZone.run(() => {
-        this._options = Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).zone();
-        this._options.subscribe(() => {
-          this._optionsList = Options.collection.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch();
-          for (let option of this._optionsList) {
-            if (this._optionsFormGroup.contains(option._id)) {
-              this._optionsFormGroup.controls[option._id].setValue(false);
-            } else {
-              let control: FormControl = new FormControl(false);
-              this._optionsFormGroup.addControl(option._id, control);
+      let _optionIds: string[] = [];
+      this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
+        this._ngZone.run(() => {
+          this._options = Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).zone();
+          this._options.subscribe(() => {
+
+            let _actualOrder;
+            _actualOrder = Orders.collection.find({ _id: this._order_code, creation_user: this._creation_user }).fetch()[0];
+            for (let itemOrder of _actualOrder.items) {
+              if (itemOrder.itemId === this._item_code && itemOrder.index === this._item_order_index) {
+                this._orderItemOptions = itemOrder.options;
+              }
             }
-          }
-          Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch().forEach((opt) => {
-            _optionIds.push(opt._id);
-          });
-          this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this.ngUnsubscribe).subscribe(() => {
-            this._ngZone.run(() => {
-              this._optionValues = OptionValues.find({ option_id: { $in: _optionIds }, is_active: true }).zone();
+            this._optionsList = Options.collection.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch();
+            for (let option of this._optionsList) {
+              let _optionExist: OrderOption[] = this._orderItemOptions.filter(opt => opt.option_id === option._id);
+              if (_optionExist.length > 0) {
+                if (this._optionsFormGroup.contains(option._id)) {
+                  this._optionsFormGroup.controls[option._id].setValue(true);
+                } else {
+                  let control: FormControl;
+                  if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
+                    control = new FormControl({ value: true, disabled: true });
+                  } else {
+                    control = new FormControl({ value: true, disabled: false });
+                  }
+                  this._optionsFormGroup.addControl(option._id, control);
+                }
+              } else {
+                if (this, this._optionsFormGroup.contains(option._id)) {
+                  this._optionsFormGroup.controls[option._id].setValue(false);
+                } else {
+                  let control: FormControl;
+                  if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
+                    control = new FormControl({ value: false, disabled: true });
+                  } else {
+                    control = new FormControl({ value: false, disabled: false });
+                  }
+                  this._optionsFormGroup.addControl(option._id, control);
+                }
+              }
+              this.createOptionsReferences(true);
+            }
+            Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch().forEach((opt) => {
+              _optionIds.push(opt._id);
+            });
+            this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this.ngUnsubscribe).subscribe(() => {
+              this._ngZone.run(() => {
+                this._optionValues = OptionValues.find({ option_id: { $in: _optionIds }, is_active: true }).zone();
+              });
             });
           });
         });
       });
     });
-    this.createOptionsReferences(true);
-
-    /*this._garnishSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
-
-      this._ngZone.run(() => {
-        this._garnishes = GarnishFoodCol.find({});
-        this._createdGarnishFood = GarnishFoodCol.collection.find({}).fetch();
-
-        let _actualOrder;
-        _actualOrder = Orders.collection.find({ _id: this._order_code, creation_user: this._creation_user }).fetch()[0];
-        //_actualOrder.items.forEach((itemOrder) => {
-        for (let itemOrder of _actualOrder.items) {
-          if (itemOrder.itemId === this._item_code && itemOrder.index === this._item_order_index) {
-            this._orderItemGarnishFood = itemOrder.garnishFood;
-          }
-        }
-        //});
-        for (let gar of this._createdGarnishFood) {
-          let garnishExist: any[] = this._orderItemGarnishFood.filter(garnish => garnish === gar._id);
-          if (garnishExist.length > 0) {
-            if (this._garnishFormGroup.contains(gar.name)) {
-              this._garnishFormGroup.controls[gar.name].setValue(true);
-            } else {
-              let control: FormControl;
-              if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
-                control = new FormControl({ value: true, disabled: true });
-              } else {
-                control = new FormControl({ value: true, disabled: false });
-              }
-              this._garnishFormGroup.addControl(gar.name, control);
-            }
-          } else {
-            if (this._garnishFormGroup.contains(gar.name)) {
-              this._garnishFormGroup.controls[gar.name].setValue(false);
-            } else {
-              let control: FormControl;
-              if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
-                control = new FormControl({ value: false, disabled: true });
-              } else {
-                control = new FormControl({ value: false, disabled: false });
-              }
-              this._garnishFormGroup.addControl(gar.name, control);
-            }
-          }
-        }
-      });
-    });*/
 
     this._additionSub = MeteorObservable.subscribe('additionsByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
@@ -242,13 +211,11 @@ export class ItemEditPage implements OnInit, OnDestroy {
 
         let _actualOrder;
         _actualOrder = Orders.collection.find({ _id: this._order_code, creation_user: this._creation_user }).fetch()[0];
-        //_actualOrder.items.forEach((itemOrder) => {
         for (let itemOrder of _actualOrder.items) {
           if (itemOrder.itemId === this._item_code && itemOrder.index === this._item_order_index) {
             this._orderAdditions = itemOrder.additions;
           }
         }
-        //});
 
         for (let add of this._createAdditions) {
           let additionExist: any[] = this._orderAdditions.filter(addition => addition === add._id);
@@ -286,10 +253,8 @@ export class ItemEditPage implements OnInit, OnDestroy {
     this._newOrderForm = new FormGroup({
       quantity: new FormControl('', [Validators.required]),
       options: this._optionsFormGroup,
-      //garnishFood: this._garnishFormGroup,
       additions: this._additionsFormGroup
     });
-    //
 
     this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._currencyCode = Currencies.collection.find({}).fetch()[0].code + ' ';
@@ -355,7 +320,6 @@ export class ItemEditPage implements OnInit, OnDestroy {
           let _lOrderItemOption: OrderOption = this._orderItemOptions.find(op => op.value_id === item_option_value.option_value_id);
           if (_lOrderItemOption) {
             _value.in_use = true;
-            this._optionsFormGroup.controls[_lOrderItemOption.option_id].setValue(true);
           }
         }
         _valuesRef.push(_value);
@@ -363,7 +327,6 @@ export class ItemEditPage implements OnInit, OnDestroy {
       _reference.values = _valuesRef;
       this._radioReferences.push(_reference);
     });
-    console.log(this._radioReferences);
   }
 
   addCount() {
@@ -394,12 +357,9 @@ export class ItemEditPage implements OnInit, OnDestroy {
     if (Number.isFinite(this._quantityCount)) {
       this._finalPrice = this._unitPrice * this._quantityCount;
       this.createOptionsReferences(false);
-      //this._garnishFoodElementsCount = 0;
       this._disabledAddBtn = false;
-      //this._showGarnishFoodError = false;
       this._optionsFormGroup.reset();
       this._additionsFormGroup.reset();
-      //this._garnishFormGroup.reset();
     }
   }
 
@@ -435,118 +395,108 @@ export class ItemEditPage implements OnInit, OnDestroy {
         this._finalPrice = this._finalPrice - (value.price * this._quantityCount);
         value.in_use = false;
       }
-      if (_pEvent.value === value.value_id) {
+      if (_pEvent === value.value_id) {
         this._finalPrice = this._finalPrice + (value.price * this._quantityCount);
         value.in_use = true;
       }
     });
   }
 
-  /*calculateFinalPriceGarnishFood(_event: any, _price: number): void {
-    if (_event.checked) {
-      this._finalPrice = Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount);
-      this._garnishFoodElementsCount += 1;
-      this.validateGarnishFoodElements();
-      this._letChange = true;
-    } else {
-      if (this._letChange) {
-        this._finalPrice = Number.parseInt(this._finalPrice.toString()) - (Number.parseInt(_price.toString()) * this._quantityCount);
-        this._garnishFoodElementsCount -= 1;
-        this.validateGarnishFoodElements();
-      }
-    }
-  }*/
-
-  /*validateGarnishFoodElements(): void {
-    if (this._garnishFoodElementsCount > this._maxGarnishFoodElements) {
-      this._showGarnishFoodError = true;
-      this._disabledAddBtn = true;
-    } else {
-      this._showGarnishFoodError = false;
-      this._disabledAddBtn = false;
-    }
-  }*/
-
-  /*setMaxGarnishFoodElements(_pGarnishFoodQuantity: number) {
-    this._maxGarnishFoodElements = _pGarnishFoodQuantity;
-  }*/
-
   editOrderItem() {
-    /*let arr: any[] = Object.keys(this._newOrderForm.value.garnishFood);
-    let _lGarnishFoodToInsert: string[] = [];
-
-    arr.forEach((gar) => {
-      if (this._newOrderForm.value.garnishFood[gar]) {
-        let _lGarnishF: GarnishFood = GarnishFoodCol.findOne({ name: gar });
-        _lGarnishFoodToInsert.push(_lGarnishF._id);
-      }
-    });*/
-
-    let arrAdd: any[] = Object.keys(this._newOrderForm.value.additions);
-    let _lAdditionsToInsert: string[] = [];
-
-    arrAdd.forEach((add) => {
-      if (this._newOrderForm.value.additions[add]) {
-        let _lAddition: Addition = Additions.findOne({ name: add });
-        _lAdditionsToInsert.push(_lAddition._id);
+    this._radioReferences.forEach((option) => {
+      if (option.is_required) {
+        let valid: ValueReference[] = option.values.filter(val => val.in_use === true);
+        if (valid.length === 0) {
+          this._showOptionsError = true;
+        } else {
+          this._showOptionsError = false;
+        }
       }
     });
 
-    if (this._observations == null) {
-      this._observations = "";
+    if (!this._showOptionsError) {
+
+      let _arrOption: any[] = Object.keys(this._newOrderForm.value.options);
+      let _lOptionsToInsert: OrderOption[] = [];
+
+      _arrOption.forEach((opt) => {
+        if (this._newOrderForm.value.options[opt]) {
+          let _lOrderOption: OrderOption = { option_id: opt, value_id: '' };
+          let _reference: OptionReference = this._radioReferences.find(ref => ref.option_id === opt);
+          _reference.values.forEach((val) => {
+            if (val.in_use) {
+              _lOrderOption.value_id = val.value_id;
+            }
+          });
+          _lOptionsToInsert.push(_lOrderOption);
+        }
+      });
+
+      let arrAdd: any[] = Object.keys(this._newOrderForm.value.additions);
+      let _lAdditionsToInsert: string[] = [];
+
+      arrAdd.forEach((add) => {
+        if (this._newOrderForm.value.additions[add]) {
+          let _lAddition: Addition = Additions.findOne({ name: add });
+          _lAdditionsToInsert.push(_lAddition._id);
+        }
+      });
+
+      if (this._observations == null) {
+        this._observations = "";
+      }
+
+      let _lOrderItem = {
+        index: this._item_order_index,
+        itemId: this._item_code,
+        quantity: this._quantityCount,
+        observations: this._observations,
+        options: _lOptionsToInsert,
+        additions: _lAdditionsToInsert,
+        paymentItem: this._finalPrice,
+        reward_points: this._finalPoints
+      };
+
+      let _lOrder = Orders.findOne({ _id: this._order_code });
+      let _lOrderItemToremove = _lOrder.items.filter(o => _lOrderItem.itemId === o.itemId && Number(_lOrderItem.index) === o.index)[0];
+      let _lTotalPayment: number = _lOrder.totalPayment - _lOrderItemToremove.paymentItem;
+      let _lTotalPoints: number = _lOrder.total_reward_points - _lOrderItemToremove.reward_points;
+
+      Orders.update({ _id: this._order_code }, { $pull: { items: { itemId: this._item_code, index: this._item_order_index } } });
+      Orders.update({ _id: this._order_code },
+        {
+          $set: {
+            totalPayment: _lTotalPayment,
+            total_reward_points: _lTotalPoints,
+            modification_user: Meteor.userId(),
+            modification_date: new Date()
+          }
+        }
+      );
+
+      let _lNewOrder = Orders.findOne({ _id: this._order_code });
+      let _lNewTotalPaymentAux: number = Number.parseInt(_lNewOrder.totalPayment.toString()) + Number.parseInt(_lOrderItem.paymentItem.toString());
+      let _lNewTotalPointsAux: number = Number.parseInt(_lNewOrder.total_reward_points.toString()) + Number.parseInt(_lOrderItem.reward_points.toString());
+
+      Orders.update({ _id: _lNewOrder._id },
+        { $push: { items: _lOrderItem } }
+      );
+
+      Orders.update({ _id: _lNewOrder._id },
+        {
+          $set: {
+            modification_user: Meteor.userId(),
+            modification_date: new Date(),
+            totalPayment: _lNewTotalPaymentAux,
+            total_reward_points: _lNewTotalPointsAux
+          }
+        }
+      );
+
+      let _toastMsg = this.itemNameTraduction('MOBILE.ITEM_EDIT.TOAST_MSG_EDIT');
+      this._navCtrl.pop();
+      this.presentToast(_toastMsg);
     }
-
-    let _lOrderItem = {
-      index: this._item_order_index,
-      itemId: this._item_code,
-      quantity: this._quantityCount,
-      observations: this._observations,
-      //garnishFood: _lGarnishFoodToInsert,
-      options: [],
-      additions: _lAdditionsToInsert,
-      paymentItem: this._finalPrice,
-      reward_points: this._finalPoints
-    };
-
-    let _lOrder = Orders.findOne({ _id: this._order_code });
-    let _lOrderItemToremove = _lOrder.items.filter(o => _lOrderItem.itemId === o.itemId && Number(_lOrderItem.index) === o.index)[0];
-    let _lTotalPayment: number = _lOrder.totalPayment - _lOrderItemToremove.paymentItem;
-    let _lTotalPoints: number = _lOrder.total_reward_points - _lOrderItemToremove.reward_points;
-
-    Orders.update({ _id: this._order_code }, { $pull: { items: { itemId: this._item_code, index: this._item_order_index } } });
-    Orders.update({ _id: this._order_code },
-      {
-        $set: {
-          totalPayment: _lTotalPayment,
-          total_reward_points: _lTotalPoints,
-          modification_user: Meteor.userId(),
-          modification_date: new Date()
-        }
-      }
-    );
-
-    let _lNewOrder = Orders.findOne({ _id: this._order_code });
-    let _lNewTotalPaymentAux: number = Number.parseInt(_lNewOrder.totalPayment.toString()) + Number.parseInt(_lOrderItem.paymentItem.toString());
-    let _lNewTotalPointsAux: number = Number.parseInt(_lNewOrder.total_reward_points.toString()) + Number.parseInt(_lOrderItem.reward_points.toString());
-
-    Orders.update({ _id: _lNewOrder._id },
-      { $push: { items: _lOrderItem } }
-    );
-
-    Orders.update({ _id: _lNewOrder._id },
-      {
-        $set: {
-          modification_user: Meteor.userId(),
-          modification_date: new Date(),
-          totalPayment: _lNewTotalPaymentAux,
-          total_reward_points: _lNewTotalPointsAux
-        }
-      }
-    );
-
-    let _toastMsg = this.itemNameTraduction('MOBILE.ITEM_EDIT.TOAST_MSG_EDIT');
-    this._navCtrl.pop();
-    this.presentToast(_toastMsg);
   }
 
   presentToast(msg: string) {
@@ -642,14 +592,6 @@ export class ItemEditPage implements OnInit, OnDestroy {
   getAdditionsPrice(_pAddition: Addition): number {
     return _pAddition.establishments.filter(r => r.establishment_id === this._res_code)[0].price;
   }
-
-  /**
-   * Return Garnish food price by current establishment
-   * @param {GarnishFood} _pGarnishFood
-   
-  getGarnishFoodPrice(_pGarnishFood: GarnishFood): number {
-    return _pGarnishFood.establishments.filter(r => r.establishment_id === this._res_code)[0].price;
-  }*/
 
   /**
    * Return item name by id
