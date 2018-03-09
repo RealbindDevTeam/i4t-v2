@@ -81,6 +81,7 @@ export class ItemEditPage implements OnInit, OnDestroy {
   private _radioReferences: OptionReference[] = [];
   private _orderItemOptions: OrderOption[] = [];
   private _showOptionsError: boolean = false;
+  private _customerCanEdit: boolean = false;
 
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
@@ -156,6 +157,12 @@ export class ItemEditPage implements OnInit, OnDestroy {
 
             let _actualOrder;
             _actualOrder = Orders.collection.find({ _id: this._order_code, creation_user: this._creation_user }).fetch()[0];
+            if (_actualOrder.status !== 'ORDER_STATUS.SELECTING' || this._orderAux.creation_user !== this._currentUserId) {
+              this._customerCanEdit = false;
+            } else {
+              this._customerCanEdit = true;
+            }
+
             for (let itemOrder of _actualOrder.items) {
               if (itemOrder.itemId === this._item_code && itemOrder.index === this._item_order_index) {
                 this._orderItemOptions = itemOrder.options;

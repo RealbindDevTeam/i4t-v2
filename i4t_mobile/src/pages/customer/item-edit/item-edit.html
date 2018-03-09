@@ -63,7 +63,7 @@
                       <span *ngFor="let opt of item.options">
                         <div *ngIf="option._id === opt.option_id">
                           <p style="font-weight:bold;">{{option.name}}</p>
-                          <ion-list radio-group (ionChange)="calculateFinalPriceOptionValue(option._id, $event)">
+                          <ion-list radio-group [disabled]="!_customerCanEdit" (ionChange)="calculateFinalPriceOptionValue(option._id, $event)">
                             <span *ngFor="let value of _optionValues | async">
                               <span *ngFor="let val of opt.values">
                                 <span *ngIf="value._id === val.option_value_id">
