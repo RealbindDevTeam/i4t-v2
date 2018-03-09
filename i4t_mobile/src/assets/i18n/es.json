@@ -534,7 +534,8 @@
             "YOU_EARNED": "Ganaste",
             "POINTS": "Puntos",
             "YOU_REDEEMED": "Redimiste",
-            "REWARD": "Recompensa"
+            "REWARD": "Recompensa",
+            "TOTAL": "Total"
         },
         "POPOVER_OPTIONS": {
             "SETTINGS": "Ajustes",

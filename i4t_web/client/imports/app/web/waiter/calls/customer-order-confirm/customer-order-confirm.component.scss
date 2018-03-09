@@ -6,23 +6,9 @@
     margin-bottom: 0%;
 }
 
-.no-garnish{
-    display: inline-block;
-    font-weight: bold;
-    margin-bottom: 0%;
-}
-
-.garnish-food{
-    .garnish-title{
-        display: inline-block;
+.value {
+    .value-name {
         font-weight: bold;
-        margin-bottom: 0%
-    }
-
-    .garnish-name{
-        display: inline-block;
-        font-weight: bold;
-        margin-bottom: 0%;
     }
 }
 
@@ -33,12 +19,11 @@
 
 .addition{
     .addition-title{
-        display: inline-block;
         font-weight: bold;
     }
 
     .addition-name{
-        display: inline-block;
+        margin-left: 1rem;
         font-weight: bold;
     }
 }

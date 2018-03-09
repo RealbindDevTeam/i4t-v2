@@ -1713,7 +1713,8 @@
         "POINTS": "Points",
         "YOU_REDEEMED": "You redeemed",
         "QUANT": "Quant. ",
-        "REWARD": "Reward"
+        "REWARD": "Reward",
+        "TOTAL": "Total"
     },
     "OPTIONS": {
         "OPTION_CREATION": "Create options",

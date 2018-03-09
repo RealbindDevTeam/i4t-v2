@@ -534,7 +534,8 @@
             "YOU_EARNED": "You earned",
             "POINTS": "Points",
             "YOU_REDEEMED": "You redeemed",
-            "REWARD": "Reward"
+            "REWARD": "Reward",
+            "TOTAL": "Total"
         },
         "POPOVER_OPTIONS": {
             "SETTINGS": "Settings",
