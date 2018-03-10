@@ -25,6 +25,7 @@
               <span style="color: #666"> {{ item.time }} </span>
             </ion-label>
           </ion-item>
+          <p *ngIf="_showOptionsError" style="color: #EF5350;">{{'MOBILE.SECTIONS.OPTIONS_ERROR' | translate}}</p>          
           <ion-item *ngIf="getItemAvailability()" style="padding-left: 0px">
             {{'MOBILE.SECTIONS.QUANTITY' | translate}}
             <span style="color: #666; font-size: initial"> {{_quantityCount}}</span>
@@ -69,6 +70,8 @@
               </div>
             </div>
           </div>
+          <p *ngIf="_showOptionsError" style="color: #EF5350;">{{'MOBILE.SECTIONS.OPTIONS_ERROR' | translate}}</p>
+          <br *ngIf="_showOptionsError"/>
           <div *ngIf="item.additions.length > 0">
             <h3 class="custom-padding">{{'MOBILE.SECTIONS.ADDITIONS' | translate}}</h3>
             <div formGroupName="additions">
@@ -86,7 +89,6 @@
             </div>
           </div>
         </form>
-        <p *ngIf="_showOptionsError" style="color: #EF5350;">{{'MOBILE.SECTIONS.OPTIONS_ERROR' | translate}}</p>
       </ion-card-content>
     </ion-card>
   </div>
