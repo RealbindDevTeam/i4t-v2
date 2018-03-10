@@ -3,16 +3,19 @@ import { NavController, NavParams, ModalController, LoadingController, ToastCont
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription, Subject } from 'rxjs';
+import { Subscription, Subject, Observable } from 'rxjs';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
-import { GarnishFoodCol } from 'i4t_web/both/collections/menu/garnish-food.collection';
-import { GarnishFood } from 'i4t_web/both/models/menu/garnish-food.model';
 import { ModalObservations } from './modal-observations';
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Item } from 'i4t_web/both/models/menu/item.model';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
+import { Option } from 'i4t_web/both/models/menu/option.model';
+import { Options } from 'i4t_web/both/collections/menu/option.collection';
+import { OptionValue } from 'i4t_web/both/models/menu/option-value.model';
+import { OptionValues } from 'i4t_web/both/collections/menu/option-value.collection';
+import { Order, OrderItem, OrderAddition, OptionReference, ValueReference, OrderOption } from 'i4t_web/both/models/establishment/order.model';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { LightboxPage } from "../../../pages/general/lightbox/lightbox";
 
@@ -31,6 +34,15 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   private _userLang: string;
   private _items;
   private _itemSub: Subscription;
+  private _additionSub: Subscription;
+  private _currenciesSub: Subscription;
+  private _optionSub: Subscription;
+  private _optionValuesSub: Subscription;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
+
+  private _options: Observable<Option[]>;
+  private _optionValues: Observable<OptionValue[]>;
+
   private _item_code: string = '';
   private _res_code: string = '';
   private _table_code: string = '';
@@ -38,33 +50,27 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   private _unitPrice: number;
   private _observations: string = '';
   private _additions;
-  private _additionSub: Subscription;
-  private _garnishes;
-  private _garnishSub: Subscription;
   private _item: any[] = [];
   private _showAddBtn: boolean = true;
   private _quantityCount: number = 1;
   private _lastQuantity: number = 1;
   private _additionsList: any[] = [];
-  private _garnishFoodList: any[] = [];
+  private _optionsList: Option[] = [];
   private _letChange: boolean = true;
-  private _garnishFoodElementsCount: number = 0;
-  private _showGarnishFoodError = false;
-  private _maxGarnishFoodElements: number = 0;
   private _disabledAddBtn: boolean = false;
   private _loadingMsg: string;
   private _toastMsg: string;
   private _disabledMinusBtn: boolean = true;
   private _statusArray: string[];
   private _currentUserId: string;
-  private _currenciesSub: Subscription;
   private _currencyCode: string;
   private _finalPoints: number = 0;
   private _unitRewardPoints: number = 0;
-  private ngUnsubscribe: Subject<void> = new Subject<void>();
+  private _radioReferences: OptionReference[] = [];
+  private _showOptionsError: boolean = false;
 
   private _newOrderForm: FormGroup;
-  private _garnishFormGroup: FormGroup = new FormGroup({});
+  private _optionsFormGroup: FormGroup = new FormGroup({});
   private _additionsFormGroup: FormGroup = new FormGroup({});
 
   constructor(public _navCtrl: NavController,
@@ -103,14 +109,11 @@ export class ItemDetailPage implements OnInit, OnDestroy {
             this._unitRewardPoints = item.reward_points;
             this._finalPoints = this._unitRewardPoints;
           }
-          this._garnishFoodElementsCount = 0;
-          this._showGarnishFoodError = false;
-          this._maxGarnishFoodElements = 0;
           this._quantityCount = 1;
           this._disabledAddBtn = false;
           this._letChange = false;
           this._additionsFormGroup.reset();
-          this._garnishFormGroup.reset();
+          this._optionsFormGroup.reset();
         });
       });
     });
@@ -127,20 +130,36 @@ export class ItemDetailPage implements OnInit, OnDestroy {
       });
     });
 
-    this._garnishSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this._res_code).takeUntil(this.ngUnsubscribe).subscribe(() => {
+    let _optionIds: string[] = [];
+    this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._zone.run(() => {
-        this._garnishes = GarnishFoodCol.find({}).zone();
-        this._garnishFoodList = GarnishFoodCol.collection.find().fetch();
-        for (let garnishFood of this._garnishFoodList) {
-          let control: FormControl = new FormControl(false);
-          this._garnishFormGroup.addControl(garnishFood.name, control);
-        }
+        this._options = Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).zone();
+        this._options.subscribe(() => {
+          this._optionsList = Options.collection.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch();
+          for (let option of this._optionsList) {
+            if (this._optionsFormGroup.contains(option._id)) {
+              this._optionsFormGroup.controls[option._id].setValue(false);
+            } else {
+              let control: FormControl = new FormControl(false);
+              this._optionsFormGroup.addControl(option._id, control);
+            }
+          }
+          Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch().forEach((opt) => {
+            _optionIds.push(opt._id);
+          });
+          this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this.ngUnsubscribe).subscribe(() => {
+            this._zone.run(() => {
+              this._optionValues = OptionValues.find({ option_id: { $in: _optionIds }, is_active: true }).zone();
+            });
+          });
+          this.createOptionsReferences(this._item_code);
+        });
       });
     });
 
     this._newOrderForm = new FormGroup({
       quantity: new FormControl('', [Validators.required]),
-      garnishFood: this._garnishFormGroup,
+      options: this._optionsFormGroup,
       additions: this._additionsFormGroup
     });
     this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
@@ -185,12 +204,54 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   calculateFinalPriceQuantity() {
     if (Number.isFinite(this._quantityCount)) {
       this._finalPrice = this._unitPrice * this._quantityCount;
-      this._garnishFoodElementsCount = 0;
       this._disabledAddBtn = false;
-      this._showGarnishFoodError = false;
+      this.createOptionsReferences(this._item_code);
       this._additionsFormGroup.reset();
-      this._garnishFormGroup.reset();
+      this._optionsFormGroup.reset();
     }
+  }
+
+  /**
+   * Create radio button options references
+   * @param {string} _pItemId 
+   */
+  createOptionsReferences(_pItemId: string): void {
+    let _lItem: Item = Items.findOne({ _id: _pItemId });
+    this._radioReferences = [];
+    _lItem.options.forEach((item_option) => {
+      let _reference: OptionReference = { option_id: '', is_required: false, values: [] };
+      let _valuesRef: ValueReference[] = [];
+      _reference.option_id = item_option.option_id;
+      _reference.is_required = item_option.is_required;
+      item_option.values.forEach((item_option_value) => {
+        let _value: ValueReference = { value_id: item_option_value.option_value_id, price: 0, in_use: false };
+        if (item_option_value.have_price) {
+          _value.price = item_option_value.price;
+        }
+        _valuesRef.push(_value);
+      });
+      _reference.values = _valuesRef;
+      this._radioReferences.push(_reference);
+    });
+  }
+
+  /**
+     * Calculate final price when option value is selected
+     * @param {string} _pOptionId 
+     * @param {any} _pEvent 
+     */
+  calculateFinalPriceOptionValue(_pOptionId: string, _pEvent: any): void {
+    let _lReference: OptionReference = this._radioReferences.find(reference => reference.option_id === _pOptionId);
+    _lReference.values.forEach((value) => {
+      if (value.in_use) {
+        this._finalPrice = this._finalPrice - (value.price * this._quantityCount);
+        value.in_use = false;
+      }
+      if (_pEvent === value.value_id) {
+        this._finalPrice = this._finalPrice + (value.price * this._quantityCount);
+        value.in_use = true;
+      }
+    });
   }
 
   /**
@@ -213,99 +274,90 @@ export class ItemDetailPage implements OnInit, OnDestroy {
     }
   }
 
-  calculateFinalPriceGarnishFood(_event: any, _price: number): void {
-    if (_event.checked) {
-      this._finalPrice = Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount);
-      this._garnishFoodElementsCount += 1;
-      this.validateGarnishFoodElements();
-      this._letChange = true;
-    } else {
-      if (this._letChange) {
-        this._finalPrice = Number.parseInt(this._finalPrice.toString()) - (Number.parseInt(_price.toString()) * this._quantityCount);
-        this._garnishFoodElementsCount -= 1;
-        this.validateGarnishFoodElements();
-      }
-    }
-  }
-
-  validateGarnishFoodElements(): void {
-    if (this._garnishFoodElementsCount > this._maxGarnishFoodElements) {
-      this._showGarnishFoodError = true;
-      this._disabledAddBtn = true;
-    } else {
-      this._showGarnishFoodError = false;
-      this._disabledAddBtn = false;
-    }
-  }
-
-  setMaxGarnishFoodElements(_pGarnishFoodQuantity: number) {
-    this._maxGarnishFoodElements = _pGarnishFoodQuantity;
-  }
-
   addItemToOrder() {
-    let _lOrderItemIndex: number = 0;
-    let _lOrder = Orders.collection.find({
-      creation_user: this._currentUserId,
-      establishment_id: this._res_code,
-      tableId: this._table_code,
-      status: 'ORDER_STATUS.SELECTING'
-    }).fetch()[0];
-
-    if (_lOrder) {
-      _lOrderItemIndex = _lOrder.orderItemCount + 1;
-    } else {
-      _lOrderItemIndex = 1;
-    }
-
-    let arr: any[] = Object.keys(this._newOrderForm.value.garnishFood);
-    let _lGarnishFoodToInsert: string[] = [];
-
-    arr.forEach((gar) => {
-      if (this._newOrderForm.value.garnishFood[gar]) {
-        let _lGarnishF: GarnishFood = GarnishFoodCol.findOne({ name: gar });
-        _lGarnishFoodToInsert.push(_lGarnishF._id);
+    this._radioReferences.forEach((option) => {
+      if (option.is_required) {
+        let valid: ValueReference[] = option.values.filter(val => val.in_use === true);
+        if (valid.length === 0) {
+          this._showOptionsError = true;
+        } else {
+          this._showOptionsError = false;
+        }
       }
     });
 
-    let arrAdd: any[] = Object.keys(this._newOrderForm.value.additions);
-    let _lAdditionsToInsert: string[] = [];
+    if (!this._showOptionsError) {
+      let _lOrderItemIndex: number = 0;
+      let _lOrder = Orders.collection.find({
+        creation_user: this._currentUserId,
+        establishment_id: this._res_code,
+        tableId: this._table_code,
+        status: 'ORDER_STATUS.SELECTING'
+      }).fetch()[0];
 
-    arrAdd.forEach((add) => {
-      if (this._newOrderForm.value.additions[add]) {
-        let _lAddition: Addition = Additions.findOne({ name: add });
-        _lAdditionsToInsert.push(_lAddition._id);
+      if (_lOrder) {
+        _lOrderItemIndex = _lOrder.orderItemCount + 1;
+      } else {
+        _lOrderItemIndex = 1;
       }
-    });
 
-    let _lOrderItem = {
-      index: _lOrderItemIndex,
-      itemId: this._item_code,
-      quantity: this._quantityCount,
-      observations: this._observations,
-      garnishFood: _lGarnishFoodToInsert,
-      additions: _lAdditionsToInsert,
-      paymentItem: this._finalPrice,
-      reward_points: this._finalPoints
-    };
+      let _arrOption: any[] = Object.keys(this._newOrderForm.value.options);
+      let _lOptionsToInsert: OrderOption[] = [];
 
-    this._loadingMsg = this.itemNameTraduction('MOBILE.SECTIONS.LOADING_MSG');
-    this._toastMsg = this.itemNameTraduction('MOBILE.SECTIONS.TOAST_MSG');
-
-    let loading = this._loadingCtrl.create({
-      content: this._loadingMsg
-    });
-
-    loading.present();
-
-    setTimeout(() => {
-      MeteorObservable.call('AddItemToOrder2', _lOrderItem, this._res_code, this._table_code, this._finalPrice, this._finalPoints).subscribe(() => {
-        loading.dismiss();
-        this._navCtrl.pop();
-        this.presentToast();
-      }, (error) => {
-        alert(`Error: ${error}`);
+      _arrOption.forEach((opt) => {
+        if (this._newOrderForm.value.options[opt]) {
+          let _lOrderOption: OrderOption = { option_id: opt, value_id: '' };
+          let _reference: OptionReference = this._radioReferences.find(ref => ref.option_id === opt);
+          _reference.values.forEach((val) => {
+            if (val.in_use) {
+              _lOrderOption.value_id = val.value_id;
+            }
+          });
+          _lOptionsToInsert.push(_lOrderOption);
+        }
       });
-    }, 1500);
+
+      let arrAdd: any[] = Object.keys(this._newOrderForm.value.additions);
+      let _lAdditionsToInsert: string[] = [];
+
+      arrAdd.forEach((add) => {
+        if (this._newOrderForm.value.additions[add]) {
+          let _lAddition: Addition = Additions.findOne({ name: add });
+          _lAdditionsToInsert.push(_lAddition._id);
+        }
+      });
+
+      let _lOrderItem = {
+        index: _lOrderItemIndex,
+        itemId: this._item_code,
+        quantity: this._quantityCount,
+        observations: this._observations,
+        options: _lOptionsToInsert,
+        additions: _lAdditionsToInsert,
+        paymentItem: this._finalPrice,
+        reward_points: this._finalPoints
+      };
+
+      this._loadingMsg = this.itemNameTraduction('MOBILE.SECTIONS.LOADING_MSG');
+      this._toastMsg = this.itemNameTraduction('MOBILE.SECTIONS.TOAST_MSG');
+
+      let loading = this._loadingCtrl.create({
+        content: this._loadingMsg
+      });
+
+      loading.present();
+
+      setTimeout(() => {
+        MeteorObservable.call('AddItemToOrder2', _lOrderItem, this._res_code, this._table_code, this._finalPrice, this._finalPoints).subscribe(() => {
+          this._showOptionsError = false;
+          loading.dismiss();
+          this._navCtrl.pop();
+          this.presentToast();
+        }, (error) => {
+          alert(`Error: ${error}`);
+        });
+      }, 1500);
+    }
   }
 
   presentToast() {
@@ -350,14 +402,6 @@ export class ItemDetailPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Return Garnish food price by current establishment
-   * @param {GarnishFood} _pGarnishFood
-   */
-  getGarnishFoodPrice(_pGarnishFood: GarnishFood): number {
-    return _pGarnishFood.establishments.filter(r => r.establishment_id === this._res_code)[0].price;
-  }
-
-  /**
    * Return item name by id
    * @param _pItemId 
    */
@@ -381,8 +425,8 @@ export class ItemDetailPage implements OnInit, OnDestroy {
    * open image if the item
    * @param pItemImg {string}
    */
-  openItemImage( pItemImg : string) {
-    let contactModal = this._modalCtrl.create(LightboxPage, { item_img:  pItemImg});
+  openItemImage(pItemImg: string) {
+    let contactModal = this._modalCtrl.create(LightboxPage, { item_img: pItemImg });
     contactModal.present();
   }
 

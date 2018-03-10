@@ -10,12 +10,16 @@ import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
 import { Order, OrderAddition } from 'i4t_web/both/models/establishment/order.model';
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
-import { GarnishFoodCol } from "i4t_web/both/collections/menu/garnish-food.collection";
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { RewardPoints } from 'i4t_web/both/collections/establishment/reward-point.collection';
 import { ItemEditPage } from '../../item-edit/item-edit';
 import { AdditionEditPage } from '../../addition-edit/addition-edit';
 import { SegmentsPage } from '../../segments/segments';
+import { Option } from 'i4t_web/both/models/menu/option.model';
+import { Options } from 'i4t_web/both/collections/menu/option.collection';
+import { OptionValue } from 'i4t_web/both/models/menu/option-value.model';
+import { OptionValues } from 'i4t_web/both/collections/menu/option-value.collection';
+
 
 @Component({
     selector: 'order-confirm',
@@ -28,12 +32,14 @@ export class OrderConfirmPage implements OnInit, OnDestroy {
     private _ordersSub: Subscription;
     private _itemsSub: Subscription;
     private _additionsSub: Subscription;
-    private _garnishFoodSub: Subscription;
     private _currencySub: Subscription;
     private _rewardPointsSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _orders: Observable<Order[]>;
+    private _options: Observable<Option[]>;
 
     private _userDetail: UserDetail;
     private _currencyCode: string = "";
@@ -84,12 +90,23 @@ export class OrderConfirmPage implements OnInit, OnDestroy {
                         });
                     });
                     this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._user).takeUntil(this.ngUnsubscribe).subscribe();
+                    let _optionIds: string[] = [];
+                    this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._options = Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).zone();
+                            this._options.subscribe(() => {
+                                Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch().forEach((opt) => {
+                                    _optionIds.push(opt._id);
+                                });
+                                this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this.ngUnsubscribe).subscribe();
+                            });
+                        });
+                    });
                 }
             });
         });
         this._itemsSub = MeteorObservable.subscribe('itemsByUser', this._user).takeUntil(this.ngUnsubscribe).subscribe();
         this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', this._user).takeUntil(this.ngUnsubscribe).subscribe();
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByCurrentEstablishment', this._user).takeUntil(this.ngUnsubscribe).subscribe();
         this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', this._user).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 if (Currencies.find({}).fetch().length > 0) {
@@ -174,13 +191,13 @@ export class OrderConfirmPage implements OnInit, OnDestroy {
     }
 
     /**
-     * Return garnish food name
-     * @param {string} _garnishFoodId 
+     * Return option value name
+     * @param {string} _valueId
      */
-    getGarnishFoodName(_garnishFoodId: string): string {
-        let _garnishFoodName = GarnishFoodCol.findOne({ _id: _garnishFoodId });
-        if (_garnishFoodName) {
-            return _garnishFoodName.name;
+    getOptionValueName(_valueId: string): string {
+        let _option_value = OptionValues.findOne({ _id: _valueId });
+        if (_option_value) {
+            return _option_value.name;
         }
     }
 

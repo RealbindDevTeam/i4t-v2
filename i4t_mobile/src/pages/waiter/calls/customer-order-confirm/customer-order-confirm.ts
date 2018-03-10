@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { MeteorObservable } from "meteor-rxjs";
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Subject } from "rxjs";
+import { Subscription, Subject, Observable } from "rxjs";
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { Table } from 'i4t_web/both/models/establishment/table.model';
 import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
@@ -14,8 +14,11 @@ import { Item } from 'i4t_web/both/models/menu/item.model';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
 import { Addition } from 'i4t_web/both/models/menu/addition.model';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { GarnishFood } from 'i4t_web/both/models/menu/garnish-food.model';
-import { GarnishFoodCol } from 'i4t_web/both/collections/menu/garnish-food.collection';
+import { Option } from 'i4t_web/both/models/menu/option.model';
+import { Options } from 'i4t_web/both/collections/menu/option.collection';
+import { OptionValue } from 'i4t_web/both/models/menu/option-value.model';
+import { OptionValues } from 'i4t_web/both/collections/menu/option-value.collection';
+
 import { Meteor } from 'meteor/meteor';
 
 @Component({
@@ -29,9 +32,11 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
     private _tablesSubscription: Subscription;
     private _itemsSubscription: Subscription;
     private _additionsSubscription: Subscription;
-    private _garnishFoodSubscription: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
+    private _options: Observable<Option[]>;
     private _call: WaiterCallDetail;
     private _orders: any;
     private _table: any;
@@ -72,7 +77,18 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
 
         this._additionsSubscription = MeteorObservable.subscribe('additionsByEstablishment', this._call.establishment_id).takeUntil(this.ngUnsubscribe).subscribe();
 
-        this._garnishFoodSubscription = MeteorObservable.subscribe('garnishFoodByEstablishment', this._call.establishment_id).takeUntil(this.ngUnsubscribe).subscribe();
+        let _optionIds: string[] = [];
+        this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this._call.establishment_id]).takeUntil(this.ngUnsubscribe).subscribe(() => {
+            this._ngZone.run(() => {
+                this._options = Options.find({ establishments: { $in: [this._call.establishment_id] }, is_active: true }).zone();
+                this._options.subscribe(() => {
+                    Options.find({ establishments: { $in: [this._call.establishment_id] }, is_active: true }).fetch().forEach((opt) => {
+                        _optionIds.push(opt._id);
+                    });
+                    this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this.ngUnsubscribe).subscribe();
+                });
+            });
+        });
     }
 
     /**
@@ -111,16 +127,18 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
             return _lItem.name;
         }
     }
+
     /**
-     * Return GarnishFood name
-     * @param _pGarnishFoodId 
+     * Return option value name
+     * @param {string} _valueId
      */
-    getGarnishFoodName(_pGarnishFoodId) {
-        let _lGarnishFood: GarnishFood = GarnishFoodCol.findOne({ _id: _pGarnishFoodId });
-        if (_lGarnishFood) {
-            return _lGarnishFood.name;
+    getOptionValueName(_valueId: string): string {
+        let _option_value = OptionValues.findOne({ _id: _valueId });
+        if (_option_value) {
+            return _option_value.name;
         }
     }
+
     /**
      * Return Addition name
      * @param _pAdditionId 

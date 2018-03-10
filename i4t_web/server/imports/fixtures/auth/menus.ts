@@ -205,10 +205,28 @@ export function loadMenus() {
                         }, {
                             _id: "3005",
                             is_active: true,
-                            name: "MENUS.MENU_DEFINITION.GARNISHFOOD",
-                            url: "/app/garnishFood",
+                            name: "MENUS.MENU_DEFINITION.OPTIONS_VALUES",
+                            url: "",
                             icon_name: "",
-                            order: 3005
+                            order: 3005,
+                            children:[
+                                {
+                                    _id: "30051",
+                                    is_active: true,
+                                    name: "MENUS.MENU_DEFINITION.OPTIONS",
+                                    url: "/app/options",
+                                    icon_name: "",
+                                    order: 30051
+                                },
+                                {
+                                    _id: "30052",
+                                    is_active: true,
+                                    name: "MENUS.MENU_DEFINITION.VALUES",
+                                    url: "/app/option-values",
+                                    icon_name: "",
+                                    order: 30052
+                                }
+                            ]
                         }, {
                             _id: "3006",
                             is_active: true,

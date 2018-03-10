@@ -294,7 +294,10 @@
             "GARNISHFOOD": "Side dishes",
             "ITEMS": "Items",
             "ITEMS_ENABLE": "Available Items",
-            "ORDERS_CHEF": "Orders"
+            "ORDERS_CHEF": "Orders",
+            "OPTIONS_VALUES": "Options and Values",
+            "OPTIONS": "Options",
+            "VALUES": "Values"
         },
         "ORDERS": "Orders",
         "WAITER_CALL": "Waiter/waitress call",
@@ -661,7 +664,7 @@
         "GENERAL_TEXT_EDIT": "Edit the general information of the item",
         "UPDATE_IMAGE": "Update item image",
         "GARNISHFOOD_TEXT_EDIT": "Edit the side dishes that will be available for the item (If applicable)",
-        "OBSERVATIONS": "Enable comments for the item",
+        "OBSERVATIONS": "Enable comments for the item (By enabling this option your customers can give additional instructions on the dish)",
         "ITEM_GARNISHFOOD_QUANTITY": "Number of side dishes allowed for item",
         "ADDITIONS_TEXT": "Please select the additions that will be available for the item (If applicable)",
         "NOT_ADDITIONS": "No additions created for the establishment",
@@ -689,7 +692,20 @@
         "MENU_RECOMMENDED": "Menu recommended",
         "ESTABLISHMENTS": "Establishments",
         "RECOMMENDED_CHANGED": "Item recommendation changed",
-        "NO_TIME": "No time"
+        "NO_TIME": "No time",
+        "RESTAURANTS_MSG": "Select the restaurants where the item and the price will be available",
+        "RESTAURANTS_ITEMS_ERROR": "Please enter the item name and select at least one restaurant",
+        "OPTION_ADDITION": "Options and additions",
+        "OPTIONS": "Options",
+        "OPTIONS_MSG": "Enable options for the item",
+        "NO_OPTIONS_CREATED": "Can not find options created for the restaurants previously selected",
+        "AVAILABLE": "Available?",
+        "IS_REQUIRED": "Is required?",
+        "QUANT_MIN": "Quant. Min",
+        "QUANT_MAX": "Quant. Máx",
+        "HAVE_PRICE": "Have price?",
+        "ADDITIONS": "Additions",
+        "ADDITIONS_SUBTITLE": "Please select the additions that will be available for the item (If applicable)"
     },
     "ROLE": {
         "ADMINISTRATOR": "Administrator",
@@ -799,7 +815,7 @@
         "SELECT_MAX_VALID": "More than ",
         "ELEMENTS": "units",
         "ADDITIONS": "Additions",
-        "SELECT_ADDITIONS": "Please select the additions",
+        "SELECT_ADDITIONS": "Select the additions",
         "TOTAL_PRICE": "Total Price",
         "ADD_ITEM": "Add to Order",
         "SHOW_ALL": "Show All",
@@ -814,7 +830,8 @@
         "POINTS": "points",
         "TOTAL_ITEM_POINTS": "Total",
         "MENU": "Menu",
-        "GET_POINTS": "You get"
+        "GET_POINTS": "You get",
+        "OPTIONS_ERROR": "Please complete the information to add the item to the order"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Table Orders",
@@ -838,7 +855,7 @@
         "SELECT_MAX_VALID": "More than ",
         "ELEMENTS": "elements",
         "ADDITIONS": "Additions",
-        "SELECT_ADDITIONS": "Please select the additions",
+        "SELECT_ADDITIONS": "Select the additions",
         "TOTAL_PRICE": "Total Price",
         "MODIFY_ITEM": "Modify",
         "DELETE_ITEM": "Delete",
@@ -874,7 +891,8 @@
         "ORDER_LBL": "Order",
         "USR_ORDER_CONFIRMED": "You confirmed your order! A waiter/waitress will attend it",
         "NO_USR_ORDER_CONFIRMED": "Order confirmed",
-        "WIN": "You win"
+        "WIN": "You win",
+        "OPTIONS_ERROR": "Please complete the information to add the item to the order"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "You are not in any restaurant",
@@ -1695,6 +1713,49 @@
         "POINTS": "Points",
         "YOU_REDEEMED": "You redeemed",
         "QUANT": "Quant. ",
-        "REWARD": "Reward"
+        "REWARD": "Reward",
+        "TOTAL": "Total"
+    },
+    "OPTIONS": {
+        "OPTION_CREATION": "Create options",
+        "OPTION_TEXT": "Create the options you need for your items",
+        "OPTION_EDIT": "Option edition",
+        "RESTAURANTS": "Restaurants",
+        "NO_RESTAURANT": "No selected restaurant ",
+        "RESTAURANT_OPTION": "Select the restaurants where the option is available",
+        "NO_RESTAURANT_CREATED": "There are not restaurants created on the platform",
+        "MODIFY": "Edit",
+        "ACTIVATE": "Activate",
+        "INACTIVATE": "Inactivate",
+        "REMOVE": "Remove",
+        "OPCION_CREATED": "Option created correctly",
+        "OPTION_EDITED": "Option edited correctly",
+        "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
+        "RESTAURANT_REGISTER": "Register Restaurant",
+        "MESSAGE": "Register at least one restaurant to enable this option",
+        "REMOVE_TITLE": "Option remove",
+        "REMOVE_MSG": "Do you want to remove the option?",
+        "OPTION_REMOVED": "Option removed correctly",
+        "OPTION_NOT_REMOVED": "The option has associated values, it could not be removed"
+    },
+    "OPTION_VALUE": {
+        "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
+        "RESTAURANT_REGISTER": "Register Restaurant",
+        "MESSAGE": "Register at least one restaurant to enable this option",
+        "OPTION_VALUE_CREATION": "Create Values",
+        "OPTION_SELECTION": "Select option",
+        "OPTION_VALUE_TEXT": "Create the values to the options, then you can use it when creating an item",
+        "OPTION_VALUE_EDIT": "Value edition",
+        "OPTION": "Option",
+        "MODIFY": "Edit",
+        "ACTIVATE": "Activate",
+        "INACTIVATE": "Inactivate",
+        "REMOVE": "Remove",
+        "OPTION_VALUE_CREATED": "Option created successfully",
+        "OPTION_VALUE_EDITED": "Option edited successfully",
+        "REMOVE_TITLE": "Option remove",
+        "REMOVE_MSG": "Do you want to remove option?",
+        "OPTION_VALUE_REMOVED": "Option removed correctly",
+        "OPTION_VALUE_NOT_REMOVED": "The option have items, it could not be removed"
     }
 }

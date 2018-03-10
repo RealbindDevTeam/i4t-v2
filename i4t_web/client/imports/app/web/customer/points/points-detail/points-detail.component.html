@@ -12,12 +12,14 @@
     <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async; let i = index" hideToggle="true" [expanded]="i === 0">
         <mat-expansion-panel-header>
             <mat-panel-title class="panel-title">
-                {{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}} - {{'POINTS_DETAIL.ORDER' | translate}} # {{orderHistory.order_code}}
+                {{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}} - {{'POINTS_DETAIL.TOTAL' | translate}}: {{orderHistory.total_order}} {{orderHistory.currency}}
             </mat-panel-title>
             <mat-panel-description>
-                <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{'POINTS_DETAIL.YOU_EARNED' | translate}} {{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS' | translate}}!</span>
+                <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{'POINTS_DETAIL.YOU_EARNED' | translate}} {{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS'
+                    | translate}}!</span>
                 <span class="app-flex-filler"></span>
-                <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{'POINTS_DETAIL.YOU_REDEEMED' | translate}} {{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS' | translate}}</span>
+                <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{'POINTS_DETAIL.YOU_REDEEMED' | translate}} {{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS'
+                    | translate}}</span>
             </mat-panel-description>
         </mat-expansion-panel-header>
 
@@ -42,14 +44,14 @@
                     </p>
                 </mat-list-item>
                 <mat-divider></mat-divider>
-                <div *ngIf="item.garnish_food.length > 0">
-                    <div *ngFor="let gf of item.garnish_food">
+                <div *ngIf="item.option_values.length > 0">
+                    <div *ngFor="let opt of item.option_values">
                         <mat-list-item>
-                            <mat-icon mat-list-icon class="garnish-icon-color">turned_in_not</mat-icon>
-                            <h4 mat-line>{{itemNameCrop(gf.garnish_food_name)}}</h4>
-                            <span class="app-flex-filler"></span>
-                            <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                                <span class="price">{{gf.price * item.quantity}} {{orderHistory.currency}}</span>
+                            <mat-icon mat-list-icon class="option-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(opt.option_value_name)}}</h4>
+                            <span *ngIf="opt.price" class="app-flex-filler"></span>
+                            <p mat-line *ngIf="opt.price">{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                <span class="price">{{opt.price * item.quantity}} {{orderHistory.currency}}</span>
                             </p>
                         </mat-list-item>
                         <mat-divider></mat-divider>

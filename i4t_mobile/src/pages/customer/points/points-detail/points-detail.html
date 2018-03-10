@@ -10,9 +10,10 @@
                 <ion-list no-lines class="order">
                     <button ion-item detail-none (click)="showDetail(i)">
                         <div>
-                            <h2 class="creation-date">{{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}} - {{'MOBILE.POINTS_DETAIL.ORDER' | translate}} # {{orderHistory.order_code}}</h2>
-                            <p *ngIf="orderHistory.total_reward_points" class="reward-points">{{'MOBILE.POINTS_DETAIL.YOU_EARNED' | translate}} {{orderHistory.total_reward_points}} {{'MOBILE.POINTS_DETAIL.POINTS' | translate}}!</p>
-                            <p *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{'MOBILE.POINTS_DETAIL.YOU_REDEEMED' | translate}} {{getRedeemedPoints(orderHistory)}} {{'MOBILE.POINTS_DETAIL.POINTS' | translate}}</p>
+                            <h2 class="creation-date">{{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}}</h2>
+                            <h2 class="creation-date">{{'MOBILE.POINTS_DETAIL.TOTAL'| translate}}: {{orderHistory.total_order}} {{orderHistory.currency}}</h2>
+                            <p *ngIf="orderHistory.total_reward_points" class="reward-points">{{'MOBILE.POINTS_DETAIL.YOU_EARNED' | translate}} {{orderHistory.total_reward_points}} {{'MOBILE.POINTS_DETAIL.POINTS'| translate}}!</p>
+                            <p *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{'MOBILE.POINTS_DETAIL.YOU_REDEEMED' | translate}} {{getRedeemedPoints(orderHistory)}} {{'MOBILE.POINTS_DETAIL.POINTS'| translate}}</p>
                         </div>
                     </button>
                 </ion-list>
@@ -33,13 +34,13 @@
                             </div>
                             <span class="span">{{(item.price * item.quantity)}} {{orderHistory.currency}}</span>
                         </ion-item>
-                        <div *ngIf="item.garnish_food.length > 0">
-                            <ion-item *ngFor="let gf of item.garnish_food">
-                                <span>{{item.quantity}}</span>
+                        <div *ngIf="item.option_values.length > 0">
+                            <ion-item *ngFor="let opt of item.option_values">
+                                <span *ngIf="opt.price">{{item.quantity}}</span>
                                 <div class="item-name">
-                                    <span>{{itemNameCrop(gf.garnish_food_name)}}</span>
+                                    <span>{{itemNameCrop(opt.option_value_name)}}</span>
                                 </div>
-                                <span class="span">{{(gf.price * item.quantity)}} {{orderHistory.currency}}</span>
+                                <span *ngIf="opt.price" class="span">{{(opt.price * item.quantity)}} {{orderHistory.currency}}</span>
                             </ion-item>
                         </div>
                         <div *ngIf="item.additions.length > 0">

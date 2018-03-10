@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { WaiterCallDetail } from '../../../../../../../both/models/establishment/waiter-call-detail.model';
@@ -16,8 +16,10 @@ import { Table } from '../../../../../../../both/models/establishment/table.mode
 import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
-import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
-import { GarnishFoodCol } from '../../../../../../../both/collections/menu/garnish-food.collection';
+import { Option } from '../../../../../../../both/models/menu/option.model';
+import { Options } from '../../../../../../../both/collections/menu/option.collection';
+import { OptionValue } from '../../../../../../../both/models/menu/option-value.model';
+import { OptionValues } from '../../../../../../../both/collections/menu/option-value.collection';
 
 @Component({
     selector: 'customer-order-confirm',
@@ -35,12 +37,15 @@ export class CustomerOrderConfirmComponent implements OnInit, OnDestroy {
     private _itemsSub: Subscription;
     private _tablesSub: Subscription;
     private _additionsSub: Subscription;
-    private _garnishFoodSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _orders: Observable<Order[]>;
     private _items: Observable<Item[]>;
     private _additions: Observable<Addition[]>;
-    private _garnishFood: Observable<GarnishFood[]>;
+    private _options: Observable<Option[]>;
+    private _optionValues: Observable<OptionValue[]>;
 
     private _tableNumber: string;
     private _tableQRCode: string;
@@ -67,22 +72,23 @@ export class CustomerOrderConfirmComponent implements OnInit, OnDestroy {
      * ngOnInit Implementation
      */
     ngOnInit() {
+        let _optionIds: string[] = [];
         this.removeSubscriptions();
-        this._ordersSub = MeteorObservable.subscribe('getOrderById', this.call.order_id).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrderById', this.call.order_id).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._orders = Orders.find({}).zone();
             });
         });
 
-        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.establishment_id, this.call.table_id).subscribe();
+        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this.call.establishment_id, this.call.table_id).takeUntil(this._ngUnsubscribe).subscribe();
 
-        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.call.establishment_id).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.call.establishment_id).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
             });
         });
 
-        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishment', this.call.establishment_id).subscribe(() => {
+        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishment', this.call.establishment_id).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lTable: Table = Tables.collection.find({ _id: this.call.table_id }).fetch()[0];
                 this._tableNumber = _lTable._number + '';
@@ -90,15 +96,25 @@ export class CustomerOrderConfirmComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.call.establishment_id).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.call.establishment_id).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
             });
         });
 
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishment', this.call.establishment_id).subscribe(() => {
+        this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this.call.establishment_id]).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._garnishFood = GarnishFoodCol.find({}).zone();
+                this._options = Options.find({ establishments: { $in: [this.call.establishment_id] }, is_active: true }).zone();
+                this._options.subscribe(() => {
+                    Options.find({ establishments: { $in: [this.call.establishment_id] }, is_active: true }).fetch().forEach((opt) => {
+                        _optionIds.push(opt._id);
+                    });
+                    this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._optionValues = OptionValues.find({ option_id: { $in: _optionIds }, is_active: true }).zone();
+                        });
+                    });
+                });
             });
         });
     }
@@ -107,12 +123,8 @@ export class CustomerOrderConfirmComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._usersSub) { this._usersSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

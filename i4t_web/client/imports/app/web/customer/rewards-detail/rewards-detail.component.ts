@@ -107,7 +107,7 @@ export class RewardsDetailComponent implements OnInit, OnDestroy {
                 itemId: _pItemToInsert,
                 quantity: _pItemQuantiy,
                 observations: '',
-                garnishFood: [],
+                options: [],
                 additions: [],
                 paymentItem: 0,
                 reward_points: 0,
