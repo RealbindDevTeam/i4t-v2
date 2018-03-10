@@ -91,6 +91,7 @@ import { ItemUnitsChartComponent } from './administrator/dashboard/item-units-ch
 import { RewardUnitsChartComponent } from './administrator/dashboard/reward-units-chart/reward-units-chart.component';
 import { ItemHistoryChartComponent } from './administrator/dashboard/item-history-chart/item-history-chart.component';
 import { RewardHistoryChartComponent } from './administrator/dashboard/reward-history-chart/reward-history-chart.component';
+import { OrdersTodayComponent } from "./administrator/orders-today/orders-today.component";
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -143,7 +144,6 @@ export const WEB_DECLARATIONS = [
     EstablishmentTableControlComponent,
     TableDetailComponent,
     SupervisorEstablishmentTableControlComponent,
-    //InvoicesDownloadPage,
     EstablishmentProfileComponent,
     EstablishmentProFileDetailComponent,
     RewardComponent,
@@ -152,7 +152,8 @@ export const WEB_DECLARATIONS = [
     ItemUnitsChartComponent,
     RewardUnitsChartComponent,
     ItemHistoryChartComponent,
-    RewardHistoryChartComponent
+    RewardHistoryChartComponent,
+    OrdersTodayComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [
