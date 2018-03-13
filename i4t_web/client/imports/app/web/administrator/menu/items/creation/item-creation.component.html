@@ -1,170 +1,196 @@
-<mat-card>
-    <mat-card-content>
-        <form [formGroup]="_itemForm">
-            <mat-tab-group [(selectedIndex)]="selectedIndex">
-                <mat-tab [disabled]="!canMove(0)" label="{{'ITEMS.SECTIONS_CATEGORIES' | translate}}">
-                    <mat-card>
-                        <mat-card-title>{{'ITEMS.SECTIONS_CATEGORIES' | translate}}</mat-card-title>
-                        <mat-card-subtitle class="subtitle">{{'ITEMS.SECTIONS_CATEGORIES_TEXT' | translate}}</mat-card-subtitle>
-                        <mat-card-content>
-                            <div>
-                                <mat-form-field style="width: 30%;">
-                                    <mat-select formControlName="section" placeholder="{{'ITEMS.SELECT_SECTION' | translate}}" [(ngModel)]="_selectedSectionValue">
-                                        <mat-option *ngFor="let sec of _sections | async" (click)="changeSection(sec._id);" value="{{sec._id}}">{{sec.name}}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                                <mat-form-field style="width: 30%;margin-left: 3%;">
-                                    <mat-select formControlName="category" placeholder="{{'ITEMS.SELECT_CATEGORY' | translate}}" [(ngModel)]="_selectedCategoryValue">
-                                        <mat-option *ngFor="let cat of _categories | async" (click)="changeCategory(cat._id);" value="{{cat._id}}">{{cat.name}}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                                <mat-form-field style="width: 30%;margin-left: 3%;">
-                                    <mat-select formControlName="subcategory" placeholder="{{'ITEMS.SELECT_SUBCATEGORY' | translate}}" [(ngModel)]="_selectedSubcategoryValue">
-                                        <mat-option *ngFor="let subcat of _subcategories | async" (click)="changeSubcategory(subcat._id);" value="{{subcat._id}}">{{subcat.name}}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </mat-card-content>
-                        <mat-card-actions align="end">
-                            <button mat-raised-button (click)="cancel()">{{'CANCEL' | translate}}</button>
-                            <button mat-raised-button (click)="next()" [disabled]="!canMove(1)">{{'NEXT' | translate}}</button>
-                        </mat-card-actions>
-                    </mat-card>
-                </mat-tab>
-                <mat-tab [disabled]="!canMove(1)" label="{{'ITEMS.GENERAL' | translate}}">
-                    <mat-card>
-                        <mat-card-title>{{'ITEMS.GENERAL_INFORMATION' | translate}}</mat-card-title>
-                        <mat-card-subtitle>{{'ITEMS.GENERAL_TEXT' | translate}}</mat-card-subtitle>
-                        <mat-card-content>
-                            <div>
-                                <mat-form-field class="name">
-                                    <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="55" #inputName>
-                                    <mat-hint align="end">{{inputName.value.length}} / 55</mat-hint>
-                                </mat-form-field>
-                                <mat-slide-toggle formControlName="observations" class="toogle">{{'ITEMS.OBSERVATIONS' | translate}}</mat-slide-toggle>
-                            </div>
-                            <div>
-                                <mat-form-field class="description">
-                                    <textarea matInput formControlName="description" placeholder="{{'DESCRIPTION' | translate}}" maxlength="200" #inputDesc></textarea>
-                                    <mat-hint align="end">{{inputDesc.value.length}} / 200</mat-hint>
-                                </mat-form-field>
-                                <div class="image">
-                                    <p>{{'ITEMS.ADD_IMAGE' | translate}}:</p>
-                                    <input formControlName="image" (click)="changeImage()" style="display: none" name="file-1[]" id="file-1" class="inputfile inputfile-1"
-                                        data-multiple-caption="{count} files selected" />
-                                    <label for="file-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                                            />
-                                        </svg>
-                                        <span *ngIf="!_createImage">{{'CHOOSE_FILE' | translate}}&hellip;</span>
-                                        <span *ngIf="_createImage">{{_nameImageFile}}&hellip;</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="width: 55%; display: inline-block;">
-                                    <div>
-                                        <mat-checkbox formControlName="acceptReward" [(ngModel)]="_rewardEnable">{{'ITEMS.REWARD_LABEL' | translate}}</mat-checkbox>
-                                        <span class="app-flex-filler"></span>
-                                        <mat-form-field *ngIf="_rewardEnable" style="margin-left: 5%;">
-                                            <mat-select formControlName="rewardValue" placeholder="{{'ITEMS.POINTS_PLACEHOLER' | translate}}">
-                                                <mat-option *ngFor="let point of _points | async" value="{{point._id}}">{{point.point}}</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="image">
-                                    <mat-form-field style="width: 100%">
-                                        <mat-select formControlName="cookingTime" placeholder="{{'ITEMS.COOKING_TIME' | translate}}">
-                                            <mat-option value="">{{'ITEMS.NO_TIME' | translate}}</mat-option>
-                                            <mat-option *ngFor="let time of _cookingTimes | async" value="{{time.cooking_time}}">{{time.cooking_time}}</mat-option>
-                                        </mat-select>
+<mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
+    <mat-step [stepControl]="_sectionsFormGroup">
+        <form [formGroup]="_sectionsFormGroup">
+            <ng-template matStepLabel>{{'ITEMS.SECTIONS_CATEGORIES' | translate}}</ng-template>
+            <mat-card style="box-shadow: none;margin-bottom: 0px;">
+                <mat-card-title>{{'ITEMS.SECTIONS_CATEGORIES' | translate}}</mat-card-title>
+                <mat-card-subtitle class="subtitle">{{'ITEMS.SECTIONS_CATEGORIES_TEXT' | translate}}</mat-card-subtitle>
+                <mat-card-content>
+                    <div>
+                        <mat-form-field style="width: 30%;">
+                            <mat-select formControlName="section" placeholder="{{'ITEMS.SELECT_SECTION' | translate}}" [(ngModel)]="_selectedSectionValue">
+                                <mat-option *ngFor="let sec of _sections | async" (click)="changeSection(sec._id);" value="{{sec._id}}">{{sec.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field style="width: 30%;margin-left: 3%;">
+                            <mat-select formControlName="category" placeholder="{{'ITEMS.SELECT_CATEGORY' | translate}}" [(ngModel)]="_selectedCategoryValue">
+                                <mat-option *ngFor="let cat of _categories | async" (click)="changeCategory(cat._id);" value="{{cat._id}}">{{cat.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field style="width: 30%;margin-left: 3%;">
+                            <mat-select formControlName="subcategory" placeholder="{{'ITEMS.SELECT_SUBCATEGORY' | translate}}" [(ngModel)]="_selectedSubcategoryValue">
+                                <mat-option *ngFor="let subcat of _subcategories | async" (click)="changeSubcategory(subcat._id);" value="{{subcat._id}}">{{subcat.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <div>
+                <button mat-button (click)="cancel()">{{'CANCEL' | translate}}</button>
+                <button mat-button (click)="goForward(stepper)">{{'NEXT' | translate}}</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="_generalFormGroup">
+        <form [formGroup]="_generalFormGroup">
+            <ng-template matStepLabel>{{'ITEMS.GENERAL' | translate}}</ng-template>
+            <mat-card style="box-shadow: none;margin-bottom: 0px;">
+                <mat-card-title>{{'ITEMS.GENERAL_INFORMATION' | translate}}</mat-card-title>
+                <mat-card-subtitle>{{'ITEMS.GENERAL_TEXT' | translate}}</mat-card-subtitle>
+                <mat-card-content>
+                    <mat-form-field style="width: 100%">
+                        <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="55" #inputName>
+                        <mat-hint align="end">{{inputName.value.length}} / 55</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field style="width: 100%">
+                        <textarea matInput formControlName="description" placeholder="{{'DESCRIPTION' | translate}}" maxlength="200" #inputDesc></textarea>
+                        <mat-hint align="end">{{inputDesc.value.length}} / 200</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field style="width: 100%;margin-top: 1%;">
+                        <mat-select formControlName="cookingTime" placeholder="{{'ITEMS.COOKING_TIME' | translate}}">
+                            <mat-option value="">{{'ITEMS.NO_TIME' | translate}}</mat-option>
+                            <mat-option *ngFor="let time of _cookingTimes | async" value="{{time.cooking_time}}">{{time.cooking_time}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-checkbox formControlName="observations">{{'ITEMS.OBSERVATIONS' | translate}}</mat-checkbox>
+                    <div>
+                        <mat-checkbox formControlName="acceptReward" [(ngModel)]="_rewardEnable">{{'ITEMS.REWARD_LABEL' | translate}}</mat-checkbox>
+                        <mat-form-field style="margin-left: 5%;width: 25%;">
+                            <mat-select [disabled]="!_rewardEnable" formControlName="rewardValue" placeholder="{{'ITEMS.POINTS_PLACEHOLER' | translate}}">
+                                <mat-option *ngFor="let point of _points | async" value="{{point._id}}">{{point.point}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div style="width: 100%;display: inline-block;margin-bottom: 1%;">
+                        <input formControlName="image" (click)="changeImage()" style="display: none" name="file-1[]" id="file-1" class="inputfile inputfile-1"
+                            data-multiple-caption="{count} files selected" />
+                        <label for="file-1" style="width: 11rem;text-align: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                                />
+                            </svg>
+                            <span *ngIf="!_createImage">{{'ITEMS.ADD_IMAGE' | translate}}&hellip;</span>
+                            <span *ngIf="_createImage">{{_nameImageFile}}&hellip;</span>
+                        </label>
+                    </div>
+                    <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
+
+                    <div class="establishments">
+                        <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
+                        <h3 *ngIf="_showEstablishments">{{'ITEMS.RESTAURANTS_MSG' | translate}}</h3>
+                        <div *ngIf="_showEstablishments" formGroupName="establishments">
+                            <p *ngFor="let establishment of _establishmentList">
+                                <mat-checkbox [formControlName]="establishment._id" [class.invalid]="!_generalFormGroup.controls.establishments.valid" (change)="onCheckEstablishment(establishment.name, $event)">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <p *ngIf="!_showCurrencies">{{'ITEMS.NO_RESTAURANTS_SELECTED' | translate}}</p>
+                        <p *ngIf="_showCurrencies" class="label">{{'ITEMS.ENTER_PRICE' | translate}}</p>
+                        <p *ngIf="_showTaxes" class="label">{{'ITEMS.ENTER_TAX' | translate}}</p>
+                        <div *ngFor="let currency of _currencies | async">
+                            <div *ngIf="_showCurrencies" formGroupName="currencies" class="currencies">
+                                <div *ngFor="let cur of _establishmentCurrencies">
+                                    <mat-form-field *ngIf="currency._id === cur" class="currency">
+                                        <input matInput required [formControlName]="cur" [class.invalid]="!_generalFormGroup.controls.currencies.valid" type="number"
+                                            placeholder="{{'ITEMS.ITEM_PRICE' | translate}}" min="0" [step]="currency.decimal">
+                                        <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
                                     </mat-form-field>
                                 </div>
                             </div>
-                            <div class="establishments">
-                                <p *ngIf="!_showEstablishments">{{'ITEMS.NO_RESTAURANTS' | translate}}</p>
-                                <div *ngIf="_showEstablishments" formGroupName="establishments">
-                                    <mat-checkbox *ngFor="let establishment of _establishmentList" [formControlName]="establishment._id" [class.invalid]="!_itemForm.controls.establishments.valid"
-                                        class="checkbox" (change)="onCheckEstablishment(establishment.name, $event)">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
+                            <div *ngIf="_showTaxes" formGroupName="taxes" class="taxes">
+                                <div *ngFor="let tax of _establishmentTaxes">
+                                    <mat-form-field *ngIf="currency._id === tax" class="tax">
+                                        <input matInput required [formControlName]="tax" [class.invalid]="!_generalFormGroup.controls.taxes.valid" type="number"
+                                            placeholder="{{'ITEMS.TAXES' | translate}}" min="0" max="100">
+                                        <span matSuffix>% {{currency.code}} - {{currency.name | translate}} </span>
+                                    </mat-form-field>
                                 </div>
                             </div>
-                            <div>
-                                <p *ngIf="!_showCurrencies">{{'ITEMS.NO_RESTAURANTS_SELECTED' | translate}}</p>
-                                <p *ngIf="_showCurrencies" class="label">{{'ITEMS.ENTER_PRICE' | translate}}</p>
-                                <p *ngIf="_showTaxes" class="label">{{'ITEMS.ENTER_TAX' | translate}}</p>
-                                <div *ngFor="let currency of _currencies | async">
-                                    <div *ngIf="_showCurrencies" formGroupName="currencies" class="currencies">
-                                        <div *ngFor="let cur of _establishmentCurrencies">
-                                            <mat-form-field *ngIf="currency._id === cur" class="currency">
-                                                <input matInput required [formControlName]="cur" [class.invalid]="!_itemForm.controls.currencies.valid" type="number" placeholder="{{'ITEMS.ITEM_PRICE' | translate}}"
-                                                    min="0" [step]="currency.decimal">
-                                                <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="_showTaxes" formGroupName="taxes" class="taxes">
-                                        <div *ngFor="let tax of _establishmentTaxes">
-                                            <mat-form-field *ngIf="currency._id === tax" class="tax">
-                                                <input matInput required [formControlName]="tax" [class.invalid]="!_itemForm.controls.taxes.valid" type="number" placeholder="{{'ITEMS.TAXES' | translate}}"
-                                                    min="0" max="100">
-                                                <span matSuffix>% {{currency.code}} - {{currency.name | translate}} </span>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </mat-card-content>
-                        <mat-card-actions align="end">
-                            <button mat-raised-button (click)="previous()" [disabled]="!canMove(0)">{{'BACK' | translate}}</button>
-                            <button mat-raised-button (click)="next()" [disabled]="!canMove(2)">{{'NEXT' | translate}}</button>
-                        </mat-card-actions>
-                    </mat-card>
-                </mat-tab>
-                <mat-tab [disabled]="!canMove(2)" label="{{'ITEMS.ADDITION_GARNISHFOOD' | translate}}">
-                    <mat-card>
-                        <mat-card-title>{{'ITEMS.ADDITION_GARNISHFOOD_TITLE' | translate}}</mat-card-title>
-                        <mat-card-subtitle>{{'ITEMS.ADDITION_GARNISHFOOD_SUBTITLE' | translate}}</mat-card-subtitle>
-                        <mat-card-content>
-                            <p *ngIf="!_showGarnishFood">{{'ITEMS.NOT_GARNISHFOOD' | translate}}</p>
-                            <div *ngIf="_showGarnishFood">
-                                <p>{{'ITEMS.GARNISHFOOD_TEXT' | translate}}</p>
-                                <mat-form-field style="width: 25%;margin-top: 1%;">
-                                    <input matInput required type="number" formControlName="garnishFoodQuantity" placeholder="{{'ITEMS.GARNISHFOOD_ALLOWED' | translate}}"
-                                        min="0" #inputGarnishQuantity>
-                                </mat-form-field>
-                                <br/>
-                                <mat-checkbox style="font-weight: bold;" (change)="markAllGarnishFood($event)">{{'ITEMS.SELECT_ALL_GARNISH_FOOD' | translate}}</mat-checkbox>
-                                <br/>
-                                <div formGroupName="garnishFood">
-                                    <mat-checkbox *ngFor="let garnish of _garnishFood" [formControlName]="garnish._id" [class.invalid]="!_itemForm.controls.garnishFood.valid"
-                                        class="checkbox">{{garnish.name}}</mat-checkbox>
-                                </div>
-                            </div>
-                            <p *ngIf="!_showAdditions">{{'ITEMS.NOT_ADDITIONS' | translate}}</p>
-                            <div *ngIf="_showAdditions">
-                                <p>{{'ITEMS.ADDITIONS_TEXT' | translate}}:</p>
-                                <mat-checkbox style="font-weight: bold;" (change)="markAllAdditions($event)">{{'ITEMS.SELECT_ALL_ADDITIONS' | translate}}</mat-checkbox>
-                                <br/>
-                                <div formGroupName="additions">
-                                    <mat-checkbox *ngFor="let addition of _additions" [formControlName]="addition._id" [class.invalid]="!_itemForm.controls.additions.valid"
-                                        class="checkbox">{{addition.name}}</mat-checkbox>
-                                </div>
-                            </div>
-                            <p *ngIf="!showGarnishFoodQuantityMsg()" class="garnishQuantityMsg">{{'ITEMS.GARNISHFOOD_QUANTITY_MSG' | translate}}</p>
-                        </mat-card-content>
-                        <mat-card-actions align="end">
-                            <button mat-raised-button (click)="cancel()">{{'CANCEL' | translate}}</button>
-                            <button mat-raised-button (click)="previous()" [disabled]="!canMove(1)">{{'BACK' | translate}}</button>
-                            <button mat-raised-button [disabled]="!canFinish()" (click)="addItem()">{{'FINISH' | translate}}</button>
-                        </mat-card-actions>
-                    </mat-card>
-                </mat-tab>
-            </mat-tab-group>
+                        </div>
+                    </div>
+                    <p *ngIf="_showGeneralError" style="color:red">{{'ITEMS.RESTAURANTS_ITEMS_ERROR' | translate}}</p>
+                </mat-card-content>
+            </mat-card>
+            <div>
+                <button mat-button (click)="goBack(stepper)">{{'BACK' | translate}}</button>
+                <button mat-button (click)="goForward(stepper)">{{'NEXT' | translate}}</button>
+            </div>
         </form>
-    </mat-card-content>
-</mat-card>
+    </mat-step>
+    <mat-step [stepControl]="_optionAdditionsFormGroup">
+        <form [formGroup]="_optionAdditionsFormGroup">
+            <ng-template matStepLabel>{{'ITEMS.OPTION_ADDITION' | translate}}</ng-template>
+            <mat-card style="box-shadow: none;margin-bottom: 0px;">
+                <mat-card-title>{{'ITEMS.OPTIONS' | translate}}</mat-card-title>
+                <mat-card-subtitle>{{'ITEMS.OPTIONS_MSG' | translate}}</mat-card-subtitle>
+                <mat-card-content>
+                    <p *ngIf="!_showOptions">{{'ITEMS.NO_OPTIONS_CREATED' | translate}}</p>
+                    <mat-accordion *ngIf="_showOptions" [multi]="false">
+                        <mat-expansion-panel *ngFor="let option of _options | async; let i = index">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title style="font-weight: bold;">{{option.name}}</mat-panel-title>
+                                <mat-panel-description></mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-divider class="divider"></mat-divider>
+                            <table style="margin-bottom: 10px;" cellspacing="0" formGroupName="options">
+                                <tr>
+                                    <td style="width: 2%;">
+                                        <mat-checkbox [formControlName]="'av_'+option._id" (change)="onCheckAvailableOption(option._id, $event)">{{'ITEMS.AVAILABLE' | translate}}</mat-checkbox>
+                                    </td>
+                                    <td style="width: 20%;">
+                                        <mat-checkbox [formControlName]="'req_'+option._id">{{'ITEMS.IS_REQUIRED' | translate}}</mat-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                            <mat-divider class="divider"></mat-divider>
+                            <div *ngFor="let value of _optionValues | async">
+                                <div *ngIf="value.option_id === option._id">
+                                    <table style="margin-left: 5%;" cellspacing="0" formGroupName="option_values">
+                                        <tr>
+                                            <td style="width: 50%;">
+                                                <mat-checkbox [formControlName]="'val_'+value._id" (change)="onCheckOptionValue(value._id, $event)">{{value.name}}</mat-checkbox>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <mat-checkbox [formControlName]="'havPri_'+value._id" (change)="onCheckHavePriceOptionValue(value._id, $event)">{{'ITEMS.HAVE_PRICE' | translate}}</mat-checkbox>
+                                            </td>
+                                            <td>
+                                                <mat-form-field style="width: 40%;">
+                                                    <input matInput [formControlName]="'pri_'+value._id" placeholder="{{'ITEMS.PRICE' | translate}}" type="number">
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <mat-divider class="divider"></mat-divider>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-card-content>
+                <br/>
+                <mat-card-title>{{'ITEMS.ADDITIONS' | translate}}</mat-card-title>
+                <mat-card-subtitle>{{'ITEMS.ADDITIONS_SUBTITLE' | translate}}</mat-card-subtitle>
+                <mat-card-content>
+                    <p *ngIf="!_showAdditions">{{'ITEMS.NOT_ADDITIONS' | translate}}</p>
+                    <div *ngIf="_showAdditions">
+                        <mat-checkbox style="font-weight: bold;" (change)="markAllAdditions($event)">{{'ITEMS.SELECT_ALL_ADDITIONS' | translate}}</mat-checkbox>
+                        <br/>
+                        <div formGroupName="additions">
+                            <p *ngFor="let addition of _additions">
+                                <mat-checkbox [formControlName]="addition._id" [class.invalid]="!_optionAdditionsFormGroup.controls.additions.valid">{{addition.name}}</mat-checkbox>
+                            </p>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <div>
+                <button mat-button (click)="cancel()">{{'CANCEL' | translate}}</button>
+                <button mat-button (click)="goBack(stepper)">{{'BACK' | translate}}</button>
+                <button mat-button (click)="addItem()">{{'FINISH' | translate}}</button>
+            </div>
+        </form>
+    </mat-step>
+</mat-horizontal-stepper>
 <div class="loading" *ngIf="_loading">
     <mat-spinner></mat-spinner>
 </div>

@@ -26,18 +26,35 @@
                         <ion-badge style="background-color: #ffbf00;color: #fff;">{{ 'MOBILE.CUSTOMER_ORDER.ITEM_REDEEMED' | translate }}
                             <ion-icon name="ribbon"></ion-icon>
                         </ion-badge>
+                        <p *ngIf="it.observations">{{it.observations}}</p>
+                        <div *ngIf="(it.options.length > 0)">
+                            <span *ngFor="let opt of it.options">
+                                <h2>{{getOptionValueName(opt.value_id)}}</h2>
+                            </span>
+                        </div>
+                        <div *ngIf="(it.additions.length > 0)">
+                            <h2 style="margin-top: 10px;">{{'MOBILE.SECTIONS.ADDITION' | translate}}:</h2>
+                            <span *ngFor="let ad of it.additions">
+                                <h2 style="margin-left: 1rem;">- {{getAdditionName(ad)}}</h2>
+                            </span>
+                        </div>
                     </ion-item>
                 </span>
                 <span *ngIf="!it.is_reward">
                     <ion-item>
                         <h2 style="font-weight: bold;">{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
-                        <p>{{it.observations}}</p>
-                        <span *ngFor="let gr of it.garnishFood">
-                            <h2>{{getGarnishFoodName(gr)}}</h2>
-                        </span>
-                        <span *ngFor="let ad of it.additions">
-                            <h2>{{getAdditionName(ad)}}</h2>
-                        </span>
+                        <p *ngIf="it.observations">{{it.observations}}</p>
+                        <div *ngIf="(it.options.length > 0)">
+                            <span *ngFor="let opt of it.options">
+                                <h2>{{getOptionValueName(opt.value_id)}}</h2>
+                            </span>
+                        </div>
+                        <div *ngIf="(it.additions.length > 0)">
+                            <h2 style="margin-top: 10px;">{{'MOBILE.SECTIONS.ADDITION' | translate}}:</h2>
+                            <span *ngFor="let ad of it.additions">
+                                <h2 style="margin-left: 1rem;">- {{getAdditionName(ad)}}</h2>
+                            </span>
+                        </div>
                     </ion-item>
                 </span>
             </span>

@@ -25,7 +25,7 @@ export interface OrderHistory extends CollectionObject {
 export interface OrderHistoryItem {
     item_name: string;
     quantity: number;
-    garnish_food: OrderHistoryItemGarnish[];
+    option_values: OrderHistoryItemOptionValue[];
     additions: OrderHistoryItemAddition[];
     price: number;
     is_reward?: boolean;
@@ -51,9 +51,9 @@ export interface OrderHistoryItemAddition {
 }
 
 /**
- * Order History Item Garnish Model
+ * Order History Item Option Value Model
  */
-export interface OrderHistoryItemGarnish {
-    garnish_food_name: string,
-    price: number
+export interface OrderHistoryItemOptionValue {
+    option_value_name: string,
+    price?: number
 }

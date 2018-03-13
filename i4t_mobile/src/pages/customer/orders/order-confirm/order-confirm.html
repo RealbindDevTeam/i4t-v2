@@ -24,13 +24,12 @@
                         <ion-badge *ngIf="item.reward_points > 0 && !item.is_reward" style="background-color: #fff;color: #4CAF50;padding: 0;">{{'MOBILE.SECTIONS.GET_POINTS' | translate}} {{item.reward_points}} pts
                             <ion-icon name="star"></ion-icon>
                         </ion-badge>
-                        <div *ngIf="item.garnishFood.length > 0">
-                            <p>{{'MOBILE.SECTIONS.FOOD_ACCOMPANIMENT' | translate}}:</p>
-                            <p *ngFor="let gar of item.garnishFood" style="margin-left: 15px;">- {{getGarnishFoodName(gar)}}</p>
+                        <div *ngIf="item.options.length > 0">
+                            <p *ngFor="let opt of item.options" style="white-space: normal;">{{getOptionValueName(opt.value_id)}}</p>
                         </div>
                         <div *ngIf="item.additions.length > 0">
-                            <p>{{'MOBILE.SECTIONS.ADDITIONS' | translate}}:</p>
-                            <p *ngFor="let add of item.additions" style="margin-left: 15px;">- {{getAdditionName(add)}}</p>
+                            <p>{{'MOBILE.SECTIONS.ADDITION' | translate}}:</p>
+                            <p *ngFor="let add of item.additions" style="margin-left: 15px;white-space: normal;">- {{getAdditionName(add)}}</p>
                         </div>
                         <p *ngIf="item.is_reward">{{'MOBILE.ORDERS.FREE' | translate}}</p>
                         <ion-badge *ngIf="item.is_reward" style="background-color: #fff;color: #ffbf00;padding: 0;">{{'MOBILE.ORDERS.ITEM' | translate}} {{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}

@@ -90,6 +90,10 @@ import { PointsDetailComponent } from './customer/points/points-detail/points-de
 import { ItemUnitsChartComponent } from './administrator/dashboard/item-units-chart/item-units-chart.component';
 import { RewardUnitsChartComponent } from './administrator/dashboard/reward-units-chart/reward-units-chart.component';
 import { ItemHistoryChartComponent } from './administrator/dashboard/item-history-chart/item-history-chart.component';
+import { OptionsComponent } from './administrator/menu/options/options/option/option.component';
+import { OptionEditComponent } from './administrator/menu/options/options/option-edit/option-edit.component';
+import { OptionValueComponent } from './administrator/menu/options/values/option-value/option-value.component';
+import { OptionValueEditComponent } from './administrator/menu/options/values/option-value-edit/option-value-edit.component';
 import { RewardHistoryChartComponent } from './administrator/dashboard/reward-history-chart/reward-history-chart.component';
 import { OrdersTodayComponent } from "./administrator/orders-today/orders-today.component";
 
@@ -153,7 +157,10 @@ export const WEB_DECLARATIONS = [
     RewardUnitsChartComponent,
     ItemHistoryChartComponent,
     RewardHistoryChartComponent,
-    OrdersTodayComponent
+    OrdersTodayComponent,
+    OptionsComponent,
+    OptionValueComponent,
+    RewardHistoryChartComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [
@@ -185,7 +192,9 @@ export const MODAL_DIALOG_DECLARATIONS = [
     RewardEditComponent,
     RewardsDetailComponent,
     AfterEstablishmentCreationComponent,
-    LightBoxComponent
+    LightBoxComponent,
+    OptionEditComponent,
+    OptionValueEditComponent
 ];
 
 export const SERVICES_DECLARATIONS = [

@@ -15,24 +15,21 @@
                             </mat-chip>
                         </mat-chip-list>
                         <p *ngIf="it.observations" class="observations">{{ 'CUSTOMER_ORDER.OBSERVATIONS' | translate }}: {{it.observations}}</p>
-                        <p *ngIf="(it.garnishFood.length <= 0)"></p>
-                        <div *ngIf="(it.garnishFood.length > 0)" class="garnish-food">
-                            <p class="garnish-title">{{ 'CUSTOMER_ORDER.GARNISH_FOOD' | translate }}:</p>
-                            <span *ngFor="let garnish of _garnishFood | async">
-                                <span *ngFor="let gar of it.garnishFood">
-                                    <ng-template [ngIf]="gar === garnish._id">
-                                        <p class="garnish-name">- {{garnish.name}}</p>
+                        <div *ngIf="(it.options.length > 0)" class="value">
+                            <span *ngFor="let value of _optionValues | async">
+                                <span *ngFor="let opt of it.options">
+                                    <ng-template [ngIf]="opt.value_id === value._id">
+                                        <p class="value-name">{{value.name}}</p>
                                     </ng-template>
                                 </span>
                             </span>
                         </div>
-                        <p *ngIf="(it.additions.length <= 0)"></p>
                         <div *ngIf="(it.additions.length > 0)" class="addition">
                             <p class="addition-title">{{ 'CUSTOMER_ORDER.ADDITIONS' | translate }}:</p>
                             <span *ngFor="let addition of _additions | async">
                                 <span *ngFor="let add of it.additions">
                                     <ng-template [ngIf]="add === addition._id">
-                                        <p class="addition-name">- {{it.quantity}} {{addition.name}}</p>
+                                        <p class="addition-name">- {{addition.name}}</p>
                                     </ng-template>
                                 </span>
                             </span>
@@ -42,24 +39,21 @@
                     <span *ngIf="!it.is_reward">
                         <h2 class="name">{{it.quantity}} - {{item.name}}</h2>
                         <p *ngIf="it.observations" class="observations">{{ 'CUSTOMER_ORDER.OBSERVATIONS' | translate }}: {{it.observations}}</p>
-                        <p *ngIf="(it.garnishFood.length <= 0)"></p>
-                        <div *ngIf="(it.garnishFood.length > 0)" class="garnish-food">
-                            <p class="garnish-title">{{ 'CUSTOMER_ORDER.GARNISH_FOOD' | translate }}:</p>
-                            <span *ngFor="let garnish of _garnishFood | async">
-                                <span *ngFor="let gar of it.garnishFood">
-                                    <ng-template [ngIf]="gar === garnish._id">
-                                        <p class="garnish-name">- {{garnish.name}}</p>
+                        <div *ngIf="(it.options.length > 0)" class="value">
+                            <span *ngFor="let value of _optionValues | async">
+                                <span *ngFor="let opt of it.options">
+                                    <ng-template [ngIf]="opt.value_id === value._id">
+                                        <p class="value-name">{{value.name}}</p>
                                     </ng-template>
                                 </span>
                             </span>
                         </div>
-                        <p *ngIf="(it.additions.length <= 0)"></p>
                         <div *ngIf="(it.additions.length > 0)" class="addition">
                             <p class="addition-title">{{ 'CUSTOMER_ORDER.ADDITIONS' | translate }}:</p>
                             <span *ngFor="let addition of _additions | async">
                                 <span *ngFor="let add of it.additions">
                                     <ng-template [ngIf]="add === addition._id">
-                                        <p class="addition-name">- {{it.quantity}} {{addition.name}}</p>
+                                        <p class="addition-name">- {{addition.name}}</p>
                                     </ng-template>
                                 </span>
                             </span>

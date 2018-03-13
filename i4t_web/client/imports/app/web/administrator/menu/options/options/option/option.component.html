@@ -1,0 +1,77 @@
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/sections.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{'OPTIONS.THERE_NOT_RESTAURANTS' | translate}}
+                    </div>
+                    <div class="card_initial-additional-links">
+                        {{'OPTIONS.MESSAGE' | translate}}
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'OPTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="_thereAreEstablishments">
+    <mat-card-title>{{'OPTIONS.OPTION_CREATION' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'OPTIONS.OPTION_TEXT' | translate}}</mat-card-subtitle>
+    <mat-card-content>
+        <form [formGroup]="_optionForm" (ngSubmit)="addOption();">
+            <div>
+                <mat-form-field class="option-name">
+                    <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="30" #inputName>
+                    <mat-hint align="end">{{inputName.value.length}} / 30</mat-hint>
+                </mat-form-field>
+            </div>
+            <div>
+                <p>{{'OPTIONS.RESTAURANT_OPTION' | translate}}</p>
+                <p>
+                    <label *ngIf="!_showEstablishments" class="label-field-void">{{'OPTIONS.NO_RESTAURANT_CREATED' | translate}}</label>
+                </p>
+                <div *ngIf="_showEstablishments" formGroupName="establishments">
+                    <mat-checkbox *ngFor="let establishment of _establishments | async" [formControlName]="establishment._id" [class.invalid]="!_optionForm.controls.establishments.valid"
+                        class="checkbox">{{establishment.name}} - {{establishment.address}}</mat-checkbox>
+                    <label></label>
+                </div>
+            </div>
+            <br/>
+            <button mat-raised-button class="secondary-button" [disabled]="!_optionForm.valid" type="button" (click)="cancel()">{{'CANCEL' | translate}}</button>
+            <button mat-raised-button class="primary-button" [disabled]="!_optionForm.valid" type="submit">{{'CREATE' | translate}}</button>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngFor="let option of _options | async" class="option">
+    <mat-card-title>{{option.name}}</mat-card-title>
+    <mat-card-content>
+        <p *ngIf="option.establishments.length == 0">{{'OPTIONS.NO_RESTAURANT' | translate}}</p>
+        <div *ngFor="let est of _establishments | async">
+            <div *ngFor="let secEst of option.establishments">
+                <div *ngIf="est._id === secEst">
+                    <div>
+                        <p mat-line class="establishment">
+                            <mat-icon class="icon">store</mat-icon>
+                            <span> {{est.name}} </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-button (click)="open(option)">{{'OPTIONS.MODIFY' | translate}}</button>
+        <button mat-button (click)="confirmRemove(option)">{{'OPTIONS.REMOVE' | translate}}</button>
+        <span class="app-flex-filler lh">
+            <mat-slide-toggle [(checked)]="option.is_active" (change)="updateStatus(option)"></mat-slide-toggle>
+        </span>
+    </mat-card-actions>
+</mat-card>

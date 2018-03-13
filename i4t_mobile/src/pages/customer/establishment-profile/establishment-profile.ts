@@ -91,12 +91,21 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
         this._establishmentProfileSubscription = MeteorObservable.subscribe('getEstablishmentProfile', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishmentsProfiles = EstablishmentsProfile.find({ establishment_id: this._establishmentParam._id }).zone();
+                this.verifyEstablishmentProfile();
+                this._establishmentsProfiles.subscribe(() => { this.verifyEstablishmentProfile(); });
                 this._establishmentProfile = EstablishmentsProfile.findOne({ establishment_id: this._establishmentParam._id });
                 if (this._establishmentProfile) {
                     this.loadMap();
                 }
             });
         });
+    }
+
+    /**
+     * Verify establishment profile changes
+     */
+    verifyEstablishmentProfile(): void {
+        this._establishmentProfile = EstablishmentsProfile.findOne({ establishment_id: this._establishmentParam._id });
     }
 
     /**

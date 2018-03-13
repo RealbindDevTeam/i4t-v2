@@ -57,6 +57,8 @@ import { PointsDetailComponent } from './web/customer/points/points-detail/point
 import { ItemUnitsChartComponent } from './web/administrator/dashboard/item-units-chart/item-units-chart.component';
 import { RewardUnitsChartComponent } from 'client/imports/app/web/administrator/dashboard/reward-units-chart/reward-units-chart.component';
 import { ItemHistoryChartComponent } from './web/administrator/dashboard/item-history-chart/item-history-chart.component';
+import { OptionsComponent } from './web/administrator/menu/options/options/option/option.component';
+import { OptionValueComponent } from './web/administrator/menu/options/values/option-value/option-value.component';
 import { RewardHistoryChartComponent } from './web/administrator/dashboard/reward-history-chart/reward-history-chart.component';
 import { OrdersTodayComponent } from "./web/administrator/orders-today/orders-today.component";
 
@@ -111,6 +113,9 @@ export const routes: Route[] = [
             { path: 'item-history-chart/:param1', component: ItemHistoryChartComponent, canActivate: [AdminGuard] },
             { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] },
             { path: 'orders-today', component: OrdersTodayComponent, canActivate: [AdminGuard] }
+            { path: 'options', component: OptionsComponent, canActivate: [AdminGuard] },
+            { path: 'option-values', component: OptionValueComponent, canActivate: [AdminGuard] },            
+            { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] }
         ]
     },
     { path: '', component: SigninWebComponent },

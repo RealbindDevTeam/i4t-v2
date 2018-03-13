@@ -195,9 +195,9 @@
                             <img *ngIf="!itemDet.image" src="/images/default-plate.png">
                         </div>
                         <div class="content">
-                            <mat-card-subtitle *ngIf='itemDet.description != ""' class="description">{{itemDet.description}}</mat-card-subtitle>
+                            <p *ngIf='itemDet.description != ""'>{{itemDet.description}}</p>
                             <mat-card-subtitle *ngIf='itemDet.time != ""' class="description">{{'ORDER_CREATE.COOKING_TIME' | translate}} {{itemDet.time}}</mat-card-subtitle>
-                            <mat-card-subtitle class="price">{{'ORDER_CREATE.PRICE' | translate}}: {{ getItemPrice( itemDet ) }} {{_currencyCode}}</mat-card-subtitle>
+                            <h3>{{'ORDER_CREATE.PRICE' | translate}}: {{ getItemPrice( itemDet ) }} {{_currencyCode}}</h3>
                             <p *ngIf="!getItemAvailability(itemDet._id)" class="available-button">{{'ORDER_CREATE.ITEM_UNAVAILABLE' | translate}}</p>
                             <div *ngIf="getItemAvailability(itemDet._id)">
                                 <div>
@@ -205,10 +205,10 @@
                                         <span>{{'ORDER_CREATE.QUANTITY' | translate}}: {{ _quantityCount }}</span>
                                     </div>
                                     <div class="inline-block">
-                                        <button mat-button class="quantity-button" (click)="removeCount()">
+                                        <button mat-button class="quantity-button" (click)="removeCount(itemDet)">
                                             <mat-icon>remove</mat-icon>
                                         </button>
-                                        <button mat-button class="quantity-button" (click)="addCount()">
+                                        <button mat-button class="quantity-button" (click)="addCount(itemDet)">
                                             <mat-icon>add</mat-icon>
                                         </button>
                                     </div>
@@ -218,42 +218,47 @@
                                         <input matInput formControlName="observations" placeholder="{{'ORDER_CREATE.OBSERVATIONS' | translate}}" maxlength="50" #inputObservation>
                                         <mat-hint align="end">{{inputObservation.value.length}} / 50</mat-hint>
                                     </mat-form-field>
-                                    <mat-tab-group *ngIf="(itemDet.garnishFood.length > 0) || (itemDet.additions.length > 0)">
-                                        <div>{{setMaxGarnishFoodElements(itemDet.garnishFoodQuantity)}}</div>
-                                        <mat-tab *ngIf="(itemDet.garnishFood.length > 0)" label="{{'ORDER_CREATE.GARNISH_FOOD' | translate}}">
-                                            <p>{{'ORDER_CREATE.SELECT_MAX' | translate}} {{itemDet.garnishFoodQuantity}}:</p>
-                                            <div formGroupName="garnishFood">
-                                                <p *ngFor="let garnish of _garnishFoodCol | async">
-                                                    <span *ngFor="let gar of itemDet.garnishFood">
-                                                        <ng-template [ngIf]="garnish._id === gar">
-                                                            <mat-checkbox [formControlName]="garnish._id" (change)="calculateFinalPriceGarnishFood($event, garnish)" [class.invalid]="!_newOrderForm.controls.garnishFood.valid">{{ getGarnishFoodInformation(garnish) }} {{_currencyCode}}
-                                                                <div class="inline-block"> x {{_quantityCount}}</div>
-                                                            </mat-checkbox>
-                                                        </ng-template>
-                                                    </span>
-                                                </p>
+                                    <div *ngIf="(itemDet.options.length > 0)">
+                                        <div formGroupName="options">
+                                            <div *ngFor="let option of _options | async">
+                                                <span *ngFor="let opt of itemDet.options">
+                                                    <ng-template [ngIf]="option._id === opt.option_id">
+                                                        <p style="font-weight:bold;">{{option.name}}</p>
+                                                        <mat-radio-group [formControlName]="option._id">
+                                                            <span *ngFor="let value of _optionValues | async">
+                                                                <span *ngFor="let val of opt.values">
+                                                                    <div *ngIf="value._id === val.option_value_id" style="display: flex;">
+                                                                        <mat-radio-button style="margin: 5px;" [value]="value._id" (change)="calculateFinalPriceOptionValue(option._id, $event)">{{value.name}}</mat-radio-button>
+                                                                        <span class="app-flex-filler"></span>
+                                                                        <span *ngIf="val.have_price" style="line-height: 32px;">{{val.price}} {{_currencyCode}}</span>
+                                                                    </div>
+                                                                </span>
+                                                            </span>
+                                                        </mat-radio-group>
+                                                    </ng-template>
+                                                </span>
                                             </div>
-                                            <p *ngIf="_showGarnishFoodError" class="error-message">{{'ORDER_CREATE.SELECT_MAX_VALID' | translate}} {{itemDet.garnishFoodQuantity}}
-                                                {{'ORDER_CREATE.ELEMENTS' | translate}}</p>
-                                        </mat-tab>
-                                        <mat-tab *ngIf="(itemDet.additions.length > 0)" label="{{'ORDER_CREATE.ADDITIONS' | translate}}">
-                                            <p>{{'ORDER_CREATE.SELECT_ADDITIONS' | translate}}:</p>
-                                            <div formGroupName="additions">
-                                                <p *ngFor="let addition of _additions | async">
-                                                    <span *ngFor="let add of itemDet.additions">
-                                                        <ng-template [ngIf]="addition._id === add">
-                                                            <mat-checkbox [formControlName]="addition._id" (change)="calculateFinalPriceAddition($event, addition)" [class.invalid]="!_newOrderForm.controls.additions.valid">{{ getAdditionInformation(addition) }} {{_currencyCode}}
-                                                                <div class="inline-block">x {{_quantityCount}}</div>
-                                                            </mat-checkbox>
-                                                        </ng-template>
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </mat-tab>
-                                    </mat-tab-group>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="(itemDet.additions.length > 0)">
+                                        <p style="font-weight:bold">{{'ORDER_CREATE.SELECT_ADDITIONS' | translate}}:</p>
+                                        <div formGroupName="additions">
+                                            <p *ngFor="let addition of _additions | async">
+                                                <span *ngFor="let add of itemDet.additions">
+                                                    <ng-template [ngIf]="addition._id === add">
+                                                        <div style="display: flex;">
+                                                            <mat-checkbox style="margin-left: 5px;" [formControlName]="addition._id" (change)="calculateFinalPriceAddition($event, addition)" [class.invalid]="!_newOrderForm.controls.additions.valid">{{addition.name}}</mat-checkbox>
+                                                            <span class="app-flex-filler"></span>
+                                                            <span style="line-height: 24px;">{{getAdditionPrice(addition)}} {{_currencyCode}}</span>
+                                                        </div>
+                                                    </ng-template>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
-                            <h3>{{'ORDER_CREATE.TOTAL_PRICE' | translate}}: {{ _finalPrice }} {{_currencyCode}}</h3>
+                            <h2>{{'ORDER_CREATE.TOTAL_PRICE' | translate}}: {{ _finalPrice }} {{_currencyCode}}</h2>
                             <div>
                                 <mat-chip-list *ngIf="itemDet.has_reward" style="display: inline-block; margin-bottom: 19px">
                                     <mat-chip class="cust-color-chip">{{_finalPoints}} {{'ORDER_CREATE.POINTS' | translate}}
@@ -261,8 +266,8 @@
                                     </mat-chip>
                                 </mat-chip-list>
                             </div>
-                            <button *ngIf="getItemAvailability(itemDet._id)" mat-button class="primary-button" [disabled]="!_newOrderForm.valid || _showGarnishFoodError"
-                                (click)="AddItemToOrder(itemDet._id)">{{'ORDER_CREATE.ADD_ITEM' | translate}}</button>
+                            <p *ngIf="_showOptionsError" style="color: #EF5350;">{{'ORDER_CREATE.OPTIONS_ERROR' | translate}}</p>
+                            <button *ngIf="getItemAvailability(itemDet._id)" mat-button class="primary-button" [disabled]="!_newOrderForm.valid" (click)="AddItemToOrder(itemDet._id)">{{'ORDER_CREATE.ADD_ITEM' | translate}}</button>
                         </div>
                     </div>
                 </div>

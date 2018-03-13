@@ -4,8 +4,8 @@
         <form [formGroup]="_editForm" (ngSubmit)="editAddition();">
             <div>
                 <mat-form-field class="name">
-                    <input matInput required formControlName="editName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="50" #editInputName>
-                    <mat-hint align="end">{{editInputName.value.length}} / 50</mat-hint>
+                    <input matInput required formControlName="editName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="30" #editInputName>
+                    <mat-hint align="end">{{editInputName.value.length}} / 30</mat-hint>
                 </mat-form-field>
                 <mat-slide-toggle formControlName="editIsActive" class="toogle">{{'STATE' | translate}}</mat-slide-toggle>
                 <div>
