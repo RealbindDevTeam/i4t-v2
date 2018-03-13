@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
             'font-size: 1.4rem',
             'color: #114b5f',
             'font-weight: 500'].join(';');
-        console.log('%c This browser function is intended for developers. If someone tells you to copy and paste something here to enable a function of Iurest or to "hack" someone\'s account, it is a fraud. If you do, this person can access your account.', msgStyle);
+        console.log('%c This browser function is intended for developers. If someone tells you to copy and paste something here to enable a function of comeygana or to "hack" someone\'s account, it is a fraud. If you do, this person can access your account.', msgStyle);
     }
 
     ngOnInit() {
