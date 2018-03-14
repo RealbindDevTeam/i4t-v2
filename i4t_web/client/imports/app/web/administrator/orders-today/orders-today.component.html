@@ -1,114 +1,136 @@
-<div class="today">
-    <span>{{_lToday | date:'MM/dd/yyyy'}}</span>
-</div>
 <mat-card>
-    <mat-card-header>
-        <mat-icon matSuffix style="line-height: 65px;">search</mat-icon>
-        <mat-form-field floatPlaceholder="never">
-            <input matInput type="text" placeholder="{{'ORDERS_TODAY.NAME_FILTER' | translate}}" [(ngModel)]="_userFilter" (ngModelChange)="doFilter()"
-            />
-            <button mat-button *ngIf="_userFilter" matSuffix mat-icon-button (click)="_userFilter=''; doFilter(null)">
-                <mat-icon>close</mat-icon>
-            </button>
-        </mat-form-field>
-
-        <mat-icon matSuffix style="line-height: 65px;">store</mat-icon>
-        <mat-form-field floatPlaceholder="never">
-            <mat-select placeholder="{{'ORDERS_TODAY.SELECT_ESTABLISHMENT' | translate}}" [(ngModel)]="_establishmentFilter" (ngModelChange)="doFilter()">
-                <mat-option selected value="all">{{'ORDERS_TODAY.ALL_ESTABLISHMENT' | translate}}</mat-option>
+    <mat-card-title>{{'ORDERS_TODAY.TITLE' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'ORDERS_TODAY.ORDERS_TODAY_TEXT' | translate}}</mat-card-subtitle>
+    <mat-card-content>
+        <mat-form-field style="width: 25%;">
+            <mat-select placeholder="{{'ORDERS_TODAY.SELECT_ESTABLISHMENT' | translate}}" [(ngModel)]="_establishmentFilter" required>
                 <mat-option *ngFor="let _establishment of _establishments | async" [value]="_establishment._id">
                     {{ _establishment.name }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-    </mat-card-header>
-    <mat-card-content>
-        <div *ngIf="_loading">
-            <mat-spinner [diameter]="50"></mat-spinner>
-        </div>
-        <mat-accordion *ngIf="!_loading">
-            <div *ngIf="(_orderHistories | async)?.length <= 0" style="text-align: center">
-                <span class="no-rows">{{'ORDERS_TODAY.NO_RECORDS_FOUND' | translate}}</span>
-            </div>
-            <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <img mat-card-avatar src="{{getImgUser(orderHistory.customer_id)}}" />
-                        <span>{{getUserName(orderHistory.customer_id)}}</span>
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS' | translate}} {{'ORDERS_TODAY.ACCUMULATED'
-                            | translate}}</span>
-                        <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS' | translate}} {{'ORDERS_TODAY.REDEEMED'
-                            | translate}}</span>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-
-                <mat-list>
-                    <div *ngFor="let item of orderHistory.items">
-                        <mat-list-item *ngIf="item.is_reward">
-                            <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
-                            <h4 mat-line>{{itemNameCrop(item.item_name)}} ({{'POINTS_DETAIL.REWARD' | translate}})</h4>
-                            <mat-chip-list style="display: inline-block">
-                                <mat-chip class="cust-color-chip">({{'POINTS_DETAIL.REWARD' | translate}})
-                                    <mat-icon style="margin-left: 5px;">star</mat-icon>
-                                </mat-chip>
-                            </mat-chip-list>
-                            <span class="app-flex-filler"></span>
-                            <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                                <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
-                            </p>
-                        </mat-list-item>
-                        <mat-list-item *ngIf="!item.is_reward">
-                            <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
-                            <h4 mat-line>{{itemNameCrop(item.item_name)}}</h4>
-                            <span class="app-flex-filler"></span>
-                            <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                                <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
-                            </p>
-                        </mat-list-item>
-                        <mat-divider></mat-divider>
-                        <div *ngIf="item.option_values.length > 0">
-                            <div *ngFor="let opt of item.option_values">
-                                <mat-list-item>
-                                    <mat-icon mat-list-icon class="option-icon-color">turned_in_not</mat-icon>
-                                    <h4 mat-line>{{itemNameCrop(opt.option_value_name)}}</h4>
-                                    <span *ngIf="opt.price" class="app-flex-filler"></span>
-                                    <p mat-line *ngIf="opt.price">{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                                        <span class="price">{{opt.price * item.quantity}} {{orderHistory.currency}}</span>
-                                    </p>
-                                </mat-list-item>
-                                <mat-divider></mat-divider>
-                            </div>
-                        </div>
-                        <div *ngIf="item.additions.length > 0">
-                            <div *ngFor="let ad of item.additions">
-                                <mat-list-item>
-                                    <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
-                                    <h4 mat-line>{{itemNameCrop(ad.addition_name)}}</h4>
-                                    <span class="app-flex-filler"></span>
-                                    <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
-                                        <span class="price">{{ad.price * item.quantity}} {{orderHistory.currency}}</span>
-                                    </p>
-                                </mat-list-item>
-                                <mat-divider></mat-divider>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div *ngFor="let addition of orderHistory.additions">
-                        <mat-list-item>
-                            <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
-                            <h4 mat-line>{{itemNameCrop(addition.addition_name)}}</h4>
-                            <span class="app-flex-filler"></span>
-                            <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{addition.quantity}}
-                                <span class="price">{{addition.price * addition.quantity}} {{orderHistory.currency}}</span>
-                            </p>
-                        </mat-list-item>
-                        <mat-divider></mat-divider>
-                    </div>
-                </mat-list>
-            </mat-expansion-panel>
-        </mat-accordion>
+        <mat-form-field style="width: 25%">
+            <input matInput type="text" placeholder="{{'ORDERS_TODAY.NAME_FILTER' | translate}}" [(ngModel)]="_userFilter" (change)="doFilter()"
+                [disabled]="_establishmentFilter===''" />
+            <button mat-button *ngIf="_userFilter" matSuffix mat-icon-button (click)="_userFilter=''; doFilter(null)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
     </mat-card-content>
 </mat-card>
+
+<div class="today">
+    <span>{{_lToday | date:'MM/dd/yyyy'}}</span>
+</div>
+
+<div *ngIf="_loading">
+    <mat-spinner [diameter]="50"></mat-spinner>
+</div>
+
+<mat-card *ngIf="!_loading && (_orderHistories | async)?.length <= 0" mat-cell="12" class="demo-card demo-basic">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/orders.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{'ORDERS_TODAY.NO_RECORDS_FOUND' | translate}}
+                    </div>
+                    <div class="card_initial-additional-links">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-accordion *ngIf="!_loading">
+
+    <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <img mat-card-avatar src="{{getImgUser(orderHistory.customer_id)}}" />
+                <span>{{getUserName(orderHistory.customer_id)}}</span>
+            </mat-panel-title>
+            <mat-panel-description>
+                <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS' | translate}} {{'ORDERS_TODAY.ACCUMULATED'
+                    | translate}}</span>
+                <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS' | translate}} {{'ORDERS_TODAY.REDEEMED' | translate}}</span>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-list>
+            <div *ngFor="let item of orderHistory.items">
+                <mat-list-item *ngIf="item.is_reward">
+                    <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                    <div mat-line class="reward">
+                        <h4>{{itemNameCrop(item.item_name)}}</h4>
+                        <mat-chip-list>
+                            <mat-chip class="cust-color-chip">{{'POINTS_DETAIL.REWARD' | translate}}
+                                <mat-icon style="margin-left: 5px;">star</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
+                    </div>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                        <span class="price reward-price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-list-item *ngIf="!item.is_reward">
+                    <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(item.item_name)}}</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                        <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <div *ngIf="item.option_values.length > 0">
+                    <div *ngFor="let opt of item.option_values">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="option-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(opt.option_value_name)}}</h4>
+                            <span *ngIf="opt.price" class="app-flex-filler"></span>
+                            <p mat-line *ngIf="opt.price">{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                <span class="price">{{opt.price * item.quantity}} {{orderHistory.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+                <div *ngIf="item.additions.length > 0">
+                    <div *ngFor="let ad of item.additions">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(ad.addition_name)}}</h4>
+                            <span class="app-flex-filler"></span>
+                            <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                <span class="price">{{ad.price * item.quantity}} {{orderHistory.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngFor="let addition of orderHistory.additions">
+                <mat-list-item>
+                    <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(addition.addition_name)}}</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{addition.quantity}}
+                        <span class="price">{{addition.price * addition.quantity}} {{orderHistory.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            </div>
+        </mat-list>
+
+        <mat-action-row>
+            <button mat-button>{{orderHistory.total_order}} {{orderHistory.currency}}</button>
+        </mat-action-row>
+    </mat-expansion-panel>
+</mat-accordion>

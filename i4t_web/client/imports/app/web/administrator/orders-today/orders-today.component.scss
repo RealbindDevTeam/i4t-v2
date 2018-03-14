@@ -36,6 +36,28 @@ mat-spinner {
     margin: 0 0 24px 0;
 }
 
+.reward {
+    display: flex !important;
+}
+
+.reward h4 {
+    margin: 0;
+}
+
+.reward mat-chip-list {
+    margin-left: 8px;
+}
+
+.reward-price {
+    text-decoration: line-through;
+}
+
+.cust-color-chip {
+    color: white;
+    background-color: darkorange;
+    height: 10px;
+}
+
 //
 
 .mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {

@@ -36,7 +36,7 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
 
 
     private _userFilter: string = "";
-    private _establishmentFilter: string = "all";
+    private _establishmentFilter: string = "";
     private _ordersCount: number = 0;
     private panelOpenState: boolean = false;
     private _loading: boolean = false;
@@ -70,11 +70,7 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
                     this._lEstablishmentsId.push(establishment._id);
                 });
                 this._establishments = Establishments.find({}).zone();
-                this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishmentIds', this._lEstablishmentsId).takeUntil(this.ngUnsubscribe).subscribe(() => {
-                    this._ngZone.run(() => {
-                        this.doFilter();
-                    });
-                });
+                this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishmentIds', this._lEstablishmentsId).takeUntil(this.ngUnsubscribe).subscribe();
             });
         });
     }
@@ -86,7 +82,6 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
         let _lUsersId: string[] = new Array();
         this._loading = true;
         setTimeout(() => {
-
             if (this._userFilter) {
                 let _lUserFilter = Users.collection.find({
                     $or: [
@@ -100,31 +95,15 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
                     _lUserFilter.forEach(user => {
                         _lUsersId.push(user._id);
                     });
+                    this._orderHistories = OrderHistories.find({
+                        establishment_id: this._establishmentFilter,
+                        customer_id: { $in: _lUsersId },
+                        creation_date: { $gt: this._lToday }
+                    }, { sort: { creation_date: -1 } }).zone();
                 }
-            }
-
-            this._lEstablishmentsId = new Array();
-            if (this._establishmentFilter === 'all') {
-                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
-                    this._lEstablishmentsId.push(establishment._id);
-                });
             } else {
-                this._lEstablishmentsId.push(this._establishmentFilter);
+                this._orderHistories = null;
             }
-
-            if (this._userFilter) {
-                this._orderHistories = OrderHistories.find({
-                    establishment_id: { $in: this._lEstablishmentsId },
-                    customer_id: { $in: _lUsersId },
-                    creation_date: { $gt: this._lToday }
-                }).zone();
-            } else {
-                this._orderHistories = OrderHistories.find({
-                    establishment_id: { $in: this._lEstablishmentsId },
-                    creation_date: { $gt: this._lToday }
-                }).zone();
-            }
-
             this._loading = false;
         }, 1000);
     }
