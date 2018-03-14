@@ -1,8 +1,12 @@
+<div class="today">
+    <span>{{_lToday | date:'MM/dd/yyyy'}}</span>
+</div>
 <mat-card>
     <mat-card-header>
         <mat-icon matSuffix style="line-height: 65px;">search</mat-icon>
         <mat-form-field floatPlaceholder="never">
-            <input matInput type="text" placeholder="{{'ORDERS_TODAY.NAME_FILTER' | translate}}" [(ngModel)]="_userFilter" (ngModelChange)="doFilter()" />
+            <input matInput type="text" placeholder="{{'ORDERS_TODAY.NAME_FILTER' | translate}}" [(ngModel)]="_userFilter" (ngModelChange)="doFilter()"
+            />
             <button mat-button *ngIf="_userFilter" matSuffix mat-icon-button (click)="_userFilter=''; doFilter(null)">
                 <mat-icon>close</mat-icon>
             </button>
@@ -33,10 +37,10 @@
                         <span>{{getUserName(orderHistory.customer_id)}}</span>
                     </mat-panel-title>
                     <mat-panel-description>
-                        <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS'
-                            | translate}} {{'ORDERS_TODAY.ACCUMULATED' | translate}}</span>
-                        <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS'
-                            | translate}} {{'ORDERS_TODAY.REDEEMED' | translate}}</span>
+                        <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS' | translate}} {{'ORDERS_TODAY.ACCUMULATED'
+                            | translate}}</span>
+                        <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS' | translate}} {{'ORDERS_TODAY.REDEEMED'
+                            | translate}}</span>
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
@@ -45,6 +49,11 @@
                         <mat-list-item *ngIf="item.is_reward">
                             <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
                             <h4 mat-line>{{itemNameCrop(item.item_name)}} ({{'POINTS_DETAIL.REWARD' | translate}})</h4>
+                            <mat-chip-list style="display: inline-block">
+                                <mat-chip class="cust-color-chip">({{'POINTS_DETAIL.REWARD' | translate}})
+                                    <mat-icon style="margin-left: 5px;">star</mat-icon>
+                                </mat-chip>
+                            </mat-chip-list>
                             <span class="app-flex-filler"></span>
                             <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
                                 <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>

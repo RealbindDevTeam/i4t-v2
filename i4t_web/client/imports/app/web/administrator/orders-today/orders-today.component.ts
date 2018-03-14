@@ -5,8 +5,6 @@ import { Observable, Subscription, Subject } from "rxjs";
 import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
 import { UserLanguageService } from '../../services/general/user-language.service';
-//import { Order } from '../../../../../../both/models/establishment/order.model';
-//import { Orders } from '../../../../../../both/collections/establishment/order.collection';
 import { OrderHistory } from '../../../../../../both/models/establishment/order-history.model';
 import { OrderHistories } from '../../../../../../both/collections/establishment/order-history.collection';
 import { UserDetail, UserDetailImage } from '../../../../../../both/models/auth/user-detail.model';
@@ -28,15 +26,12 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
     private _userDetailSubscription: Subscription;
     private _usersSubscription: Subscription;
     private _orderHistorySubscription: Subscription;
-    //private _orderSubscription: Subscription;
-    //private _itemsSubscription: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
     private _orderHistories: Observable<OrderHistory[]>;
-    //private _orders: Observable<Order[]>;
-    //private _items: Observable<Item[]>;
     private _userDetail: UserDetail;
+    private _lToday: Date = new Date();
     private _lEstablishmentsId: string[] = [];
 
 
@@ -55,6 +50,9 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
     constructor(public _translate: TranslateService,
         private _userLanguageService: UserLanguageService,
         private _ngZone: NgZone) {
+        this._lToday.setSeconds(0);
+        this._lToday.setMinutes(0);
+        this._lToday.setHours(0);
     }
 
     /**
@@ -75,21 +73,8 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
                 this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishmentIds', this._lEstablishmentsId).takeUntil(this.ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
                         this.doFilter();
-                        //this._orderHistories = OrderHistories.find({ customer_id: this._user, establishment_id: this._lEstablishmentsId }, { sort: { creation_date: -1 } }).zone();
                     });
                 });
-
-                /*
-                this._orderSubscription = MeteorObservable.subscribe('getOrdersByEstablishmentIds', this._lEstablishmentsId, ['ORDER_STATUS.RECEIVED']).takeUntil(this.ngUnsubscribe).subscribe(() => {
-                    this._ngZone.run(() => {
-                        this.doFilter();
-                    });
-                });
-                this._itemsSubscription = MeteorObservable.subscribe('getItemsByEstablishmentIds', this._lEstablishmentsId).takeUntil(this.ngUnsubscribe).subscribe(() => {
-                    this._ngZone.run(() => {
-                        this._items = Items.find({}).zone();
-                    });
-                });*/
             });
         });
     }
@@ -97,14 +82,8 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
     /**
      * Do filter by username or email address
      */
-    //doFilter(_pSearchValue: string, _pEstablishmentId: string) {
     doFilter() {
-        let _lToday: Date = new Date();
         let _lUsersId: string[] = new Array();
-        _lToday.setSeconds(0);
-        _lToday.setMinutes(0);
-        _lToday.setHours(0);
-
         this._loading = true;
         setTimeout(() => {
 
@@ -137,12 +116,12 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
                 this._orderHistories = OrderHistories.find({
                     establishment_id: { $in: this._lEstablishmentsId },
                     customer_id: { $in: _lUsersId },
-                    creation_date: { $gt: _lToday }
+                    creation_date: { $gt: this._lToday }
                 }).zone();
             } else {
                 this._orderHistories = OrderHistories.find({
                     establishment_id: { $in: this._lEstablishmentsId },
-                    creation_date: { $gt: _lToday }
+                    creation_date: { $gt: this._lToday }
                 }).zone();
             }
 
@@ -211,22 +190,11 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
     }
 
     /**
-    * Function to get item avalaibility 
-    */
-    /*getItemAvailability(itemId: string): boolean {
-        let _itemEstablishment: Item = Items.collection.findOne({ _id: itemId }, { fields: { _id: 0, establishments: 1 } });
-        let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this._lEstablishmentsId);
-        return aux.isAvailable;
-    }*/
-
-    /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
-        //if (this._userSubscription) { this._userSubscription.unsubscribe() };
-        //if (this._orderSubscription) { this._orderSubscription.unsubscribe() };
     }
 
     /**
