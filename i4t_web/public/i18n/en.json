@@ -124,6 +124,7 @@
         "GENDER_LBL": "Gender"
     },
     "SIGNIN": {
+        "TITLE": "SIGNIN FOR RESTAURANT ADMINISTRATORS AND EMPLOYEES",
         "EMAIL_USERNAME": "Email/Username",
         "PASSWORD": "Password",
         "KEEP_SIGNED": "Keep me logged in",
@@ -141,7 +142,9 @@
         "ACCEPT": "Accept",
         "USER_NO_ACTIVE": "The user is not activated. Please contact the admin",
         "RESTAURANT_NO_ACTIVE": "The restaurant is not activated. Please contact the admin",
-        "DONT_ACCOUNT": "Not an account?"
+        "DONT_ACCOUNT": "Not an administrator account?",
+        "DOWNLOAD_APP": "Download comeygana",
+        "DOWNLOAD_APP_P": "Free on play store and apple store"
     },
     "RESET_PASWORD": {
         "TITLE": "Reset your password",
@@ -246,7 +249,7 @@
         "USERNAME": "Username",
         "FIRST_NAME": "First Name",
         "LAST_NAME": "Last Name",
-        "FULL_NAME":"Full Name",
+        "FULL_NAME": "Full Name",
         "LANGUAGE": "Language",
         "CHANGE_EMAIL": "Change your email",
         "CHANGE_PASSWORD": "Change your password",
@@ -592,9 +595,9 @@
     },
     "GO_TO_STORE": {
         "CLIENT": {
-            "TITTLE": "What do you ",
-            "SUB_TITTLE": "like to eat?",
-            "CONTENT": "We did most of the heavy lifting for you to provide a default stylings that incorporate our custom components",
+            "TITTLE": "Order from your smartphone, accumulate and redeem your points",
+            "SUB_TITTLE": "",
+            "CONTENT": "Free download: ",
             "BUTTON": "Download"
         },
         "COLLABORATOR": {

@@ -124,6 +124,7 @@
         "GENDER_LBL": "Género"
     },
     "SIGNIN": {
+        "TITLE": "INGRESO PARA ADMINISTRADORES Y COLABORADORES DE RESTAURANTE",
         "EMAIL_USERNAME": "Correo electrónico/Nombre usuario",
         "PASSWORD": "Contraseña",
         "KEEP_SIGNED": "No cerrar sesión",
@@ -141,7 +142,9 @@
         "ACCEPT": "Aceptar",
         "USER_NO_ACTIVE": "Tu usuario no se encuentra activo. Por favor contacta al administrador",
         "RESTAURANT_NO_ACTIVE": "El restaurante no se encuentra activo. Por favor contacta al administrador",
-        "DONT_ACCOUNT": "No tienes cuenta?"
+        "DONT_ACCOUNT": "No tienes cuenta administrador?",
+        "DOWNLOAD_APP":"Descarga comeygana",
+        "DOWNLOAD_APP_P":" Gratis en la play store y apple store"
     },
     "RESET_PASWORD": {
         "TITLE": "Cambiar contraseña",
@@ -592,9 +595,9 @@
     },
     "GO_TO_STORE": {
         "CLIENT": {
-            "TITTLE": "Qué te",
-            "SUB_TITTLE": "gusta comer?",
-            "CONTENT": "Hicimos la mayor parte del trabajo pesado para que usted pueda proporcionar un estilo por defecto que incorpora nuestros componentes personalizados",
+            "TITTLE": "Ordena desde tu celular, acumula y redime tus puntos",
+            "SUB_TITTLE": "",
+            "CONTENT": "Descarga gratis en: ",
             "BUTTON": "Descargar"
         },
         "COLLABORATOR": {

@@ -1,7 +1,7 @@
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './administrator/dashboard/dashboard.component';
 import { SectionComponent } from './administrator/menu/sections/section/section.component';
-import { SignupWebComponent } from './auth/signup/signup.web.component';
+//import { SignupWebComponent } from './auth/signup/signup.web.component';
 import { SigninWebComponent } from './auth/signin/signin.web.component';
 import { CategoryComponent } from './administrator/menu/categories/categories/categories.component';
 import { SubcategoryComponent } from './administrator/menu/subcategories/subcategories/subcategories.component';
@@ -101,7 +101,7 @@ export const WEB_DECLARATIONS = [
     AppComponent,
     DashboardComponent,
     SigninWebComponent,
-    SignupWebComponent,
+    //SignupWebComponent,
     ResetPasswordWebComponent,
     SectionComponent,
     CategoryComponent,
