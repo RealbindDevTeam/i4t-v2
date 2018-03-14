@@ -11,7 +11,7 @@ import { AuthClass } from '../auth.class';
 @Component({
     selector: 'signin',
     templateUrl: './signin.web.component.html',
-    styleUrls: [ '../auth.component.scss' ]
+    styleUrls: ['../auth.component.scss']
 })
 export class SigninWebComponent extends AuthClass implements OnInit {
 
@@ -64,7 +64,7 @@ export class SigninWebComponent extends AuthClass implements OnInit {
                         MeteorObservable.call('getRole').subscribe((role) => {
                             switch (role) {
                                 case '100': {
-                                    if(this.devicesValidate()){
+                                    if (this.devicesValidate()) {
                                         this.insertUserInfo();
                                         this.router.navigate(['app/dashboard']);
                                     } else {
@@ -77,12 +77,11 @@ export class SigninWebComponent extends AuthClass implements OnInit {
                                     break;
                                 }
                                 case '400': {
-                                    this.insertUserInfo();
-                                    this.router.navigate(['app/orders']);
+                                    this.router.navigate(['go-to-store', 't'], { skipLocationChange: true });
                                     break;
                                 }
                                 case '600': {
-                                    if(this.devicesValidate()){
+                                    if (this.devicesValidate()) {
                                         this.validateUserIsActive('app/dashboards');
                                     } else {
                                         this.router.navigate(['go-to-store', 'f'], { skipLocationChange: true });
@@ -104,12 +103,12 @@ export class SigninWebComponent extends AuthClass implements OnInit {
      * Validate user is active
      * @param _pRoute 
      */
-    validateUserIsActive( _pRoute : string){
+    validateUserIsActive(_pRoute: string) {
         MeteorObservable.call('validateEstablishmentIsActive').subscribe((_restaruantActive) => {
-            if(_restaruantActive){
-                
+            if (_restaruantActive) {
+
                 MeteorObservable.call('validateUserIsActive').subscribe((_active) => {
-                    if(_active){
+                    if (_active) {
                         this.insertUserInfo();
                         this.router.navigate([_pRoute]);
                     } else {
@@ -129,7 +128,7 @@ export class SigninWebComponent extends AuthClass implements OnInit {
      */
     openDialogForgotPassword() {
         this.mdDialogRef2 = this._mdDialog.open(RecoverWebComponent, {
-            disableClose: true,
+            disableClose: true
         });
         this.mdDialogRef2.afterClosed().subscribe(result => {
             this.mdDialogRef2 = null;
