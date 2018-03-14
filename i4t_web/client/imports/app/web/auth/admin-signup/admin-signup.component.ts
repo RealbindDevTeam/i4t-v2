@@ -60,15 +60,11 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
             email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(255), CustomValidators.emailValidator]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
             confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            firstName: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
-            lastName: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
-            dniNumber: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]),
-            contactPhone: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]),
-            shippingAddress: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]),
             country: new FormControl('', [Validators.required]),
             city: new FormControl('', [Validators.required]),
             otherCity: new FormControl(),
-            gender: new FormControl('', [Validators.required])
+            gender: new FormControl('', [Validators.required]),
+            fullName: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)])
         });
 
         this._countrySub = MeteorObservable.subscribe('countries').subscribe(() => {
@@ -129,9 +125,7 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
         let cityIdAux: string;
         let cityAux: string;
         if (this.signupForm.value.password == this.signupForm.value.confirmPassword) {
-
-            this.userProfile.first_name = this.signupForm.value.firstName;
-            this.userProfile.last_name = this.signupForm.value.lastName;
+            this.userProfile.full_name = this.signupForm.value.fullName;
             this.userProfile.language_code = this.getUserLang();
             this.userProfile.gender = this.signupForm.value.gender;
 
@@ -165,9 +159,9 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
                                 user_id: Meteor.userId(),
                                 role_id: '100',
                                 is_active: true,
-                                contact_phone: this.signupForm.value.contactPhone,
-                                dni_number: this.signupForm.value.dniNumber,
-                                address: this.signupForm.value.shippingAddress,
+                                contact_phone: "",
+                                dni_number: "",
+                                address: "",
                                 country_id: this._selectedCountry,
                                 city_id: cityIdAux,
                                 other_city: cityAux,
