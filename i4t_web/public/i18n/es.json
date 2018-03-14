@@ -276,7 +276,8 @@
             "INVOICES_DOWNLOAD": "Descarga de facturas",
             "PROFILE": "Perfiles",
             "TABLES_SEARCH": "Búscar mesas",
-            "MY_RESTAURANTS": "Mis Restaurantes"
+            "MY_RESTAURANTS": "Mis Restaurantes",
+            "ORDERS_TODAY": "Ordenes del día"
         },
         "PAYMENTS": {
             "PAYMENTS": "Pago del servicio",
@@ -1757,5 +1758,14 @@
         "REMOVE_MSG": "Deseas remover el valor?",
         "OPTION_VALUE_REMOVED": "Valor removido correctamente",
         "OPTION_VALUE_NOT_REMOVED": "El valor tiene items, no se ha podido remover"
+    },
+    "ORDERS_TODAY": {
+        "TITLE": "Ordenes del día",
+        "NAME_FILTER": "Buscar por nombre o correo eléctronico",
+        "SELECT_ESTABLISHMENT": "Seleccionar restaurante",
+        "ALL_ESTABLISHMENT": "Todos los restaurantes",
+        "NO_RECORDS_FOUND": "No se encontrarón ordenes",
+        "ACCUMULATED": "acumulados",
+        "REDEEMED": "redimidos"
     }
 }

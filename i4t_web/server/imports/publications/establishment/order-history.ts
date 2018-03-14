@@ -23,3 +23,11 @@ Meteor.publish('getOrderHistoryByEstablishment', function (_establishmentId: str
     return OrderHistories.find({ establishment_id: _establishmentId })
 });
 
+/**
+ * Meteor publication return orders history by establishment Ids
+ * @param {string[]} _establishmentIds
+ */
+Meteor.publish('getOrderHistoryByEstablishmentIds', function (_pEstablishmentIds: string[]) {
+    return OrderHistories.find({ establishment_id: { $in: _pEstablishmentIds } })
+});
+

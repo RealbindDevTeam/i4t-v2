@@ -1,12 +1,21 @@
 <mat-card>
     <mat-card-header>
         <mat-icon matSuffix style="line-height: 65px;">search</mat-icon>
-        <mat-form-field>
-            <input matInput type="text" placeholder="Registro de búsqueda" [(ngModel)]="_userFilter" (ngModelChange)="doFilter($event)"
-            />
+        <mat-form-field floatPlaceholder="never">
+            <input matInput type="text" placeholder="{{'ORDERS_TODAY.NAME_FILTER' | translate}}" [(ngModel)]="_userFilter" (ngModelChange)="doFilter()" />
             <button mat-button *ngIf="_userFilter" matSuffix mat-icon-button (click)="_userFilter=''; doFilter(null)">
                 <mat-icon>close</mat-icon>
             </button>
+        </mat-form-field>
+
+        <mat-icon matSuffix style="line-height: 65px;">store</mat-icon>
+        <mat-form-field floatPlaceholder="never">
+            <mat-select placeholder="{{'ORDERS_TODAY.SELECT_ESTABLISHMENT' | translate}}" [(ngModel)]="_establishmentFilter" (ngModelChange)="doFilter()">
+                <mat-option selected value="all">{{'ORDERS_TODAY.ALL_ESTABLISHMENT' | translate}}</mat-option>
+                <mat-option *ngFor="let _establishment of _establishments | async" [value]="_establishment._id">
+                    {{ _establishment.name }}
+                </mat-option>
+            </mat-select>
         </mat-form-field>
     </mat-card-header>
     <mat-card-content>
@@ -14,86 +23,81 @@
             <mat-spinner [diameter]="50"></mat-spinner>
         </div>
         <mat-accordion *ngIf="!_loading">
-            <mat-expansion-panel *ngFor="let order of _orders | async">
+            <div *ngIf="(_orderHistories | async)?.length <= 0" style="text-align: center">
+                <span class="no-rows">{{'ORDERS_TODAY.NO_RECORDS_FOUND' | translate}}</span>
+            </div>
+            <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        <img mat-card-avatar src="{{getImgUser(order.creation_user)}}" />
-                        <span>{{getUserName(order.creation_user)}}</span>
+                        <img mat-card-avatar src="{{getImgUser(orderHistory.customer_id)}}" />
+                        <span>{{getUserName(orderHistory.customer_id)}}</span>
                     </mat-panel-title>
                     <mat-panel-description>
-                        <span>Type your name and age</span>
+                        <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS'
+                            | translate}} {{'ORDERS_TODAY.ACCUMULATED' | translate}}</span>
+                        <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS'
+                            | translate}} {{'ORDERS_TODAY.REDEEMED' | translate}}</span>
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
                 <mat-list>
-                    <span *ngIf="(order.items.length > 0)">
-                        <span *ngFor="let item of _items | async">
-                            <span *ngFor="let it of order.items">
-                                <ng-template [ngIf]="item._id === it.itemId">
-                                    <mat-list-item *ngIf="it.is_reward">
-                                        <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
-                                        <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
-                                        <h4 mat-line>{{item.name}}</h4>
-                                        <h5 mat-line>{{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}</h5>
-                                        <h5 mat-line>{{'ORDER_LIST.FREE' | translate}}</h5>
-                                        <mat-chip-list mat-line>
-                                            <mat-chip style="background-color: #fff;color: #ffbf00;padding: 0;">{{'ORDER_LIST.ITEM' | translate}}
-                                                <mat-icon style="margin-left: 5px;">redeem</mat-icon>
-                                            </mat-chip>
-                                        </mat-chip-list>
-                                        <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
-                                        <button mat-icon-button *ngIf="order.status === 'ORDER_STATUS.SELECTING'" (click)="removeReward(order, it.itemId, it.index)">
-                                            <mat-icon class="item-icon">clear</mat-icon>
-                                        </button>
-                                    </mat-list-item>
-                                    <mat-list-item *ngIf="!it.is_reward">
-                                        <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
-                                        <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
-                                        <h4 mat-line>{{item.name}}</h4>
-                                        <h5 mat-line>
-                                            {{'ORDER_LIST.PRICE' | translate}}: {{it.paymentItem}} {{_currencyCode}} - {{'ORDER_LIST.QUANT' | translate}} {{it.quantity}}
-                                            <!--div *ngIf="it.garnishFood.length > 0" class="order-item"> - {{'ORDER_LIST.GARNISH_FOOD' | translate}}: {{it.garnishFood.length}}</div-->
-                                            <div *ngIf="it.additions.length > 0" class="order-item"> - {{'ORDER_LIST.ADDITIONS' | translate}}: {{it.additions.length}}</div>
-                                        </h5>
-                                        <mat-chip-list mat-line *ngIf="it.reward_points > 0">
-                                            <mat-chip style="background-color: #fff;color: #4CAF50;padding: 0;">{{'ORDER_CREATE.GET_POINTS' | translate}} {{it.reward_points}} {{'ORDER_CREATE.POINTS'
-                                                | translate}}
-                                                <mat-icon style="margin-left: 5px;">star</mat-icon>
-                                            </mat-chip>
-                                        </mat-chip-list>
-                                        <p mat-line *ngIf="!getItemAvailability(item._id)" class="item-unavailable">{{'ORDER_LIST.UNAVAILABLE' | translate}}</p>
-                                        <button mat-icon-button *ngIf="order.status === 'ORDER_STATUS.SELECTING'" (click)="showOrderItemDetail(it)">
-                                            <mat-icon class="item-icon">mode_edit</mat-icon>
-                                        </button>
-                                        <button mat-icon-button *ngIf="order.status !== 'ORDER_STATUS.SELECTING'" (click)="showOrderItemDetail(it)">
-                                            <mat-icon class="item-icon">search</mat-icon>
-                                        </button>
-                                    </mat-list-item>
-                                    <mat-divider class="divider"></mat-divider>
-                                </ng-template>
-                            </span>
-                        </span>
-                    </span>
-                    <span *ngIf="(order.additions.length > 0)">
-                        <span *ngFor="let addition of _additions | async">
-                            <span *ngFor="let ad of order.additions">
-                                <ng-template [ngIf]="addition._id === ad.additionId">
-                                    <mat-list-item>
-                                        <img mat-list-avatar class="custom br" src="/images/default_addition.png">
-                                        <h4 mat-line>{{addition.name}}
-                                            <div style="display: inline-block;font-size: smaller;">({{'ORDER_LIST.ADDITION' | translate}})</div>
-                                        </h4>
-                                        <p mat-line>{{'ORDER_LIST.PRICE' | translate}}: {{ad.paymentAddition}} {{_currencyCode}} - {{'ORDER_LIST.QUANT'
-                                            | translate}} {{ad.quantity}}</p>
-                                        <button mat-icon-button *ngIf="order.status === 'ORDER_STATUS.SELECTING'" (click)="showAdditionsDetail(ad)">
-                                            <mat-icon class="item-icon">mode_edit</mat-icon>
-                                        </button>
-                                    </mat-list-item>
-                                    <mat-divider class="divider"></mat-divider>
-                                </ng-template>
-                            </span>
-                        </span>
-                    </span>
+                    <div *ngFor="let item of orderHistory.items">
+                        <mat-list-item *ngIf="item.is_reward">
+                            <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(item.item_name)}} ({{'POINTS_DETAIL.REWARD' | translate}})</h4>
+                            <span class="app-flex-filler"></span>
+                            <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-list-item *ngIf="!item.is_reward">
+                            <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(item.item_name)}}</h4>
+                            <span class="app-flex-filler"></span>
+                            <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <div *ngIf="item.option_values.length > 0">
+                            <div *ngFor="let opt of item.option_values">
+                                <mat-list-item>
+                                    <mat-icon mat-list-icon class="option-icon-color">turned_in_not</mat-icon>
+                                    <h4 mat-line>{{itemNameCrop(opt.option_value_name)}}</h4>
+                                    <span *ngIf="opt.price" class="app-flex-filler"></span>
+                                    <p mat-line *ngIf="opt.price">{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                        <span class="price">{{opt.price * item.quantity}} {{orderHistory.currency}}</span>
+                                    </p>
+                                </mat-list-item>
+                                <mat-divider></mat-divider>
+                            </div>
+                        </div>
+                        <div *ngIf="item.additions.length > 0">
+                            <div *ngFor="let ad of item.additions">
+                                <mat-list-item>
+                                    <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                                    <h4 mat-line>{{itemNameCrop(ad.addition_name)}}</h4>
+                                    <span class="app-flex-filler"></span>
+                                    <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                        <span class="price">{{ad.price * item.quantity}} {{orderHistory.currency}}</span>
+                                    </p>
+                                </mat-list-item>
+                                <mat-divider></mat-divider>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngFor="let addition of orderHistory.additions">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(addition.addition_name)}}</h4>
+                            <span class="app-flex-filler"></span>
+                            <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{addition.quantity}}
+                                <span class="price">{{addition.price * addition.quantity}} {{orderHistory.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
                 </mat-list>
             </mat-expansion-panel>
         </mat-accordion>
