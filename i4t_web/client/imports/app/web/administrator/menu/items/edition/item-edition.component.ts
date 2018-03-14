@@ -288,7 +288,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                                             if (_valueFind) {
                                                 let _valControl: FormControl = new FormControl(true);
                                                 this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
-                                                
+
                                                 if (_valueFind.have_price && _valueFind.price !== 0) {
                                                     let _havePriceControl: FormControl = new FormControl(true);
                                                     this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
@@ -654,36 +654,40 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                         OptionValues.collection.find({ creation_user: this._user, option_id: option._id }).fetch().forEach((value) => {
                             let _valueFind = _optionFind.values.find(val => val.option_value_id === value._id);
                             if (_valueFind) {
-                                if (this._optionValuesFormGroup.contains('val_' + value._id)) {
+                                if (this._optionValuesFormGroup.get('val_' + value._id)) {
                                     this._optionValuesFormGroup.controls['val_' + value._id].setValue(true);
+                                    this._optionValuesFormGroup.controls['val_' + value._id].enable();
                                 } else {
                                     let _valControl: FormControl = new FormControl(true);
                                     this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
                                 }
 
                                 if (_valueFind.have_price && _valueFind.price !== 0) {
-                                    if (this._optionValuesFormGroup.contains('pri_' + value._id)) {
-                                        this._optionValuesFormGroup.controls['pri_' + value._id].setValue(_valueFind.price);
-                                    } else {
-                                        let _priceControl: FormControl = new FormControl(_valueFind.price);
-                                        this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
-                                    }
-
-                                    if (this._optionValuesFormGroup.contains('havPri_' + value._id)) {
+                                    if (this._optionValuesFormGroup.get('havPri_' + value._id)) {
                                         this._optionValuesFormGroup.controls['havPri_' + value._id].setValue(true);
+                                        this._optionValuesFormGroup.controls['havPri_' + value._id].enable();
                                     } else {
                                         let _havePriceControl: FormControl = new FormControl(true);
                                         this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
                                     }
+
+                                    if (this._optionValuesFormGroup.get('pri_' + value._id)) {
+                                        this._optionValuesFormGroup.controls['pri_' + value._id].setValue(_valueFind.price);
+                                        this._optionValuesFormGroup.controls['pri_' + value._id].enable();
+                                    } else {
+                                        let _priceControl: FormControl = new FormControl(_valueFind.price);
+                                        this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
+                                    }
                                 } else {
-                                    if (this._optionValuesFormGroup.contains('havPri_' + value._id)) {
+                                    if (this._optionValuesFormGroup.get('havPri_' + value._id)) {
                                         this._optionValuesFormGroup.controls['havPri_' + value._id].setValue(false);
+                                        this._optionValuesFormGroup.controls['havPri_' + value._id].enable();
                                     } else {
                                         let _havePriceControl: FormControl = new FormControl(false);
                                         this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
                                     }
 
-                                    if (this._optionValuesFormGroup.contains('pri_' + value._id)) {
+                                    if (this._optionValuesFormGroup.get('pri_' + value._id)) {
                                         this._optionValuesFormGroup.controls['pri_' + value._id].setValue('0');
                                         this._optionValuesFormGroup.controls['pri_' + value._id].disable();
                                     } else {
@@ -692,14 +696,15 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                                     }
                                 }
                             } else {
-                                if (this._optionValuesFormGroup.contains('val_' + value._id)) {
+                                if (this._optionValuesFormGroup.get('val_' + value._id)) {
                                     this._optionValuesFormGroup.controls['val_' + value._id].setValue(false);
+                                    this._optionValuesFormGroup.controls['val_' + value._id].enable();                                  
                                 } else {
                                     let _valControl: FormControl = new FormControl(false);
                                     this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
                                 }
 
-                                if (this._optionValuesFormGroup.contains('havPri_' + value._id)) {
+                                if (this._optionValuesFormGroup.get('havPri_' + value._id)) {
                                     this._optionValuesFormGroup.controls['havPri_' + value._id].setValue(false);
                                     this._optionValuesFormGroup.controls['havPri_' + value._id].disable();
                                 } else {
@@ -707,7 +712,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                                     this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
                                 }
 
-                                if (this._optionValuesFormGroup.contains('pri_' + value._id)) {
+                                if (this._optionValuesFormGroup.get('pri_' + value._id)) {
                                     this._optionValuesFormGroup.controls['pri_' + value._id].setValue('0');
                                     this._optionValuesFormGroup.controls['pri_' + value._id].disable();
                                 } else {
@@ -733,14 +738,29 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                         }
 
                         OptionValues.collection.find({ creation_user: this._user, option_id: option._id }).fetch().forEach((value) => {
-                            let _valControl: FormControl = new FormControl({ value: false, disabled: true });
-                            this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
+                            if (this._optionValuesFormGroup.contains('val_' + value._id)) {
+                                this._optionValuesFormGroup.controls['val_' + value._id].setValue(false);
+                                this._optionValuesFormGroup.controls['val_' + value._id].disable();
+                            } else {
+                                let _valControl: FormControl = new FormControl({ value: false, disabled: true });
+                                this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
+                            }
 
-                            let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
-                            this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
+                            if (this._optionValuesFormGroup.contains('havPri_' + value._id)) {
+                                this._optionValuesFormGroup.controls['havPri_' + value._id].setValue(false);
+                                this._optionValuesFormGroup.controls['havPri_' + value._id].disable();
+                            } else {
+                                let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
+                                this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
+                            }
 
-                            let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
-                            this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
+                            if (this._optionValuesFormGroup.contains('pri_' + value._id)) {
+                                this._optionValuesFormGroup.controls['pri_' + value._id].setValue('0');
+                                this._optionValuesFormGroup.controls['pri_' + value._id].disable();
+                            } else {
+                                let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
+                                this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
+                            }
                         });
                     }
                 });
