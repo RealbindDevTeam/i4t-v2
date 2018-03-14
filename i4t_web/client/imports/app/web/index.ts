@@ -95,6 +95,7 @@ import { OptionEditComponent } from './administrator/menu/options/options/option
 import { OptionValueComponent } from './administrator/menu/options/values/option-value/option-value.component';
 import { OptionValueEditComponent } from './administrator/menu/options/values/option-value-edit/option-value-edit.component';
 import { RewardHistoryChartComponent } from './administrator/dashboard/reward-history-chart/reward-history-chart.component';
+import { OrdersTodayComponent } from "./administrator/orders-today/orders-today.component";
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -147,7 +148,6 @@ export const WEB_DECLARATIONS = [
     EstablishmentTableControlComponent,
     TableDetailComponent,
     SupervisorEstablishmentTableControlComponent,
-    //InvoicesDownloadPage,
     EstablishmentProfileComponent,
     EstablishmentProFileDetailComponent,
     RewardComponent,
@@ -156,6 +156,8 @@ export const WEB_DECLARATIONS = [
     ItemUnitsChartComponent,
     RewardUnitsChartComponent,
     ItemHistoryChartComponent,
+    RewardHistoryChartComponent,
+    OrdersTodayComponent,
     OptionsComponent,
     OptionValueComponent,
     RewardHistoryChartComponent

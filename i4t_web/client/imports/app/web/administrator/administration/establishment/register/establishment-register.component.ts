@@ -57,6 +57,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private _garnishFoodSub: Subscription;
     private _usrDetailSubscription: Subscription;
     private _pointValiditySub: Subscription;
+    private _parameterSubscription: Subscription;
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
@@ -153,6 +154,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         this._currencySub = MeteorObservable.subscribe('currencies').subscribe();
         this._additionsSub = MeteorObservable.subscribe('additions', this._user).subscribe();
         this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).subscribe();
+        this._parameterSubscription = MeteorObservable.subscribe('getParameters').subscribe();
         this._currentDate = new Date();
         this._firstMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth(), 1);
         this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
@@ -185,6 +187,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
         if (this._usrDetailSubscription) { this._usrDetailSubscription.unsubscribe(); }
         if (this._pointValiditySub) { this._pointValiditySub.unsubscribe(); }
+        if (this._parameterSubscription) { this._parameterSubscription.unsubscribe(); }
     }
 
     /**

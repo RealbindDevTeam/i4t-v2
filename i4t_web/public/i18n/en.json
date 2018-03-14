@@ -280,7 +280,8 @@
             "INVOICES_DOWNLOAD": "Invoices download",
             "PROFILE": "Profiles",
             "TABLES_SEARCH": "Tables search",
-            "MY_RESTAURANTS": "My Restaurants"
+            "MY_RESTAURANTS": "My Restaurants",
+            "ORDERS_TODAY": "Orders of the day"
         },
         "PAYMENTS": {
             "PAYMENTS": "Service payment",
@@ -1764,5 +1765,14 @@
         "REMOVE_MSG": "Do you want to remove option?",
         "OPTION_VALUE_REMOVED": "Option removed correctly",
         "OPTION_VALUE_NOT_REMOVED": "The option have items, it could not be removed"
+    },
+    "ORDERS_TODAY": {
+        "TITLE": "Orders of the day",
+        "NAME_FILTER": "Search by name or email",
+        "SELECT_ESTABLISHMENT": "Select restaurant",
+        "ALL_ESTABLISHMENT": "All restaurants",
+        "NO_RECORDS_FOUND": "No orders found",
+        "ACCUMULATED": "accumulated",
+        "REDEEMED": "Redeemed"
     }
 }
