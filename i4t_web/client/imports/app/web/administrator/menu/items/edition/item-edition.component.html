@@ -301,7 +301,47 @@
                 <mat-card-title>{{'ITEMS.OPTIONS' | translate}}</mat-card-title>
                 <mat-card-subtitle>{{'ITEMS.OPTIONS_MSG' | translate}}</mat-card-subtitle>
                 <mat-card-content>
-
+                    <p *ngIf="!_showOptions">{{'ITEMS.NO_OPTIONS_CREATED' | translate}}</p>
+                    <mat-accordion *ngIf="_showOptions" [multi]="false">
+                        <mat-expansion-panel *ngFor="let option of _options | async; let i = index">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title style="font-weight: bold;">{{option.name}}</mat-panel-title>
+                                <mat-panel-description></mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-divider class="divider"></mat-divider>
+                            <table style="margin-bottom: 10px;" cellspacing="0" formGroupName="options">
+                                <tr>
+                                    <td style="width: 2%;">
+                                        <mat-checkbox [formControlName]="'av_'+option._id" (change)="onCheckAvailableOption(option._id, $event)">{{'ITEMS.AVAILABLE' | translate}}</mat-checkbox>
+                                    </td>
+                                    <td style="width: 20%;">
+                                        <mat-checkbox [formControlName]="'req_'+option._id">{{'ITEMS.IS_REQUIRED' | translate}}</mat-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                            <mat-divider class="divider"></mat-divider>
+                            <div *ngFor="let value of _optionValues | async">
+                                <div *ngIf="value.option_id === option._id">
+                                    <table style="margin-left: 5%;" cellspacing="0" formGroupName="option_values">
+                                        <tr>
+                                            <td style="width: 50%;">
+                                                <mat-checkbox [formControlName]="'val_'+value._id" (change)="onCheckOptionValue(value._id, $event)">{{value.name}}</mat-checkbox>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <mat-checkbox [formControlName]="'havPri_'+value._id" (change)="onCheckHavePriceOptionValue(value._id, $event)">{{'ITEMS.HAVE_PRICE' | translate}}</mat-checkbox>
+                                            </td>
+                                            <td>
+                                                <mat-form-field style="width: 40%;">
+                                                    <input matInput [formControlName]="'pri_'+value._id" placeholder="{{'ITEMS.PRICE' | translate}}" type="number">
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <mat-divider class="divider"></mat-divider>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </mat-card-content>
                 <br/>
                 <mat-card-title>{{'ITEMS.ADDITIONS' | translate}}</mat-card-title>

@@ -8,7 +8,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Meteor } from 'meteor/meteor';
 import { MatSnackBar, MatStepper } from '@angular/material';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
-import { Item, ItemImage, ItemEstablishment, ItemPrice } from '../../../../../../../../both/models/menu/item.model';
+import { Item, ItemImage, ItemEstablishment, ItemPrice, ItemOption, ItemOptionValue } from '../../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../../both/collections/menu/item.collection';
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
 import { Section } from '../../../../../../../../both/models/menu/section.model';
@@ -66,6 +66,8 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
     private _currencies: Observable<Currency[]>;
     private _cookingTimes: Observable<CookingTime[]>;
     private _points: Observable<Point[]>;
+    private _options: Observable<Option[]>;
+    private _optionValues: Observable<OptionValue[]>;
 
     private _itemsSub: Subscription;
     private _establishmentSub: Subscription;
@@ -78,6 +80,8 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
     private _countriesSub: Subscription;
     private _cookingTimeSub: Subscription;
     private _pointsSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
     private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     public _selectedIndex: number = 0;
@@ -88,6 +92,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
     private _showCurrencies: boolean = false;
     private _showTaxes: boolean = false;
     private _showGeneralError: boolean = false;
+    private _showOptions: boolean = false;
 
     //private _itemSection: string;
     //private _itemCategory: string;
@@ -100,13 +105,14 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
     //private _garnishFoodList: GarnishFood[];
     //private _itemGarnishFood: string[];
     //private _edition_garnishFood: string[];
-    private _itemAdditions: string[];
-    private _additionList: Addition[];
-    private _edition_addition: string[];
+    private _itemAdditions: string[] = [];
+    private _additionList: Addition[] = [];
+    private _edition_addition: string[] = [];
     private _establishmentList: Establishment[] = [];
     private _itemEstablishments: ItemEstablishment[] = [];
     private _establishmentCurrencies: string[] = [];
     private _establishmentTaxes: string[] = [];
+    private _itemOptions: ItemOption[] = [];
 
     private _editImage: boolean = false;
     private _editItemImageToInsert: ItemImage;
@@ -142,9 +148,9 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
         //this._itemGarnishFood = [];
         //this._garnishFoodList = [];
         //this._edition_garnishFood = [];
-        this._itemAdditions = [];
-        this._additionList = [];
-        this._edition_addition = [];
+        //this._itemAdditions = [];
+        //this._additionList = [];
+        //this._edition_addition = [];
 
         this._route.params.forEach((params: Params) => {
             this._itemToEdit = JSON.parse(params['param1']);
@@ -161,6 +167,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
         this.removeSubscriptions();
         let _establishmentsId: string[] = [];
         let _currenciesId: string[] = [];
+        let _optionIds: string[] = [];
         /*this._itemEditionForm = this._formBuilder.group({
             //editId: [this._itemToEdit._id],
             //editIsActive: [this._itemToEdit.is_active],
@@ -221,6 +228,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
         this._itemAdditions = this._itemToEdit.additions;
         //this._garnishFoodQuantity = this._itemToEdit.garnishFoodQuantity;
         this._itemEstablishments = this._itemToEdit.establishments;
+        this._itemOptions = this._itemToEdit.options;
 
         this._rewardEnable = this._itemToEdit.has_reward;
         this._selectedPoints = this._itemToEdit.reward_points;
@@ -286,7 +294,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                         this._currencies = Currencies.find({ _id: { $in: _currenciesId } }).zone();
                     });
                 });
-                /*this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
                         this._options = Options.find({ creation_user: this._user, establishments: { $in: _establishmentsId }, is_active: true }).zone();
                         Options.find({ creation_user: this._user, establishments: { $in: _establishmentsId }, is_active: true }).fetch().forEach((opt) => {
@@ -295,10 +303,71 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                         this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
                             this._ngZone.run(() => {
                                 this._optionValues = OptionValues.find({ creation_user: this._user }).zone();
+                                Options.collection.find({ creation_user: this._user, establishments: { $in: _establishmentsId }, is_active: true }).fetch().forEach((option) => {
+                                    let _optionFind = this._itemOptions.find(op => op.option_id === option._id);
+                                    if (_optionFind) {
+                                        let _availableControl: FormControl = new FormControl(true);
+                                        this._optionsFormGroup.addControl('av_' + option._id, _availableControl);
+                                        if (_optionFind.is_required) {
+                                            let _requiredControl: FormControl = new FormControl(true);
+                                            this._optionsFormGroup.addControl('req_' + option._id, _requiredControl);
+                                        } else {
+                                            let _requiredControl: FormControl = new FormControl({ value: false, disabled: true });
+                                            this._optionsFormGroup.addControl('req_' + option._id, _requiredControl);
+                                        }
+                                        OptionValues.collection.find({ creation_user: this._user, option_id: option._id }).fetch().forEach((value) => {
+                                            let _valueFind = _optionFind.values.find(val => val.option_value_id === value._id);
+                                            if (_valueFind) {
+                                                let _valControl: FormControl = new FormControl(true);
+                                                this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
+                                                if (_valueFind.have_price) {
+                                                    let _havePriceControl: FormControl = new FormControl(true);
+                                                    this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
+
+                                                    let _priceControl: FormControl = new FormControl(_valueFind.price);
+                                                    this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
+                                                } else {
+                                                    let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
+                                                    this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
+
+                                                    let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
+                                                    this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
+                                                }
+                                            } else {
+                                                let _valControl: FormControl = new FormControl(false);
+                                                this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
+
+                                                let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
+                                                this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
+
+                                                let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
+                                                this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
+                                            }
+                                        });
+                                    } else {
+                                        let _availableControl: FormControl = new FormControl(false);
+                                        this._optionsFormGroup.addControl('av_' + option._id, _availableControl);
+
+                                        let _requiredControl: FormControl = new FormControl({ value: false, disabled: true });
+                                        this._optionsFormGroup.addControl('req_' + option._id, _requiredControl);
+
+                                        OptionValues.collection.find({ creation_user: this._user, option_id: option._id }).fetch().forEach((value) => {
+                                            let _valControl: FormControl = new FormControl(false);
+                                            this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
+
+                                            let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
+                                            this._optionValuesFormGroup.addControl('havPri_' + value._id, _havePriceControl);
+
+                                            let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
+                                            this._optionValuesFormGroup.addControl('pri_' + value._id, _priceControl);
+                                        });
+                                    }
+                                });
+                                if (this._itemToEdit.options.length > 0) { this._showOptions = true }
                             });
                         });
                     });
-                });*/
+                });
             });
         });
 
@@ -471,7 +540,6 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
             //this._itemEditionForm.controls['editGarnishFoodQuantity'].setValue('0');
 
             if (Establishments.collection.find({ _id: { $in: _lSection.establishments } }).count() > 0) {
-                this._showEstablishments = true;
                 Establishments.collection.find({ _id: { $in: _lSection.establishments } }).fetch().forEach((r) => {
                     if (this._establishmentsFormGroup.contains(r._id)) {
                         this._establishmentsFormGroup.controls[r._id].setValue(false);
@@ -497,7 +565,6 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
 
                     let _lCountry: Country = Countries.findOne({ _id: r.countryId });
                     if (_lCountry.itemsWithDifferentTax === true) {
-                        this._showTaxes = true;
                         if (this._taxesFormGroup.contains(r.currencyId)) {
                             this._taxesFormGroup.controls[r.currencyId].setValue('0');
                         } else {
@@ -508,8 +575,12 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                         if (_lTax.length === 0) {
                             this._establishmentTaxes.push(r.currencyId);
                         }
+                        this._showTaxes = true;
                     }
                 });
+                this._showEstablishments = true;
+            } else {
+                this._showEstablishments = false;                
             }
 
             /*if (GarnishFoodCol.collection.find({ 'establishments.establishment_id': { $in: _estabishmentSectionsIds } }).count() > 0) {
@@ -527,8 +598,51 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                 this._showGarnishFood = false;
             }*/
 
+            if (Options.collection.find({ creation_user: this._user, establishments: { $in: _estabishmentSectionsIds }, is_active: true }).count() > 0) {
+                Options.collection.find({ creation_user: this._user, establishments: { $in: _estabishmentSectionsIds }, is_active: true }).fetch().forEach((opt) => {
+                    if (this._optionsFormGroup.contains('av_' + opt._id)) {
+                        this._optionsFormGroup.controls['av_' + opt._id].setValue(false);
+                    } else {
+                        let _availableControl: FormControl = new FormControl(false);
+                        this._optionsFormGroup.addControl('av_' + opt._id, _availableControl);
+                    }
+
+                    if (this._optionsFormGroup.contains('req_' + opt._id)) {
+                        this._optionsFormGroup.controls['req_' + opt._id].setValue({ value: false, disabled: true });
+                    } else {
+                        let _requiredControl: FormControl = new FormControl({ value: false, disabled: true });
+                        this._optionsFormGroup.addControl('req_' + opt._id, _requiredControl);
+                    }
+                });
+
+                OptionValues.collection.find({ creation_user: this._user }).fetch().forEach((val) => {
+                    if (this._optionValuesFormGroup.contains('val_' + val._id)) {
+                        this._optionValuesFormGroup.controls['val_' + val._id].setValue(false);
+                    } else {
+                        let _valControl: FormControl = new FormControl(false);
+                        this._optionValuesFormGroup.addControl('val_' + val._id, _valControl);
+                    }
+
+                    if (this._optionValuesFormGroup.contains('havPri_' + val._id)) {
+                        this._optionValuesFormGroup.controls['havPri_' + val._id].setValue({ value: false, disabled: true });
+                    } else {
+                        let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
+                        this._optionValuesFormGroup.addControl('havPri_' + val._id, _havePriceControl);
+                    }
+
+                    if (this._optionValuesFormGroup.contains('pri_' + val._id)) {
+                        this._optionValuesFormGroup.controls['pri_' + val._id].setValue({ value: '0', disabled: true });
+                    } else {
+                        let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
+                        this._optionValuesFormGroup.addControl('pri_' + val._id, _priceControl);
+                    }
+                });
+                this._showOptions = true;
+            } else {
+                this._showOptions = false;                
+            }
+
             if (Additions.collection.find({ 'establishments.establishment_id': { $in: _estabishmentSectionsIds } }).count() > 0) {
-                this._showAddition = true;
                 Additions.collection.find({ 'establishments.establishment_id': { $in: _estabishmentSectionsIds } }).fetch().forEach((ad) => {
                     if (this._additionsFormGroup.contains(ad._id)) {
                         this._additionsFormGroup.controls[ad._id].setValue(false);
@@ -538,6 +652,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                     }
                 });
                 this._additionList = Additions.collection.find({ 'establishments.establishment_id': { $in: _estabishmentSectionsIds } }).fetch();
+                this._showAddition = true;
             } else {
                 this._showAddition = false;
             }
@@ -621,7 +736,6 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
             }*/
 
             if (Additions.collection.find({ 'establishments.establishment_id': { $in: _estabishmentSectionsIds } }).count() > 0) {
-                this._showAddition = true;
                 Additions.collection.find({ 'establishments.establishment_id': { $in: _estabishmentSectionsIds } }).fetch().forEach((add) => {
                     let addition: Addition = add;
                     let findAdd = this._itemAdditions.filter(d => d == addition._id);
@@ -643,9 +757,52 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                     }
                 });
                 this._additionList = Additions.collection.find({ 'establishments.establishment_id': { $in: _estabishmentSectionsIds } }).fetch();
+                this._showAddition = true;
             } else {
                 this._showAddition = false;
             }
+        }
+    }
+
+    /**
+     * This function allow use the option
+     * @param {string} _pOptionId 
+     * @param {any} _pEvent 
+     */
+    onCheckAvailableOption(_pOptionId: string, _pEvent: any): void {
+        if (_pEvent.checked) {
+            this._optionsFormGroup.controls['req_' + _pOptionId].enable();
+        } else {
+            this._optionsFormGroup.controls['req_' + _pOptionId].disable();
+            this._optionsFormGroup.controls['req_' + _pOptionId].setValue(false);
+        }
+    }
+
+    /**
+     * This function allow item use the option
+     * @param {string} _pValueId 
+     * @param {any} _pEvent 
+     */
+    onCheckOptionValue(_pValueId: string, _pEvent: any): void {
+        if (_pEvent.checked) {
+            this._optionValuesFormGroup.controls['havPri_' + _pValueId].enable();
+        } else {
+            this._optionValuesFormGroup.controls['havPri_' + _pValueId].disable();
+            this._optionValuesFormGroup.controls['havPri_' + _pValueId].setValue(false);
+        }
+    }
+
+    /**
+     * This function allow write value price
+     * @param {string} _pValueId 
+     * @param {any} _pEvent 
+     */
+    onCheckHavePriceOptionValue(_pValueId: string, _pEvent: any): void {
+        if (_pEvent.checked) {
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].enable();
+        } else {
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].disable();
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].setValue('0');
         }
     }
 
