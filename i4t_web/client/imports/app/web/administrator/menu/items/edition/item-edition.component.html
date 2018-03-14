@@ -181,13 +181,13 @@
                 <mat-card-content>
                     <div>
                         <mat-form-field style="width: 30%;">
-                            <mat-select formControlName="editSectionId" placeholder="{{'ITEMS.SELECT_SECTION' | translate}}" [(ngModel)]="_itemToEdit.sectionId">
-                                <mat-option *ngFor="let sec of _sections | async" (click)="changeSectionEdit(sec._id);" value="{{sec._id}}" ng-selected="_itemToEdit.sectionId === sec._id">{{sec.name}}</mat-option>
+                            <mat-select formControlName="editSectionId" placeholder="{{'ITEMS.SELECT_SECTION' | translate}}" [(ngModel)]="_selectedSection">
+                                <mat-option *ngFor="let sec of _sections | async" (click)="changeSectionEdit(sec._id);" value="{{sec._id}}" ng-selected="_itemSection === sec._id">{{sec.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field style="width: 30%;margin-left: 3%;">
                             <mat-select formControlName="editCategoryId" placeholder="{{'ITEMS.SELECT_CATEGORY' | translate}}" [(ngModel)]="_selectedCategory">
-                                <mat-option *ngFor="let cat of _categories | async" (click)="changeCategoryEdit(cat._id);" value="{{cat._id}}" ng-selected="_itemToEdit.categoryId === cat._id">{{cat.name}}</mat-option>
+                                <mat-option *ngFor="let cat of _categories | async" (click)="changeCategoryEdit(cat._id);" value="{{cat._id}}" ng-selected="_itemCategory === cat._id">{{cat.name}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field style="width: 30%;margin-left: 3%;">
@@ -303,7 +303,7 @@
                 <mat-card-content>
                     <p *ngIf="!_showOptions">{{'ITEMS.NO_OPTIONS_CREATED' | translate}}</p>
                     <mat-accordion *ngIf="_showOptions" [multi]="false">
-                        <mat-expansion-panel *ngFor="let option of _options | async; let i = index">
+                        <mat-expansion-panel *ngFor="let option of _optionList; let i = index">
                             <mat-expansion-panel-header>
                                 <mat-panel-title style="font-weight: bold;">{{option.name}}</mat-panel-title>
                                 <mat-panel-description></mat-panel-description>
@@ -320,7 +320,7 @@
                                 </tr>
                             </table>
                             <mat-divider class="divider"></mat-divider>
-                            <div *ngFor="let value of _optionValues | async">
+                            <div *ngFor="let value of _optionValuesList">
                                 <div *ngIf="value.option_id === option._id">
                                     <table style="margin-left: 5%;" cellspacing="0" formGroupName="option_values">
                                         <tr>
@@ -332,7 +332,7 @@
                                             </td>
                                             <td>
                                                 <mat-form-field style="width: 40%;">
-                                                    <input matInput [formControlName]="'pri_'+value._id" placeholder="{{'ITEMS.PRICE' | translate}}" type="number">
+                                                    <input matInput [formControlName]="'pri_'+value._id" placeholder="{{'ITEMS.PRICE' | translate}}" type="number" min="0">
                                                 </mat-form-field>
                                             </td>
                                         </tr>

@@ -125,7 +125,7 @@
                 <mat-card-content>
                     <p *ngIf="!_showOptions">{{'ITEMS.NO_OPTIONS_CREATED' | translate}}</p>
                     <mat-accordion *ngIf="_showOptions" [multi]="false">
-                        <mat-expansion-panel *ngFor="let option of _options | async; let i = index">
+                        <mat-expansion-panel *ngFor="let option of _optionList; let i = index">
                             <mat-expansion-panel-header>
                                 <mat-panel-title style="font-weight: bold;">{{option.name}}</mat-panel-title>
                                 <mat-panel-description></mat-panel-description>
@@ -142,7 +142,7 @@
                                 </tr>
                             </table>
                             <mat-divider class="divider"></mat-divider>
-                            <div *ngFor="let value of _optionValues | async">
+                            <div *ngFor="let value of _optionValuesList">
                                 <div *ngIf="value.option_id === option._id">
                                     <table style="margin-left: 5%;" cellspacing="0" formGroupName="option_values">
                                         <tr>
@@ -154,7 +154,7 @@
                                             </td>
                                             <td>
                                                 <mat-form-field style="width: 40%;">
-                                                    <input matInput [formControlName]="'pri_'+value._id" placeholder="{{'ITEMS.PRICE' | translate}}" type="number">
+                                                    <input matInput [formControlName]="'pri_'+value._id" placeholder="{{'ITEMS.PRICE' | translate}}" type="number" min="0">
                                                 </mat-form-field>
                                             </td>
                                         </tr>
