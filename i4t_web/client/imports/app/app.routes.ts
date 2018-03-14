@@ -8,7 +8,7 @@ import { SupervisorGuard } from './web/services/navigation/supervisor-guard.serv
 import { CashierGuard } from './web/services/navigation/cashier-guard.service';
 import { DashboardComponent } from './web/administrator/dashboard/dashboard.component';
 import { SectionComponent } from './web/administrator/menu/sections/section/section.component';
-import { SignupWebComponent } from './web/auth/signup/signup.web.component';
+//import { SignupWebComponent } from './web/auth/signup/signup.web.component';
 import { SigninWebComponent } from './web/auth/signin/signin.web.component';
 import { CategoryComponent } from './web/administrator/menu/categories/categories/categories.component';
 import { SubcategoryComponent } from './web/administrator/menu/subcategories/subcategories/subcategories.component';
@@ -116,7 +116,7 @@ export const routes: Route[] = [
         ]
     },
     { path: '', component: SigninWebComponent },
-    { path: 'signup', component: SignupWebComponent },
+    //{ path: 'signup', component: SignupWebComponent },
     { path: 'admin-signup', component: AdminSignupComponent },
     { path: 'reset-password/:tk', component: ResetPasswordWebComponent },
     { path: 'go-to-store/:ic', component: GoToStoreComponent },
