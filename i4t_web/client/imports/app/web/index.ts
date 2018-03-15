@@ -1,7 +1,7 @@
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './administrator/dashboard/dashboard.component';
 import { SectionComponent } from './administrator/menu/sections/section/section.component';
-import { SignupWebComponent } from './auth/signup/signup.web.component';
+//import { SignupWebComponent } from './auth/signup/signup.web.component';
 import { SigninWebComponent } from './auth/signin/signin.web.component';
 import { CategoryComponent } from './administrator/menu/categories/categories/categories.component';
 import { SubcategoryComponent } from './administrator/menu/subcategories/subcategories/subcategories.component';
@@ -94,12 +94,14 @@ import { OptionEditComponent } from './administrator/menu/options/options/option
 import { OptionValueComponent } from './administrator/menu/options/values/option-value/option-value.component';
 import { OptionValueEditComponent } from './administrator/menu/options/values/option-value-edit/option-value-edit.component';
 import { RewardHistoryChartComponent } from './administrator/dashboard/reward-history-chart/reward-history-chart.component';
+import { OrdersTodayComponent } from "./administrator/orders-today/orders-today.component";
+import { CashierOrdersTodayComponent } from "./cashier/cashier-orders-today.component";
 
 export const WEB_DECLARATIONS = [
     AppComponent,
     DashboardComponent,
     SigninWebComponent,
-    SignupWebComponent,
+    //SignupWebComponent,
     ResetPasswordWebComponent,
     SectionComponent,
     CategoryComponent,
@@ -155,9 +157,12 @@ export const WEB_DECLARATIONS = [
     ItemUnitsChartComponent,
     RewardUnitsChartComponent,
     ItemHistoryChartComponent,
+    RewardHistoryChartComponent,
+    OrdersTodayComponent,
     OptionsComponent,
     OptionValueComponent,
-    RewardHistoryChartComponent
+    RewardHistoryChartComponent,
+    CashierOrdersTodayComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [

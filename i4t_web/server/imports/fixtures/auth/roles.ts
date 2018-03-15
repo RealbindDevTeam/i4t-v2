@@ -10,7 +10,7 @@ export function loadRoles() {
             is_active: true,
             name: "ROLE.ADMINISTRATOR",
             description: "establishment administrator",
-            menus: ["900", "1000", "2000", "3000", "10000", "20000"]
+            menus: ["900", "1000", "1400","2000", "3000", "10000", "20000"]
         },{
             _id: "200",
             is_active: true,
@@ -20,10 +20,10 @@ export function loadRoles() {
             user_prefix: 'wa'
         },{
             _id: "300",
-            is_active: false,
+            is_active: true,
             name: "ROLE.CASHIER",
             description: "establishment cashier",
-            menus: [],
+            menus: ["13000", "20000"],
             user_prefix: 'ca'            
         },{
             _id: "400",

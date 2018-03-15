@@ -8,7 +8,7 @@ import { SupervisorGuard } from './web/services/navigation/supervisor-guard.serv
 import { CashierGuard } from './web/services/navigation/cashier-guard.service';
 import { DashboardComponent } from './web/administrator/dashboard/dashboard.component';
 import { SectionComponent } from './web/administrator/menu/sections/section/section.component';
-import { SignupWebComponent } from './web/auth/signup/signup.web.component';
+//import { SignupWebComponent } from './web/auth/signup/signup.web.component';
 import { SigninWebComponent } from './web/auth/signin/signin.web.component';
 import { CategoryComponent } from './web/administrator/menu/categories/categories/categories.component';
 import { SubcategoryComponent } from './web/administrator/menu/subcategories/subcategories/subcategories.component';
@@ -60,6 +60,8 @@ import { ItemHistoryChartComponent } from './web/administrator/dashboard/item-hi
 import { OptionsComponent } from './web/administrator/menu/options/options/option/option.component';
 import { OptionValueComponent } from './web/administrator/menu/options/values/option-value/option-value.component';
 import { RewardHistoryChartComponent } from './web/administrator/dashboard/reward-history-chart/reward-history-chart.component';
+import { OrdersTodayComponent } from "./web/administrator/orders-today/orders-today.component";
+import { CashierOrdersTodayComponent } from "./web/cashier/cashier-orders-today.component";
 
 export const routes: Route[] = [
     {
@@ -110,13 +112,16 @@ export const routes: Route[] = [
             { path: 'item-units-chart/:param1', component: ItemUnitsChartComponent, canActivate: [AdminGuard] },
             { path: 'reward-units-chart/:param1', component: RewardUnitsChartComponent, canActivate: [AdminGuard] },
             { path: 'item-history-chart/:param1', component: ItemHistoryChartComponent, canActivate: [AdminGuard] },
+            { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] },
+            { path: 'orders-today', component: OrdersTodayComponent, canActivate: [AdminGuard] },
             { path: 'options', component: OptionsComponent, canActivate: [AdminGuard] },
             { path: 'option-values', component: OptionValueComponent, canActivate: [AdminGuard] },            
-            { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] }
+            { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] },
+            { path: 'cashier-orders-today', component: CashierOrdersTodayComponent, canActivate: [CashierGuard] }
         ]
     },
     { path: '', component: SigninWebComponent },
-    { path: 'signup', component: SignupWebComponent },
+    //{ path: 'signup', component: SignupWebComponent },
     { path: 'admin-signup', component: AdminSignupComponent },
     { path: 'reset-password/:tk', component: ResetPasswordWebComponent },
     { path: 'go-to-store/:ic', component: GoToStoreComponent },

@@ -124,6 +124,7 @@
         "GENDER_LBL": "Género"
     },
     "SIGNIN": {
+        "TITLE": "INGRESO PARA ADMINISTRADORES Y COLABORADORES DE RESTAURANTE",
         "EMAIL_USERNAME": "Correo electrónico/Nombre usuario",
         "PASSWORD": "Contraseña",
         "KEEP_SIGNED": "No cerrar sesión",
@@ -141,7 +142,9 @@
         "ACCEPT": "Aceptar",
         "USER_NO_ACTIVE": "Tu usuario no se encuentra activo. Por favor contacta al administrador",
         "RESTAURANT_NO_ACTIVE": "El restaurante no se encuentra activo. Por favor contacta al administrador",
-        "DONT_ACCOUNT": "No tienes cuenta?"
+        "DONT_ACCOUNT": "No tienes cuenta administrador?",
+        "DOWNLOAD_APP":"Descarga comeygana",
+        "DOWNLOAD_APP_P":" Gratis en la play store y apple store"
     },
     "RESET_PASWORD": {
         "TITLE": "Cambiar contraseña",
@@ -246,6 +249,7 @@
         "USERNAME": "Usuario",
         "FIRST_NAME": "Nombre",
         "LAST_NAME": "Apellido(s)",
+        "FULL_NAME": "Nombre completo",
         "LANGUAGE": "Idioma",
         "CHANGE_EMAIL": "Cambia tu correo electrónico",
         "CHANGE_PASSWORD": "Cambia tu contraseña",
@@ -276,7 +280,8 @@
             "INVOICES_DOWNLOAD": "Descarga de facturas",
             "PROFILE": "Perfiles",
             "TABLES_SEARCH": "Búscar mesas",
-            "MY_RESTAURANTS": "Mis Restaurantes"
+            "MY_RESTAURANTS": "Mis Restaurantes",
+            "ORDERS_TODAY": "Ordenes del día"
         },
         "PAYMENTS": {
             "PAYMENTS": "Pago del servicio",
@@ -590,9 +595,9 @@
     },
     "GO_TO_STORE": {
         "CLIENT": {
-            "TITTLE": "Qué te",
-            "SUB_TITTLE": "gusta comer?",
-            "CONTENT": "Hicimos la mayor parte del trabajo pesado para que usted pueda proporcionar un estilo por defecto que incorpora nuestros componentes personalizados",
+            "TITTLE": "Ordena desde tu celular, acumula y redime tus puntos",
+            "SUB_TITTLE": "",
+            "CONTENT": "Descarga gratis en: ",
             "BUTTON": "Descargar"
         },
         "COLLABORATOR": {
@@ -1283,8 +1288,8 @@
     },
     "ADMIN_SIGNUP": {
         "HOME_CONTENT": {
-            "TITLE": "Mejora el servicio de tu restaurante y la atención a tus clientes con nuestro sistema",
-            "SUB_TITLE": "Reduce el tiempo en recibir y entregar las ordenes de tus comensales"
+            "TITLE": "Conoce y premia a tus clientes por su fidelidad",
+            "SUB_TITLE": "Te ofrecemos un sistema rápido y sencillo que te permite crear una relación estable con tus clientes a través de un sistema de puntos personalizable"
         },
         "ABOUT_CONTENT": {
             "MSG_1": "Ingresa información detallada del menú, para que los clientes puedan verlo, y ordenar desde sus celulares, tablets o computadores",
@@ -1312,6 +1317,9 @@
         "MIN_LENGTH_FIRSTNAME": "",
         "MAX_LENGTH_FIRSTNAME": "El nombre debe tener máximo 70 caracteres",
         "LASTNAME": "Apellidos",
+        "FULLNAME": "Nombre completo",
+        "REQUIRED_FULLNAME": "El nombre no puede estar vacío",
+        "MAX_LENGTH_FULLNAME": "El nombre debe tener máximo 200 caracteres",
         "REQUIRED_LASTNAME": "El apellido no puede estar vacío",
         "MIN_LENGTH_LASTNAME": "",
         "MAX_LENGTH_LASTNAME": "El apellido debe tener máximo 70 caracteres",
@@ -1339,7 +1347,7 @@
         "SIGNIN": "Iniciar Sesión",
         "LABEL_LEGAL": "Al dar clic en 'Registrarse', ",
         "LABEL_LEGAL_END": "aceptas los términos y condiciones.",
-        "GENERAL_INFO": "Información personal",
+        "GENERAL_INFO": "Regístrate gratis",
         "USER_PASSWD": "Usuario y contraseña",
         "PAYMENT_PLAN_INFO": {
             "HOW_ITS_WORKS": "Como funciona?",
@@ -1757,5 +1765,15 @@
         "REMOVE_MSG": "Deseas remover el valor?",
         "OPTION_VALUE_REMOVED": "Valor removido correctamente",
         "OPTION_VALUE_NOT_REMOVED": "El valor tiene items, no se ha podido remover"
+    },
+    "ORDERS_TODAY": {
+        "TITLE": "Consulta de ordenes del día",
+        "ORDERS_TODAY_TEXT": "Selecciona el restaurante y digita el nombre de usuario / correo eléctronico",
+        "NAME_FILTER": "Buscar por nombre o correo eléctronico",
+        "SELECT_ESTABLISHMENT": "Seleccionar restaurante",
+        "ALL_ESTABLISHMENT": "Todos los restaurantes",
+        "NO_RECORDS_FOUND": "No se encontrarón ordenes",
+        "ACCUMULATED": "acumulados",
+        "REDEEMED": "redimidos"
     }
 }

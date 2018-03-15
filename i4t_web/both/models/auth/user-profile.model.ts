@@ -8,4 +8,5 @@ export class UserProfile {
     last_name?: string;
     language_code?: string;
     gender?: string;
+    full_name: string;
 }
