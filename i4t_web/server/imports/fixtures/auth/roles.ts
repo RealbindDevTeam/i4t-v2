@@ -20,10 +20,10 @@ export function loadRoles() {
             user_prefix: 'wa'
         },{
             _id: "300",
-            is_active: false,
+            is_active: true,
             name: "ROLE.CASHIER",
             description: "establishment cashier",
-            menus: [],
+            menus: ["13000", "20000"],
             user_prefix: 'ca'            
         },{
             _id: "400",

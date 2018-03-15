@@ -2,23 +2,23 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Observable, Subscription, Subject } from "rxjs";
-import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
-import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
-import { UserLanguageService } from '../../services/general/user-language.service';
-import { OrderHistory } from '../../../../../../both/models/establishment/order-history.model';
-import { OrderHistories } from '../../../../../../both/collections/establishment/order-history.collection';
-import { UserDetail, UserDetailImage } from '../../../../../../both/models/auth/user-detail.model';
-import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
-import { Item } from '../../../../../../both/models/menu/item.model';
-import { Items } from '../../../../../../both/collections/menu/item.collection';
+import { Establishment } from '../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../both/collections/establishment/establishment.collection';
+import { UserLanguageService } from '../services/general/user-language.service';
+import { OrderHistory } from '../../../../../both/models/establishment/order-history.model';
+import { OrderHistories } from '../../../../../both/collections/establishment/order-history.collection';
+import { UserDetail, UserDetailImage } from '../../../../../both/models/auth/user-detail.model';
+import { UserDetails } from '../../../../../both/collections/auth/user-detail.collection';
+import { Item } from '../../../../../both/models/menu/item.model';
+import { Items } from '../../../../../both/collections/menu/item.collection';
 import { Users } from 'both/collections/auth/user.collection';
 
 @Component({
-    selector: 'orders-today',
-    templateUrl: './orders-today.component.html',
-    styleUrls: ['./orders-today.component.scss']
+    selector: 'cashier-orders-today',
+    templateUrl: './cashier-orders-today.component.html',
+    styleUrls: ['./cashier-orders-today.component.scss']
 })
-export class OrdersTodayComponent implements OnInit, OnDestroy {
+export class CashierOrdersTodayComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _establishmentsSubscription: Subscription;
@@ -28,11 +28,13 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
     private _orderHistorySubscription: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
-    private _establishments: Observable<Establishment[]>;
+    //private _establishments: Observable<Establishment[]>;
+    private _lEstablishment: Establishment;
     private _orderHistories: Observable<OrderHistory[]>;
     private _userDetail: UserDetail;
     private _lToday: Date = new Date();
-    private _lEstablishmentsId: string[] = [];
+    //private _lEstablishmentsId: string[] = [];
+    private _lEstablishmentId: string = "";
 
 
     private _userFilter: string = "";
@@ -64,13 +66,12 @@ export class OrdersTodayComponent implements OnInit, OnDestroy {
         this._usersSubscription = MeteorObservable.subscribe('getUsers').takeUntil(this.ngUnsubscribe).subscribe();
         this._userDetailSubscription = MeteorObservable.subscribe('getUsersDetails').takeUntil(this.ngUnsubscribe).subscribe();
 
-        this._establishmentsSubscription = MeteorObservable.subscribe('getActiveEstablishments', this._user).takeUntil(this.ngUnsubscribe).subscribe(() => {
+        this._establishmentsSubscription = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
-                    this._lEstablishmentsId.push(establishment._id);
-                });
-                this._establishments = Establishments.find({}).zone();
-                this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishmentIds', this._lEstablishmentsId).takeUntil(this.ngUnsubscribe).subscribe();
+                this._lEstablishment = Establishments.collection.findOne({});
+                this._lEstablishmentId = this._lEstablishment._id;
+                this._establishmentFilter = this._lEstablishment._id;
+                this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishment', this._lEstablishmentId).takeUntil(this.ngUnsubscribe).subscribe();
             });
         });
     }

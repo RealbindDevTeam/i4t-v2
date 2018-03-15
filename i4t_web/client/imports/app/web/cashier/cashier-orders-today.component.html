@@ -3,10 +3,8 @@
     <mat-card-subtitle>{{'ORDERS_TODAY.ORDERS_TODAY_TEXT' | translate}}</mat-card-subtitle>
     <mat-card-content>
         <mat-form-field style="width: 25%;">
-            <mat-select placeholder="{{'ORDERS_TODAY.SELECT_ESTABLISHMENT' | translate}}" [(ngModel)]="_establishmentFilter" required>
-                <mat-option *ngFor="let _establishment of _establishments | async" [value]="_establishment._id">
-                    {{ _establishment.name }}
-                </mat-option>
+            <mat-select placeholder="{{'ORDERS_TODAY.SELECT_ESTABLISHMENT' | translate}}" [(ngModel)]="_establishmentFilter" required disabled>
+                <mat-option *ngIf="_lEstablishment" value="{{_lEstablishment._id}}">{{ _lEstablishment.name }}</mat-option>
             </mat-select>
         </mat-form-field>
         <mat-form-field style="width: 25%">
