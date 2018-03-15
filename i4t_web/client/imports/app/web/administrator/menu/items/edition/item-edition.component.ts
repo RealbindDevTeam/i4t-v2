@@ -97,7 +97,6 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
 
     private _itemAdditions: string[] = [];
     private _additionList: Addition[] = [];
-    private _edition_addition: string[] = [];
     private _establishmentList: Establishment[] = [];
     private _itemEstablishments: ItemEstablishment[] = [];
     private _establishmentCurrencies: string[] = [];
@@ -333,7 +332,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                                     }
                                     this._optionList.push(option);
                                 });
-                                if (this._itemToEdit.options.length > 0) { this._showOptions = true }
+                                this._showOptions = true;
                             });
                         });
                     });
@@ -698,7 +697,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
                             } else {
                                 if (this._optionValuesFormGroup.get('val_' + value._id)) {
                                     this._optionValuesFormGroup.controls['val_' + value._id].setValue(false);
-                                    this._optionValuesFormGroup.controls['val_' + value._id].enable();                                  
+                                    this._optionValuesFormGroup.controls['val_' + value._id].enable();
                                 } else {
                                     let _valControl: FormControl = new FormControl(false);
                                     this._optionValuesFormGroup.addControl('val_' + value._id, _valControl);
@@ -898,123 +897,164 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
             return;
         }
 
-        /*if (this._itemEditionForm.valid) {
-            let arrCur: any[] = Object.keys(this._itemEditionForm.value.editCurrencies);
-            let _lItemEstablishmentsToInsert: ItemEstablishment[] = [];
-            let _lItemPricesToInsert: ItemPrice[] = [];
+        let arrCur: any[] = Object.keys(this._generalFormGroup.value.editCurrencies);
+        let _lItemEstablishmentsToInsert: ItemEstablishment[] = [];
+        let _lItemPricesToInsert: ItemPrice[] = [];
 
-            arrCur.forEach((cur) => {
-                let find: Establishment[] = this._establishmentList.filter(r => r.currencyId === cur);
-                for (let res of find) {
-                    if (this._itemEditionForm.value.editEstablishments[res._id]) {
-                        let _lItemEstablishment: ItemEstablishment = { establishment_id: '', price: 0, isAvailable: true, recommended: false };
-                        _lItemEstablishment.establishment_id = res._id;
-                        _lItemEstablishment.price = this._itemEditionForm.value.editCurrencies[cur];
+        arrCur.forEach((cur) => {
+            let find: Establishment[] = this._establishmentList.filter(r => r.currencyId === cur);
+            for (let res of find) {
+                if (this._generalFormGroup.value.editEstablishments[res._id]) {
+                    let _lItemEstablishment: ItemEstablishment = { establishment_id: '', price: 0, isAvailable: true, recommended: false };
+                    _lItemEstablishment.establishment_id = res._id;
+                    _lItemEstablishment.price = this._generalFormGroup.value.editCurrencies[cur];
 
-                        if (this._itemEditionForm.value.editTaxes[cur] !== undefined) {
-                            _lItemEstablishment.itemTax = this._itemEditionForm.value.editTaxes[cur];
+                    if (this._generalFormGroup.value.editTaxes[cur] !== undefined) {
+                        _lItemEstablishment.itemTax = this._generalFormGroup.value.editTaxes[cur];
+                    }
+
+                    _lItemEstablishmentsToInsert.push(_lItemEstablishment);
+                }
+            }
+            if (cur !== null && this._generalFormGroup.value.editCurrencies[cur] !== null) {
+                let _lItemPrice: ItemPrice = { currencyId: '', price: 0 };
+                _lItemPrice.currencyId = cur;
+                _lItemPrice.price = this._generalFormGroup.value.editCurrencies[cur];
+                if (this._generalFormGroup.value.editTaxes[cur] !== undefined) {
+                    _lItemPrice.itemTax = this._generalFormGroup.value.editTaxes[cur];
+                }
+                _lItemPricesToInsert.push(_lItemPrice);
+            }
+        });
+
+        let rewardPointsAux: string;
+        if (this._generalFormGroup.value.editAcceptReward) {
+            rewardPointsAux = this._generalFormGroup.value.editRewardValue
+        } else {
+            rewardPointsAux = "0";
+        }
+
+        let arrOptions: any[] = Object.keys(this._optionAdditionsFormGroup.value.options);
+        let _optionsToInsert: ItemOption[] = [];
+        let _lItemOption: ItemOption = { option_id: '', is_required: false, values: [] };
+
+        arrOptions.forEach((opt) => {
+            if (this._optionAdditionsFormGroup.value.options[opt]) {
+                let _lControl: string[] = opt.split('_');
+
+                if (_lItemOption.option_id !== _lControl[1]) {
+                    _lItemOption = { option_id: '', is_required: false, values: [] };
+                    _optionsToInsert.push(_lItemOption);
+
+                    if (_lControl[0] === 'av' && this._optionsFormGroup.controls[opt].value) {
+                        _lItemOption.option_id = _lControl[1];
+                    }
+
+                    let arrOptionValues: any[] = Object.keys(this._optionAdditionsFormGroup.value.option_values);
+                    let _valuesToInsert: ItemOptionValue[] = [];
+                    let _lItemOptionValue: ItemOptionValue = { option_value_id: '', have_price: false };
+
+                    arrOptionValues.forEach((val) => {
+                        if (this._optionAdditionsFormGroup.value.option_values[val]) {
+                            let _lvalueControl: string[] = val.split('_');
+                            let _optionValue: OptionValue = OptionValues.findOne({ _id: _lvalueControl[1] });
+
+                            if (_optionValue.option_id === _lItemOption.option_id) {
+                                if (_lItemOptionValue.option_value_id !== _lvalueControl[1]) {
+                                    _lItemOptionValue = { option_value_id: '', have_price: false };
+                                    _valuesToInsert.push(_lItemOptionValue);
+
+                                    if (_lvalueControl[0] === 'val') {
+                                        _lItemOptionValue.option_value_id = _optionValue._id;
+                                    }
+                                } else {
+                                    if (_lvalueControl[0] === 'havPri' && this._optionValuesFormGroup.controls[val].value === true) {
+                                        _lItemOptionValue.have_price = true;
+                                    }
+                                    if (_lvalueControl[0] === 'pri') {
+                                        _lItemOptionValue.price = Number.parseInt(this._optionValuesFormGroup.controls[val].value.toString());
+                                    }
+                                }
+                            }
                         }
-
-                        _lItemEstablishmentsToInsert.push(_lItemEstablishment);
+                    });
+                    _lItemOption.values = _valuesToInsert;
+                } else {
+                    if (_lControl[0] === 'req' && this._optionsFormGroup.controls[opt].value === true) {
+                        _lItemOption.is_required = true;
                     }
                 }
-                if (cur !== null && this._itemEditionForm.value.editCurrencies[cur] !== null) {
-                    let _lItemPrice: ItemPrice = { currencyId: '', price: 0 };
-                    _lItemPrice.currencyId = cur;
-                    _lItemPrice.price = this._itemEditionForm.value.editCurrencies[cur];
-                    if (this._itemEditionForm.value.editTaxes[cur] !== undefined) {
-                        _lItemPrice.itemTax = this._itemEditionForm.value.editTaxes[cur];
-                    }
-                    _lItemPricesToInsert.push(_lItemPrice);
-                }
-            });
-
-            let arr: any[] = Object.keys(this._itemEditionForm.value.editGarnishFood);
-
-            arr.forEach((gar) => {
-                if (this._itemEditionForm.value.editGarnishFood[gar]) {
-                    this._edition_garnishFood.push(gar);
-                }
-            });
-
-            let arrAdd: any[] = Object.keys(this._itemEditionForm.value.editAdditions);
-            arrAdd.forEach((add) => {
-                if (this._itemEditionForm.value.editAdditions[add]) {
-                    this._edition_addition.push(add);
-                }
-            });
-
-            let rewardPointsAux: string;
-            if (this._itemEditionForm.value.editAcceptReward) {
-                rewardPointsAux = this._itemEditionForm.value.editRewardValue
-            } else {
-                rewardPointsAux = "0";
             }
+        });
 
+        let arrAdd: any[] = Object.keys(this._optionAdditionsFormGroup.value.editAdditions);
+        let _lAdditionsToInsert: string[] = [];
+        arrAdd.forEach((add) => {
+            if (this._optionAdditionsFormGroup.value.editAdditions[add]) {
+                _lAdditionsToInsert.push(add);
+            }
+        });
+
+        if (_lItemEstablishmentsToInsert.length > 0) {
             if (this._editImage) {
-                // let _lItemImage: ItemImage = Items.findOne({ _id: this._itemToEdit._id }).image;
-                //if (_lItemImage) {
-                    //this._imageService.client.remove(_lItemImage.handle).then((res) => {
-                      //  console.log(res);
-                    //}).catch((err) => {
-                      //  var error: string = this.itemNameTraduction('UPLOAD_IMG_ERROR');
-                    //    this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
-                  //  });
-                //}
-                Items.update(this._itemEditionForm.value.editId, {
+                /*let _lItemImage: ItemImage = Items.findOne({ _id: this._itemToEdit._id }).image;
+               if (_lItemImage) {
+                   this._imageService.client.remove(_lItemImage.handle).then((res) => {
+                       console.log(res);
+                   }).catch((err) => {
+                       var error: string = this.itemNameTraduction('UPLOAD_IMG_ERROR');
+                       this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+                   });
+               }*/
+                Items.update(this._sectionsFormGroup.value.editId, {
                     $set: {
                         modification_user: this._user,
                         modification_date: new Date(),
-                        is_active: this._itemEditionForm.value.editIsActive,
-                        sectionId: this._itemEditionForm.value.editSectionId,
-                        categoryId: this._itemEditionForm.value.editCategoryId,
-                        subcategoryId: this._itemEditionForm.value.editSubcategoryId,
-                        name: this._itemEditionForm.value.editName,
-                        description: this._itemEditionForm.value.editDescription,
-                        time: this._itemEditionForm.value.editCookingTime,
+                        is_active: this._sectionsFormGroup.value.editIsActive,
+                        sectionId: this._sectionsFormGroup.value.editSectionId,
+                        categoryId: this._sectionsFormGroup.value.editCategoryId,
+                        subcategoryId: this._sectionsFormGroup.value.editSubcategoryId,
+                        name: this._generalFormGroup.value.editName,
+                        time: this._generalFormGroup.value.editCookingTime,
+                        description: this._generalFormGroup.value.editDescription,
                         establishments: _lItemEstablishmentsToInsert,
                         prices: _lItemPricesToInsert,
-                        observations: this._itemEditionForm.value.editObservations,
+                        observations: this._generalFormGroup.value.editObservations,
                         image: this._editItemImageToInsert,
-                        garnishFoodQuantity: this._itemEditionForm.value.editGarnishFoodQuantity,
-                        //garnishFood: this._edition_garnishFood,
-                        additions: this._edition_addition,
-                        isAvailable: this._itemEditionForm.value.editIsAvailable,
-                        has_reward: this._itemEditionForm.value.editAcceptReward,
+                        options: _optionsToInsert,
+                        additions: _lAdditionsToInsert,
+                        has_reward: this._generalFormGroup.value.editAcceptReward,
                         reward_points: rewardPointsAux
                     }
                 });
             } else {
-                Items.update(this._itemEditionForm.value.editId, {
+                Items.update(this._sectionsFormGroup.value.editId, {
                     $set: {
                         modification_user: this._user,
                         modification_date: new Date(),
-                        is_active: this._itemEditionForm.value.editIsActive,
-                        sectionId: this._itemEditionForm.value.editSectionId,
-                        categoryId: this._itemEditionForm.value.editCategoryId,
-                        subcategoryId: this._itemEditionForm.value.editSubcategoryId,
-                        name: this._itemEditionForm.value.editName,
-                        description: this._itemEditionForm.value.editDescription,
-                        time: this._itemEditionForm.value.editCookingTime,
+                        is_active: this._sectionsFormGroup.value.editIsActive,
+                        sectionId: this._sectionsFormGroup.value.editSectionId,
+                        categoryId: this._sectionsFormGroup.value.editCategoryId,
+                        subcategoryId: this._sectionsFormGroup.value.editSubcategoryId,
+                        name: this._generalFormGroup.value.editName,
+                        time: this._generalFormGroup.value.editCookingTime,
+                        description: this._generalFormGroup.value.editDescription,
                         establishments: _lItemEstablishmentsToInsert,
                         prices: _lItemPricesToInsert,
-                        observations: this._itemEditionForm.value.editObservations,
-                        garnishFoodQuantity: this._itemEditionForm.value.editGarnishFoodQuantity,
-                        //garnishFood: this._edition_garnishFood,
-                        additions: this._edition_addition,
-                        isAvailable: this._itemEditionForm.value.editIsAvailable,
-                        has_reward: this._itemEditionForm.value.editAcceptReward,
+                        observations: this._generalFormGroup.value.editObservations,
+                        options: _optionsToInsert,
+                        additions: _lAdditionsToInsert,
+                        has_reward: this._generalFormGroup.value.editAcceptReward,
                         reward_points: rewardPointsAux
                     }
                 });
             }
-
             let _lMessage: string = this.itemNameTraduction('ITEMS.ITEM_EDITED');
-            this.snackBar.open(_lMessage, '', {
-                duration: 2500
-            });
-            //this._dialogRef.close();
-        }*/
+            this.snackBar.open(_lMessage, '', { duration: 2500 });
+            this._router.navigate(['app/items']);
+        } else {
+            this._showGeneralError = true;
+        }
     }
 
     /**
@@ -1035,7 +1075,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
      * @param {any} _pEvent 
      */
     onCheckEstablishment(_pEstablishmentName: string, _pEvent: any): void {
-        let _lEstablishment: Establishment = this._establishmentList.filter(r => r.name === _pEstablishmentName)[0];
+        let _lEstablishment: Establishment = this._establishmentList.find(r => r.name === _pEstablishmentName);
         if (_pEvent.checked) {
             this._showGeneralError = false;
             this._establishmentsSelectedCount++;
@@ -1074,13 +1114,15 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
             let arr: any[] = Object.keys(this._generalFormGroup.value.editEstablishments);
             arr.forEach((rest) => {
                 if (this._generalFormGroup.value.editEstablishments[rest]) {
-                    let _lRes: Establishment = this._establishmentList.filter(r => r._id === rest)[0];
-                    if (_lEstablishment.currencyId === _lRes.currencyId) {
-                        _aux++;
-                    }
-                    let _lCountry: Country = Countries.findOne({ _id: _lRes.countryId });
-                    if (_lCountry.itemsWithDifferentTax === true) {
-                        _auxTax++;
+                    let _lRes: Establishment = this._establishmentList.find(r => r._id === rest);
+                    if (_lRes) {
+                        if (_lEstablishment.currencyId === _lRes.currencyId) {
+                            _aux++;
+                        }
+                        let _lCountry: Country = Countries.findOne({ _id: _lRes.countryId });
+                        if (_lCountry.itemsWithDifferentTax === true) {
+                            _auxTax++;
+                        }
                     }
                 }
             });
