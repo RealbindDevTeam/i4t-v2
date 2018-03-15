@@ -331,6 +331,14 @@ export function loadMenus() {
                 url: "/app/points",
                 icon_name: "payment",
                 order: 19000
+            },
+            {
+                _id: "13000",
+                is_active: true,
+                name: "MENUS.ADMINISTRATION.ORDERS_TODAY",
+                url: "/app/cashier-orders-today",
+                icon_name: "list",
+                order: 13000
             }
         ];
         menus.forEach((menu: Menu) => Menus.insert(menu));

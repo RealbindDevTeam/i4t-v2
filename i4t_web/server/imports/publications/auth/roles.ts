@@ -8,5 +8,5 @@ Meteor.publish('getRoleComplete', function () {
 });
 
 Meteor.publish('getRoleCollaborators', function () {
-    return Roles.find({_id: { $in: [ "200", "600" ] }});
+    return Roles.find({_id: { $in: [ "200", "300", "600" ] }});
 });

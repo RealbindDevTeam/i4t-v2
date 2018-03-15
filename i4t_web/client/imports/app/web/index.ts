@@ -72,7 +72,6 @@ import { EstablishmentTableControlComponent } from './administrator/administrati
 import { TableDetailComponent } from './administrator/administration/tables/table-control/table-detail/table-detail.component';
 import { PenalizeCustomerComponent } from './administrator/administration/tables/table-control/table-detail/penalize-customer/penalize-customer.component';
 import { SupervisorEstablishmentTableControlComponent } from './supervisor/establishment-table-control/supervisor-establishment-table-control.component';
-//import { InvoicesDownloadPage } from './administrator/administration/invoices-download/invoices-download.component';
 import { EstablishmentProfileComponent } from './administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { ScheduleDetailComponent } from './customer/establishment-profile-detail/schedule-detail/schedule-detail.component';
@@ -96,6 +95,7 @@ import { OptionValueComponent } from './administrator/menu/options/values/option
 import { OptionValueEditComponent } from './administrator/menu/options/values/option-value-edit/option-value-edit.component';
 import { RewardHistoryChartComponent } from './administrator/dashboard/reward-history-chart/reward-history-chart.component';
 import { OrdersTodayComponent } from "./administrator/orders-today/orders-today.component";
+import { CashierOrdersTodayComponent } from "./cashier/cashier-orders-today.component";
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -109,6 +109,7 @@ export const WEB_DECLARATIONS = [
     AdditionComponent,
     GarnishFoodComponent,
     ItemComponent,
+    ItemEditionComponent,
     ItemCreationComponent,
     EstablishmentComponent,
     EstablishmentRegisterComponent,
@@ -160,7 +161,8 @@ export const WEB_DECLARATIONS = [
     OrdersTodayComponent,
     OptionsComponent,
     OptionValueComponent,
-    RewardHistoryChartComponent
+    RewardHistoryChartComponent,
+    CashierOrdersTodayComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [
@@ -172,7 +174,6 @@ export const MODAL_DIALOG_DECLARATIONS = [
     CategoriesEditComponent,
     SubcategoryEditComponent,
     RecoverWebComponent,
-    ItemEditionComponent,
     CallCloseConfirmComponent,
     CreateConfirmComponent,
     CollaboratorsEditionComponent,

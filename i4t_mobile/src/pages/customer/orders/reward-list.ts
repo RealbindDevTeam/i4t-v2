@@ -154,7 +154,7 @@ export class RewardListComponent {
         this._userDetail = UserDetails.findOne({ user_id: this._user });
         if (this._userDetail.reward_points) {
             let userPoints = this._userDetail.reward_points.find(element => element.establishment_id === this._establishmentId).points;
-            if (userPoints > Number.parseInt(_rewardPts.toString())) {
+            if (userPoints >= Number.parseInt(_rewardPts.toString())) {
                 return true;
             } else {
                 return false;

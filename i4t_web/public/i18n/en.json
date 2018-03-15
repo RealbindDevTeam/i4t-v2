@@ -1767,7 +1767,8 @@
         "OPTION_VALUE_NOT_REMOVED": "The option have items, it could not be removed"
     },
     "ORDERS_TODAY": {
-        "TITLE": "Orders of the day",
+        "TITLE": "It consults orders of the day",
+        "ORDERS_TODAY_TEXT": "Selected the restaurant and fill username/email field",
         "NAME_FILTER": "Search by name or email",
         "SELECT_ESTABLISHMENT": "Select restaurant",
         "ALL_ESTABLISHMENT": "All restaurants",
