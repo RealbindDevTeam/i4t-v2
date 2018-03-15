@@ -451,6 +451,8 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
         this._optionList = [];
         this._optionValuesList = [];
         this._sectionsFormGroup.controls['editSectionId'].setValue(_section);
+        this._sectionsFormGroup.controls['editCategoryId'].setValue('');
+        this._sectionsFormGroup.controls['editSubcategoryId'].setValue('');
 
         this._categories = Categories.find({ section: _section, is_active: true }).zone();
         if (this._categories.isEmpty) { this._selectedCategory = ""; }
@@ -860,6 +862,7 @@ export class ItemEditionComponent implements OnInit, OnDestroy {
      */
     changeCategoryEdit(_category) {
         this._sectionsFormGroup.controls['editCategoryId'].setValue(_category);
+        this._sectionsFormGroup.controls['editSubcategoryId'].setValue('');
         this._subcategories = Subcategories.find({ category: _category, is_active: true }).zone();
         if (this._subcategories.isEmpty) { this._selectedSubcategory = ""; }
     }
