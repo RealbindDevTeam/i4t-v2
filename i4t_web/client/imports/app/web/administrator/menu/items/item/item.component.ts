@@ -9,7 +9,6 @@ import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { Item, ItemPrice } from '../../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../../both/collections/menu/item.collection';
-import { ItemEditionComponent } from '../edition/item-edition.component';
 import { Currency } from '../../../../../../../../both/models/general/currency.model';
 import { Currencies } from '../../../../../../../../both/collections/general/currency.collection';
 import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
@@ -127,14 +126,7 @@ export class ItemComponent implements OnInit, OnDestroy {
      * @param {Item} _item
      */
     open(_item: Item) {
-        let dialogRef1 = this._dialog.open(ItemEditionComponent, {
-            disableClose: true,
-            width: '80%'
-        });
-        dialogRef1.componentInstance._itemToEdit = _item;
-        dialogRef1.afterClosed().subscribe(result => {
-            dialogRef1 = null;
-        });
+        this._router.navigate(['app/items-edition', JSON.stringify(_item)], { skipLocationChange: true });
     }
 
     /**

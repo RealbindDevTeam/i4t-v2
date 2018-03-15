@@ -20,6 +20,7 @@ import { EstablishmentRegisterComponent } from './web/administrator/administrati
 import { SettingsWebComponent } from './web/settings/settings/settings.web.component';
 import { EstablishmentComponent } from './web/administrator/administration/establishment/establishment/establishment.component';
 import { ItemCreationComponent } from './web/administrator/menu/items/creation/item-creation.component';
+import { ItemEditionComponent } from './web/administrator/menu/items/edition/item-edition.component';
 import { ResetPasswordWebComponent } from './web/auth/reset-password/reset-password.web.component';
 import { GoToStoreComponent } from './web/auth/go-to-store/go-to-store.component';
 import { CollaboratorsComponent } from './web/administrator/administration/collaborators/collaborators/collaborators.component';
@@ -48,7 +49,6 @@ import { EstablishmentExitComponent } from './web/customer/establishment-exit/es
 import { EstablishmentTableControlComponent } from './web/administrator/administration/tables/table-control/establishment-table-control.component';
 import { TableDetailComponent } from './web/administrator/administration/tables/table-control/table-detail/table-detail.component';
 import { SupervisorEstablishmentTableControlComponent } from './web/supervisor/establishment-table-control/supervisor-establishment-table-control.component';
-//import { InvoicesDownloadPage } from './web/administrator/administration/invoices-download/invoices-download.component';
 import { EstablishmentProfileComponent } from './web/administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './web/customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { RewardComponent } from './web/administrator/rewards/reward/reward.component';
@@ -77,6 +77,7 @@ export const routes: Route[] = [
             { path: 'garnishFood', component: GarnishFoodComponent, canActivate: [AdminGuard] },
             { path: 'items', component: ItemComponent, canActivate: [AdminGuard] },
             { path: 'items-creation', component: ItemCreationComponent, canActivate: [AdminGuard] },
+            { path: 'items-edition/:param1', component: ItemEditionComponent, canActivate: [AdminGuard] },
             { path: 'establishment', component: EstablishmentComponent, canActivate: [AdminGuard] },
             { path: 'establishment-register', component: EstablishmentRegisterComponent, canActivate: [AdminGuard] },
             { path: 'establishment-edition/:param1', component: EstablishmentEditionComponent, canActivate: [AdminGuard] },
@@ -101,7 +102,6 @@ export const routes: Route[] = [
             { path: 'establishment-table-control', component: EstablishmentTableControlComponent, canActivate: [AdminGuard] },
             { path: 'table-detail/:param1/:param2/:param3/:param4/:param5', component: TableDetailComponent, canActivate: [SupervisorGuard] },
             { path: 'supervisor-establishment-table-control', component: SupervisorEstablishmentTableControlComponent, canActivate: [SupervisorGuard] },
-            //{ path: 'invoices-download', component: InvoicesDownloadPage, canActivate: [AdminGuard] },
             { path: 'establishment-profile', component: EstablishmentProfileComponent, canActivate: [AdminGuard] },
             { path: 'establishment-detail', component: EstablishmentProFileDetailComponent },
             { path: 'establishment-detail/:param1', component: EstablishmentProFileDetailComponent },

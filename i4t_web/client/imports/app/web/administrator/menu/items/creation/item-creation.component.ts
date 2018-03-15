@@ -83,6 +83,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     private _establishmentCurrencies: string[] = [];
     private _establishmentTaxes: string[] = [];
     private _additions: Addition[] = [];
+    private _optionList: Option[] = [];
+    private _optionValuesList: OptionValue[] = [];
 
     private _showGarnishFood: boolean = false;
     private _createImage: boolean = false;
@@ -464,6 +466,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     changeSection(_section): void {
         let _establishmentSectionsIds: string[] = [];
         this._establishmentList = [];
+        this._optionList = [];
+        this._optionValuesList = [];
         this._selectedSectionValue = _section;
         this._sectionsFormGroup.controls['section'].setValue(_section);
 
@@ -493,10 +497,11 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                 let _requiredControl: FormControl = new FormControl({ value: false, disabled: true });
                 this._optionsFormGroup.addControl('req_' + opt._id, _requiredControl);
             });
+            this._optionList = Options.collection.find({ creation_user: this._user, establishments: { $in: _establishmentSectionsIds }, is_active: true }).fetch();
             this._showOptions = true;
 
             OptionValues.collection.find({ creation_user: this._user }).fetch().forEach((val) => {
-                let _valControl: FormControl = new FormControl(false);
+                let _valControl: FormControl = new FormControl({ value: false, disabled: true });
                 this._optionValuesFormGroup.addControl('val_' + val._id, _valControl);
 
                 let _havePriceControl: FormControl = new FormControl({ value: false, disabled: true });
@@ -505,6 +510,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
                 let _priceControl: FormControl = new FormControl({ value: '0', disabled: true });
                 this._optionValuesFormGroup.addControl('pri_' + val._id, _priceControl);
             });
+            this._optionValuesList = OptionValues.collection.find({ creation_user: this._user }).fetch();
         }
 
         if (Additions.collection.find({ 'establishments.establishment_id': { $in: _establishmentSectionsIds }, is_active: true }).count() > 0) {
@@ -525,9 +531,20 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     onCheckAvailableOption(_pOptionId: string, _pEvent: any): void {
         if (_pEvent.checked) {
             this._optionsFormGroup.controls['req_' + _pOptionId].enable();
+            OptionValues.collection.find({ option_id: _pOptionId }).fetch().forEach((val) => {
+                this._optionValuesFormGroup.controls['val_' + val._id].enable();
+            });
         } else {
             this._optionsFormGroup.controls['req_' + _pOptionId].disable();
             this._optionsFormGroup.controls['req_' + _pOptionId].setValue(false);
+            OptionValues.collection.find({ option_id: _pOptionId }).fetch().forEach((val) => {
+                this._optionValuesFormGroup.controls['val_' + val._id].disable();
+                this._optionValuesFormGroup.controls['val_' + val._id].setValue(false);
+                this._optionValuesFormGroup.controls['havPri_' + val._id].disable();
+                this._optionValuesFormGroup.controls['havPri_' + val._id].setValue(false);
+                this._optionValuesFormGroup.controls['pri_' + val._id].disable();
+                this._optionValuesFormGroup.controls['pri_' + val._id].setValue('0');
+            });
         }
     }
 
@@ -542,6 +559,8 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
         } else {
             this._optionValuesFormGroup.controls['havPri_' + _pValueId].disable();
             this._optionValuesFormGroup.controls['havPri_' + _pValueId].setValue(false);
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].disable();
+            this._optionValuesFormGroup.controls['pri_' + _pValueId].setValue('0');
         }
     }
 

@@ -72,7 +72,6 @@ import { EstablishmentTableControlComponent } from './administrator/administrati
 import { TableDetailComponent } from './administrator/administration/tables/table-control/table-detail/table-detail.component';
 import { PenalizeCustomerComponent } from './administrator/administration/tables/table-control/table-detail/penalize-customer/penalize-customer.component';
 import { SupervisorEstablishmentTableControlComponent } from './supervisor/establishment-table-control/supervisor-establishment-table-control.component';
-//import { InvoicesDownloadPage } from './administrator/administration/invoices-download/invoices-download.component';
 import { EstablishmentProfileComponent } from './administrator/administration/establishment/profile/establishment-profile.component';
 import { EstablishmentProFileDetailComponent } from './customer/establishment-profile-detail/establishment-profile-detail/establishment-profile-detail.component';
 import { ScheduleDetailComponent } from './customer/establishment-profile-detail/schedule-detail/schedule-detail.component';
@@ -110,6 +109,7 @@ export const WEB_DECLARATIONS = [
     AdditionComponent,
     GarnishFoodComponent,
     ItemComponent,
+    ItemEditionComponent,
     ItemCreationComponent,
     EstablishmentComponent,
     EstablishmentRegisterComponent,
@@ -174,7 +174,6 @@ export const MODAL_DIALOG_DECLARATIONS = [
     CategoriesEditComponent,
     SubcategoryEditComponent,
     RecoverWebComponent,
-    ItemEditionComponent,
     CallCloseConfirmComponent,
     CreateConfirmComponent,
     CollaboratorsEditionComponent,
