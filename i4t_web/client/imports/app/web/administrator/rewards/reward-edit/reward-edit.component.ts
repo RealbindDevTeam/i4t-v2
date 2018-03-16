@@ -70,7 +70,7 @@ export class RewardEditComponent implements OnInit {
         this._rewardEstablishments = this._rewardToEdit.establishments;
         this._establishments = Establishments.find({}).zone();
         this._establishments.subscribe(() => { this.createEstablishmentForm(); });
-        this._points = Points.find({}).zone();
+        this._points = Points.find({ _id: { $gte: '50' } }).zone();
     }
 
     /**

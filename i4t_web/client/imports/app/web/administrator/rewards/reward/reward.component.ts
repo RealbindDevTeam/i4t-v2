@@ -107,7 +107,7 @@ export class RewardComponent implements OnInit, OnDestroy {
         });
         this._pointSub = MeteorObservable.subscribe('points').subscribe(() => {
             this._ngZone.run(() => {
-                this._points = Points.find({}).zone();
+                this._points = Points.find({ _id: { $gte: '50' } }).zone();
             });
         });
     }

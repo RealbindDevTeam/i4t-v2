@@ -215,7 +215,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
 
         this._pointsSub = MeteorObservable.subscribe('points').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._points = Points.find({}).zone();
+                this._points = Points.find({ _id: { $in: ['5', '10', '15'] } }).zone();
             });
         });
     }
