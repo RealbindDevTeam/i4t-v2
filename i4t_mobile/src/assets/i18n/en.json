@@ -202,7 +202,9 @@
             "YOU_ARE_TABLE": "You are at the table",
             "YOU_HAVE": "You have",
             "POINTS_TO_REDEEM": "Points to redeem",
-            "SHOW_REWARDS": "Show rewards"
+            "SHOW_REWARDS": "Show rewards",
+            "EXIT_MSG": "Have you already eaten and are you satisfied? Press exit",
+            "EXIT": "Exit"
         },
         "ORDERS_TODAY": {
             "NO_RECORDS_FOUND": "No orders found",

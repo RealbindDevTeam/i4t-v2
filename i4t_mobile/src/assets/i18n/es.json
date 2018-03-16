@@ -202,7 +202,9 @@
             "YOU_ARE_TABLE": "Estás en la mesa",
             "YOU_HAVE": "Tienes",
             "POINTS_TO_REDEEM": "Puntos para redimir",
-            "SHOW_REWARDS": "Mira las recompensas"
+            "SHOW_REWARDS": "Mira las recompensas",
+            "EXIT_MSG": "Ya comiste y estas satisfecho? Oprime salir",
+            "EXIT": "Salir"
         },
         "ORDERS_TODAY": {
             "NO_RECORDS_FOUND": "No se encontrarón ordenes",

@@ -19,6 +19,10 @@
                         </ion-thumbnail>
                         <h2 style="white-space: normal;">{{getItemName(item.itemId)}}</h2>
                         <p *ngIf="!item.is_reward">{{item.paymentItem}} {{_currencyCode}}</p>
+                        <p *ngIf="item.is_reward">{{'MOBILE.ORDERS.FREE' | translate}}</p>
+                        <ion-badge *ngIf="item.is_reward" style="background-color: #fff;color: #ffbf00;padding: 0;">{{'MOBILE.ORDERS.ITEM' | translate}} {{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}
+                            <ion-icon name="ribbon"></ion-icon>
+                        </ion-badge>
                         <p *ngIf="!getItemAvailability(item.itemId)" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
                         <p>{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{item.quantity}}</p>
                         <ion-badge *ngIf="item.reward_points > 0 && !item.is_reward" style="background-color: #fff;color: #4CAF50;padding: 0;">{{'MOBILE.SECTIONS.GET_POINTS' | translate}} {{item.reward_points}} pts
@@ -31,10 +35,6 @@
                             <p>{{'MOBILE.SECTIONS.ADDITION' | translate}}:</p>
                             <p *ngFor="let add of item.additions" style="margin-left: 15px;white-space: normal;">- {{getAdditionName(add)}}</p>
                         </div>
-                        <p *ngIf="item.is_reward">{{'MOBILE.ORDERS.FREE' | translate}}</p>
-                        <ion-badge *ngIf="item.is_reward" style="background-color: #fff;color: #ffbf00;padding: 0;">{{'MOBILE.ORDERS.ITEM' | translate}} {{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}
-                            <ion-icon name="ribbon"></ion-icon>
-                        </ion-badge>
                         <button ion-button icon-only clear item-right style="margin-right: 0px">
                             <ion-icon name="create"></ion-icon>
                         </button>
