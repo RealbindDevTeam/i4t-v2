@@ -58,7 +58,7 @@
                             </div>
                             <div>
                                 <mat-form-field style="width: 48%;">
-                                    <input matInput required formControlName="tables_number" type="tel" placeholder="{{'RESTAURANT_REGISTER.INITIAL_TABLES_NUMBER' | translate}} {{'RESTAURANT_REGISTER.MAX_TABLES' | translate}} {{max_table_number}}"
+                                    <input matInput required formControlName="tables_number" type="tel" (change)="changeTablesNumber()" placeholder="{{'RESTAURANT_REGISTER.INITIAL_TABLES_NUMBER' | translate}} {{'RESTAURANT_REGISTER.MAX_TABLES' | translate}} {{max_table_number}}"
                                         minlength="1" maxlength="3" #inputInitialTables>
                                     <mat-hint align="end">{{inputInitialTables.value.length}} / 3</mat-hint>
                                 </mat-form-field>
@@ -78,7 +78,7 @@
                             </div>
                             <div style="margin-top: 1%;">
                                 <mat-form-field style="width: 48%;">
-                                    <mat-select formControlName="pointsValidity" placeholder="{{'RESTAURANT_REGISTER.POINTS_VALIDITY' | translate}}">
+                                    <mat-select formControlName="pointsValidity" placeholder="{{'RESTAURANT_REGISTER.POINTS_VALIDITY' | translate}}" required>
                                         <mat-option *ngFor="let point_validity of _pointsValidity | async" value="{{point_validity._id}}"> {{point_validity.point_validity}} {{'RESTAURANT_REGISTER.DAYS' | translate}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
@@ -88,7 +88,8 @@
                                     <p>{{'RESTAURANT_REGISTER.ADD_PAYMENTMETHODS_RESTURANT' | translate}}</p>
                                     <div formGroupName="paymentMethods">
                                         <span *ngFor="let pay of _paymentMethods | async">
-                                            <mat-checkbox [formControlName]="pay._id" [class.invalid]="!_establishmentForm.controls.paymentMethods.valid" style="padding-right: 15px">{{pay.name | translate}}</mat-checkbox>
+                                            <mat-checkbox [formControlName]="pay._id" (change)="changePaymentMethod($event.checked)" [class.invalid]="!_establishmentForm.controls.paymentMethods.valid"
+                                                style="padding-right: 15px">{{pay.name | translate}}</mat-checkbox>
                                             <label></label>
                                         </span>
                                     </div>
@@ -98,7 +99,7 @@
                         </mat-card-content>
                         <mat-card-actions align="end">
                             <button mat-raised-button (click)="cancel()">{{'CANCEL' | translate}}</button>
-                            <button mat-raised-button (click)="addEstablishment()">{{'FINISH' | translate}}</button>
+                            <button mat-raised-button (click)="addEstablishment()" [disabled]="!_establishmentForm.valid || !validateTablesNumber || !validatePaymentMethod">{{'FINISH' | translate}}</button>
                         </mat-card-actions>
                     </form>
                 </mat-card-content>

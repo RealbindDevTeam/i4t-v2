@@ -89,6 +89,8 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
 
     private max_table_number: number;
     private showRestCreation: boolean;
+    private validateTablesNumber: boolean = false;
+    private validatePaymentMethod: boolean = false;
 
     /**
      * EstablishmentRegisterComponent constructor
@@ -260,6 +262,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         let cityAux: string;
         let _lNewEstablishment: string;
 
+        /**
         return new Promise((resolve, reject) => {
             try {
                 let arrPay: any[] = Object.keys(this._establishmentForm.value.paymentMethods);
@@ -349,7 +352,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                     _lTableCode = this.generateTableCode();
                     _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
                     let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
-                    let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode() ;
+                    let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode();
 
                     let _lQrCode = new QRious({
                         background: 'white',
@@ -433,6 +436,8 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 reject(e);
             }
         });
+
+         */
     }
 
     /**
@@ -511,6 +516,35 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
             var error: string = this.itemNameTraduction('UPLOAD_IMG_ERROR');
             this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
         });
+    }
+
+    /**
+     * Function to validate tables number
+     */
+    changeTablesNumber() {
+        let _lTableNumber: number = this._establishmentForm.value.tables_number;
+
+        if (_lTableNumber <= this.max_table_number) {
+            console.log('DEJA CREAR');
+            this.validateTablesNumber = true;
+
+
+        } else {
+            console.log('NO DEJA CREAR');
+            this.validateTablesNumber = false;
+
+        }
+    }
+
+    /**
+     * Function to validate establishment payment methods
+     */
+    changePaymentMethod(isChecked: boolean) {
+        if (isChecked) {
+            this.validatePaymentMethod = true;
+        } else {
+            this.validatePaymentMethod = false;
+        }
     }
 
     /**

@@ -8,6 +8,7 @@ export function createCrons() {
     /**
     * This cron evaluates the freeDays flag on establishments with value true, and change it to false
     */
+   /**
     SyncedCron.add({
       name: 'cronChangeFreeDays.' + country.name,
       schedule: function (parser) {
@@ -17,10 +18,12 @@ export function createCrons() {
         Meteor.call('changeFreeDaysToFalse', country._id);
       }
     });
+     */
 
     /**
     * This cron sends email to warn the charge soon of iurest service
     */
+   /**
     SyncedCron.add({
       name: 'cronEmailChargeSoon.' + country.name,
       schedule: function (parser) {
@@ -30,9 +33,12 @@ export function createCrons() {
         Meteor.call('sendEmailChargeSoon', country._id);
       }
     });
+     */
+
     /**
     * This cron sends email to warn the expire soon the iurest service
     */
+   /**
     SyncedCron.add({
       name: 'cronEmailExpireSoon.' + country.name,
       schedule: function (parser) {
@@ -42,9 +48,13 @@ export function createCrons() {
         Meteor.call('sendEmailExpireSoon', country._id);
       }
     });
+     */
+
+
     /**
      * This cron evaluates the isActive flag on establishments with value true, and insert them on history_payment collection
      */
+    /**
     SyncedCron.add({
       name: 'cronValidateActive.' + country.name,
       schedule: function (parser) {
@@ -54,9 +64,13 @@ export function createCrons() {
         Meteor.call('validateActiveEstablishments', country._id);
       }
     });
+     */
+
+
     /**
     * This cron sends an email to warn that the service has expired
     */
+   /**
     SyncedCron.add({
       name: 'cronEmailRestExpired.' + country.name,
       schedule: function (parser) {
@@ -66,6 +80,8 @@ export function createCrons() {
         Meteor.call('sendEmailRestExpired', country._id);
       }
     });
+     */
+    
     /**
     * This cron validate the points expiration date
     */
