@@ -25,6 +25,11 @@ import { Reward } from 'i4t_web/both/models/establishment/reward.model';
 import { Rewards } from 'i4t_web/both/collections/establishment/reward.collection';
 import { RewardListComponent } from './reward-list';
 import { RewardPoints } from 'i4t_web/both/collections/establishment/reward-point.collection';
+import { EstablishmentExitPage } from '../options/establishment-exit/establishment-exit';
+import { Option } from 'i4t_web/both/models/menu/option.model';
+import { Options } from 'i4t_web/both/collections/menu/option.collection';
+import { OptionValue } from 'i4t_web/both/models/menu/option-value.model';
+import { OptionValues } from 'i4t_web/both/collections/menu/option-value.collection';
 
 @Component({
     selector: 'page-orders',
@@ -43,6 +48,8 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _rewardPointsSub: Subscription;
     private _usersSub: Subscription;
     private _otherUSerDetailSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userLang: string;
@@ -65,6 +72,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _items;
     private _userDetails: Observable<UserDetail[]>;
     private _rewards: Observable<Reward[]>;
+    private _options: Observable<Option[]>;
 
     private _currentOrderUserId: string;
     private _btnOrderItem: boolean = true;
@@ -141,6 +149,18 @@ export class OrdersPage implements OnInit, OnDestroy {
                     });
 
                     this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).takeUntil(this.ngUnsubscribe).subscribe();
+                    let _optionIds: string[] = [];
+                    this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._options = Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).zone();
+                            this._options.subscribe(() => {
+                                Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch().forEach((opt) => {
+                                    _optionIds.push(opt._id);
+                                });
+                                this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this.ngUnsubscribe).subscribe();
+                            });
+                        });
+                    });
                 }
 
                 this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._userDetail.current_establishment, this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe();
@@ -503,6 +523,23 @@ export class OrdersPage implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Return option value name
+     * @param {string} _valueId
+     */
+    getOptionValueName(_valueId: string): string {
+        let _option_value = OptionValues.findOne({ _id: _valueId });
+        if (_option_value) {
+            return _option_value.name;
+        }
+    }
+
+    /**
+     * Go to establishment exit page
+     */
+    goToEstablishmentExit() {
+        this._navCtrl.push(EstablishmentExitPage, { res_id: this._userDetail.current_establishment, table_id: this._userDetail.current_table });
+    }
 
     ionViewDidEnter() {
     }
