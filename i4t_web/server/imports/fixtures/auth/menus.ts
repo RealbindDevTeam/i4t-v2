@@ -132,7 +132,7 @@ export function loadMenus() {
             },
             {
                 _id: "2000",
-                is_active: true,
+                is_active: false,
                 name: "MENUS.PAYMENTS.PAYMENTS",
                 url: "",
                 icon_name: "payment",
@@ -217,7 +217,7 @@ export function loadMenus() {
                             url: "",
                             icon_name: "",
                             order: 3005,
-                            children:[
+                            children: [
                                 {
                                     _id: "30051",
                                     is_active: true,
