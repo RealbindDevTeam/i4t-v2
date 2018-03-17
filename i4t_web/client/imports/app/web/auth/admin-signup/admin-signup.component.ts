@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomValidators } from '../../../../../../both/shared-components/validators/custom-validator';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { PaymentPlanInfo } from "../payment-plan-info/payment-plan-info.component";
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
@@ -29,6 +29,7 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
     private _selectedCountry: string;
     private _selectedCity: string = "";
     private _showOtherCity: boolean = false;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private signupForm: FormGroup;
     private showLoginPassword: boolean = true;
@@ -67,13 +68,13 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
             fullName: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)])
         });
 
-        this._countrySub = MeteorObservable.subscribe('countries').subscribe(() => {
+        this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this.zone.run(() => {
                 this._countries = Countries.find({}).zone();
             });
         });
 
-        this._citySub = MeteorObservable.subscribe('cities').subscribe(() => {
+        this._citySub = MeteorObservable.subscribe('cities').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this.zone.run(() => {
                 this._cities = Cities.find({ country: '' }).zone();
             });
@@ -88,8 +89,8 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._citySub) { this._citySub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

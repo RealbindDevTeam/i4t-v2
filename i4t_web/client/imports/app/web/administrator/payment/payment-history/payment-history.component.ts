@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { VerifyResultComponent } from './verify-result/verify-result.component';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { PaymentsHistory } from '../../../../../../../both/collections/payment/payment-history.collection';
@@ -46,6 +46,7 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
     private _countrySub: Subscription;
     private _citySub: Subscription;
     private _iurestInvoiceSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _historyPayments: Observable<PaymentHistory[]>;
     private _historyPayments2: Observable<PaymentHistory[]>;
@@ -99,10 +100,10 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
 
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe();
-        this._countrySub = MeteorObservable.subscribe('countries').subscribe();
-        this._citySub = MeteorObservable.subscribe('cities').subscribe();
-        this._historyPaymentSub = MeteorObservable.subscribe('getHistoryPaymentsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
+        this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
+        this._citySub = MeteorObservable.subscribe('cities').takeUntil(this._ngUnsubscribe).subscribe();
+        this._historyPaymentSub = MeteorObservable.subscribe('getHistoryPaymentsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._historyPayments2 = PaymentsHistory.find({ creation_user: Meteor.userId() }).zone();
                 this.countPaymentsHistory();
@@ -118,11 +119,11 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._iurestInvoiceSub = MeteorObservable.subscribe('getIurestInvoiceByUser', Meteor.userId()).subscribe();
-        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe();
-        this._paymentTransactionSub = MeteorObservable.subscribe('getTransactionsByUser', Meteor.userId()).subscribe();
+        this._iurestInvoiceSub = MeteorObservable.subscribe('getIurestInvoiceByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
+        this._paymentTransactionSub = MeteorObservable.subscribe('getTransactionsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
 
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this.is_prod_flag = Parameters.findOne({ name: 'payu_is_prod' }).value;
                 this.isProd = (this.is_prod_flag == 'true');
@@ -155,13 +156,8 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._historyPaymentSub) { this._historyPaymentSub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._paymentTransactionSub) { this._paymentTransactionSub.unsubscribe(); }
-        if (this._parameterSub) { this._parameterSub.unsubscribe(); }
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
-        if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._citySub) { this._citySub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from "@angular/router";
 import { MeteorObservable } from 'meteor-rxjs';
@@ -31,6 +31,7 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
     private countriesSub: Subscription;
     private citiesSub: Subscription;
     private _usersDetailsSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     public _dialogRef: MatDialogRef<any>;
     private _thereAreEstablishments: boolean = true;
@@ -60,7 +61,7 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this.establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this.establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _establishmentIds: string[] = [];
                 this.establishments = Establishments.find({ creation_user: this._user }).zone();
@@ -69,7 +70,7 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
                 });
                 this.countEstablishments();
                 this.establishments.subscribe(() => { this.countEstablishments(); this.validateWaiters(); });
-                this._usersDetailsSub = MeteorObservable.subscribe('getUsersCollaboratorsByEstablishmentsId', _establishmentIds).subscribe(() => {
+                this._usersDetailsSub = MeteorObservable.subscribe('getUsersCollaboratorsByEstablishmentsId', _establishmentIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
                         this._userDetails = UserDetails.find({ establishment_work: { $in: _establishmentIds }, role_id: '200' }).zone();
                         this.validateWaiters();
@@ -79,8 +80,8 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
                 });
             });
         });
-        this.countriesSub = MeteorObservable.subscribe('countries').subscribe();
-        this.citiesSub = MeteorObservable.subscribe('cities').subscribe();
+        this.countriesSub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
+        this.citiesSub = MeteorObservable.subscribe('cities').takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
@@ -96,9 +97,9 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
     validateWaiters(): void {
         this._thereAreCollaborators = true;
         Establishments.collection.find({ creation_user: this._user }).fetch().forEach((est) => {
-            let _collaborators:number = 0;
+            let _collaborators: number = 0;
             _collaborators = UserDetails.collection.find({ establishment_work: est._id, role_id: '200' }).count();
-            if(_collaborators === 0){
+            if (_collaborators === 0) {
                 this._thereAreCollaborators = false;
             }
         });
@@ -108,10 +109,8 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this.establishmentSub) { this.establishmentSub.unsubscribe(); }
-        if (this.countriesSub) { this.countriesSub.unsubscribe(); }
-        if (this.citiesSub) { this.citiesSub.unsubscribe(); }
-        if (this._usersDetailsSub) { this._usersDetailsSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

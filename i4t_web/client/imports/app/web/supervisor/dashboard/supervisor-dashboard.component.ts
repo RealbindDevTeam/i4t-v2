@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
@@ -31,10 +31,10 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
     private _establishmentsSub: Subscription;
     private _userDetailsSub: Subscription;
     private _itemsSub: Subscription;
-    private _paymentsSub: Subscription;
     private _ordersSub: Subscription;
     private _currenciesSub: Subscription;
     private _tablesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _currentDate: Date = new Date();
     private _currentDay: number = this._currentDate.getDate();
@@ -60,33 +60,27 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
         let _lEstablishmentsId: string[] = [];
-        this._establishmentsSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).subscribe(() => {
+        this._establishmentsSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({}).zone();
                 Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
                     _lEstablishmentsId.push(establishment._id);
                 });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', _lEstablishmentsId).subscribe();
-                this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentIds', _lEstablishmentsId).subscribe();
-                //this._paymentsSub = MeteorObservable.subscribe('getPaymentsByEstablishmentIds', _lEstablishmentsId).subscribe();
-                this._ordersSub = MeteorObservable.subscribe('getOrdersByEstablishmentIds', _lEstablishmentsId, ['ORDER_STATUS.CLOSED']).subscribe();
-                this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).subscribe();
+                this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
+                this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentIds', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
+                this._ordersSub = MeteorObservable.subscribe('getOrdersByEstablishmentIds', _lEstablishmentsId, ['ORDER_STATUS.CLOSED']).takeUntil(this._ngUnsubscribe).subscribe();
+                this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
             });
         });
-        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).subscribe();
+        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentsSub) { this._establishmentsSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._paymentsSub) { this._paymentsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../../services/general/user-language.service';
 import { generateQRCode, createTableCode } from '../../../../../../../../../both/methods/establishment/establishment.methods';
@@ -39,6 +39,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
     private _tableSub: Subscription;
     private _countrySub: Subscription;
     private _parameterSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
     private _tables: Observable<Table[]>;
@@ -78,11 +79,11 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
         this._tableForm = new FormGroup({
             tables_number: new FormControl('', [Validators.required])
         });
-        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({ _id: this.establishmentId }).zone();
                 this._establishment = Establishments.findOne({ _id: this.establishmentId });
-                this._countrySub = MeteorObservable.subscribe('getCountryByEstablishmentId', this.establishmentId).subscribe(() => {
+                this._countrySub = MeteorObservable.subscribe('getCountryByEstablishmentId', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
                         let _lEstablishmentCountry: Country = Countries.findOne({ _id: this._establishment.countryId });
                         this.max_table_number = _lEstablishmentCountry.max_number_tables;
@@ -91,22 +92,20 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                 });
             });
         });
-        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).subscribe(() => {
+        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._tables = this._tables = Tables.find({ establishment_id: this.establishmentId }).zone();
             });
         });
-        this._parameterSubscription = MeteorObservable.subscribe('getParameters').subscribe();
+        this._parameterSubscription = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
-        if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._parameterSubscription) { this._parameterSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -137,7 +136,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
 
                 _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
                 let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
-                let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode() ;
+                let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode();
 
                 let _lQrCode = new QRious({
                     background: 'white',

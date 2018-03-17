@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
@@ -25,6 +25,7 @@ export class TableChangeComponent implements OnInit, OnDestroy {
 
     private _userDetailsSub: Subscription;
     private _tableSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userDetails: Observable<UserDetail[]>
     private _tables: Observable<Table[]>;
@@ -60,12 +61,12 @@ export class TableChangeComponent implements OnInit, OnDestroy {
         this._changeTableForm = new FormGroup({
             qrCodeDestiny: new FormControl('', [Validators.required, Validators.minLength(1)])
         });
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({}).zone();
             });
         });
-        this._tableSub = MeteorObservable.subscribe('getTableByCurrentTable', this._user).subscribe(() => {
+        this._tableSub = MeteorObservable.subscribe('getTableByCurrentTable', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._tables = Tables.find({}).zone();
             });
@@ -76,8 +77,8 @@ export class TableChangeComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

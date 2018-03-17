@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MatSnackBar, MatDialogRef, MatDialog } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,6 +27,7 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
     private _ordersSub: Subscription;
     private _waiterCallDetSub: Subscription;
     private _tablesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userDetails: Observable<UserDetail[]>;
     private _tables: Observable<Table[]>;
@@ -65,18 +66,18 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({}).zone();
             });
         });
-        this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED']).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', this._user, ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED']).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._orders = Orders.find({}).zone();
             });
         });
-        this._waiterCallDetSub = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', this._user).subscribe();
-        this._tablesSub = MeteorObservable.subscribe('getTableByCurrentTable', this._user).subscribe(() => {
+        this._waiterCallDetSub = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._tablesSub = MeteorObservable.subscribe('getTableByCurrentTable', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._tables = Tables.find({}).zone();
             });
@@ -87,10 +88,8 @@ export class EstablishmentExitComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._waiterCallDetSub) { this._waiterCallDetSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

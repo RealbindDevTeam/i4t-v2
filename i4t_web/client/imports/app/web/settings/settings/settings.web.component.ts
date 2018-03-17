@@ -3,7 +3,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { UserLanguageService } from '../../services/general/user-language.service';
 import { Countries } from '../../../../../../both/collections/general/country.collection';
 import { Country } from '../../../../../../both/models/general/country.model';
@@ -34,6 +34,7 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
     private _subscription: Subscription;
     private _countrySubscription: Subscription;
     private _citySubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
@@ -87,23 +88,23 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
 
-        this._userSubscription = MeteorObservable.subscribe('getUserSettings').subscribe();
+        this._userSubscription = MeteorObservable.subscribe('getUserSettings').takeUntil(this._ngUnsubscribe).subscribe();
 
-        this._countrySubscription = MeteorObservable.subscribe('countries').subscribe(() => {
+        this._countrySubscription = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._countries = Countries.find({}).zone();
             });
         });
 
-        this._citySubscription = MeteorObservable.subscribe('cities').subscribe();
+        this._citySubscription = MeteorObservable.subscribe('cities').takeUntil(this._ngUnsubscribe).subscribe();
 
-        this._subscription = MeteorObservable.subscribe('languages').subscribe(() => {
+        this._subscription = MeteorObservable.subscribe('languages').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._languages = Languages.find({}).zone();
             });
         });
 
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
 
                 this._user = Users.findOne({ _id: Meteor.userId() });;
@@ -165,11 +166,8 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userSubscription) { this._userSubscription.unsubscribe(); }
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-        if (this._subscription) { this._subscription.unsubscribe(); }
-        if (this._countrySubscription) { this._countrySubscription.unsubscribe(); }
-        if (this._citySubscription) { this._citySubscription.unsubscribe() }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

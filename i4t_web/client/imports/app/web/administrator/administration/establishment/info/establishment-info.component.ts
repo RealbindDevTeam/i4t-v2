@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -26,6 +26,7 @@ export class EstablishmentInfoComponent implements OnInit, OnDestroy {
 
     private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
 
@@ -48,14 +49,14 @@ export class EstablishmentInfoComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentSub = MeteorObservable.subscribe('getEstablishmentById', this.establishmentId).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('getEstablishmentById', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({ _id: this.establishmentId }).zone();
             });
         });
         if (this.tableQRCode !== null && this.tableQRCode !== undefined && this.tableQRCode !== '') {
             this._showTableInfo = true;
-            this._tablesSub = MeteorObservable.subscribe('getTableByQRCode', this.tableQRCode).subscribe(() => {
+            this._tablesSub = MeteorObservable.subscribe('getTableByQRCode', this.tableQRCode).takeUntil(this._ngUnsubscribe).subscribe(() => {
                 this._ngZone.run(() => {
                     this._tableNumber = Tables.collection.findOne({ QR_code: this.tableQRCode })._number;
                 });
@@ -69,8 +70,8 @@ export class EstablishmentInfoComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

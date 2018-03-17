@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -44,6 +44,7 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
     private _paymentMethodsSub: Subscription;
     private _parameterSub: Subscription;
     private _pointValiditySub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
@@ -111,7 +112,7 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _establishmentImg: EstablishmentImage = Establishments.findOne({ _id: this._establishmentToEdit._id }).image;
                 if (_establishmentImg) {
@@ -122,27 +123,27 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._countriesSub = MeteorObservable.subscribe('countries').subscribe(() => {
+        this._countriesSub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._countries = Countries.find({}).zone();
                 let _lCountry: Country = Countries.findOne({ _id: this._establishmentToEdit.countryId });
             });
         });
 
-        this._citiesSub = MeteorObservable.subscribe('citiesByCountry', this._establishmentToEdit.countryId).subscribe(() => {
+        this._citiesSub = MeteorObservable.subscribe('citiesByCountry', this._establishmentToEdit.countryId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._cities = Cities.find({}).zone();
             });
         });
 
-        this._currencySub = MeteorObservable.subscribe('currencies').subscribe(() => {
+        this._currencySub = MeteorObservable.subscribe('currencies').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let find: Currency = Currencies.findOne({ _id: this._establishmentToEdit.currencyId });
                 this._establishmentCurrency = find.code + ' - ' + this.itemNameTraduction(find.name);
             });
         });
 
-        this._paymentMethodsSub = MeteorObservable.subscribe('paymentMethods').subscribe(() => {
+        this._paymentMethodsSub = MeteorObservable.subscribe('paymentMethods').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._paymentMethods = PaymentMethods.collection.find({}).fetch();
                 for (let pay of this._paymentMethods) {
@@ -167,11 +168,11 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._parameterDaysTrial = Parameters.find({ _id: '100' });
         });
 
-        this._pointValiditySub = MeteorObservable.subscribe('pointsValidity').subscribe(() => {
+        this._pointValiditySub = MeteorObservable.subscribe('pointsValidity').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._pointsValidity = PointsValidity.find({}).zone();
             });
@@ -211,13 +212,8 @@ export class EstablishmentEditionComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._countriesSub) { this._countriesSub.unsubscribe(); }
-        if (this._citiesSub) { this._citiesSub.unsubscribe(); }
-        if (this._paymentMethodsSub) { this._paymentMethodsSub.unsubscribe(); }
-        if (this._parameterSub) { this._parameterSub.unsubscribe(); }
-        if (this._pointValiditySub) { this._pointValiditySub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

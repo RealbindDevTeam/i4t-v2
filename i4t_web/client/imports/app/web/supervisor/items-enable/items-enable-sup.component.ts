@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MatSnackBar, MatDialogRef, MatDialog } from '@angular/material';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
@@ -21,6 +21,7 @@ export class ItemEnableSupComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
     private _itemsSub: Subscription;
     private _userDetailSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
     public _dialogRef: MatDialogRef<any>;
 
     private _items: Observable<Item[]>;
@@ -50,7 +51,7 @@ export class ItemEnableSupComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._itemsSub = MeteorObservable.subscribe('getItemsByUserEstablishmentWork', this._user).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('getItemsByUserEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
                 this._itemsFilter = Items.collection.find({}).fetch();
@@ -58,7 +59,7 @@ export class ItemEnableSupComponent implements OnInit, OnDestroy {
                 this._items.subscribe(() => { this.countItems(); });
             });
         });
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetail = UserDetails.collection.findOne({ user_id: this._user });
             });
@@ -76,8 +77,8 @@ export class ItemEnableSupComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

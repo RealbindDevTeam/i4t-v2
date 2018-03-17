@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { Establishments } from "../../../../../../../both/collections/establishment/establishment.collection";
 import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
@@ -28,6 +28,7 @@ export class CallsComponent implements OnInit, OnDestroy {
     private _userEstablishmentSubscription: Subscription;
     private _callsDetailsSubscription: Subscription;
     private _tableSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _mdDialogRef: MatDialogRef<any>;
 
@@ -58,16 +59,16 @@ export class CallsComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
             if (this._userDetail) {
-                this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).subscribe(() => {
+                this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).takeUntil(this._ngUnsubscribe).subscribe(() => {
                     this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
                 });
             }
         });
 
-        this._callsDetailsSubscription = MeteorObservable.subscribe('waiterCallDetailByWaiterId', this._user).subscribe(() => {
+        this._callsDetailsSubscription = MeteorObservable.subscribe('waiterCallDetailByWaiterId', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._waiterCallDetail = WaiterCallDetails.find({}).zone();
                 this.countCalls();
@@ -75,17 +76,15 @@ export class CallsComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).subscribe();
+        this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-        if (this._userEstablishmentSubscription) { this._userEstablishmentSubscription.unsubscribe(); }
-        if (this._callsDetailsSubscription) { this._callsDetailsSubscription.unsubscribe(); }
-        if (this._tableSubscription) { this._tableSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
