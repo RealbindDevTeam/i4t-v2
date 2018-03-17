@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -41,6 +41,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     private _establishmentSub: Subscription;
     private _itemsSubscription: Subscription;
     private _subCategoriesSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _selectedValue: string;
     private titleMsg: string;
@@ -86,7 +87,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
             section: new FormControl('')
         });
-        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({}).zone();
                 Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
@@ -96,19 +97,19 @@ export class CategoryComponent implements OnInit, OnDestroy {
                 this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
-        this._sectionsSub = MeteorObservable.subscribe('sections', this._user).subscribe(() => {
+        this._sectionsSub = MeteorObservable.subscribe('sections', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sections = Sections.find({}).zone();
             });
         });
-        this._categoriesSub = MeteorObservable.subscribe('categories', this._user).subscribe(() => {
+        this._categoriesSub = MeteorObservable.subscribe('categories', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._categories = Categories.find({}).zone();
             });
         });
 
-        this._subCategoriesSubscription = MeteorObservable.subscribe('subcategories', this._user).subscribe();
-        this._itemsSubscription = MeteorObservable.subscribe('items', this._user).subscribe();
+        this._subCategoriesSubscription = MeteorObservable.subscribe('subcategories', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._itemsSubscription = MeteorObservable.subscribe('items', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
@@ -122,11 +123,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
-        if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
-        if (this._subCategoriesSubscription) { this._subCategoriesSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

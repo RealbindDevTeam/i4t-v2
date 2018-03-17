@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone, EventEmitter, Input, Output } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
 import { UserLanguageService } from '../../services/general/user-language.service';
@@ -19,6 +19,7 @@ export class IurestScheduleComponent implements OnInit, OnDestroy {
     @Output() finalSchedule = new EventEmitter();
 
     private _hoursSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
     private _hours: Observable<Hour[]>;
 
     private _selectedOpenTime: string;
@@ -120,7 +121,7 @@ export class IurestScheduleComponent implements OnInit, OnDestroy {
             };
         }
 
-        this._hoursSub = MeteorObservable.subscribe('hours').subscribe(() => {
+        this._hoursSub = MeteorObservable.subscribe('hours').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._hours = Hours.find({}, { sort: { hour: 1 } });
             });
@@ -131,7 +132,8 @@ export class IurestScheduleComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._hoursSub) { this._hoursSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
@@ -33,6 +33,7 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
     private _userDetailsSub: Subscription;
     private _roleSub: Subscription;
     private _usersSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     //private _form                   : FormGroup;
     public _dialogRef: MatDialogRef<any>;
@@ -66,7 +67,7 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({}).zone();
                 this.countEstablishments();
@@ -91,21 +92,19 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._roleSub) { this._roleSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._usersSub) { this._usersSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
      * This method allow search collaborators by establishment id
      */
     collaboratorsSearch(_pEstablishmentId: string) {
-        this._userDetailsSub = MeteorObservable.subscribe('getUsersDetailsForEstablishment', _pEstablishmentId).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUsersDetailsForEstablishment', _pEstablishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._userDetails = UserDetails.find({ establishment_work: _pEstablishmentId }).zone();
         });
 
-        this._usersSub = MeteorObservable.subscribe('getUsersByEstablishment', _pEstablishmentId).subscribe(() => {
+        this._usersSub = MeteorObservable.subscribe('getUsersByEstablishment', _pEstablishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._users = Users.find({}).zone();
         });
     }

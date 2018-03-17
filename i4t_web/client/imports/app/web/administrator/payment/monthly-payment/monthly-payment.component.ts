@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
@@ -32,6 +32,7 @@ export class MonthlyPaymentComponent implements OnInit, OnDestroy {
     private _countrySub: Subscription;
     private _tableSub: Subscription;
     private _parameterSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _currentDate: Date;
     private _firstMonthDay: Date;
@@ -63,13 +64,13 @@ export class MonthlyPaymentComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentSub = MeteorObservable.subscribe('currentEstablishmentsNoPayed', Meteor.userId()).subscribe();
+        this._establishmentSub = MeteorObservable.subscribe('currentEstablishmentsNoPayed', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
         this._establishments = Establishments.find({ creation_user: Meteor.userId(), isActive: true }).zone();
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').subscribe();
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').takeUntil(this._ngUnsubscribe).subscribe();
         this._currencies = Currencies.find({}).zone();
-        this._countrySub = MeteorObservable.subscribe('countries').subscribe();
-        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).subscribe();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+        this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
+        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let is_prod_flag = Parameters.findOne({ name: 'payu_is_prod' }).value;
                 if (is_prod_flag == 'true') {
@@ -92,11 +93,8 @@ export class MonthlyPaymentComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
-        if (this._parameterSub) { this._parameterSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

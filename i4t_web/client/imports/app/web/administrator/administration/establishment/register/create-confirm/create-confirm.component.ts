@@ -1,25 +1,26 @@
-import { Component, NgZone, OnInit, OnDestroy} from '@angular/core';
+import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { MeteorObservable } from "meteor-rxjs";
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Parameter } from '../../../../../../../../../both/models/general/parameter.model';
 import { Parameters } from '../../../../../../../../../both/collections/general/parameter.collection';
 
 @Component({
     selector: 'create-confirm',
     templateUrl: './create-confirm.component.html',
-    styleUrls: [ './create-confirm.component.scss' ]
+    styleUrls: ['./create-confirm.component.scss']
 })
-export class CreateConfirmComponent implements OnInit, OnDestroy{
+export class CreateConfirmComponent implements OnInit, OnDestroy {
 
-     private _parameterSub: Subscription;
+    private _parameterSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     /**
      * CreateConfirmComponent constructor
      * @param {MatDialogRef<any>} _dialogRef
      */
     constructor(public _dialogRef: MatDialogRef<any>, private _zone: NgZone) {
-        
+
     }
 
     /**
@@ -27,19 +28,20 @@ export class CreateConfirmComponent implements OnInit, OnDestroy{
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all Subscriptions
      */
-    removeSubscriptions():void{
-        if( this._parameterSub ){ this._parameterSub.unsubscribe(); }
+    removeSubscriptions(): void {
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
-    getDiscountPercent(){
-        let discount = Parameters.findOne({name: 'first_pay_discount'});
-        if(discount){
+    getDiscountPercent() {
+        let discount = Parameters.findOne({ name: 'first_pay_discount' });
+        if (discount) {
             return discount.value;
         }
     }
@@ -47,9 +49,9 @@ export class CreateConfirmComponent implements OnInit, OnDestroy{
     /**
      * Function to gets de first day of charge
      */
-    getFirstDay(): string{
+    getFirstDay(): string {
         let firstDay = Parameters.findOne({ name: 'start_payment_day' });
-        if(firstDay){
+        if (firstDay) {
             return firstDay.value;
         }
     }
@@ -71,7 +73,7 @@ export class CreateConfirmComponent implements OnInit, OnDestroy{
     /**
      * ngOnDestroy Implementation
      */
-    ngOnDestroy(){
+    ngOnDestroy() {
         this.removeSubscriptions();
     }
 }

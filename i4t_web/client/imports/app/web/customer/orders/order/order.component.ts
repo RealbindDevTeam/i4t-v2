@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -28,6 +28,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     private _tablesSub: Subscription;
     private _userDetailsSub: Subscription;
     private _establishmentSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userDetails: Observable<UserDetail[]>;
     private _currentEstablishment: Establishment;
@@ -67,13 +68,13 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this._ordersForm = new FormGroup({
             qrCode: new FormControl('', [Validators.required, Validators.minLength(1)])
         });
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({ user_id: this._user }).zone();
                 this._userDetails.subscribe(() => { this.validateUser(); });
                 let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: this._user });
                 if (_lUserDetail.current_establishment !== "" && _lUserDetail.current_table !== "") {
-                    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', this._user).subscribe(() => {
+                    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             let _lEstablishment: Establishment = Establishments.findOne({ _id: _lUserDetail.current_establishment });
                             let _lTable: Table = Tables.findOne({ _id: _lUserDetail.current_table });
@@ -91,16 +92,15 @@ export class OrdersComponent implements OnInit, OnDestroy {
                 }
             });
         });
-        this._tablesSub = MeteorObservable.subscribe('getAllTables').subscribe();
+        this._tablesSub = MeteorObservable.subscribe('getAllTables').takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

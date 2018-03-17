@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../../services/general/user-language.service';
 import { Establishment } from '../../../../../../../../../both/models/establishment/establishment.model';
@@ -22,7 +22,7 @@ import { PaymentHistory } from '../../../../../../../../../both/models/payment/p
 @Component({
     selector: 'establishment-list',
     templateUrl: './establishment-list.component.html',
-    styleUrls: [ './establishment-list.component.scss' ]
+    styleUrls: ['./establishment-list.component.scss']
 })
 export class EstablishmentListComponent implements OnInit, OnDestroy {
 
@@ -35,6 +35,8 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
     private _tableSub: Subscription;
     private _countrySub: Subscription;
     private _paymentHistorySub: Subscription;
+    private _parameterSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
     private _currencies: Observable<Currency[]>;
@@ -42,7 +44,6 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
     private _parameters: Observable<Parameter[]>;
 
     private _currentDate: Date;
-    private _parameterSub: Subscription;
 
     /**
      * EstablishmentListComponent Constructor
@@ -64,17 +65,17 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
             establishment: new FormControl('', [Validators.required]),
             tables_number: new FormControl('', [Validators.required])
         });
-        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._establishments = Establishments.find({}).zone();
         });
-        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).subscribe(() => {
+        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._tables = this._tables = Tables.find({}).zone();
         });
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').subscribe(() => {
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._currencies = Currencies.find({}).zone();
         });
-        this._countrySub = MeteorObservable.subscribe('countries').subscribe();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+        this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let is_prod_flag = Parameters.findOne({ name: 'payu_is_prod' }).value;
                 if (is_prod_flag == 'true') {
@@ -85,19 +86,15 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
                 }
             });
         });
-        this._paymentHistorySub = MeteorObservable.subscribe('getHistoryPaymentsByUser', Meteor.userId()).subscribe();
+        this._paymentHistorySub = MeteorObservable.subscribe('getHistoryPaymentsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscription(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._parameterSub) { this._parameterSub.unsubscribe(); }
-        if (this._paymentHistorySub) { this._paymentHistorySub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

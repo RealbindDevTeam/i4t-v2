@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Router } from "@angular/router";
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
     private _establishmentsSub: Subscription;
     private _tablesSub: Subscription;
     private _userDetailsSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
     private _establishmentsFilter: Observable<Establishment[]>;
@@ -52,7 +53,7 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentsSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._establishmentsSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishmentsFilter = Establishments.find({}).zone();
                 this._establishments = Establishments.find({}).zone();
@@ -60,21 +61,20 @@ export class EstablishmentTableControlComponent implements OnInit, OnDestroy {
                 this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
-        this._tablesSub = MeteorObservable.subscribe('tables', this._user).subscribe(() => {
+        this._tablesSub = MeteorObservable.subscribe('tables', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._tables = Tables.find({}).zone();
             });
         });
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByAdminUser', this._user).subscribe();
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByAdminUser', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if ( this._establishmentsSub) {  this._establishmentsSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

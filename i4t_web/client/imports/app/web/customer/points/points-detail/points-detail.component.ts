@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone, Input } from '@angular/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { UserLanguageService } from '../../../services/general/user-language.service';
@@ -17,6 +17,7 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _orderHistorySub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _orderHistories: Observable<OrderHistory[]>;
     private _establishmentId: string;
@@ -50,7 +51,7 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
         this._location.replaceState("/app/establishment-points");
         this.removeSubscriptions();
         if (this._establishmentId !== null && this._establishmentId !== undefined) {
-            this._orderHistorySub = MeteorObservable.subscribe('getOrdersHistoryByUserId', this._user, this._establishmentId).subscribe(() => {
+            this._orderHistorySub = MeteorObservable.subscribe('getOrdersHistoryByUserId', this._user, this._establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                 this._ngZone.run(() => {
                     this._orderHistories = OrderHistories.find({ customer_id: this._user, establishment_id: this._establishmentId }, { sort: { creation_date: -1 } }).zone();
                 });
@@ -68,7 +69,8 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._orderHistorySub) { this._orderHistorySub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -88,9 +90,9 @@ export class PointsDetailComponent implements OnInit, OnDestroy {
      * @param {OrderHistory} _pOrderHistory 
      */
     getRedeemedPoints(_pOrderHistory: OrderHistory): number {
-        let _lPoints:number = 0;
+        let _lPoints: number = 0;
         _pOrderHistory.items.forEach((it) => {
-            if(it.is_reward){
+            if (it.is_reward) {
                 _lPoints += Number.parseInt(it.redeemed_points.toString());
             }
         });

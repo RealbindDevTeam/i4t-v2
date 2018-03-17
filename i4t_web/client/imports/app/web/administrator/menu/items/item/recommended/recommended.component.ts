@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../../../services/general/user-language.service';
 import { Establishment } from "../../../../../../../../../both/models/establishment/establishment.model";
 import { Establishments } from "../../../../../../../../../both/collections/establishment/establishment.collection";
@@ -17,6 +17,7 @@ import { Items } from 'both/collections/menu/item.collection';
 export class Recommended implements OnInit, OnDestroy {
 
     private _establishmentSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     /**
      * Recommended constructor
@@ -40,7 +41,7 @@ export class Recommended implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentSubscription = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe(() => { });
+        this._establishmentSubscription = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => { });
     }
 
     /** 
@@ -90,7 +91,8 @@ export class Recommended implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSubscription) { this._establishmentSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     ngOnDestroy() {

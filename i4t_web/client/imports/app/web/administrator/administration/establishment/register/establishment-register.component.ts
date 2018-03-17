@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -58,6 +58,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private _usrDetailSubscription: Subscription;
     private _pointValiditySub: Subscription;
     private _parameterSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
@@ -137,37 +138,37 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
             otherCity: new FormControl()
         });
 
-        this._paymentMethodsSub = MeteorObservable.subscribe('paymentMethods').subscribe(() => {
+        this._paymentMethodsSub = MeteorObservable.subscribe('paymentMethods').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._paymentMethods = PaymentMethods.find({}).zone();
                 this._paymentMethods.subscribe(() => { this.createPaymentMethods() });
             });
         });
 
-        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe();
-        this._countriesSub = MeteorObservable.subscribe('countries').subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._countriesSub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._countries = Countries.find({}).zone();
             });
         });
-        this._citiesSub = MeteorObservable.subscribe('cities').subscribe();
-        this._currencySub = MeteorObservable.subscribe('currencies').subscribe();
-        this._additionsSub = MeteorObservable.subscribe('additions', this._user).subscribe();
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).subscribe();
-        this._parameterSubscription = MeteorObservable.subscribe('getParameters').subscribe();
+        this._citiesSub = MeteorObservable.subscribe('cities').takeUntil(this._ngUnsubscribe).subscribe();
+        this._currencySub = MeteorObservable.subscribe('currencies').takeUntil(this._ngUnsubscribe).subscribe();
+        this._additionsSub = MeteorObservable.subscribe('additions', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._parameterSubscription = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe();
         this._currentDate = new Date();
         this._firstMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth(), 1);
         this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
 
         this._establishmentForm.get('tables_number').disable();
 
-        this._usrDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', this._user).subscribe(() => {
+        this._usrDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             let _lUsrDetail = UserDetails.findOne({ user_id: this._user });
             if (_lUsrDetail) {
                 this.showRestCreation = _lUsrDetail.show_after_rest_creation;
             }
         });
-        this._pointValiditySub = MeteorObservable.subscribe('pointsValidity').subscribe(() => {
+        this._pointValiditySub = MeteorObservable.subscribe('pointsValidity').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._pointsValidity = PointsValidity.find({}).zone();
             });
@@ -178,16 +179,8 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._countriesSub) { this._countriesSub.unsubscribe(); }
-        if (this._citiesSub) { this._citiesSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._paymentMethodsSub) { this._paymentMethodsSub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
-        if (this._usrDetailSubscription) { this._usrDetailSubscription.unsubscribe(); }
-        if (this._pointValiditySub) { this._pointValiditySub.unsubscribe(); }
-        if (this._parameterSubscription) { this._parameterSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -349,7 +342,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                     _lTableCode = this.generateTableCode();
                     _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
                     let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
-                    let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode() ;
+                    let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode();
 
                     let _lQrCode = new QRious({
                         background: 'white',

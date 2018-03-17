@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
@@ -19,7 +19,7 @@ import { Parameter } from '../../../../../../../both/models/general/parameter.mo
 @Component({
     selector: 'reactivate-establishment',
     templateUrl: './reactivate-establishment.component.html',
-    styleUrls: [ './reactivate-establishment.component.scss' ]
+    styleUrls: ['./reactivate-establishment.component.scss']
 })
 export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
 
@@ -29,6 +29,7 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
     private _establishmentSub: Subscription;
     private _parameterSub: Subscription;
     private _tableSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _currencies: Observable<Currency[]>;
     private _establishments: Observable<Establishment[]>;
@@ -59,20 +60,20 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe( () => {
-            this._ngZone.run( () => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
+            this._ngZone.run(() => {
                 this._establishments = Establishments.find({ creation_user: this._user, isActive: false }).zone();
                 this.countEstablishments();
-                this._establishments.subscribe( () => { this.countEstablishments(); });
+                this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').subscribe(() => {
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._currencies = Currencies.find({}).zone();
             });
         });
-        this._countrySub = MeteorObservable.subscribe('countries').subscribe();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+        this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let is_prod_flag = Parameters.findOne({ name: 'payu_is_prod' }).value;
                 if (is_prod_flag == 'true') {
@@ -85,25 +86,22 @@ export class ReactivateEstablishmentComponent implements OnInit, OnDestroy {
                 }
             });
         });
-        this._tableSub = MeteorObservable.subscribe('tables', this._user).subscribe();
+        this._tableSub = MeteorObservable.subscribe('tables', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Validate if establishments exists
      */
-    countEstablishments():void{
-        Establishments.collection.find( { creation_user: this._user, isActive: false } ).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
+    countEstablishments(): void {
+        Establishments.collection.find({ creation_user: this._user, isActive: false }).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._parameterSub) { this._parameterSub.unsubscribe(); }
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

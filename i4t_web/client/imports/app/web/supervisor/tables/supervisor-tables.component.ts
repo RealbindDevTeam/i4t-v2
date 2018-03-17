@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
   private tableForm: FormGroup;
   private establishmentSub: Subscription;
   private tableSub: Subscription;
+  private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
   private establishments: Observable<Establishment[]>;
   private tables: Observable<Table[]>;
@@ -71,7 +72,7 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
     this.tableForm = new FormGroup({
       tables_number: new FormControl('', [Validators.required])
     });
-    this.establishmentSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).subscribe(() => {
+    this.establishmentSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this.establishments = Establishments.find({}).zone();
         this.countEstablishments();
@@ -86,7 +87,7 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
         this.all_checked = false;
       });
     });
-    this.tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).subscribe(() => {
+    this.tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this.tables = Tables.find({}).zone();
         this.countTables();
@@ -114,8 +115,8 @@ export class SupervisorTableComponent implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this.establishmentSub) { this.establishmentSub.unsubscribe(); }
-    if (this.tableSub) { this.tableSub.unsubscribe(); }
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
   }
 
   cancel(): void {
