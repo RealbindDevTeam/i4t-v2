@@ -131,6 +131,7 @@ export interface EstablishmentProfile extends CollectionObject {
     images?:EstablishmentProfileImage[];
     schedule: EstablishmentSchedule;
     location: EstablishmentLocation;
+    types_of_food?: string[];
 }
 
 /**
