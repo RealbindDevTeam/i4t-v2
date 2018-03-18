@@ -113,47 +113,43 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="br">
-            <div class="bc opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
-                <div class="bcr">
-                    <div class="dimg">
-                        <img alt="iurest" src="/images/admin-register-pmo.png">
-                    </div>
-                    <p>{{'ADMIN_SIGNUP.ABOUT_CONTENT.MSG_1' | translate}}</p>
-                </div>
-            </div>
+    <section>
+        <div class="container">
+            <div class="container">
+                <div class="get-app" style="padding-top: 200px;">
+                    <div class="left">
 
-            <div class="bc opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
-                <div class="bcr">
-                    <div class="dimg">
-                        <img alt="iurest" src="/images/admin-register-pmc.png">
+                        <h2 class="opacity revealOnScroll" data-animation="fadeInDown" data-timeout="300">{{'ADMIN_SIGNUP.ORDER_MANAGEMENT' | translate}}</h2>
+                        <p class="opacityrevealOnScroll" data-animation="fadeInDown" data-timeout="300">{{'ADMIN_SIGNUP.ORDER_MANAGEMENT_TEXT' | translate}}
+                        </p>
                     </div>
-                    <p>{{'ADMIN_SIGNUP.ABOUT_CONTENT.MSG_2' | translate}}</p>
-                </div>
-            </div>
-
-            <div class="bc opacity revealOnScroll" data-animation="fadeInUp" data-timeout="300">
-                <div class="bcr">
-                    <div class="dimg">
-                        <img alt="iurest" src="/images/admin-register-pmp.png">
+                    <div class="right display-mobile">
+                        <img src="/images/order-received.png" class="opacityrevealOnScroll" data-animation="fadeInDown" data-timeout="300">
                     </div>
-                    <p>
-                        {{'ADMIN_SIGNUP.ABOUT_CONTENT.MSG_3' | translate}}
-                        <a (click)="openPaymentPlanInfoDialog()">{{'ADMIN_SIGNUP.ABOUT_CONTENT.REF' | translate}}</a>
-                    </p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <section class="background-color-white">
+        <div class="container">
+            <div class="get-app">
+                <div class="left display-mobile">
+                    <img src="images/orders-today.png" class="opacity revealOnScroll" data-animation="fadeInDown" data-timeout="300">
+                </div>
+                <div class="right">
+                    <h2 class="opacity revealOnScroll" data-animation="fadeInDown" data-timeout="300">{{'ADMIN_SIGNUP.ORDERS_DAY' | translate}}</h2>
+                    <p class="opacity revealOnScroll" data-animation="fadeInDown" data-timeout="300">{{'ADMIN_SIGNUP.ORDERS_DAY_TEXT' | translate}}</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div class="dwf dwfm opacity revealOnScroll" data-animation="fadeIn" data-timeout="300">
         <div style="width: 100%; text-align: center">
             <span>{{'ADMIN_SIGNUP.GENERAL_INFO' | translate}}</span>
         </div>
         <form [formGroup]="signupForm" (ngSubmit)="register()" novalidate>
-            
-
             <mat-form-field style="width: 100%">
                 <mat-select formControlName="gender" placeholder="{{'SIGNUP.GENDER_LBL' | translate}}">
                     <mat-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</mat-option>
@@ -234,5 +230,8 @@
             {{'ADMIN_SIGNUP.LABEL_LEGAL' | translate}}
             <a>{{'ADMIN_SIGNUP.LABEL_LEGAL_END' | translate}}</a>
         </div>
+    </div>
+    <div class="copy">
+        <span>comeygana © 2018. {{'ADMIN_SIGNUP.COPYRIGHT' | translate}}</span>
     </div>
 </div>

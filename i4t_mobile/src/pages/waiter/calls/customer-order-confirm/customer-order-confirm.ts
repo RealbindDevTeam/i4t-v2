@@ -63,6 +63,7 @@ export class CustomerOrderConfirm implements OnInit, OnDestroy {
 
         this._ordersSubscription = MeteorObservable.subscribe('getOrderById', this._call.order_id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
+                console.log(this._call.order_id);
                 this._orders = Orders.find({ _id: this._call.order_id }).zone();
             });
         });
