@@ -1365,7 +1365,8 @@
             "CALCULATOR": "Pricing calculator",
             "RESTAURANT_PRICE": "Price by restaurant",
             "TABLE_PRICE": "Unit price of table",
-            "TOTAL": "Total"
+            "TOTAL": "Total",
+            "BAG_PLAN_INFO": "Are you sure to create the restaurant?"
         }
     },
     "ADMIN_DASHBOARD": {

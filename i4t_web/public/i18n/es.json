@@ -1365,7 +1365,8 @@
             "CALCULATOR": "Calcula el costo mensual apróximado",
             "RESTAURANT_PRICE": "Precio por restaurante",
             "TABLE_PRICE": "Precio por mesa",
-            "TOTAL": "Total"
+            "TOTAL": "Total",
+            "BAG_PLAN_INFO": "Estas seguro que deseas crear el restaurante?"
         }
     },
     "ADMIN_DASHBOARD": {

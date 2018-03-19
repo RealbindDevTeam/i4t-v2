@@ -94,4 +94,5 @@
         <variable name="API_KEY_FOR_IOS" value="AIzaSyA6dAn1EKKLsL6LcJ8cdGD6BOThZEO4H3Q" />
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^2.0.2" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
 </widget>
