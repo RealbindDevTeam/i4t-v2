@@ -28,12 +28,12 @@ export class ItemCardWaiterComponent implements OnInit, OnDestroy {
 
 
   constructor(public _translate: TranslateService,
-              private _userLanguageService: UserLanguageServiceProvider) {
+    private _userLanguageService: UserLanguageServiceProvider) {
     _translate.setDefaultLang('en');
   }
 
   ngOnInit() {
-    this._translate.use( this._userLanguageService.getLanguage( Meteor.user() ) );
+    this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     this.removeSubscriptions();
     this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.resCode]).subscribe(() => {
       this._currencyCode = Currencies.collection.find({}).fetch()[0].code + ' ';
@@ -43,13 +43,13 @@ export class ItemCardWaiterComponent implements OnInit, OnDestroy {
   getItemThumb(_itemId: string): string {
     let _item = Items.findOne({ _id: _itemId });
     if (_item) {
-        if(_item.image){
-            return _item.image.url;
-        } else {
-            return 'assets/img/default-plate.png';
-        }
-    } else {
+      if (_item.image) {
+        return _item.image.url;
+      } else {
         return 'assets/img/default-plate.png';
+      }
+    } else {
+      return 'assets/img/default-plate.png';
     }
   }
 
@@ -81,7 +81,7 @@ export class ItemCardWaiterComponent implements OnInit, OnDestroy {
   /**
    * Remove all subscriptions
    */
-  removeSubscriptions():void{
-    if( this._currenciesSub ){ this._currenciesSub.unsubscribe(); }
+  removeSubscriptions(): void {
+    if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
   }
 }
