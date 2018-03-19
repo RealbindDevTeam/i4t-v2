@@ -38,8 +38,8 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
     private _establishmentParam: Establishment = null;
     private _establishmentProfile: EstablishmentProfile = null;
 
-    private _establishmentCountry: string;
-    private _establishmentCity: string;
+    private _establishmentCountry: string = '';
+    private _establishmentCity: string = '';
     private _showDescription: boolean = false;
     private _profileImgs: EstablishmentProfileImage[] = [];
 
@@ -79,7 +79,7 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
         this._countriesSubscription = MeteorObservable.subscribe('getCountryByEstablishmentId', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCountry: Country = Countries.findOne({ _id: this._establishmentParam.countryId });
-                if(_lCountry){
+                if (_lCountry) {
                     this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
                 }
             });
@@ -88,7 +88,9 @@ export class EstablishmentProfilePage implements OnInit, OnDestroy {
         this._citiesSubscription = MeteorObservable.subscribe('getCityByEstablishmentId', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCity: City = Cities.findOne({ _id: this._establishmentParam.cityId });
-                this._establishmentCity = this.itemNameTraduction(_lCity.name);
+                if (_lCity) {
+                    this._establishmentCity = this.itemNameTraduction(_lCity.name);
+                }
             });
         });
 

@@ -39,8 +39,8 @@ export class EstablishmentListDetailPage implements OnInit, OnDestroy {
     private _establishmentParam: Establishment = null;
     private _establishmentProfile: EstablishmentProfile = null;
 
-    private _establishmentCountry: string;
-    private _establishmentCity: string;
+    private _establishmentCountry: string = '';
+    private _establishmentCity: string = '';
     private _showDescription: boolean = false;
     private _profileImgs: EstablishmentProfileImage[] = [];
 
@@ -90,7 +90,9 @@ export class EstablishmentListDetailPage implements OnInit, OnDestroy {
         this._citiesSubscription = MeteorObservable.subscribe('getCityByEstablishmentId', this._establishmentParam._id).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let _lCity: City = Cities.findOne({ _id: this._establishmentParam.cityId });
-                this._establishmentCity = this.itemNameTraduction(_lCity.name);
+                if (_lCity) {
+                    this._establishmentCity = this.itemNameTraduction(_lCity.name);
+                }
             });
         });
 
