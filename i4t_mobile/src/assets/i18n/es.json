@@ -480,7 +480,8 @@
         "RESTAURANT_PROFILE": {
             "MENU_BTN": "Menú",
             "PAYMENT_METHODS": "Métodos de pago",
-            "NO_PROFILE": "Lo sentimos. Este restaurante no ha configurado su perfil."
+            "NO_PROFILE": "Lo sentimos. Este restaurante no ha configurado su perfil.",
+            "SHOW_MORE": "Ver mas"
         },
         "SCHEDULE": {
             "SCHEDULE": "Horario de atención",
@@ -683,5 +684,45 @@
         "UKRAINE": "Ucrania",
         "URUGUAY": "Uruguay",
         "VENEZUELA": "Venezuela"
+    },
+    "TYPE_OF_FOOD": {
+        "GERMAN_FOOD": "Comida Alemana",
+        "AMERICAN_FOOD": "Comida Americana",
+        "ARABIC_FOOD": "Comida Árabe",
+        "ARGENTINE_FOOD": "Comida Argentina",
+        "ASIAN_FOOD": "Comida Asiática",
+        "BRAZILIAN_FOOD": "Comida Brasileña",
+        "HOMEMADE_FOOD": "Comida Casera",
+        "CHILEAN_FOOD": "Comida Chilena",
+        "CHINESE_FOOD": "Comida China",
+        "COLOMBIAN_FOOD": "Comida Colombiana",
+        "COREAN_FOOD": "Comida Coreana",
+        "MIDDLE_EASTERN_FOOD": "Comida del Medio Oriente",
+        "SPANISH_FOOD": "Comida Española",
+        "FRENCH_FOOD": "Comida Francesa",
+        "FUSION_FOOD": "Comida Fusión",
+        "GOURMET_FOOD": "Comida Gourmet",
+        "GREEK_FOOD": "Comida Griega",
+        "INDIAN_FOOD": "Comida India",
+        "INTERNATIONAL_FOOD": "Comida Internacional",
+        "ITALIAN_FOOD": "Comida Italiana",
+        "JAPANESE_FOOD": "Comida Japonesa",
+        "LATIN_AMERICAN_FOOD": "Comida Latinoamericana",
+        "MEDITERRANEAN_FOOD": "Comida Mediterránea",
+        "MEXICAN_FOOD": "Comida Mexicana",
+        "ORGANIC_FOOD": "Comida Orgánica",
+        "PERUVIAN_FOOD": "Comida Peruana",
+        "FAST_FOOD": "Comida Rápida",
+        "THAI_FOOD": "Comida Tailandesa",
+        "VEGETARIAN_FOOD": "Comida vegetariana",
+        "VIETNAMESE_FOOD": "Comida Vietnamita",
+        "OTHERS": "Otros",
+        "BARBECUE": "Parrillada",
+        "PASTA": "Pastas",
+        "FISH_AND_SEAFOOD": "Pescados y Mariscos",
+        "PIZZA": "Pizza",
+        "SANDWICHES": "Sándwiches",
+        "SUSHI": "Sushi",
+        "VEGANISM": "Veganismo"
     }
 }

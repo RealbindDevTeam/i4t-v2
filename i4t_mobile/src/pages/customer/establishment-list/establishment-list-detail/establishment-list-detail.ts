@@ -14,6 +14,8 @@ import { Establishment, EstablishmentProfile, EstablishmentProfileImage } from '
 import { Establishments, EstablishmentsProfile } from 'i4t_web/both/collections/establishment/establishment.collection';
 import { ModalSchedule } from '../../establishment-profile/modal-schedule/modal-schedule';
 import { MenuByEstablishmentPage } from "../menu-by-establishment/menu-by-establishment";
+import { TypeOfFood } from 'i4t_web/both/models/general/type-of-food.model';
+import { TypesOfFood } from 'i4t_web/both/collections/general/type-of-food.collection';
 
 @Component({
     selector: 'page-establishment-list-detail',
@@ -27,9 +29,11 @@ export class EstablishmentListDetailPage implements OnInit, OnDestroy {
     private _citiesSubscription: Subscription;
     private _establishmentProfileSubscription: Subscription;
     private _paymentMethodsSubscription: Subscription;
+    private _typesOfFoodSub: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishmentsProfiles: Observable<EstablishmentProfile[]>;
+    private _typesOfFood: Observable<TypeOfFood[]>;
     private _paymentMethods: Observable<PaymentMethod[]>;
     private _establishments: Observable<Establishment[]> = null;
     private _establishmentParam: Establishment = null;
@@ -97,6 +101,11 @@ export class EstablishmentListDetailPage implements OnInit, OnDestroy {
                 if (this._establishmentProfile) {
                     this.loadMap();
                 }
+            });
+        });
+        this._typesOfFoodSub = MeteorObservable.subscribe('typesOfFood').takeUntil(this.ngUnsubscribe).subscribe(() => {
+            this._ngZone.run(() => {
+                this._typesOfFood = TypesOfFood.find({}).zone();
             });
         });
     }
@@ -180,11 +189,8 @@ export class EstablishmentListDetailPage implements OnInit, OnDestroy {
      * Remove all suscriptions
      */
     removeSuscriptions(): void {
-        if (this._establishmentSubscription) { this._establishmentSubscription };
-        if (this._countriesSubscription) { this._countriesSubscription };
-        if (this._citiesSubscription) { this._citiesSubscription };
-        if (this._establishmentProfileSubscription) { this._establishmentProfileSubscription };
-        if (this._paymentMethodsSubscription) { this._paymentMethodsSubscription };
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     /**

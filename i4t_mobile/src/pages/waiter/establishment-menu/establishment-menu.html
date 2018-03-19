@@ -62,7 +62,7 @@
         <div *ngFor="let item of _items | async">
             <ion-card *ngIf="(item.categoryId == category._id) && item.subcategoryId == ''" (click)="goToDetail(item._id)">
                 <ion-card-content>
-                    <item-card-waiter [itemIdIn]="item" [resCode]="_res_code"></item-card-waiter>
+                    <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
                 </ion-card-content>
             </ion-card>
         </div>
@@ -72,7 +72,7 @@
                 <div *ngFor="let item of _items | async">
                     <ion-card *ngIf="item.subcategoryId == subcategory._id" (click)="goToDetail(item._id)">
                         <ion-card-content>
-                            <item-card-waiter [itemIdIn]="item" [resCode]="_res_code"></item-card-waiter>
+                            <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
                         </ion-card-content>
                     </ion-card>
                 </div>
