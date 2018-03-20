@@ -35,11 +35,12 @@ mat-toolbar {
 }
 
 .parallax {
-    margin-top: -64px;
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    height: 100vh;
+    margin-top: -64px;
   }
 
 .container {
@@ -250,4 +251,67 @@ mat-toolbar {
         padding: 2em;
         background-color: white;
     }
+}
+
+//
+
+/*
+ *
+ */
+ .background-color-white {
+    background-color: white;
+}
+
+/* Get App */
+
+.get-app {
+    align-items: center;
+    box-align: center;
+    display: flex;
+    display: box;
+    display: flex;
+    display: -moz-box;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: -webkit-flex;
+    justify-content: space-between;
+    padding: 80px 0;
+    -moz-box-align: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    -ms-flex-align: center;
+    -o-align-items: center;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+}
+
+.get-app .left {
+    float: left;
+    margin-right: 3%;
+}
+
+.get-app .right {
+    float: left;
+}
+
+.display-mobile {
+    display: none;
+}
+
+@media only screen and (min-width: 840px) {
+    .display-mobile {
+        display: block;
+    }
+}
+
+.copy {
+    text-align: center;
+    background-color: #1d1d21;
+    padding: 20px 0;
+}
+
+.copy span {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.3);
 }
