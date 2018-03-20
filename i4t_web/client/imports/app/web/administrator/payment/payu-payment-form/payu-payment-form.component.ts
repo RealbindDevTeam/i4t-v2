@@ -6,7 +6,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../both/shared-components/validators/custom-validator';
 import { CcPaymentConfirmComponent } from './cc-payment-confirm/cc-payment-confirm.component';
@@ -63,6 +63,7 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
     private _establishmentSub: Subscription;
     private _userDetailSub: Subscription;
     private _invoiceInfoSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _cCPaymentMethods: Observable<CcPaymentMethod[]>;
     private _countries: Observable<Country[]>;
@@ -178,14 +179,14 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
             contactPhone: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)])
         });
 
-        this._cCPaymentMethodSub = MeteorObservable.subscribe('getCcPaymentMethods').subscribe(() => {
+        this._cCPaymentMethodSub = MeteorObservable.subscribe('getCcPaymentMethods').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._cCPaymentMethods = CcPaymentMethods.find({}).zone();
             });
         });
 
-        this._paymentTransactionSub = MeteorObservable.subscribe('getTransactions').subscribe();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').subscribe(() => {
+        this._paymentTransactionSub = MeteorObservable.subscribe('getTransactions').takeUntil(this._ngUnsubscribe).subscribe();
+        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 _scriptOne = Parameters.findOne({ name: 'payu_script_p_tag' }).value;
                 _scriptTwo = Parameters.findOne({ name: 'payu_script_img_tag' }).value;
@@ -230,7 +231,7 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
                 );
             });
         });
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 let auxUsrDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 this._paymentForm.get('dniNumber').setValue(auxUsrDetail.dni_number);
@@ -248,17 +249,17 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
                 this._selectedPhone = auxUsrDetail.contact_phone;
                 this._selectedDniNumber = auxUsrDetail.dni_number;
 
-                this._countrySub = MeteorObservable.subscribe('countries').subscribe(() => {
+                this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
                         let auxCountry = Countries.findOne({ _id: auxUsrDetail.country_id });
                         this._paymentForm.get('country').setValue(this.itemNameTraduction(auxCountry.name));
                         this._paymentForm.get('country').disable();
                         this._selectedCountry = auxCountry;
-                        this._invoiceInfoSub = MeteorObservable.subscribe('getInvoicesInfoByCountry', auxCountry._id).subscribe();
+                        this._invoiceInfoSub = MeteorObservable.subscribe('getInvoicesInfoByCountry', auxCountry._id).takeUntil(this._ngUnsubscribe).subscribe();
                     });
                 });
 
-                this._citySub = MeteorObservable.subscribe('cities').subscribe(() => {
+                this._citySub = MeteorObservable.subscribe('cities').takeUntil(this._ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
                         if (auxUsrDetail.city_id !== '') {
                             let auxCity = Cities.findOne({ _id: auxUsrDetail.city_id });
@@ -276,9 +277,9 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
         });
 
         if (this._mode === 'normal') {
-            this._establishmentSub = MeteorObservable.subscribe('currentEstablishmentsNoPayed', Meteor.userId()).subscribe();
+            this._establishmentSub = MeteorObservable.subscribe('currentEstablishmentsNoPayed', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
         } else {
-            this._establishmentSub = MeteorObservable.subscribe('getInactiveEstablishments', Meteor.userId()).subscribe();
+            this._establishmentSub = MeteorObservable.subscribe('getInactiveEstablishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
         }
 
         this._monthsArray = [{ value: '01', viewValue: '01' }, { value: '02', viewValue: '02' }, { value: '03', viewValue: '03' },
@@ -301,14 +302,8 @@ export class PayuPaymentFormComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._cCPaymentMethodSub) { this._cCPaymentMethodSub.unsubscribe(); }
-        if (this._countrySub) { this._countrySub.unsubscribe(); }
-        if (this._citySub) { this._citySub.unsubscribe(); }
-        if (this._paymentTransactionSub) { this._paymentTransactionSub.unsubscribe(); }
-        if (this._parameterSub) { this._parameterSub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
-        if (this._invoiceInfoSub) { this._invoiceInfoSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

@@ -554,6 +554,16 @@
             "TABLE_CHANGE": "Lleva tus órdenes a una nueva mesa",
             "ESTABLISHMENT_EXIT": "Retirate del restaurante cuando lo desees",
             "PENDING_CALL": "Tienes un llamado pendiente"
+        },
+        "CONNECTION_ALERT": {
+            "TITLE": "Error de red",
+            "SUBTITLE": "Por favor revisa tu conexión a internet e intenta de nuevo",
+            "BTN": "Reintentar"
+        },
+        "SERVER_ALERT": {
+            "TITLE": "Error de servicio",
+            "SUBTITLE": "En este momento el servicio comeygana no esta disponible por favor intenta de nuevo",
+            "BTN": "Reintentar"
         }
     },
     "CURRENCIES": {

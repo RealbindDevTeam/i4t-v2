@@ -19,6 +19,7 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
 
   private _userDetailSubscription: Subscription;
   private _waiterCallDetailSubscription: Subscription;
+  private _ngUnsubscribe: Subject<void> = new Subject<void>();
   public _dialogRef: MatDialogRef<any>;
 
   private _userDetail: any;
@@ -56,8 +57,8 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.removeSubscriptions();
-    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe();
-    this._waiterCallDetailSubscription = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).subscribe();
+    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
+    this._waiterCallDetailSubscription = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
 
     MeteorObservable.autorun().subscribe(() => {
       this._userDetails = UserDetails.find({ user_id: Meteor.userId() });
@@ -84,8 +85,8 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this._waiterCallDetailSubscription) { this._waiterCallDetailSubscription.unsubscribe(); }
-    if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
   }
 
   /**

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
@@ -43,6 +43,7 @@ export class AdditionComponent implements OnInit, OnDestroy {
     private _establishmentsSub: Subscription;
     private _currenciesSub: Subscription;
     private _countriesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     public _dialogRef: MatDialogRef<any>;
     private titleMsg: string;
@@ -92,7 +93,7 @@ export class AdditionComponent implements OnInit, OnDestroy {
             taxes: this._taxesFormGroup
         });
 
-        this._establishmentsSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._establishmentsSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._estalishments = Establishments.find({}).zone();
                 Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
@@ -103,7 +104,7 @@ export class AdditionComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._additionsSub = MeteorObservable.subscribe('additions', this._user).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additions', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
             });
@@ -121,10 +122,8 @@ export class AdditionComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._establishmentsSub) { this._establishmentsSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-        if (this._countriesSub) { this._countriesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -141,8 +140,8 @@ export class AdditionComponent implements OnInit, OnDestroy {
         Establishments.collection.find({}).fetch().forEach((res) => {
             _lEstablishmentsId.push(res._id);
         });
-        this._countriesSub = MeteorObservable.subscribe('getCountriesByEstablishmentsId', _lEstablishmentsId).subscribe();
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).subscribe(() => {
+        this._countriesSub = MeteorObservable.subscribe('getCountriesByEstablishmentsId', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
+        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 Establishments.collection.find({}).fetch().forEach((establishment) => {
                     let _lCountry: Country = Countries.findOne({ _id: establishment.countryId });

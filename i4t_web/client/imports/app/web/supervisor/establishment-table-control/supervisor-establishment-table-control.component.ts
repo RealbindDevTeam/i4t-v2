@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Router } from "@angular/router";
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -24,6 +24,7 @@ export class SupervisorEstablishmentTableControlComponent implements OnInit, OnD
     private _establishmentsSub: Subscription;
     private _tablesSub: Subscription;
     private _userDetailsSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
     private _tables: Observable<Table[]>;
@@ -50,28 +51,27 @@ export class SupervisorEstablishmentTableControlComponent implements OnInit, OnD
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentsSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).subscribe(() => {
+        this._establishmentsSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({}).zone();
                 this.countEstablishments();
                 this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
-        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).subscribe(() => {
+        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._tables = Tables.find({}).zone();
             });
         });
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByEstablishmentWork', this._user).subscribe();
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if ( this._establishmentsSub) {  this._establishmentsSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

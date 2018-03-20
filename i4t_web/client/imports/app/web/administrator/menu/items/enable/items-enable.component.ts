@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,6 +18,7 @@ export class ItemEnableComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _itemsSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _items: Observable<Item[]>;
     private _mdDialogRef: MatDialogRef<any>;
@@ -42,7 +43,7 @@ export class ItemEnableComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._itemsSub = MeteorObservable.subscribe('items', this._user).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('items', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
                 this.countItems();
@@ -62,9 +63,10 @@ export class ItemEnableComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
-    
+
     /**
      * Opens dialog to enable/disable item in establishments
      */

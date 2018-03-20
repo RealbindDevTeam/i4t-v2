@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Location } from '@angular/common';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -35,6 +35,7 @@ export class EstablishmentProFileDetailComponent implements OnInit, OnDestroy {
     private _citiesSub: Subscription;
     private _currencySub: Subscription;
     private _paymentMethodSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
     private _establishmentsProfile: Observable<EstablishmentProfile[]>;
@@ -84,20 +85,20 @@ export class EstablishmentProFileDetailComponent implements OnInit, OnDestroy {
         this._location.replaceState("/app/establishment-detail");
         this.removeSubscriptions();
         if (this.establishmentId !== null && this.establishmentId !== undefined) {
-            this._establishmentSub = MeteorObservable.subscribe('getEstablishmentById', this.establishmentId).subscribe(() => {
+            this._establishmentSub = MeteorObservable.subscribe('getEstablishmentById', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                 this._ngZone.run(() => {
                     this._establishments = Establishments.find({ _id: this.establishmentId }).zone();
                     let _lEstablishment: Establishment = Establishments.findOne({ _id: this.establishmentId });
                     this._establishments.subscribe(() => {
                         _lEstablishment = Establishments.findOne({ _id: this.establishmentId });
                         if (_lEstablishment) {
-                            this._countriesSub = MeteorObservable.subscribe('getCountryByEstablishmentId', this.establishmentId).subscribe(() => {
+                            this._countriesSub = MeteorObservable.subscribe('getCountryByEstablishmentId', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                                 this._ngZone.run(() => {
                                     let _lCountry: Country = Countries.findOne({ _id: _lEstablishment.countryId });
                                     this._establishmentCountry = this.itemNameTraduction(_lCountry.name);
                                 });
                             });
-                            this._citiesSub = MeteorObservable.subscribe('getCityByEstablishmentId', this.establishmentId).subscribe(() => {
+                            this._citiesSub = MeteorObservable.subscribe('getCityByEstablishmentId', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                                 this._ngZone.run(() => {
                                     if (_lEstablishment.cityId === '') {
                                         this._establishmentCity = _lEstablishment.other_city;
@@ -107,13 +108,13 @@ export class EstablishmentProFileDetailComponent implements OnInit, OnDestroy {
                                     }
                                 });
                             });
-                            this._currencySub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.establishmentId]).subscribe(() => {
+                            this._currencySub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
                                 this._ngZone.run(() => {
                                     let find: Currency = Currencies.findOne({ _id: _lEstablishment.currencyId });
                                     this._establishmentCurrency = find.code + ' - ' + this.itemNameTraduction(find.name);
                                 });
                             });
-                            this._paymentMethodSub = MeteorObservable.subscribe('getPaymentMethodsByEstablishmentId', this.establishmentId).subscribe(() => {
+                            this._paymentMethodSub = MeteorObservable.subscribe('getPaymentMethodsByEstablishmentId', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                                 this._ngZone.run(() => {
                                     this._establishmentPaymentMethods = PaymentMethods.find({ _id: { $in: _lEstablishment.paymentMethods }, isActive: true }).zone();
                                 });
@@ -122,7 +123,7 @@ export class EstablishmentProFileDetailComponent implements OnInit, OnDestroy {
                     });
                 });
             });
-            this._establishmentProfileSub = MeteorObservable.subscribe('getEstablishmentProfile', this.establishmentId).subscribe(() => {
+            this._establishmentProfileSub = MeteorObservable.subscribe('getEstablishmentProfile', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                 this._ngZone.run(() => {
                     this._establishmentsProfile = EstablishmentsProfile.find({ establishment_id: this.establishmentId }).zone();
                 });
@@ -143,12 +144,8 @@ export class EstablishmentProFileDetailComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._establishmentProfileSub) { this._establishmentProfileSub.unsubscribe(); }
-        if (this._countriesSub) { this._countriesSub.unsubscribe(); }
-        if (this._citiesSub) { this._citiesSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._paymentMethodSub) { this._paymentMethodSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../../both/shared-components/validators/custom-validator';
 import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
@@ -30,6 +30,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
     private _establishmentSub: Subscription;
     private _roleSub: Subscription;
     private _tableSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishments: Observable<Establishment[]>;
     private _roles: Observable<Role[]>;
@@ -95,10 +96,10 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
             gender: new FormControl('', [Validators.required])
         });
         this._establishments = Establishments.find({}).zone();
-        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe();
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
         this._roles = Roles.find({}).zone();
-        this._roleSub = MeteorObservable.subscribe('getRoleCollaborators').subscribe();
-        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).subscribe(() => {
+        this._roleSub = MeteorObservable.subscribe('getRoleCollaborators').takeUntil(this._ngUnsubscribe).subscribe();
+        this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._tables = Tables.find({});
         });
 
@@ -111,9 +112,8 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._roleSub) { this._roleSub.unsubscribe(); }
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

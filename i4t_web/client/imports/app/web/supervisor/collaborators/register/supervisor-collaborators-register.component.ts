@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../both/shared-components/validators/custom-validator';
 import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
@@ -30,6 +30,7 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
     private _roleSubscription: Subscription;
     private _tableSubscription: Subscription;
     private _userDetailSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _roles: Observable<Role[]>;
     private _tables: Observable<Table[]>;
@@ -89,17 +90,17 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
             table_end: new FormControl(0),
         });
 
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 if (this._userDetail) {
-                    this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._userDetail.establishment_work).subscribe(() => {
+                    this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._userDetail.establishment_work).takeUntil(this._ngUnsubscribe).subscribe(() => {
                     });
                 }
             });
         });
 
-        this._roleSubscription = MeteorObservable.subscribe('getRoleCollaborators').subscribe(() => {
+        this._roleSubscription = MeteorObservable.subscribe('getRoleCollaborators').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._roles = Roles.find({ _id: { $in: ["200", "500"] } }).zone();
             });
@@ -111,9 +112,8 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._roleSubscription) { this._roleSubscription.unsubscribe(); }
-        if (this._tableSubscription) { this._tableSubscription.unsubscribe(); }
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

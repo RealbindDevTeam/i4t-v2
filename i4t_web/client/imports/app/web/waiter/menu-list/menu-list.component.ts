@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
@@ -38,9 +38,9 @@ export class MenuListComponent implements OnInit, OnDestroy {
     private _itemsSub: Subscription;
     private _garnishFoodSub: Subscription;
     private _additionsSub: Subscription;
-    private _ordersSub: Subscription;
     private _currenciesSub: Subscription;
     private _establishmentSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _sections: Observable<Section[]>;
     private _sectionsFilter: Observable<Section[]>;
@@ -95,46 +95,46 @@ export class MenuListComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
 
-        this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this.establishmentId = Establishments.collection.find({}).fetch()[0]._id;
             });
         });
-        this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentWork', this._user).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
-                this._itemsRecommended = Items.find({'establishments.recommended': true}).zone();
+                this._itemsRecommended = Items.find({ 'establishments.recommended': true }).zone();
             });
         });
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishmentWork', this._user).subscribe(() => {
+        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._garnishFoodCol = GarnishFoodCol.find({}).zone();
             });
         });
-        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishmentWork', this._user).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
                 this.validateEstablishmentAdditions();
                 this._additions.subscribe(() => { this.validateEstablishmentAdditions(); });
             });
         });
-        this._sectionsSub = MeteorObservable.subscribe('getSectionsByEstablishmentWork', this._user).subscribe(() => {
+        this._sectionsSub = MeteorObservable.subscribe('getSectionsByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sectionsFilter = Sections.find({}).zone();
                 this._sections = Sections.find({}).zone();
             });
         });
-        this._categoriesSub = MeteorObservable.subscribe('getCategoriesByEstablishmentWork', this._user).subscribe(() => {
+        this._categoriesSub = MeteorObservable.subscribe('getCategoriesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._categories = Categories.find({}).zone();
             });
         });
-        this._subcategoriesSub = MeteorObservable.subscribe('getSubcategoriesByEstablishmentWork', this._user).subscribe(() => {
+        this._subcategoriesSub = MeteorObservable.subscribe('getSubcategoriesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._subcategories = Subcategories.find({}).zone();
             });
         });
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentWork', this._user).subscribe(() => {
+        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._currencyCode = Currencies.findOne({}).code + ' ';
             });
@@ -145,21 +145,15 @@ export class MenuListComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-        if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
-        if (this._subcategoriesSub) { this._subcategoriesSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
      * Show All establishment items
      */
     showAllItems(): void {
-        this._itemsRecommended = Items.find({'establishments.recommended': true}).zone();
+        this._itemsRecommended = Items.find({ 'establishments.recommended': true }).zone();
         this._sections = Sections.find({}).zone();
     }
 
@@ -175,9 +169,9 @@ export class MenuListComponent implements OnInit, OnDestroy {
     /**
      * Show Items recommended
      */
-    showItemsRecommended(){
+    showItemsRecommended() {
         this._sections = null;
-        this._itemsRecommended = Items.find({'establishments.recommended': true}).zone();
+        this._itemsRecommended = Items.find({ 'establishments.recommended': true }).zone();
     }
 
     /**

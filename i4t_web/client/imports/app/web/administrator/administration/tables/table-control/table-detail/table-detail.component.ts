@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
@@ -31,6 +31,7 @@ export class TableDetailComponent implements OnInit, OnDestroy {
     private _usersSub: Subscription;
     private _userDetailsSub: Subscription;
     private _ordersSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userDetails: Observable<UserDetail[]>;
     private _users: Observable<User[]>;
@@ -66,12 +67,12 @@ export class TableDetailComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removesubscriptions();
-        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._establishmentId, this._tableId).subscribe(() => {
+        this._userDetailsSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._establishmentId, this._tableId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({ current_establishment: this._establishmentId, current_table: this._tableId }).zone();
             });
         });
-        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._establishmentId, this._tableId).subscribe(() => {
+        this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._establishmentId, this._tableId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._users = Users.find({}).zone();
             });
@@ -79,16 +80,15 @@ export class TableDetailComponent implements OnInit, OnDestroy {
         this._ordersSub = MeteorObservable.subscribe('getOrdersByTableId', this._establishmentId, this._tableId,
             ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS',
                 'ORDER_STATUS.PREPARED', 'ORDER_STATUS.DELIVERED',
-                'ORDER_STATUS.PENDING_CONFIRM']).subscribe();
+                'ORDER_STATUS.PENDING_CONFIRM']).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removesubscriptions(): void {
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._usersSub) { this._usersSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -113,7 +113,7 @@ export class TableDetailComponent implements OnInit, OnDestroy {
             }
         }
     }
-    
+
     /**
      * Return to Table Control
      */

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageService } from '../../../services/general/user-language.service';
@@ -24,6 +24,7 @@ export class RewardUnitsChartComponent implements OnInit, OnDestroy {
     private rewardUnitsChart;
     private _establishmentsSubscription: Subscription;
     private _orderHistoriesSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _orderHistories: Observable<OrderHistory[]>;
     private _establishment: Establishment = null;
@@ -59,13 +60,13 @@ export class RewardUnitsChartComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentsSubscription = MeteorObservable.subscribe('getEstablishmentById', this._establishmentId).subscribe(() => {
+        this._establishmentsSubscription = MeteorObservable.subscribe('getEstablishmentById', this._establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishment = Establishments.findOne({ _id: this._establishmentId });
             });
         });
 
-        this._orderHistoriesSubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishment', this._establishmentId).subscribe(() => {
+        this._orderHistoriesSubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishment', this._establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._orderHistories = OrderHistories.find({}).zone();
                 this._orderHistories.subscribe(() => {
@@ -182,8 +183,8 @@ export class RewardUnitsChartComponent implements OnInit, OnDestroy {
     }
 
     removeSubscriptions(): void {
-        if (this._establishmentsSubscription) { this._establishmentsSubscription.unsubscribe(); }
-        if (this._orderHistoriesSubscription) { this._orderHistoriesSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

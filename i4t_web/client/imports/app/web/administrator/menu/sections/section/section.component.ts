@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -39,6 +39,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     private _establishmentSub: Subscription;
     private _itemsSubscription: Subscription;
     private _categoriesSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     public _dialogRef: MatDialogRef<any>;
     private _showEstablishments: boolean = true;
@@ -83,7 +84,7 @@ export class SectionComponent implements OnInit, OnDestroy {
             establishments: this._establishmentsFormGroup
         });
 
-        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({ creation_user: this._user }).zone();
                 Establishments.collection.find({ creation_user: this._user }).fetch().forEach((establishment: Establishment) => {
@@ -94,14 +95,14 @@ export class SectionComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._sectionSub = MeteorObservable.subscribe('sections', this._user).subscribe(() => {
+        this._sectionSub = MeteorObservable.subscribe('sections', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sections = Sections.find({}).zone();
             });
         });
 
-        this._categoriesSubscription = MeteorObservable.subscribe('categories', this._user).subscribe();
-        this._itemsSubscription = MeteorObservable.subscribe('items', this._user).subscribe();
+        this._categoriesSubscription = MeteorObservable.subscribe('categories', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._itemsSubscription = MeteorObservable.subscribe('items', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
@@ -115,10 +116,8 @@ export class SectionComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._sectionSub) { this._sectionSub.unsubscribe(); }
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
-        if (this._itemsSubscription) { this._itemsSubscription.unsubscribe(); }
-        if (this._categoriesSubscription) { this._categoriesSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

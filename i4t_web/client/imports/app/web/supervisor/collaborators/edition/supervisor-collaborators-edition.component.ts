@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../both/shared-components/validators/custom-validator';
 import { Role } from '../../../../../../../both/models/auth/role.model';
@@ -26,6 +26,7 @@ import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/ale
 export class SupervisorCollaboratorsEditionComponent implements OnInit, OnDestroy {
 
     private _tableSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
     private _collaboratorEditionForm: FormGroup;
     private _mdDialogRef: MatDialogRef<any>;
 
@@ -95,14 +96,15 @@ export class SupervisorCollaboratorsEditionComponent implements OnInit, OnDestro
         this._tableInit = this.selectUserDetail.table_assignment_init;
         this._tableEnd = this.selectUserDetail.table_assignment_end;
         this._roles = Roles.find({}).zone();
-        this._tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this.selectUser._id).subscribe();
+        this._tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this.selectUser._id).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

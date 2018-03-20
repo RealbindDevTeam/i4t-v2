@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../../services/general/user-language.service';
 import { Establishment } from '../../../../../../../../../both/models/establishment/establishment.model';
@@ -18,6 +18,7 @@ export class MonthlyConfigComponent implements OnInit, OnDestroy {
 
     private _establishments: Observable<Establishment[]>;
     private _establishmentSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
     private _showEstablishmentList: boolean = false;
     private _showEnableDisable: boolean = false;
     private _establishmentId: string = "";
@@ -42,7 +43,7 @@ export class MonthlyConfigComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({}).zone();
                 this.countEstablishments();
@@ -65,7 +66,8 @@ export class MonthlyConfigComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

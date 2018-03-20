@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,6 +30,7 @@ export class TableComponent implements OnInit, OnDestroy {
   private establishmentSub: Subscription;
   private tableSub: Subscription;
   private parameterSub: Subscription;
+  private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
   private establishments: Observable<Establishment[]>;
   private tables: Observable<Table[]>;
@@ -79,7 +80,7 @@ export class TableComponent implements OnInit, OnDestroy {
       establishment: new FormControl('', [Validators.required]),
       tables_number: new FormControl('', [Validators.required])
     });
-    this.establishmentSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+    this.establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this.establishments = Establishments.find({ creation_user: this._user }).zone();
         this.countEstablishments();
@@ -87,14 +88,14 @@ export class TableComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.tableSub = MeteorObservable.subscribe('tables', this._user).subscribe(() => {
+    this.tableSub = MeteorObservable.subscribe('tables', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this.tables = Tables.find({ creation_user: this._user }).zone();
         this.countTables();
         this.tables.subscribe(() => { this.countTables(); });
       });
     });
-    this.parameterSub = MeteorObservable.subscribe('getParameters').subscribe();
+    this.parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe();
     this.tooltip_msg = this.itemNameTraduction('TABLES.MSG_TOOLTIP');
   }
 
@@ -113,8 +114,8 @@ export class TableComponent implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this.establishmentSub) { this.establishmentSub.unsubscribe(); }
-    if (this.tableSub) { this.tableSub.unsubscribe(); }
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
   }
 
   changeEstablishment(_pEstablishment) {

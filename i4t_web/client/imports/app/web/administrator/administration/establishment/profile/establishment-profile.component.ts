@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from "@angular/router";
 import { MeteorObservable } from 'meteor-rxjs';
@@ -27,6 +27,7 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
 
     private _establishmentsSub: Subscription;
     private _establishmentProfileSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishmentProfile: EstablishmentProfile;
     private _schedule: EstablishmentSchedule;
@@ -81,7 +82,7 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._establishmentsSub = MeteorObservable.subscribe('establishments', this._user).subscribe(() => {
+        this._establishmentsSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishments = Establishments.find({}).zone();
                 this.countEstablishments();
@@ -136,8 +137,8 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._establishmentsSub) { this._establishmentsSub.unsubscribe(); }
-        if (this._establishmentProfileSub) { this._establishmentProfileSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -165,7 +166,7 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
             instagramLink: new FormControl(),
             twitterLink: new FormControl()
         });
-        this._establishmentProfileSub = MeteorObservable.subscribe('getEstablishmentProfile', _pEstablishmentId).subscribe(() => {
+        this._establishmentProfileSub = MeteorObservable.subscribe('getEstablishmentProfile', _pEstablishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._establishmentsProfile = EstablishmentsProfile.find({ establishment_id: _pEstablishmentId }).zone();
                 this.validateProfileImages(_pEstablishmentId);
