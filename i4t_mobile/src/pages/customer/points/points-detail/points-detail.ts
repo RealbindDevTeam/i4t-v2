@@ -1,11 +1,12 @@
 import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, AlertController, Platform } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
 import { OrderHistory } from 'i4t_web/both/models/establishment/order-history.model';
 import { OrderHistories } from 'i4t_web/both/collections/establishment/order-history.collection';
+import { Network } from '@ionic-native/network';
 
 @Component({
     selector: 'points-detail',
@@ -21,6 +22,8 @@ export class PointsDetailPage implements OnInit, OnDestroy {
     private _establishment_id: string;
     private _orderIndex: number = 0;
 
+    private disconnectSubscription: Subscription;
+
     /**
      * PointsDetailPage constructor
      * @param {NavParams} _navParams 
@@ -33,7 +36,8 @@ export class PointsDetailPage implements OnInit, OnDestroy {
         public _navCtrl: NavController,
         public _translate: TranslateService,
         private _userLanguageService: UserLanguageServiceProvider,
-        private _ngZone: NgZone) {
+        private _ngZone: NgZone, public _alertCtrl: AlertController,
+        public _platform: Platform, private _network: Network) {
         this._establishment_id = this._navParams.get("_establishment_id");
     }
 
@@ -63,8 +67,8 @@ export class PointsDetailPage implements OnInit, OnDestroy {
      * Show order detail
      * @param {number} _index
      */
-    showDetail(_index:number) {
-        if (this._orderIndex === _index ) {
+    showDetail(_index: number) {
+        if (this._orderIndex === _index) {
             this._orderIndex = -1;
         } else {
             this._orderIndex = _index;
@@ -95,6 +99,74 @@ export class PointsDetailPage implements OnInit, OnDestroy {
             }
         });
         return _lPoints;
+    }
+
+    /** 
+     * This function verify the conditions on page did enter for internet and server connection
+    */
+    ionViewDidEnter() {
+        this.isConnected();
+        this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+            let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+            let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+            let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+            this.presentAlert(title, subtitle, btn);
+        }, error => console.error(error));
+    }
+
+    /** 
+     * This function verify with network plugin if device has internet connection
+    */
+    isConnected() {
+        if (this._platform.is('cordova')) {
+            let conntype = this._network.type;
+            let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+            if (!validateConn) {
+                let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+                let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+                let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+                this.presentAlert(title, subtitle, btn);
+            } else {
+                if (!Meteor.status().connected) {
+                    let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+                    let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+                    let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+                    this.presentAlert(title2, subtitle2, btn2);
+                }
+            }
+        }
+    }
+
+    itemNameTraduction(itemName: string): string {
+        var wordTraduced: string;
+        this._translate.get(itemName).subscribe((res: string) => {
+            wordTraduced = res;
+        });
+        return wordTraduced;
+    }
+
+    ionViewWillLeave() {
+        this.disconnectSubscription.unsubscribe();
+    }
+
+    /**
+     * Present the alert for advice to internet
+    */
+    presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+        let alert = this._alertCtrl.create({
+            title: _pTitle,
+            subTitle: _pSubtitle,
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: _pBtn,
+                    handler: () => {
+                        this.isConnected();
+                    }
+                }
+            ]
+        });
+        alert.present();
     }
 
     /**

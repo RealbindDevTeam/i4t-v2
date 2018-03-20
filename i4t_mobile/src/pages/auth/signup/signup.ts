@@ -11,6 +11,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 import { InitialComponent } from '../initial/initial';
 import { Network } from '@ionic-native/network';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Facebook } from '@ionic-native/facebook';
 
@@ -30,6 +31,7 @@ export class SignupComponent implements OnInit {
 
     private _genderArray: any[] = [];
     private _selectedGender: string;
+    private disconnectSubscription: Subscription;
 
     constructor(public zone: NgZone,
         public _alertCtrl: AlertController,
@@ -59,8 +61,6 @@ export class SignupComponent implements OnInit {
         this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
         { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
         { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
-
-        console.log(Meteor.status().connected);
     }
 
     register() {
@@ -203,7 +203,7 @@ export class SignupComponent implements OnInit {
     */
     ionViewDidEnter() {
         this.isConnected();
-        this._network.onDisconnect().subscribe(data => {
+        this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
             let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
             let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
             let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
@@ -264,6 +264,10 @@ export class SignupComponent implements OnInit {
             wordTraduced = res;
         });
         return wordTraduced;
+    }
+
+    ionViewWillLeave() {
+        this.disconnectSubscription.unsubscribe();
     }
 
 }

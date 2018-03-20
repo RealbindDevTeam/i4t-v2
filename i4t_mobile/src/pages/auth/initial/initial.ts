@@ -5,7 +5,7 @@ import { SignupComponent } from '../signup/signup';
 import { SigninComponent } from '../signin/signin';
 import { Network } from '@ionic-native/network';
 import { Meteor } from 'meteor/meteor'
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'page-initial',
@@ -88,7 +88,10 @@ export class InitialComponent {
         this.navCtrl.push(SigninComponent);
     }
 
-    ngOnDestroy() {
+    ionViewWillLeave() {
         this.disconnectSubscription.unsubscribe();
+    }
+
+    ngOnDestroy() {
     }
 }
