@@ -21,6 +21,10 @@ import './imports/publications/general/parameter';
 import './imports/publications/general/cities';
 import './imports/publications/general/countries';
 import './imports/publications/general/languages';
+import './imports/publications/general/point';
+import './imports/publications/general/cooking-time';
+import './imports/publications/general/point-validity';
+import './imports/publications/general/type-of-food';
 import './imports/publications/payment/payment-history';
 import './imports/publications/payment/cc-payment-method';
 import './imports/publications/payment/payment-transaction';
@@ -33,9 +37,6 @@ import './imports/publications/establishment/waiter-call';
 import './imports/publications/establishment/reward';
 import './imports/publications/establishment/reward-point';
 import './imports/publications/establishment/order-history';
-import './imports/publications/general/point';
-import './imports/publications/general/cooking-time';
-import './imports/publications/general/point-validity';
 
 import '../both/methods/menu/item.methods';
 import '../both/methods/auth/collaborators.methods';
@@ -77,6 +78,7 @@ import { loadInvoicesInfo } from './imports/fixtures/payments/invoices-info';
 import { loadPoints } from './imports/fixtures/general/point';
 import { loadCookingTimes } from './imports/fixtures/general/cooking-time';
 import { loadPointsValidity } from './imports/fixtures/general/point-validity';
+import { loadTypesOfFood } from './imports/fixtures/general/type-of-food';
 import { createdbindexes } from './imports/indexes/indexdb';
 import { createCrons } from './cron';
 
@@ -98,5 +100,6 @@ Meteor.startup(() => {
     loadPoints();
     loadCookingTimes();
     loadPointsValidity();
+    loadTypesOfFood();
     createCrons();
 });

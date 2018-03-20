@@ -29,7 +29,7 @@
             <mat-form-field class="establishment-select">
                 <mat-select placeholder="{{ 'RESTAURANT_PROFILE.SELECT_RESTAURANT' | translate }}">
                     <mat-option *ngFor="let est of _establishments | async" (click)="changeEstablishment(est._id, est.name);" value="{{est._id}}">
-                    {{est.name}} - {{est.address}}</mat-option>
+                        {{est.name}} - {{est.address}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </mat-card-content>
@@ -119,6 +119,21 @@
                     </mat-card-content>
                 </mat-card>
             </mat-tab>
+            <mat-tab label="{{ 'RESTAURANT_PROFILE.FOOD' | translate }}">
+                <mat-card>
+                    <mat-card-title>- {{ 'RESTAURANT_PROFILE.TYPE_OF_FOOD' | translate }}</mat-card-title>
+                    <mat-card-content>
+                        <p>{{ 'RESTAURANT_PROFILE.TYPE_OF_FOOD_MSG' | translate }}:</p>
+                        <form [formGroup]="_profileForm">
+                            <div *ngIf="_showTypesOfFood" formGroupName="types_of_food">
+                                <p *ngFor="let typeFood of _typesOfFood | async">
+                                    <mat-checkbox [formControlName]="typeFood._id" [class.invalid]="!_profileForm.controls.types_of_food.valid">{{typeFood.type_of_food | translate}}</mat-checkbox>
+                                </p>
+                            </div>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+            </mat-tab>
             <mat-tab label="{{ 'RESTAURANT_PROFILE.SCHEDULE' | translate }}">
                 <mat-card>
                     <mat-card-title>- {{ 'RESTAURANT_PROFILE.SCHEDULE' | translate }}</mat-card-title>
@@ -149,10 +164,12 @@
                         </label>
                     </div>
                     <div class="select-img">
-                        <input (click)="changeImage()" style="display: none;" name="file-1[]" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple/>
+                        <input (click)="changeImage()" style="display: none;" name="file-1[]" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected"
+                            multiple/>
                         <label for="file-1" style="width: 40%;text-align: center;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                                <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
+                                <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                                />
                             </svg>
                             <span>{{'CHOOSE_FILE' | translate}}&hellip;</span>
                         </label>

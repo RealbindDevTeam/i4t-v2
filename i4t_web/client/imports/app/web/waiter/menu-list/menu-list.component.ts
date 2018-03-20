@@ -13,14 +13,16 @@ import { Subcategory } from '../../../../../../both/models/menu/subcategory.mode
 import { Subcategories } from '../../../../../../both/collections/menu/subcategory.collection';
 import { Item } from '../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../both/collections/menu/item.collection';
-import { GarnishFood } from '../../../../../../both/models/menu/garnish-food.model';
-import { GarnishFoodCol } from '../../../../../../both/collections/menu/garnish-food.collection';
 import { Addition } from '../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../both/collections/menu/addition.collection';
 import { Currencies } from '../../../../../../both/collections/general/currency.collection';
 import { AlertConfirmComponent } from '../../../web/general/alert-confirm/alert-confirm.component';
 import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
 import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
+import { Option } from '../../../../../../both/models/menu/option.model';
+import { Options } from '../../../../../../both/collections/menu/option.collection';
+import { OptionValue } from '../../../../../../both/models/menu/option-value.model';
+import { OptionValues } from '../../../../../../both/collections/menu/option-value.collection';
 
 @Component({
     selector: 'menu-list',
@@ -36,10 +38,11 @@ export class MenuListComponent implements OnInit, OnDestroy {
     private _categoriesSub: Subscription;
     private _subcategoriesSub: Subscription;
     private _itemsSub: Subscription;
-    private _garnishFoodSub: Subscription;
     private _additionsSub: Subscription;
     private _currenciesSub: Subscription;
     private _establishmentSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
     private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _sections: Observable<Section[]>;
@@ -49,8 +52,9 @@ export class MenuListComponent implements OnInit, OnDestroy {
     private _items: Observable<Item[]>;
     private _itemsRecommended: Observable<Item[]>;
     private _itemDetail: Observable<Item[]>;
-    private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
+    private _options: Observable<Option[]>;
+    private _optionValues: Observable<OptionValue[]>;
 
     private establishmentId: string;
     private _numberColums: number = 3;
@@ -93,22 +97,33 @@ export class MenuListComponent implements OnInit, OnDestroy {
      * ngOnInit implementation
      */
     ngOnInit() {
+        let _optionIds: string[] = [];
         this.removeSubscriptions();
 
         this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this.establishmentId = Establishments.collection.find({}).fetch()[0]._id;
+                this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                    this._ngZone.run(() => {
+                        this._options = Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).zone();
+                        this._options.subscribe(() => {
+                            Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).fetch().forEach((opt) => {
+                                _optionIds.push(opt._id);
+                            });
+                            this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                                this._ngZone.run(() => {
+                                    this._optionValues = OptionValues.find({ option_id: { $in: _optionIds }, is_active: true }).zone();
+                                });
+                            });
+                        });
+                    });
+                });
             });
         });
         this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
                 this._itemsRecommended = Items.find({ 'establishments.recommended': true }).zone();
-            });
-        });
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
-            this._ngZone.run(() => {
-                this._garnishFoodCol = GarnishFoodCol.find({}).zone();
             });
         });
         this._additionsSub = MeteorObservable.subscribe('additionsByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
@@ -231,15 +246,6 @@ export class MenuListComponent implements OnInit, OnDestroy {
      */
     getAdditionInformation(_pAddition: Addition): string {
         return _pAddition.name + ' - ' + _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
-    }
-
-    /**
-     * Return garnish food information
-     * @param {GarnishFood} _pGarnishFood
-     */
-
-    getGarnishFoodInformation(_pGarnishFood: GarnishFood): string {
-        return _pGarnishFood.name + ' - ' + _pGarnishFood.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
 
     /**

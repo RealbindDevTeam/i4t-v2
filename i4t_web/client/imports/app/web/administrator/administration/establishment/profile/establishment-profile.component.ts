@@ -10,6 +10,8 @@ import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { Establishment, EstablishmentProfile, EstablishmentProfileImage, EstablishmentSchedule, EstablishmentLocation, EstablishmentSocialNetwork } from '../../../../../../../../both/models/establishment/establishment.model';
 import { Establishments, EstablishmentsProfile } from '../../../../../../../../both/collections/establishment/establishment.collection';
+import { TypeOfFood } from '../../../../../../../../both/models/general/type-of-food.model';
+import { TypesOfFood } from '../../../../../../../../both/collections/general/type-of-food.collection';
 import { AlertConfirmComponent } from '../../../../general/alert-confirm/alert-confirm.component';
 import { ImageService } from '../../../../services/general/image.service';
 
@@ -22,11 +24,14 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
     private _profileForm: FormGroup;
+    private _typesOfFoodFormGroup: FormGroup = new FormGroup({});
     private _establishments: Observable<Establishment[]>;
     private _establishmentsProfile: Observable<EstablishmentProfile[]>;
+    private _typesOfFood: Observable<TypeOfFood[]>;
 
     private _establishmentsSub: Subscription;
     private _establishmentProfileSub: Subscription;
+    private _typesOfFoodSub: Subscription;
     private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _establishmentProfile: EstablishmentProfile;
@@ -39,6 +44,7 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
     private _newImagesToInsert: boolean = false;
     private _mapRender: boolean = false;
     private _loading: boolean = false;
+    private _showTypesOfFood: boolean = false;
 
     private _establishmentName: string = '';
     private _establishmentId: string = '';
@@ -87,6 +93,11 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
                 this._establishments = Establishments.find({}).zone();
                 this.countEstablishments();
                 this._establishments.subscribe(() => { this.countEstablishments(); });
+            });
+        });
+        this._typesOfFoodSub = MeteorObservable.subscribe('typesOfFood').takeUntil(this._ngUnsubscribe).subscribe(() => {
+            this._ngZone.run(() => {
+                this._typesOfFood = TypesOfFood.find({}).zone();
             });
         });
         this._schedule = {
@@ -164,7 +175,8 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
             email: new FormControl(),
             facebookLink: new FormControl(),
             instagramLink: new FormControl(),
-            twitterLink: new FormControl()
+            twitterLink: new FormControl(),
+            types_of_food: this._typesOfFoodFormGroup
         });
         this._establishmentProfileSub = MeteorObservable.subscribe('getEstablishmentProfile', _pEstablishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
@@ -181,6 +193,35 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
                         this._profileForm.controls['instagramLink'].setValue(this._establishmentProfile.social_networks.instagram === undefined || this._establishmentProfile.social_networks.instagram === null ? '' : this._establishmentProfile.social_networks.instagram);
                         this._profileForm.controls['twitterLink'].setValue(this._establishmentProfile.social_networks.twitter === undefined || this._establishmentProfile.social_networks.twitter === null ? '' : this._establishmentProfile.social_networks.twitter);
                     }
+                    if (this._establishmentProfile.types_of_food && this._establishmentProfile.types_of_food.length > 0) {
+                        TypesOfFood.collection.find({}).fetch().forEach((type_of_food) => {
+                            let _food = this._establishmentProfile.types_of_food.find(food => food === type_of_food._id);
+                            if (_food) {
+                                if (this._typesOfFoodFormGroup.contains(type_of_food._id)) {
+                                    this._typesOfFoodFormGroup.controls[type_of_food._id].setValue(true);
+                                } else {
+                                    let control: FormControl = new FormControl(true);
+                                    this._typesOfFoodFormGroup.addControl(type_of_food._id, control);
+                                }
+                            } else {
+                                if (this._typesOfFoodFormGroup.contains(type_of_food._id)) {
+                                    this._typesOfFoodFormGroup.controls[type_of_food._id].setValue(false);
+                                } else {
+                                    let control: FormControl = new FormControl(false);
+                                    this._typesOfFoodFormGroup.addControl(type_of_food._id, control);
+                                }
+                            }
+                        });
+                    } else {
+                        TypesOfFood.collection.find({}).fetch().forEach((type_of_food) => {
+                            if (this._typesOfFoodFormGroup.contains(type_of_food._id)) {
+                                this._typesOfFoodFormGroup.controls[type_of_food._id].setValue(false);
+                            } else {
+                                let control: FormControl = new FormControl(false);
+                                this._typesOfFoodFormGroup.addControl(type_of_food._id, control);
+                            }
+                        });
+                    }
                     this._scheduleInEditMode = true;
                     this._scheduleToEdit = this._establishmentProfile.schedule;
                     this._schedule = this._establishmentProfile.schedule;
@@ -193,6 +234,7 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
                     this._lat = 4.5981;
                     this._lng = -74.0758;
                 }
+                this._showTypesOfFood = true;
             });
         });
     }
@@ -265,6 +307,15 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
             location: _lEstablishmentLocation
         };
 
+        let arrTypeOrFood: any[] = Object.keys(this._profileForm.value.types_of_food);
+        let _lTypesOfFoodToInsert: string[] = [];
+
+        arrTypeOrFood.forEach((food) => {
+            if (this._profileForm.value.types_of_food[food]) {
+                _lTypesOfFoodToInsert.push(food);
+            }
+        });
+
         if (this._profileForm.value.facebookLink !== '' && this._profileForm.value.facebookLink !== null) { _lEstablishmentSocialNetwork.facebook = this._profileForm.value.facebookLink; }
         if (this._profileForm.value.instagramLink !== '' && this._profileForm.value.instagramLink !== null) { _lEstablishmentSocialNetwork.instagram = this._profileForm.value.instagramLink; }
         if (this._profileForm.value.twitterLink !== '' && this._profileForm.value.twitterLink !== null) { _lEstablishmentSocialNetwork.twitter = this._profileForm.value.twitterLink; }
@@ -322,6 +373,8 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
                     EstablishmentsProfile.update({ _id: this._establishmentProfile._id }, { $unset: { social_networks: true } });
                 }
 
+                EstablishmentsProfile.update({ _id: this._establishmentProfile._id }, { $set: { types_of_food: _lTypesOfFoodToInsert } });
+
                 let _lMessage: string = this.itemNameTraduction('RESTAURANT_PROFILE.PROFILE_UPDATED');
                 this._snackBar.open(_lMessage, '', { duration: 2500 });
             } else {
@@ -341,6 +394,7 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
                     if (this._profileForm.controls['email'].value !== '' && this._profileForm.controls['email'].value !== null) { _lEstablishmentProfile.email = this._profileForm.value.email; }
 
                     if (Object.keys(_lEstablishmentSocialNetwork).length !== 0) { _lEstablishmentProfile.social_networks = _lEstablishmentSocialNetwork; }
+                    _lEstablishmentProfile.types_of_food = _lTypesOfFoodToInsert;
 
                     let _newProfileId: string = EstablishmentsProfile.collection.insert(_lEstablishmentProfile);
                     this._establishmentProfile = EstablishmentsProfile.findOne({ _id: _newProfileId });
@@ -401,7 +455,7 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
      * @param {any} _tab 
      */
     tabChanged(_tab: any): void {
-        this._mapRender = _tab.index === 3 ? true : false;
+        this._mapRender = _tab.index === 4 ? true : false;
     }
 
     /**
