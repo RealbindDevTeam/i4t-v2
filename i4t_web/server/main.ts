@@ -81,6 +81,7 @@ import { loadPointsValidity } from './imports/fixtures/general/point-validity';
 import { loadTypesOfFood } from './imports/fixtures/general/type-of-food';
 import { createdbindexes } from './imports/indexes/indexdb';
 import { createCrons } from './cron';
+import { loadBagPlans } from "./imports/fixtures/points/bag_plans";
 
 Meteor.startup(() => {
     removeFixtures();
@@ -102,4 +103,5 @@ Meteor.startup(() => {
     loadPointsValidity();
     loadTypesOfFood();
     createCrons();
+    loadBagPlans();
 });
