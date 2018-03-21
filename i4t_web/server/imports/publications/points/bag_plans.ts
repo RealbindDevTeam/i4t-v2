@@ -6,5 +6,6 @@ import { BagPlans } from '../../../../both/collections/points/bag-plans.collecti
  * @param {string} _userId
  */
 Meteor.publish('getBagPlans', function () {
-    return BagPlans.find({});
+    let _lBagsPlans = BagPlans.find({});
+    return _lBagsPlans;
 });
