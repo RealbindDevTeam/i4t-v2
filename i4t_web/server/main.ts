@@ -37,6 +37,7 @@ import './imports/publications/establishment/waiter-call';
 import './imports/publications/establishment/reward';
 import './imports/publications/establishment/reward-point';
 import './imports/publications/establishment/order-history';
+import './imports/publications/points/bag_plans'
 
 import '../both/methods/menu/item.methods';
 import '../both/methods/auth/collaborators.methods';
@@ -81,6 +82,7 @@ import { loadPointsValidity } from './imports/fixtures/general/point-validity';
 import { loadTypesOfFood } from './imports/fixtures/general/type-of-food';
 import { createdbindexes } from './imports/indexes/indexdb';
 import { createCrons } from './cron';
+import { loadBagPlans } from "./imports/fixtures/points/bag_plans";
 
 Meteor.startup(() => {
     removeFixtures();
@@ -102,4 +104,5 @@ Meteor.startup(() => {
     loadPointsValidity();
     loadTypesOfFood();
     createCrons();
+    loadBagPlans();
 });

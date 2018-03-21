@@ -12,6 +12,7 @@ import { CcPaymentMethods } from '../../../both/collections/payment/cc-payment-m
 import { Points } from '../../../both/collections/general/point.collection';
 import { CookingTimes } from '../../../both/collections/general/cooking-time.collection';
 import { TypesOfFood } from '../../../both/collections/general/type-of-food.collection';
+import { BagPlans } from "../../../both/collections/points/bag-plans.collection";
 
 export function removeFixtures() {
     /**
@@ -83,4 +84,9 @@ export function removeFixtures() {
      * Remove TypesOfFood Collection
      */
     TypesOfFood.remove({});
+
+    /**
+     * Remove BagPlans Collection
+     */
+    BagPlans.remove({});
 }
