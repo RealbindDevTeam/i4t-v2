@@ -33,6 +33,10 @@ import { PointValidity } from '../../../../../../../../both/models/general/point
 import { PointsValidity } from '../../../../../../../../both/collections/general/point-validity.collection';
 import { Parameter } from "../../../../../../../../both/models/general/parameter.model";
 import { Parameters } from "../../../../../../../../both/collections/general/parameter.collection";
+import { EstablishmentPoint } from "../../../../../../../../both/models/points/establishment-point.model";
+import { EstablishmentPoints } from "../../../../../../../../both/collections/points/establishment-points.collection";
+import { BagPlan } from "../../../../../../../../both/models/points/bag-plan.model";
+import { BagPlans } from "../../../../../../../../both/collections/points/bag-plans.collection";
 
 import * as QRious from 'qrious';
 import { UserDetails } from 'both/collections/auth/user-detail.collection';
@@ -299,7 +303,9 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         isActive: true,
                         firstPay: true,
                         freeDays: true,
-                        is_beta_tester: false
+                        is_beta_tester: false,
+                        bag_plans_id: "100",
+                        is_freemium: false,
                     });
                 } else {
                     _lNewEstablishment = Establishments.collection.insert({
@@ -325,7 +331,19 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         isActive: true,
                         firstPay: true,
                         freeDays: true,
-                        is_beta_tester: false
+                        is_beta_tester: false,
+                        bag_plans_id: "100",
+                        is_freemium: false,
+                    });
+                }
+                //Insert establishment points
+                let _lBagPlan: BagPlan = BagPlans.findOne({ _id: "100" });
+                if (_lBagPlan) {
+                    let _lNewEstablishmentPoint: string = EstablishmentPoints.collection.insert({
+                        establishments_ids: [_lNewEstablishment],
+                        current_points: _lBagPlan.value_points,
+                        negative_balance: false,
+                        negative_advice_counter: 0,
                     });
                 }
 

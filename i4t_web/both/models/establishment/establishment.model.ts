@@ -25,6 +25,8 @@ export interface Establishment extends CollectionObject {
     freeDays?: boolean;
     is_premium?: boolean;
     is_beta_tester: boolean;
+    bag_plans_id: string;
+    is_freemium: boolean;
 }
 
 /**

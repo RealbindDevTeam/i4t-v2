@@ -10,13 +10,24 @@ export function loadBagPlans() {
                 label: 'BAG_PLAN.FREE',
                 price: {
                     country_id: "1900",
+                    price: 0,
+                },
+                value_points: 2000,
+                active: true,
+            },
+            {
+                _id: '200',
+                name: 'small',
+                label: 'BAG_PLAN.SMALL',
+                price: {
+                    country_id: "1900",
                     price: 27900,
                 },
                 value_points: 500,
                 active: true,
             },
             {
-                _id: '200',
+                _id: '300',
                 name: 'medium',
                 label: 'BAG_PLAN.MEDIUM',
                 price: {
@@ -27,9 +38,9 @@ export function loadBagPlans() {
                 active: true,
             },
             {
-                _id: '300',
-                name: 'BAG_PLAN.LARGE',
-                label: '',
+                _id: '400',
+                name: 'large',
+                label: 'BAG_PLAN.LARGE',
                 price: {
                     country_id: "1900",
                     price: 34900,
