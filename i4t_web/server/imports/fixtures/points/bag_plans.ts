@@ -11,6 +11,7 @@ export function loadBagPlans() {
                 price: {
                     country_id: "1900",
                     price: 0,
+                    currency: 'COP'
                 },
                 value_points: 2000,
                 active: true,
@@ -22,6 +23,7 @@ export function loadBagPlans() {
                 price: {
                     country_id: "1900",
                     price: 27900,
+                    currency: 'COP'
                 },
                 value_points: 500,
                 active: true,
@@ -33,6 +35,7 @@ export function loadBagPlans() {
                 price: {
                     country_id: "1900",
                     price: 31900,
+                    currency: 'COP'
                 },
                 value_points: 1000,
                 active: true,
@@ -44,6 +47,7 @@ export function loadBagPlans() {
                 price: {
                     country_id: "1900",
                     price: 34900,
+                    currency: 'COP'
                 },
                 value_points: 1500,
                 active: true,

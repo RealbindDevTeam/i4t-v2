@@ -8,7 +8,7 @@
     "HELLO": "Hola",
     "IMAGE": "Imagen",
     "MODIFICATION_DATE": "Fecha de modificación",
-    "NAME": "Nombre",
+    "NAME": "Nombres y Apellidos",
     "PASSWORD": "Contraseña",
     "PRICING": "Precio",
     "STATE": "Estado",
@@ -401,7 +401,11 @@
         "CREATION_ERROR": "Se ha presentado un error creando el restaurante. Por favor intenta nuevamente.",
         "RESTAURANT_CREATED": "Restaurante Creado",
         "POINTS_VALIDITY": "Selecciona la vigencia de los puntos de recompensa",
-        "DAYS": "Días"
+        "DAYS": "Días",
+        "DIALOG_SENTENCE_1A": "A partir de la creación del restaurante vas a tener una bolsa de ",
+        "DIALOG_SENTENCE_1B": "puntos comeygama ",
+        "DIALOG_SENTENCE_2": "Los puntos se restan de la bolsa cada vez que un consumidor redime una recompensa",
+        "DIALOG_SENTENCE_3": "Estas seguro que deseas crear el restaurante?"
     },
     "WEEK": {
         "MONDAY": "Lunes",
@@ -1365,8 +1369,7 @@
             "CALCULATOR": "Calcula el costo mensual apróximado",
             "RESTAURANT_PRICE": "Precio por restaurante",
             "TABLE_PRICE": "Precio por mesa",
-            "TOTAL": "Total",
-            "BAG_PLAN_INFO": "Estas seguro que deseas crear el restaurante?"
+            "TOTAL": "Total"
         },
         "ORDER_MANAGEMENT": "Notificar a los meseros",
         "ORDER_MANAGEMENT_TEXT": "Las ordenes que realicen tus clientes serán asignadas a los meseros que vincules en el sistema, las ordenes se podrá visualizar desde cualquier dispositivo móvil o computador",
@@ -1824,5 +1827,11 @@
         "SANDWICHES": "Sándwiches",
         "SUSHI": "Sushi",
         "VEGANISM": "Veganismo"
+    },
+    "BAG_PLAN": {
+        "FREE": "GRATIS",
+        "SMALL": "NORMAL",
+        "MEDIUM": "EJECUTIVA",
+        "LARGE": "A LA CARTA"
     }
 }

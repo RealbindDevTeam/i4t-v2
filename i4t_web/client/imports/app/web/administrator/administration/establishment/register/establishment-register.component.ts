@@ -31,12 +31,15 @@ import { GarnishFoodCol } from '../../../../../../../../both/collections/menu/ga
 import { AfterEstablishmentCreationComponent } from './after-establishment-creation/after-establishment-creation.component';
 import { PointValidity } from '../../../../../../../../both/models/general/point-validity.model';
 import { PointsValidity } from '../../../../../../../../both/collections/general/point-validity.collection';
-import { Parameter } from "../../../../../../../../both/models/general/parameter.model";
-import { Parameters } from "../../../../../../../../both/collections/general/parameter.collection";
-import { EstablishmentPoint } from "../../../../../../../../both/models/points/establishment-point.model";
-import { EstablishmentPoints } from "../../../../../../../../both/collections/points/establishment-points.collection";
-import { BagPlan } from "../../../../../../../../both/models/points/bag-plan.model";
-import { BagPlans } from "../../../../../../../../both/collections/points/bag-plans.collection";
+import { Parameter } from '../../../../../../../../both/models/general/parameter.model';
+import { Parameters } from '../../../../../../../../both/collections/general/parameter.collection';
+import { EstablishmentPoint } from '../../../../../../../../both/models/points/establishment-point.model';
+import { EstablishmentPoints } from '../../../../../../../../both/collections/points/establishment-points.collection';
+import { BagPlan } from '../../../../../../../../both/models/points/bag-plan.model';
+import { BagPlans } from '../../../../../../../../both/collections/points/bag-plans.collection';
+import { BagPlanHistory } from '../../../../../../../../both/models/points/bag-plan-history.model';
+import { BagPlanHistories } from '../../../../../../../../both/collections/points/bag-plans-history.collection';
+import { PricePoints } from '../../../../../../../../both/models/points/bag-plan.model';
 
 import * as QRious from 'qrious';
 import { UserDetails } from 'both/collections/auth/user-detail.collection';
@@ -63,6 +66,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private _pointValiditySub: Subscription;
     private _parameterSubscription: Subscription;
     private _bagPlansSubscription: Subscription;
+    private _bagPlanHistorySubscription: Subscription;
     private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _countries: Observable<Country[]>;
@@ -260,6 +264,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         let cityIdAux: string;
         let cityAux: string;
         let _lNewEstablishment: string;
+        let _lNewEstablishmentPoint: string;
         return new Promise((resolve, reject) => {
             try {
                 let arrPay: any[] = Object.keys(this._establishmentForm.value.paymentMethods);
@@ -340,13 +345,32 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 //Insert establishment points
                 let _lBagPlan: BagPlan = BagPlans.findOne({ _id: "100" });
                 if (_lBagPlan) {
-                    let _lNewEstablishmentPoint: string = EstablishmentPoints.collection.insert({
+                    _lNewEstablishmentPoint = EstablishmentPoints.collection.insert({
                         establishments_ids: [_lNewEstablishment],
                         current_points: _lBagPlan.value_points,
                         negative_balance: false,
                         negative_advice_counter: 0,
+                        creation_user: this._user,
+                        creation_date: new Date()
                     });
                 }
+
+                let pricePoints: PricePoints = {
+                    country_id: _lBagPlan.price.country_id,
+                    price: _lBagPlan.price.price,
+                    currency: _lBagPlan.price.currency
+                };
+
+                //insert first history document for establishment in history
+                BagPlanHistories.collection.insert({
+                    plan_name: _lBagPlan.name,
+                    plan_label: _lBagPlan.label,
+                    value_points: _lBagPlan.value_points,
+                    price: pricePoints,
+                    establishments_ids: [_lNewEstablishment],
+                    creation_user: this._user,
+                    creation_date: new Date()
+                });
 
                 //Insert tables
                 let _lEstabl: Establishment = Establishments.findOne({ _id: _lNewEstablishment });

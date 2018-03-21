@@ -2,7 +2,16 @@
     <mat-card-title>{{ 'RESTAURANT_REGISTER.RESTAURANT_CREATION' | translate }}</mat-card-title>
     <mat-card-content>
         <div style="width: 450px; margin-bottom: 15px">
-            <span style="color:red">* </span>{{ 'ADMIN_SIGNUP.PAYMENT_PLAN_INFO.BAG_PLAN_INFO' | translate }}
+            <span style="color:red">* </span>{{'RESTAURANT_REGISTER.DIALOG_SENTENCE_1A' | translate}} {{getValuePoints()}} 
+            {{'RESTAURANT_REGISTER.DIALOG_SENTENCE_1B' | translate}} {{getBagPlanLabel() | translate}}
+        </div>
+
+        <div style="width: 450px; margin-bottom: 15px">
+            <span style="color:red">* </span>{{'RESTAURANT_REGISTER.DIALOG_SENTENCE_2' | translate}} 
+        </div>
+
+        <div style="width: 450px; margin-bottom: 15px">
+            <span style="color:red">* </span>{{ 'RESTAURANT_REGISTER.DIALOG_SENTENCE_3' | translate }}
         </div>
     </mat-card-content>
     <mat-card-actions align="end">

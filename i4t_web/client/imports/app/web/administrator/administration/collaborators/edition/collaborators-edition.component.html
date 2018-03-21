@@ -25,15 +25,8 @@
                 <tr>
                     <td colspan="3" style="padding-top: 10px;">
                         <mat-form-field style="width: 100%">
-                            <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName/>
-                            <mat-hint align="end">{{inputName.value.length}} / 70</mat-hint>
-                        </mat-form-field>
-                    </td>
-                    <td colspan="3" style="padding-top: 10px;">
-                        <mat-form-field style="width: 100%">
-                            <input matInput required formControlName="last_name" placeholder="{{'LAST_NAME' | translate}}" minlength="1" maxlength="70"
-                                #inputAddress/>
-                            <mat-hint align="end">{{inputAddress.value.length}} / 70</mat-hint>
+                            <input matInput required formControlName="fullName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName/>
+                            <mat-hint align="end">{{inputName.value.length}} / 50</mat-hint>
                         </mat-form-field>
                     </td>
                 </tr>

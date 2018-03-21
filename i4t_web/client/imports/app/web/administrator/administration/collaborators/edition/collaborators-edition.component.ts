@@ -82,8 +82,9 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
         this.removeSubscriptions();
         this.validateWaiterRole(this.selectUserDetail.role_id);
         this._collaboratorEditionForm = this._formBuilder.group({
-            name: [this.selectUser.profile.first_name, [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
-            last_name: [this.selectUser.profile.last_name, [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
+            //name: [this.selectUser.profile.first_name, [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
+            //last_name: [this.selectUser.profile.last_name, [Validators.required, Validators.minLength(1), Validators.maxLength(70)]],
+            fullName: [this.selectUser.profile.full_name, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
             birthdate: [this.selectUserDetail.birthdate, [Validators.required]],
             establishment_work: [this.selectUserDetail.establishment_work],
             role: [this.selectUserDetail.role_id],
@@ -176,10 +177,12 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
                     Users.update({ _id: this.selectUser._id }, {
                         $set: {
                             profile: {
-                                first_name: this._collaboratorEditionForm.value.name,
-                                last_name: this._collaboratorEditionForm.value.last_name,
+                                //first_name: this._collaboratorEditionForm.value.name,
+                                //last_name: this._collaboratorEditionForm.value.last_name,
+                                full_name: this._collaboratorEditionForm.value.fullName,
                                 language_code: this.selectUser.profile.language_code,
-                                image: this.selectUser.profile.image
+                                image: this.selectUser.profile.image,
+                                gender: this.selectUser.profile.gender
                             }
                         }
                     });
@@ -236,8 +239,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
      * Form reset
      */
     cancel() {
-        this._collaboratorEditionForm.controls['name'].reset();
-        this._collaboratorEditionForm.controls['last_name'].reset();
+        this._collaboratorEditionForm.controls['fullName'].reset();
         this._collaboratorEditionForm.controls['birthdate'].reset();
         this._collaboratorEditionForm.controls['establishment_work'].reset();
         this._collaboratorEditionForm.controls['phone'].reset();

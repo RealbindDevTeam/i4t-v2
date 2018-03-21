@@ -81,8 +81,8 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
         this._collaboratorRegisterForm = new FormGroup({
-            name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
-            last_name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
+            //name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
+            //last_name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(70)]),
             birthdate: new FormControl('', [Validators.required]),
             establishment_work: new FormControl('', [Validators.required]),
             role: new FormControl('', [Validators.required]),
@@ -93,7 +93,8 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
             confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
             table_init: new FormControl(0),
             table_end: new FormControl(0),
-            gender: new FormControl('', [Validators.required])
+            gender: new FormControl('', [Validators.required]),
+            fullName: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)])
         });
         this._establishments = Establishments.find({}).zone();
         this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
@@ -173,8 +174,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
             case 0:
                 return true;
             case 1:
-                if (this._collaboratorRegisterForm.controls['name'].valid
-                    && this._collaboratorRegisterForm.controls['last_name'].valid
+                if (this._collaboratorRegisterForm.controls['fullName'].valid
                     && this._collaboratorRegisterForm.controls['establishment_work'].valid
                     && this._collaboratorRegisterForm.controls['role'].valid
                     && this._collaboratorRegisterForm.controls['birthdate'].valid) {
@@ -222,8 +222,9 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
         if (Meteor.userId()) {
             if (this._collaboratorRegisterForm.valid) {
                 if (this._collaboratorRegisterForm.value.password == this._collaboratorRegisterForm.value.confirmPassword) {
-                    this._userProfile.first_name = this._collaboratorRegisterForm.value.name;
-                    this._userProfile.last_name = this._collaboratorRegisterForm.value.last_name;
+                    //this._userProfile.first_name = this._collaboratorRegisterForm.value.name;
+                    //this._userProfile.last_name = this._collaboratorRegisterForm.value.last_name;
+                    this._userProfile.full_name = this._collaboratorRegisterForm.value.fullName;
                     this._userProfile.language_code = this._userLang;
                     this._userProfile.gender = this._collaboratorRegisterForm.value.gender;
 
@@ -318,8 +319,7 @@ export class CollaboratorsRegisterComponent implements OnInit, OnDestroy {
      * Reset register form
      */
     cancel() {
-        this._collaboratorRegisterForm.controls['name'].reset();
-        this._collaboratorRegisterForm.controls['last_name'].reset();
+        this._collaboratorRegisterForm.controls['fullName'].reset();
         this._collaboratorRegisterForm.controls['birthdate'].reset();
         this._collaboratorRegisterForm.controls['establishment_work'].reset();
         this._collaboratorRegisterForm.controls['phone'].reset();

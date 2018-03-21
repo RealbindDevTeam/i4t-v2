@@ -401,7 +401,11 @@
         "CREATION_ERROR": "An error has occurred creating the restaurant. Please try again.",
         "RESTAURANT_CREATED": "Restaurant created",
         "POINTS_VALIDITY": "Select the validity of the reward points",
-        "DAYS": "Days"
+        "DAYS": "Days",
+        "DIALOG_SENTENCE_1A": "Since the restaurant creation you are going to have a bag of ",
+        "DIALOG_SENTENCE_1B": "comeygana points ",
+        "DIALOG_SENTENCE_2": "The points are subtracted from the bag every time when a consumer redeem a reward",
+        "DIALOG_SENTENCE_3": "Are you sure to create the restaurant?"
     },
     "WEEK": {
         "MONDAY": "Monday",
@@ -1365,8 +1369,7 @@
             "CALCULATOR": "Pricing calculator",
             "RESTAURANT_PRICE": "Price by restaurant",
             "TABLE_PRICE": "Unit price of table",
-            "TOTAL": "Total",
-            "BAG_PLAN_INFO": "Are you sure to create the restaurant?"
+            "TOTAL": "Total"
         },
         "ORDER_MANAGEMENT": "Notify waiters/waitress",
         "ORDER_MANAGEMENT_TEXT": "The orders that your clients make will be assigned to the servers that you link in the system, the orders can be viewed from any mobile device or computer.",
@@ -1824,5 +1827,11 @@
         "SANDWICHES": "Sándwiches",
         "SUSHI": "Sushi",
         "VEGANISM": "Veganism"
+    },
+    "BAG_PLAN": {
+        "FREE": "FREE",
+        "SMALL": "NORMAL",
+        "MEDIUM": "EXECUTIVE",
+        "LARGE": "A LA CARTÉ"
     }
 }

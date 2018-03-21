@@ -9,6 +9,6 @@ export interface BagPlanHistory extends CollectionObject {
     plan_label: string;
     value_points: number;
     price: PricePoints;
-    establishment_id: string;
-    negative_value_points: PricePoints;
+    establishments_ids: string[];
+    negative_value_points?: PricePoints;
 }

@@ -2,8 +2,8 @@ import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { MeteorObservable } from "meteor-rxjs";
 import { Observable, Subscription, Subject } from 'rxjs';
-import { Parameter } from '../../../../../../../../../both/models/general/parameter.model';
-import { Parameters } from '../../../../../../../../../both/collections/general/parameter.collection';
+import { BagPlan } from '../../../../../../../../../both/models/points/bag-plan.model';
+import { BagPlans } from '../../../../../../../../../both/collections/points/bag-plans.collection';
 
 @Component({
     selector: 'create-confirm',
@@ -27,32 +27,20 @@ export class CreateConfirmComponent implements OnInit, OnDestroy {
      * ngOnInit Implementation
      */
     ngOnInit() {
-        this.removeSubscriptions();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe();
+
     }
 
-    /**
-     * Remove all Subscriptions
-     */
-    removeSubscriptions(): void {
-        this._ngUnsubscribe.next();
-        this._ngUnsubscribe.complete();
-    }
-
-    getDiscountPercent() {
-        let discount = Parameters.findOne({ name: 'first_pay_discount' });
-        if (discount) {
-            return discount.value;
+    getValuePoints(): number {
+        let _lBagPlan: BagPlan = BagPlans.findOne({ _id: "100" });
+        if (_lBagPlan) {
+            return _lBagPlan.value_points;
         }
     }
 
-    /**
-     * Function to gets de first day of charge
-     */
-    getFirstDay(): string {
-        let firstDay = Parameters.findOne({ name: 'start_payment_day' });
-        if (firstDay) {
-            return firstDay.value;
+    getBagPlanLabel(): string {
+        let _lBagPlan: BagPlan = BagPlans.findOne({ _id: "100" });
+        if (_lBagPlan) {
+            return _lBagPlan.label;
         }
     }
 
@@ -74,6 +62,5 @@ export class CreateConfirmComponent implements OnInit, OnDestroy {
      * ngOnDestroy Implementation
      */
     ngOnDestroy() {
-        this.removeSubscriptions();
     }
 }
