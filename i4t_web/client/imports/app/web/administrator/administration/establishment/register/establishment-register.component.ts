@@ -62,6 +62,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
     private _usrDetailSubscription: Subscription;
     private _pointValiditySub: Subscription;
     private _parameterSubscription: Subscription;
+    private _bagPlansSubscription: Subscription;
     private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _countries: Observable<Country[]>;
@@ -162,6 +163,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         this._additionsSub = MeteorObservable.subscribe('additions', this._user).takeUntil(this._ngUnsubscribe).subscribe();
         this._garnishFoodSub = MeteorObservable.subscribe('garnishFood', this._user).takeUntil(this._ngUnsubscribe).subscribe();
         this._parameterSubscription = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe();
+        this._bagPlansSubscription = MeteorObservable.subscribe('getBagPlans').takeUntil(this._ngUnsubscribe).subscribe();
         this._currentDate = new Date();
         this._firstMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth(), 1);
         this._lastMonthDay = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth() + 1, 0);
