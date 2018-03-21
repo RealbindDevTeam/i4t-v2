@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable, Subject } from 'rxjs';
-import { ViewController, NavParams, ToastController, LoadingController, NavController } from 'ionic-angular';
+import { ViewController, NavParams, ToastController, LoadingController, NavController, AlertController, Platform } from 'ionic-angular';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Reward } from 'i4t_web/both/models/establishment/reward.model';
@@ -12,6 +12,7 @@ import { UserDetail } from 'i4t_web/both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../i4t_web/both/collections/auth/user-detail.collection';
 import { Order, OrderItem } from 'i4t_web/both/models/establishment/order.model';
 import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
+import { Network } from '@ionic-native/network';
 
 @Component({
     templateUrl: 'reward-list.html',
@@ -35,6 +36,8 @@ export class RewardListComponent {
     private _statusArray: string[] = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
     private _thereRewards: boolean = true;
 
+    private disconnectSubscription: Subscription;
+
     constructor(public viewCtrl: ViewController,
         public _translate: TranslateService,
         public _navParams: NavParams,
@@ -42,7 +45,10 @@ export class RewardListComponent {
         public _loadingCtrl: LoadingController,
         public _navCtrl: NavController,
         private _userLanguageService: UserLanguageServiceProvider,
-        private _ngZone: NgZone) {
+        private _ngZone: NgZone,
+        public alertCtrl: AlertController,
+        public _platform: Platform,
+        private _network: Network) {
         _translate.setDefaultLang('en');
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
 
@@ -234,6 +240,66 @@ export class RewardListComponent {
         toast.onDidDismiss(() => {
         });
         toast.present();
+    }
+
+    /** 
+     * This function verify the conditions on page did enter for internet and server connection
+    */
+    ionViewDidEnter() {
+        this.isConnected();
+        this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+            let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+            let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+            let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+            this.presentAlert(title, subtitle, btn);
+        }, error => console.error(error));
+    }
+
+    /** 
+     * This function verify with network plugin if device has internet connection
+    */
+    isConnected() {
+        if (this._platform.is('cordova')) {
+            let conntype = this._network.type;
+            let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+            if (!validateConn) {
+                let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+                let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+                let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+                this.presentAlert(title, subtitle, btn);
+            } else {
+                if (!Meteor.status().connected) {
+                    let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+                    let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+                    let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+                    this.presentAlert(title2, subtitle2, btn2);
+                }
+            }
+        }
+    }
+
+    /**
+     * Present the alert for advice to internet
+    */
+    presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+        let alert = this.alertCtrl.create({
+            title: _pTitle,
+            subTitle: _pSubtitle,
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: _pBtn,
+                    handler: () => {
+                        this.isConnected();
+                    }
+                }
+            ]
+        });
+        alert.present();
+    }
+
+    ionViewWillLeave() {
+        this.disconnectSubscription.unsubscribe();
     }
 
     /**

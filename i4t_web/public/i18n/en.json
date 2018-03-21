@@ -1365,7 +1365,8 @@
             "CALCULATOR": "Pricing calculator",
             "RESTAURANT_PRICE": "Price by restaurant",
             "TABLE_PRICE": "Unit price of table",
-            "TOTAL": "Total"
+            "TOTAL": "Total",
+            "BAG_PLAN_INFO": "Are you sure to create the restaurant?"
         },
         "ORDER_MANAGEMENT": "Notify waiters/waitress",
         "ORDER_MANAGEMENT_TEXT": "The orders that your clients make will be assigned to the servers that you link in the system, the orders can be viewed from any mobile device or computer.",

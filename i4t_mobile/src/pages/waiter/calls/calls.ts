@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { AlertController, LoadingController, NavController, ToastController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController, ToastController, Platform } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
 import { Subscription, Subject } from "rxjs";
@@ -11,6 +11,7 @@ import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collectio
 import { SendOrderDetailsPage } from './send-order-detail/send-order-detail';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { CustomerOrderConfirm } from "./customer-order-confirm/customer-order-confirm";
+import { Network } from '@ionic-native/network';
 
 @Component({
   selector: 'calls-page',
@@ -33,6 +34,7 @@ export class CallsPage implements OnInit, OnDestroy {
   private _thereAreCalls: boolean = true;
 
   private _userLang: string;
+  private disconnectSubscription: Subscription;
 
   /**
     * CallsPage Constructor
@@ -47,7 +49,9 @@ export class CallsPage implements OnInit, OnDestroy {
     private _toastCtrl: ToastController,
     public _navCtrl: NavController,
     private _userLanguageService: UserLanguageServiceProvider,
-    private _ngZone: NgZone) {
+    private _ngZone: NgZone,
+    public _platform: Platform,
+    private _network: Network) {
     _translate.setDefaultLang('en');
   }
 
@@ -170,7 +174,7 @@ export class CallsPage implements OnInit, OnDestroy {
     });
     return wordTraduced;
   }
-  
+
   /**
    * Go to view Order detail send
    * @param _call 
@@ -184,6 +188,66 @@ export class CallsPage implements OnInit, OnDestroy {
    */
   goToOrderCall(_call: WaiterCallDetail) {
     this._navCtrl.push(CustomerOrderConfirm, { call: _call });
+  }
+
+  /** 
+  * This function verify the conditions on page did enter for internet and server connection
+  */
+  ionViewDidEnter() {
+    this.isConnected();
+    this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+      let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+      let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+      let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+      this.presentAlert(title, subtitle, btn);
+    }, error => console.error(error));
+  }
+
+  /** 
+   * This function verify with network plugin if device has internet connection
+  */
+  isConnected() {
+    if (this._platform.is('cordova')) {
+      let conntype = this._network.type;
+      let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+      if (!validateConn) {
+        let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+        let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+        let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+        this.presentAlert(title, subtitle, btn);
+      } else {
+        if (!Meteor.status().connected) {
+          let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+          let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+          let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+          this.presentAlert(title2, subtitle2, btn2);
+        }
+      }
+    }
+  }
+
+  /**
+   * Present the alert for advice to internet
+  */
+  presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+    let alert = this._alertCtrl.create({
+      title: _pTitle,
+      subTitle: _pSubtitle,
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: _pBtn,
+          handler: () => {
+            this.isConnected();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  ionViewWillLeave() {
+    this.disconnectSubscription.unsubscribe();
   }
 
   /**

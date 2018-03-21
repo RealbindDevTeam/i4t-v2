@@ -143,8 +143,8 @@
         "USER_NO_ACTIVE": "Tu usuario no se encuentra activo. Por favor contacta al administrador",
         "RESTAURANT_NO_ACTIVE": "El restaurante no se encuentra activo. Por favor contacta al administrador",
         "DONT_ACCOUNT": "No tienes cuenta administrador?",
-        "DOWNLOAD_APP":"Descarga comeygana",
-        "DOWNLOAD_APP_P":" Gratis en la play store y apple store"
+        "DOWNLOAD_APP": "Descarga comeygana",
+        "DOWNLOAD_APP_P": " Gratis en la play store y apple store"
     },
     "RESET_PASWORD": {
         "TITLE": "Cambiar contraseña",
@@ -1365,15 +1365,14 @@
             "CALCULATOR": "Calcula el costo mensual apróximado",
             "RESTAURANT_PRICE": "Precio por restaurante",
             "TABLE_PRICE": "Precio por mesa",
-            "TOTAL": "Total"
+            "TOTAL": "Total",
+            "BAG_PLAN_INFO": "Estas seguro que deseas crear el restaurante?"
         },
         "ORDER_MANAGEMENT": "Notificar a los meseros",
         "ORDER_MANAGEMENT_TEXT": "Las ordenes que realicen tus clientes serán asignadas a los meseros que vincules en el sistema, las ordenes se podrá visualizar desde cualquier dispositivo móvil o computador",
         "ORDERS_DAY": "Ordenes del día",
         "ORDERS_DAY_TEXT": "Por medio del rol cajero, podrás ver la información detallada de las ordenes que se han realizado en tu restaurante, y así poder identificar lo consumido por cada cliente y las recompensas que ha redimido",
         "COPYRIGHT": "Todos los derechos reservados"
-
-
     },
     "ADMIN_DASHBOARD": {
         "TITLE": "Te damos la bienvenida a comeygana",

@@ -260,7 +260,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         let cityIdAux: string;
         let cityAux: string;
         let _lNewEstablishment: string;
-
         return new Promise((resolve, reject) => {
             try {
                 let arrPay: any[] = Object.keys(this._establishmentForm.value.paymentMethods);
