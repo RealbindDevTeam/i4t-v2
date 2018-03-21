@@ -338,15 +338,15 @@ export class SigninComponent implements OnInit {
         alert.present();
     }
 
+    ionViewWillLeave() {
+        this.disconnectSubscription.unsubscribe();
+    }
+
     itemNameTraduction(itemName: string): string {
         var wordTraduced: string;
         this.translate.get(itemName).subscribe((res: string) => {
             wordTraduced = res;
         });
         return wordTraduced;
-    }
-
-    ionViewWillLeave() {
-        this.disconnectSubscription.unsubscribe();
     }
 }

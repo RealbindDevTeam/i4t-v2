@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController, ToastController, AlertController, Platform } from 'ionic-angular';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -13,6 +13,7 @@ import { Orders } from 'i4t_web/both/collections/establishment/order.collection'
 import { Item } from 'i4t_web/both/models/menu/item.model';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
+import { Network } from '@ionic-native/network';
 
 /*
   Generated class for the ItemDetail page.
@@ -62,6 +63,8 @@ export class ItemDetailWaiterPage implements OnInit, OnDestroy {
   private _garnishFormGroup: FormGroup = new FormGroup({});
   private _additionsFormGroup: FormGroup = new FormGroup({});
 
+  private disconnectSubscription: Subscription;
+
   constructor(public _navCtrl: NavController,
     public _navParams: NavParams,
     public _modalCtrl: ModalController,
@@ -69,13 +72,14 @@ export class ItemDetailWaiterPage implements OnInit, OnDestroy {
     public _zone: NgZone,
     public _loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
-    private _userLanguageService: UserLanguageServiceProvider) {
+    private _userLanguageService: UserLanguageServiceProvider,
+    public _alertCtrl: AlertController,
+    public _platform: Platform,
+    private _network: Network) {
     _translate.setDefaultLang('en');
     this._currentUserId = Meteor.userId();
     this._statusArray = ['ORDER_STATUS.REGISTERED'];
   }
-
-  ionViewDidLoad() { }
 
   ngOnInit() {
     this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
@@ -220,6 +224,67 @@ export class ItemDetailWaiterPage implements OnInit, OnDestroy {
     });
     return wordTraduced;
   }
+
+  /** 
+  * This function verify the conditions on page did enter for internet and server connection
+  */
+  ionViewDidEnter() {
+    this.isConnected();
+    this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+      let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+      let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+      let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+      this.presentAlert(title, subtitle, btn);
+    }, error => console.error(error));
+  }
+
+  /** 
+   * This function verify with network plugin if device has internet connection
+  */
+  isConnected() {
+    if (this._platform.is('cordova')) {
+      let conntype = this._network.type;
+      let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+      if (!validateConn) {
+        let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+        let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+        let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+        this.presentAlert(title, subtitle, btn);
+      } else {
+        if (!Meteor.status().connected) {
+          let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+          let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+          let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+          this.presentAlert(title2, subtitle2, btn2);
+        }
+      }
+    }
+  }
+
+  /**
+   * Present the alert for advice to internet
+  */
+  presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+    let alert = this._alertCtrl.create({
+      title: _pTitle,
+      subTitle: _pSubtitle,
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: _pBtn,
+          handler: () => {
+            this.isConnected();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  ionViewWillLeave() {
+    this.disconnectSubscription.unsubscribe();
+  }
+
 
   /**
    * Return Item price by current establishment
