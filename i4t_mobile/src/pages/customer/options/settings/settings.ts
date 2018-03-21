@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { App, LoadingController, ModalController, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { App, LoadingController, ModalController, NavController, NavParams, ToastController, AlertController, Platform } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription, Subject } from 'rxjs';
@@ -16,6 +16,7 @@ import { UserDetail, UserDetailImage } from 'i4t_web/both/models/auth/user-detai
 import { UserLanguageServiceProvider } from '../../../../providers/user-language-service/user-language-service';
 import { SigninComponent } from '../../../auth/signin/signin';
 import { InitialComponent } from '../../../auth/initial/initial';
+import { Network } from '@ionic-native/network';
 
 @Component({
   selector: 'page-settings',
@@ -48,6 +49,8 @@ export class SettingsPage implements OnInit, OnDestroy {
   private _validateChangeEmail: boolean = true;
   private _validateChangePass: boolean = true;
 
+  private disconnectSubscription: Subscription;
+
   /**
    * SettingsPage constructor
    * @param _navCtrl 
@@ -67,7 +70,9 @@ export class SettingsPage implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private _toastCtrl: ToastController,
     private _userLanguageService: UserLanguageServiceProvider,
-    private _ngZone: NgZone) {
+    private _ngZone: NgZone,
+    private _network: Network,
+    public _platform: Platform) {
     _translate.setDefaultLang('en');
     this._user = Meteor.user();
   }
@@ -281,6 +286,62 @@ export class SettingsPage implements OnInit, OnDestroy {
     }, 1500);
   }
 
+  /** 
+     * This function verify the conditions on page did enter for internet and server connection
+    */
+  ionViewDidEnter() {
+    this.isConnected();
+    this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+      let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+      let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+      let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+      this.presentAlert(title, subtitle, btn);
+    }, error => console.error(error));
+  }
+
+  /** 
+   * This function verify with network plugin if device has internet connection
+  */
+  isConnected() {
+    if (this._platform.is('cordova')) {
+      let conntype = this._network.type;
+      let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+      if (!validateConn) {
+        let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+        let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+        let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+        this.presentAlert(title, subtitle, btn);
+      } else {
+        if (!Meteor.status().connected) {
+          let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+          let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+          let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+          this.presentAlert(title2, subtitle2, btn2);
+        }
+      }
+    }
+  }
+
+  /**
+   * Present the alert for advice to internet
+  */
+  presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+    let alert = this._alertCtrl.create({
+      title: _pTitle,
+      subTitle: _pSubtitle,
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: _pBtn,
+          handler: () => {
+            this.isConnected();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
   /**
    * This function allow translate strings
    * @param itemName 
@@ -299,6 +360,10 @@ export class SettingsPage implements OnInit, OnDestroy {
   removeSubscriptions() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  ionViewWillLeave() {
+    this.disconnectSubscription.unsubscribe();
   }
 
   /**

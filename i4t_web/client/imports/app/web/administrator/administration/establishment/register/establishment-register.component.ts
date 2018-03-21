@@ -254,7 +254,6 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         let cityIdAux: string;
         let cityAux: string;
         let _lNewEstablishment: string;
-
         return new Promise((resolve, reject) => {
             try {
                 let arrPay: any[] = Object.keys(this._establishmentForm.value.paymentMethods);
@@ -515,14 +514,9 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         let _lTableNumber: number = this._establishmentForm.value.tables_number;
 
         if (_lTableNumber <= this.max_table_number) {
-            console.log('DEJA CREAR');
             this.validateTablesNumber = true;
-
-
         } else {
-            console.log('NO DEJA CREAR');
             this.validateTablesNumber = false;
-
         }
     }
 
