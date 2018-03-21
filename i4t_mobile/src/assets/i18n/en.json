@@ -480,7 +480,8 @@
         "RESTAURANT_PROFILE": {
             "MENU_BTN": "Menu",
             "PAYMENT_METHODS": "Payment methods",
-            "NO_PROFILE": "This restaurant has not configured its profile"
+            "NO_PROFILE": "This restaurant has not configured its profile",
+            "SHOW_MORE": "Show more"
         },
         "SCHEDULE": {
             "SCHEDULE": "Schedule",
@@ -693,5 +694,45 @@
         "UKRAINE": "Ukraine",
         "URUGUAY": "Uruguay",
         "VENEZUELA": "Venezuela"
+    },
+    "TYPE_OF_FOOD": {
+        "GERMAN_FOOD": "German food",
+        "AMERICAN_FOOD": "American food",
+        "ARABIC_FOOD": "Arabic food",
+        "ARGENTINE_FOOD": "Argentine food",
+        "ASIAN_FOOD": "Asian food",
+        "BRAZILIAN_FOOD": "Brazilian food",
+        "HOMEMADE_FOOD": "homemade food",
+        "CHILEAN_FOOD": "Chilean food",
+        "CHINESE_FOOD": "Chinese Food",
+        "COLOMBIAN_FOOD": "Colombian food",
+        "COREAN_FOOD": "Corean Food",
+        "MIDDLE_EASTERN_FOOD": "Middle eastern food",
+        "SPANISH_FOOD": "Spanish food",
+        "FRENCH_FOOD": "French food",
+        "FUSION_FOOD": "Fusion food",
+        "GOURMET_FOOD": "Gourmet food",
+        "GREEK_FOOD": "Greek food",
+        "INDIAN_FOOD": "Indian food",
+        "INTERNATIONAL_FOOD": "International food",
+        "ITALIAN_FOOD": "Italian food",
+        "JAPANESE_FOOD": "Japanese food",
+        "LATIN_AMERICAN_FOOD": "Latin American food",
+        "MEDITERRANEAN_FOOD": "Mediterranean food",
+        "MEXICAN_FOOD": "Mexican food",
+        "ORGANIC_FOOD": "Organic food",
+        "PERUVIAN_FOOD": "Peruvian food",
+        "FAST_FOOD": "Fast food",
+        "THAI_FOOD": "Thai food",
+        "VEGETARIAN_FOOD": "Vegetarian Food",
+        "VIETNAMESE_FOOD": "Vietnamese food",
+        "OTHERS": "Others",
+        "BARBECUE": "Barbecue",
+        "PASTA": "Pasta",
+        "FISH_AND_SEAFOOD": "Fish and seafood",
+        "PIZZA": "Pizza",
+        "SANDWICHES": "Sándwiches",
+        "SUSHI": "Sushi",
+        "VEGANISM": "Veganism"
     }
 }

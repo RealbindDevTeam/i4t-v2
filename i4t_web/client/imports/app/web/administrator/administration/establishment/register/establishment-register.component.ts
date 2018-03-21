@@ -172,7 +172,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
         });
         this._pointValiditySub = MeteorObservable.subscribe('pointsValidity').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._pointsValidity = PointsValidity.find({}).zone();
+                this._pointsValidity = PointsValidity.find({ '_id': { $gte: '20' } }).zone();
             });
         });
     }

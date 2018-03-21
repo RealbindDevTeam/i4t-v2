@@ -42,12 +42,26 @@
             <ion-card-content>
                 <ion-item>
                     <ion-card-title style="white-space: normal;">{{_establishment?.name}}</ion-card-title>
-                    <!--button ion-button outline item-end>{{'MOBILE.RESTAURANT_PROFILE.MENU_BTN' | translate}}</button-->
                 </ion-item>
+                <p *ngIf="_establishmentProfile?.establishment_description?.length <= 20" class="margin">
+                    {{_establishmentProfile?.establishment_description}}
+                </p>
+                <div *ngIf="_establishmentProfile?.establishment_description?.length > 20">
+                    <p *ngIf="!_showDescription" class="margin">
+                        {{_establishmentProfile?.establishment_description.substring(0, 70)}}...
+                    </p>
+                    <p *ngIf="_showDescription" class="margin">
+                        {{_establishmentProfile?.establishment_description}}
+                    </p>
+                    <a *ngIf="_showDescription" (click)="showInformation()">
+                        {{'MOBILE.RESTAURANT_PROFILE.SHOW_MORE' | translate}}
+                    </a>
+                </div>
                 <ion-list inset class="margin" no-lines>
-                    <ion-item>
+                    <ion-item *ngIf="_establishmentCity !== '' || _establishmentCountry !== ''">
                         <ion-icon name="map"></ion-icon>
-                        {{_establishmentCountry}}, {{_establishmentCity}}
+                        <span *ngIf="_establishmentCity !== ''">{{_establishmentCity}},</span>
+                        <span *ngIf="_establishmentCountry !== ''">{{_establishmentCountry}}</span>
                     </ion-item>
 
                     <ion-item *ngIf="_establishment?.address">
@@ -62,6 +76,16 @@
                         <ion-icon name="chatbubbles"></ion-icon>
                         {{_establishmentProfile?.email}}
                     </ion-item>
+                    <ion-item *ngIf="_establishmentProfile?.types_of_food">
+                        <ion-icon style="vertical-align: top;" name="restaurant"></ion-icon>
+                        <div style="white-space: normal;display: inline-block;">
+                            <span *ngFor="let typeOfFood of _typesOfFood | async">
+                                <span *ngFor="let type of _establishmentProfile.types_of_food">
+                                    <span *ngIf="type === typeOfFood._id">{{typeOfFood.type_of_food | translate}}</span>
+                                </span>
+                            </span>
+                        </div>
+                    </ion-item>
 
                     <button ion-item (click)="openSchedule()" *ngIf="_establishmentProfile?.schedule.monday.isActive || _establishmentProfile?.schedule.tuesday.isActive || 
                     _establishmentProfile?.schedule.wednesday.isActive || _establishmentProfile?.schedule.thursday.isActive ||
@@ -71,21 +95,6 @@
                         {{'MOBILE.SCHEDULE.SCHEDULE' | translate}}
                     </button>
                 </ion-list>
-
-                <p *ngIf="_establishmentProfile?.establishment_description?.length <= 20" class="margin">
-                    {{_establishmentProfile?.establishment_description}}
-                </p>
-                <div *ngIf="_establishmentProfile?.establishment_description?.length > 20">
-                    <p *ngIf="!_showDescription" class="margin">
-                        {{_establishmentProfile?.establishment_description.substring(0, 70)}}...
-                    </p>
-                    <p *ngIf="_showDescription" class="margin">
-                        {{_establishmentProfile?.establishment_description}}
-                    </p>
-                </div>
-                <a *ngIf="!_showDescription" (click)="showInformation()">
-                    Ver más
-                </a>
             </ion-card-content>
         </ion-card>
 
