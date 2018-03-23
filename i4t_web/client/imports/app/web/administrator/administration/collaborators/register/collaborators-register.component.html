@@ -29,22 +29,10 @@
                                 <tr>
                                     <td colspan="3" style="padding-top: 10px;">
                                         <mat-form-field style="width: 100%">
-                                            <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName/>
-                                            <mat-hint align="end">{{inputName.value.length}} / 70</mat-hint>
+                                            <input matInput required formControlName="fullName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="50" #inputName/>
+                                            <mat-hint align="end">{{inputName.value.length}} / 50</mat-hint>
                                         </mat-form-field>
                                     </td>
-                                    <td colspan="3" style="padding-top: 10px;">
-                                        <mat-form-field style="width: 100%">
-                                            <input matInput required formControlName="last_name" placeholder="{{'LAST_NAME' | translate}}" minlength="1" maxlength="70"
-                                                #inputAddress/>
-                                            <mat-hint align="end">{{inputAddress.value.length}} / 70</mat-hint>
-                                        </mat-form-field>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <table style="width: 100%" cellspacing="0">
-                                <tr>
                                     <td colspan="3" style="padding-top: 10px;">
                                         <mat-form-field style="width: 100%">
                                             <mat-select formControlName="gender" placeholder="{{'SIGNUP.GENDER_LBL' | translate}}">
@@ -52,6 +40,11 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </td>
+                                </tr>
+                            </table>
+
+                            <table style="width: 100%" cellspacing="0">
+                                <tr>
                                     <td colspan="1" style="padding-top: 10px; width: 50%">
                                         <mat-form-field style="width: 100%">
                                             <input matInput [matDatepicker]="picker" placeholder="{{'BIRTHDATE' | translate}}" formControlName="birthdate">
@@ -59,17 +52,15 @@
                                             <mat-datepicker #picker></mat-datepicker>
                                         </mat-form-field>
                                     </td>
-                                </tr>
-                            </table>
-                            <table style="width: 100%" cellspacing="0">
-                                <tr>
                                     <td colspan="2" style="padding-top: 10px;">
-                                        <mat-form-field style="width: 50%">
-                                            <input matInput formControlName="phone" placeholder="{{'PHONE' | translate}}" #inputPhone maxlength="40"/>
+                                        <mat-form-field style="width: 100%">
+                                            <input matInput formControlName="phone" placeholder="{{'PHONE' | translate}}" #inputPhone maxlength="40" />
                                             <mat-hint align="end">{{inputPhone.value.length}} / 40</mat-hint>
                                         </mat-form-field>
                                     </td>
                                 </tr>
+                            </table>
+                            <table style="width: 100%" cellspacing="0">
                                 <tr *ngIf="_showTablesSelect && _showTablesSelectByRest">
                                     <td colspan="1" style="padding-top: 10px; width: 50%">
                                         <mat-checkbox class="checkbox" (change)="pushSelectArray($event)">{{'COLLABORATORS_REGISTER.TABLES_ASSIGNMENT' | translate}}</mat-checkbox>

@@ -17,4 +17,5 @@ export interface BagPlan extends CollectionObject {
 export interface PricePoints {
     country_id: string;
     price: number;
+    currency: string
 }
