@@ -9,60 +9,84 @@ import { Languages } from '../../../both/collections/general/language.collection
 import { EmailContents } from '../../../both/collections/general/email-content.collection';
 import { Parameters } from '../../../both/collections/general/parameter.collection';
 import { CcPaymentMethods } from '../../../both/collections/payment/cc-payment-methods.collection'
+import { Points } from '../../../both/collections/general/point.collection';
+import { CookingTimes } from '../../../both/collections/general/cooking-time.collection';
+import { TypesOfFood } from '../../../both/collections/general/type-of-food.collection';
+import { BagPlans } from "../../../both/collections/points/bag-plans.collection";
 
-export function removeFixtures(){
+export function removeFixtures() {
     /**
      * Remove Menus Collection
      */
-    Menus.remove( { } );
-    
+    Menus.remove({});
+
     /**
      * Remove Roles Collection
      */
-    Roles.remove( { } );
-    
+    Roles.remove({});
+
     /**
      * Remove Hours Collection
      */
-    Hours.remove( { } );
-    
+    Hours.remove({});
+
     /**
      * Remove Currencies Collection
      */
-    Currencies.remove( { } );
-    
+    Currencies.remove({});
+
     /**
      * Remove PaymentMethods Collection
      */
-    PaymentMethods.remove( { } );
-    
+    PaymentMethods.remove({});
+
     /**
      * Remove Countries Collection
      */
-    Countries.remove( { } );
-    
+    Countries.remove({});
+
     /**
      * Remove Cities Collection
      */
-    Cities.remove( { } );
-    
+    Cities.remove({});
+
     /**
      * Remove Languages Collection
      */
-    Languages.remove( { } );
-    
+    Languages.remove({});
+
     /**
      * Remove EmailContents Collection
      */
-    EmailContents.remove( { } );
-    
+    EmailContents.remove({});
+
     /**
      * Remove Parameters Collection
      */
-    Parameters.remove( { } );
-    
+    Parameters.remove({});
+
     /**
      * Remove CcPaymentMethods Collection
      */
-    CcPaymentMethods.remove( { } );
+    CcPaymentMethods.remove({});
+
+    /**
+     * Remove Points Collection
+     */
+    Points.remove({});
+
+    /**
+     * Remove CookingTimes Collection
+     */
+    CookingTimes.remove({});
+
+    /**
+     * Remove TypesOfFood Collection
+     */
+    TypesOfFood.remove({});
+
+    /**
+     * Remove BagPlans Collection
+     */
+    BagPlans.remove({});
 }

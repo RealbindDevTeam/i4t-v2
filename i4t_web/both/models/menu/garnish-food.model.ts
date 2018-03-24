@@ -6,15 +6,15 @@ import { CollectionObject } from '../collection-object.model';
 export interface GarnishFood extends CollectionObject {
     is_active: boolean;
     name: string;
-    restaurants: GarnishFoodRestaurant[];
+    establishments: GarnishFoodEstablishment[];
     prices: GarnishFoodPrice[];
 }
 
 /**
- * GarnishFoodRestaurant model
+ * GarnishFoodEstablishment model
  */
-export interface GarnishFoodRestaurant {
-    restaurantId: string;
+export interface GarnishFoodEstablishment {
+    establishment_id: string;
     price: number;
     garnishFoodTax?: number;
 }

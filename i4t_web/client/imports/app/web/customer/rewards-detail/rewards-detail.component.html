@@ -1,0 +1,51 @@
+<mat-card-title>{{'REWARD_DETAIL.REWARD_TITLE' | translate}}</mat-card-title>
+<mat-card-subtitle>{{'REWARD_DETAIL.REWARDS_MSG' | translate}}</mat-card-subtitle>
+<p style="color:red;" *ngIf="!_allowAddRewardsToOrder">{{'REWARD_DETAIL.ORDER_ERROR' | translate}}</p>
+<mat-dialog-content>
+    <p style="font-weight: bold">{{'REWARD_DETAIL.POINTS_TO_REDEEM' | translate}}: {{_userRewardPoints}} {{'REWARD_DETAIL.POINTS' | translate}}</p>
+
+    <div *ngIf="_thereRewards" class="card_initial" style="margin: 10px auto !important;">
+        <div class="card_initial has-image" style="margin: 10px auto !important;">
+            <div class="card_initial-image-container">
+                <img class="card_initial-image" src="/images/reward.png" />
+            </div>
+            <div class="card_initial-copy">
+                <div class="card_initial-tagline">
+                    {{'REWARD_DETAIL.NO_REWARDS' | translate}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <mat-list>
+        <span *ngFor="let reward of _rewards | async">
+            <span *ngFor="let item of _items | async">
+                <ng-template [ngIf]="reward.item_id === item._id">
+                    <mat-list-item>
+                        <img mat-list-avatar class="custom br" *ngIf="item.image" src="{{ item.image.url }}">
+                        <img mat-list-avatar class="custom br" *ngIf="!item.image" src="/images/default-plate.png">
+                        <h4 mat-line>{{reward.item_quantity}} {{item.name}}</h4>
+                        <mat-chip-list mat-line>
+                            <mat-chip style="color: white;background-color: #4CAF50;height: 10px;">{{reward.points}} {{'REWARD_DETAIL.POINTS' | translate}}</mat-chip>
+                        </mat-chip-list>
+                        <p mat-line *ngIf="!getItemAvailability(item._id)" style="color: #D50000;font-weight: bold;">{{'REWARD_DETAIL.UNAVAILABLE' | translate}}</p>
+                        <div *ngIf="_allowAddRewardsToOrder">
+                            <button mat-button class="primary-button button-show" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">{{'REWARD_DETAIL.REDEEM' | translate}}</button>
+                            <button mat-icon-button class="icon-button" *ngIf="reward.points <= _userRewardPoints && getItemAvailability(item._id)" (click)="AddRewardToOrder(reward.item_id, reward.item_quantity, reward.points)">
+                                <mat-icon aria-label="Example icon-button with a heart icon">redeem</mat-icon>
+                            </button>
+                            <button mat-line mat-button disabled *ngIf="reward.points > _userRewardPoints" style="color:#4CAF50">{{'REWARD_DETAIL.GET_POINTS' | translate}}!</button>
+                        </div>
+                    </mat-list-item>
+                    <mat-divider class="divider"></mat-divider>
+                </ng-template>
+            </span>
+        </span>
+    </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button class="secondary-button" type="button" (click)="_dialogRef.close()">{{'CLOSE' | translate}}</button>
+</mat-dialog-actions>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>

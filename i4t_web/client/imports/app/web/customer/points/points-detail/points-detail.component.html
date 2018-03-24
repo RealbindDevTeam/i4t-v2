@@ -1,0 +1,88 @@
+<mat-card class="initial-card">
+    <mat-list>
+        <mat-list-item>
+            <img mat-list-avatar class="img" src="/images/delivery-of-item.png">
+            <h2 mat-line class="title">{{'POINTS_DETAIL.TITLE' | translate}}</h2>
+            <p mat-line class="subtitle">{{'POINTS_DETAIL.SUBTITLE' | translate}}</p>
+        </mat-list-item>
+    </mat-list>
+</mat-card>
+
+<mat-accordion class="example-headers-align">
+    <mat-expansion-panel *ngFor="let orderHistory of _orderHistories | async; let i = index" hideToggle="true" [expanded]="i === 0">
+        <mat-expansion-panel-header>
+            <mat-panel-title class="panel-title">
+                {{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}} - {{'POINTS_DETAIL.TOTAL' | translate}}: {{orderHistory.total_order}} {{orderHistory.currency}}
+            </mat-panel-title>
+            <mat-panel-description>
+                <span *ngIf="orderHistory.total_reward_points" class="total-reward-points">{{'POINTS_DETAIL.YOU_EARNED' | translate}} {{orderHistory.total_reward_points}} {{'POINTS_DETAIL.POINTS'
+                    | translate}}!</span>
+                <span class="app-flex-filler"></span>
+                <span *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{'POINTS_DETAIL.YOU_REDEEMED' | translate}} {{getRedeemedPoints(orderHistory)}} {{'POINTS_DETAIL.POINTS'
+                    | translate}}</span>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-divider></mat-divider>
+
+        <mat-list>
+            <div *ngFor="let item of orderHistory.items">
+                <mat-list-item *ngIf="item.is_reward">
+                    <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(item.item_name)}} ({{'POINTS_DETAIL.REWARD' | translate}})</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                        <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-list-item *ngIf="!item.is_reward">
+                    <mat-icon mat-list-icon class="item-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(item.item_name)}}</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                        <span class="price">{{item.price * item.quantity}}{{orderHistory.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <div *ngIf="item.option_values.length > 0">
+                    <div *ngFor="let opt of item.option_values">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="option-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(opt.option_value_name)}}</h4>
+                            <span *ngIf="opt.price" class="app-flex-filler"></span>
+                            <p mat-line *ngIf="opt.price">{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                <span class="price">{{opt.price * item.quantity}} {{orderHistory.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+                <div *ngIf="item.additions.length > 0">
+                    <div *ngFor="let ad of item.additions">
+                        <mat-list-item>
+                            <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                            <h4 mat-line>{{itemNameCrop(ad.addition_name)}}</h4>
+                            <span class="app-flex-filler"></span>
+                            <p mat-line>{{'POINTS_DETAIL.QUANT' | translate}} {{item.quantity}}
+                                <span class="price">{{ad.price * item.quantity}} {{orderHistory.currency}}</span>
+                            </p>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngFor="let addition of orderHistory.additions">
+                <mat-list-item>
+                    <mat-icon mat-list-icon class="addition-icon-color">turned_in_not</mat-icon>
+                    <h4 mat-line>{{itemNameCrop(addition.addition_name)}}</h4>
+                    <span class="app-flex-filler"></span>
+                    <p mat-line>{{'PAYMENTS.COLOMBIA.QUANT' | translate}} {{addition.quantity}}
+                        <span class="price">{{addition.price * addition.quantity}} {{orderHistory.currency}}</span>
+                    </p>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            </div>
+        </mat-list>
+    </mat-expansion-panel>
+</mat-accordion>

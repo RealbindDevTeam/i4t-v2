@@ -1,0 +1,42 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle icon-only>
+            <ion-icon name='menu'></ion-icon>
+        </button>
+        <ion-title>{{'MOBILE.POINTS.TITLE' | translate}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content text-wrap>
+
+    <div *ngIf="!_showEstablishments" style="padding: 0 16px;">
+        <div class="img">
+            <img src="assets/img/payments-history.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{'MOBILE.POINTS.NO_POINTS_MSG' | translate}}</h1>
+        </div>
+    </div>
+
+    <div *ngIf="_showEstablishments" class="main">
+        <span *ngFor="let _establishment of _establishments | async">
+            <span *ngFor="let _points of _userDetail.reward_points">
+                <span *ngIf="_establishment._id === _points.establishment_id">
+                    <ion-list style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">
+                        <button ion-item (click)="openEstablishmentDetail(_establishment._id)">
+                            <ion-thumbnail item-left>
+                                <img *ngIf="_establishment.image" src="{{ _establishment.image.url }}">
+                                <img *ngIf="!_establishment.image" src="assets/img/default-restaurant.png">
+                            </ion-thumbnail>
+                            <h2>{{_establishment.name}}</h2>
+                            <p>{{_establishment.address}}</p>
+                            <p class="accumulated-points">{{_points.points}} {{'MOBILE.POINTS.ACCUMULATED_POINTS' | translate}}</p>
+                            <p class="points-expiring" *ngIf="validateEstablishmentExpirePoints(_establishment._id)">{{'MOBILE.POINTS.YOU_HAVE' | translate}} {{getEstablishmentExpirePoints(_establishment._id)}} {{'MOBILE.POINTS.POINTS_FOR_EXPIRING' | translate}} {{getEstablishmentExpirePointsDate(_establishment._id)|date:'MM/dd/yyyy'}}</p>
+                        </button>
+                    </ion-list>
+                    <br/>
+                </span>
+            </span>
+        </span>
+    </div>
+</ion-content>

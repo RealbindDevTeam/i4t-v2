@@ -4,27 +4,30 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-  <ion-list *ngIf="_restaurants" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);" text-wrap>
-      <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
-          <ion-thumbnail item-left>
-              <img *ngIf="_restaurants.image" src="{{ _restaurants.image.url }}">
-              <img *ngIf="!_restaurants.image" src="assets/img/default-restaurant.png">
-          </ion-thumbnail>
-          <h2>{{_restaurants.name}}</h2>
-          <h2 *ngIf="_table">{{'MOBILE.ORDERS.TABLE' | translate}}: {{_table._number}}</h2>
-          <p>{{_restaurants.address}}</p>
-      </ion-item>
+<ion-content text-wrap>
+  <ion-list *ngIf="_establishments" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">
+    <button ion-item (click)="viewEstablishmentProfile(_establishments)" style="background-image: url(assets/img/background_waiter.png);"
+      class="img-header">
+      <ion-thumbnail item-left>
+        <img *ngIf="_establishments.image" src="{{ _establishments.image.url }}">
+        <img *ngIf="!_establishments.image" src="assets/img/default-restaurant.png">
+      </ion-thumbnail>
+      <h2>{{_establishments.name}}</h2>
+      <p>{{_establishments.address}}</p>
+      <p *ngIf="_table">{{'MOBILE.ORDERS.YOU_ARE_TABLE' | translate}} # {{_table._number}}</p>
+    </button>
   </ion-list>
-  <ion-card>
+
+  <ion-card [hidden]="true">
     <ion-card-content>
       <ion-list style="margin-bottom: 0px" no-lines>
         <ion-item>
           <ion-label>{{'MOBILE.SECTIONS.SELECTION' | translate}}</ion-label>
-          <ion-select [(ngModel)]="selected" interface="action-sheet" (ionChange)="validateSection(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
+          <ion-select #select1 [(ngModel)]="selected" interface="action-sheet" (ionChange)="validateSection(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
             class="custom-select">
             <ion-option value="all" selected="true">{{'MOBILE.SECTIONS.ALL' | translate}}</ion-option>
-            <ion-option *ngFor="let section of _sections | async" value="{{section._id}}">{{section.name}}</ion-option>
+            <ion-option value="recommended" selected="true">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-option>
+            <ion-option *ngFor="let sectionFilter of _sectionsFilter | async" value="{{sectionFilter._id}}">{{sectionFilter.name}}</ion-option>
             <ion-option *ngIf="_additionsShow" value="addition">{{'MOBILE.SECTIONS.ADDITION' | translate}}</ion-option>
           </ion-select>
         </ion-item>
@@ -32,7 +35,32 @@
     </ion-card-content>
   </ion-card>
 
+  <div *ngIf="_thereAreOrders" style="margin: 10px;">
+    <button ion-button block outline (click)="viewConfirmPage()" class="magictime puffIn">
+      <ion-icon name="checkmark" style="margin-right: 6px;"></ion-icon>{{'MOBILE.SECTIONS.CONFIRM_ORDER' | translate}}...
+    </button>
+  </div>
+
+  <div style="margin: 10px;">
+    <button *ngIf="_userRewardPoints > 0" ion-button block outline (click)="goToRewardList()">
+      <ion-icon name="trophy" style="margin-right: 6px;"></ion-icon>{{'MOBILE.ORDERS.YOU_HAVE' | translate}} {{_userRewardPoints}} {{'MOBILE.ORDERS.POINTS_TO_REDEEM' | translate}}
+    </button>
+    <button *ngIf="_userRewardPoints === 0" ion-button block outline (click)="goToRewardList()">
+      <ion-icon name="trophy" style="margin-right: 6px;"></ion-icon>{{'MOBILE.ORDERS.SHOW_REWARDS' | translate}}
+    </button>
+  </div>
+
+  <h4 class="text-align-center" *ngIf="(_itemsRecommended | async)?.length > 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</h4>
+  <div *ngFor="let item of _itemsRecommended | async">
+    <ion-card (click)="goToDetail(item._id)">
+      <ion-card-content>
+        <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
   <div *ngFor="let section of _sections | async">
+    <h4 class="text-align-center">{{section.name}}</h4>
     <div *ngFor="let item of _items | async">
       <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
         <ion-card>
@@ -45,33 +73,33 @@
   </div>
 
   <ion-item-group *ngFor="let category of _categories | async">
-    <ion-card>
-      <ion-card-content>
-        <h2 style="text-align: center; font-weight: bold; margin-bottom: 13px;">{{category.name}}</h2>
+    <h5 margin-start>{{category.name}}</h5>
+    <div *ngFor="let item of _items | async">
+      <ion-card *ngIf="(item.categoryId == category._id) && item.subcategoryId == ''" (click)="goToDetail(item._id)">
+        <ion-card-content>
+          <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <div *ngFor="let subcategory of _subcategories | async">
+      <div *ngIf="subcategory.category == category._id">
+        <h6 margin-start>{{subcategory.name}}</h6>
         <div *ngFor="let item of _items | async">
-          <div *ngIf="(item.categoryId == category._id) && item.subcategoryId == ''" (click)="goToDetail(item._id)">
-            
-            <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
-          </div>
+          <ion-card *ngIf="item.subcategoryId == subcategory._id" (click)="goToDetail(item._id)">
+            <ion-card-content>
+              <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
+            </ion-card-content>
+          </ion-card>
         </div>
-        <div *ngFor="let subcategory of _subcategories | async">
-          <div *ngIf="subcategory.category == category._id">
-            <h2 style="font-weight: bold">{{subcategory.name}}</h2>
-            <div *ngFor="let item of _items | async">
-              <div *ngIf="item.subcategoryId == subcategory._id" (click)="goToDetail(item._id)">
-                
-                <item-card [itemIdIn]="item" [resCode]="_res_code"></item-card>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
+      </div>
+    </div>
   </ion-item-group>
 </ion-content>
 
 <ion-footer>
   <ion-fab right bottom>
-    <button style="bottom: 0px" ion-fab color="light" mini (click)="goTop()"><ion-icon name="arrow-up"></ion-icon></button>
+    <button style="bottom: 0px;background-color: #ef5350;color: white;" ion-fab color="light" mini (click)="goTop()">
+      <ion-icon name="menu"></ion-icon>
+    </button>
   </ion-fab>
 </ion-footer>

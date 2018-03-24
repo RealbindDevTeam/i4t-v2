@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -8,13 +8,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { MatSnackBar } from '@angular/material';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
+import { Items } from '../../../../../../../../both/collections/menu/item.collection';
+import { Subcategories } from '../../../../../../../../both/collections/menu/subcategory.collection';
 import { Categories } from '../../../../../../../../both/collections/menu/category.collection';
 import { Category } from '../../../../../../../../both/models/menu/category.model';
 import { Sections } from '../../../../../../../../both/collections/menu/section.collection';
 import { Section } from '../../../../../../../../both/models/menu/section.model';
 import { CategoriesEditComponent } from '../categories-edit/categories-edit.component';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { AlertConfirmComponent } from '../../../../../web/general/alert-confirm/alert-confirm.component';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -30,22 +32,24 @@ export class CategoryComponent implements OnInit, OnDestroy {
     private _categoryForm: FormGroup;
     private _categories: Observable<Category[]>;
     private _sections: Observable<Section[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _mdDialogRef: MatDialogRef<any>;
     private _userDetails: Observable<UserDetail[]>;
 
     private _categoriesSub: Subscription;
     private _sectionsSub: Subscription;
-    private _restaurantSub: Subscription;
-    private _userDetailsSub: Subscription;
+    private _establishmentSub: Subscription;
+    private _itemsSubscription: Subscription;
+    private _subCategoriesSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _selectedValue: string;
     private titleMsg: string;
+    private btnCancelLbl: string;
     private btnAcceptLbl: string;
     public _dialogRef: MatDialogRef<any>;
-    private _thereAreRestaurants: boolean = true;
-    private _lRestaurantsId: string[] = [];
-    private _thereAreUsers: boolean = false;
+    private _thereAreEstablishments: boolean = true;
+    private _lEstablishmentsId: string[] = [];
     private _usersCount: number;
 
     /**
@@ -70,6 +74,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
         _translate.setDefaultLang('en');
         this._selectedValue = "";
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
+        this.btnCancelLbl = 'CANCEL';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
     }
 
@@ -82,64 +87,44 @@ export class CategoryComponent implements OnInit, OnDestroy {
             name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
             section: new FormControl('')
         });
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
-                    this._lRestaurantsId.push(restaurant._id);
+                this._establishments = Establishments.find({}).zone();
+                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                    this._lEstablishmentsId.push(establishment._id);
                 });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByRestaurantsId', this._lRestaurantsId).subscribe(() => {
-                    this._userDetails = UserDetails.find({ current_restaurant: { $in: this._lRestaurantsId } }).zone();
-                    this.countRestaurantsUsers();
-                    this._userDetails.subscribe(() => { this.countRestaurantsUsers(); });
-                });
-                this.countRestaurants();
-                this._restaurants.subscribe(() => { this.countRestaurants(); });
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
-        this._sectionsSub = MeteorObservable.subscribe('sections', this._user).subscribe(() => {
+        this._sectionsSub = MeteorObservable.subscribe('sections', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sections = Sections.find({}).zone();
             });
         });
-        this._categoriesSub = MeteorObservable.subscribe('categories', this._user).subscribe(() => {
+        this._categoriesSub = MeteorObservable.subscribe('categories', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._categories = Categories.find({}).zone();
             });
         });
+
+        this._subCategoriesSubscription = MeteorObservable.subscribe('subcategories', this._user).takeUntil(this._ngUnsubscribe).subscribe();
+        this._itemsSubscription = MeteorObservable.subscribe('items', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishment exists
      */
-    countRestaurants(): void {
-        Restaurants.collection.find().count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
-    }
-
-    /**
-     * Validate if restaurants exists
-     */
-    countRestaurantsUsers(): void {
-        let auxUserCount: number;
-        auxUserCount = UserDetails.collection.find({ current_restaurant: { $in: this._lRestaurantsId } }).count();
-
-        if (auxUserCount > 0) {
-            this._thereAreUsers = true
-            this._usersCount = auxUserCount;
-        } else {
-            this._thereAreUsers = false;
-            this._usersCount = 0;
-        }
+    countEstablishments(): void {
+        Establishments.collection.find().count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
-        if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -173,6 +158,83 @@ export class CategoryComponent implements OnInit, OnDestroy {
             this._categoryForm.reset();
             this._selectedValue = "";
         }
+    }
+
+    /**
+     * Show confirm dialog to remove the category
+     * @param _pCategory 
+     */
+    confirmRemove(_pCategory: Category) {
+        let dialogTitle = "CATEGORIES.REMOVE_TITLE";
+        let dialogContent = "CATEGORIES.REMOVE_MSG";
+        let error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
+
+        if (!Meteor.userId()) {
+            this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+            return;
+        }
+        this._mdDialogRef = this._dialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: dialogTitle,
+                subtitle: '',
+                content: dialogContent,
+                buttonCancel: this.btnCancelLbl,
+                buttonAccept: this.btnAcceptLbl,
+                showCancel: true
+            }
+        });
+        this._mdDialogRef.afterClosed().subscribe(result => {
+            this._mdDialogRef = result;
+            if (result.success) {
+                this.removeCategory(_pCategory);
+            }
+        });
+    }
+
+    /**
+     * Function to allow remove category
+     * @param {Category} _pCategory
+     */
+    removeCategory(_pCategory: Category): void {
+        let _lMessage: string;
+        if (!this.searchSubcategoriesByCategory(_pCategory._id) && !this.searchItemsByCategory(_pCategory._id)) {
+            Categories.remove(_pCategory._id);
+            _lMessage = this.itemNameTraduction('CATEGORIES.CATEGORY_REMOVED');
+            this.snackBar.open(_lMessage, '', {
+                duration: 2500
+            });
+        } else {
+            _lMessage = this.itemNameTraduction('CATEGORIES.CATEGORY_NOT_REMOVED');
+            this.snackBar.open(_lMessage, '', {
+                duration: 2500
+            });
+            return;
+        }
+    }
+
+    /**
+     * Search categories by category
+     * @param {string} _pCategoryId 
+     */
+    searchSubcategoriesByCategory(_pCategoryId: string): boolean {
+        let lSubCategories = Subcategories.collection.find({ category: _pCategoryId }).count();
+        if (lSubCategories > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Search items by category
+     * @param {string} _pCategoryId 
+     */
+    searchItemsByCategory(_pCategoryId: string): boolean {
+        let lItems = Items.collection.find({ categoryId: _pCategoryId }).count();
+        if (lItems > 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -238,10 +300,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to add new Restaurant
+     * Go to add new Establishment
      */
-    goToAddRestaurant() {
-        this._router.navigate(['/app/restaurant-register']);
+    goToAddEstablishment() {
+        this._router.navigate(['/app/establishment-register']);
     }
 
     /**

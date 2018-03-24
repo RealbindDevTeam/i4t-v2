@@ -8,27 +8,7 @@
                     <p mat-line class="card-subtitle">{{_user.services.facebook.email}}</p>
                 </mat-list-item>
             </mat-list>
-            <p class="status-message">{{ 'PENALIZE_CUSTOMER.STATUS_MSG' | translate }} <span class="username">{{_user.services.facebook.name}}</span>: </p>
-            <table class="centered striped">
-                <thead>
-                    <tr>
-                        <th data-field="order-registered">{{ 'PENALIZE_CUSTOMER.ORDER_REGISTERED' | translate }}</th>
-                        <th data-field="order-in-process">{{ 'PENALIZE_CUSTOMER.ORDER_IN_PROCESS' | translate }}</th>
-                        <th data-field="order-prepared">{{ 'PENALIZE_CUSTOMER.ORDER_PREPARED' | translate }}</th>
-                        <th data-field="order-delivered">{{ 'PENALIZE_CUSTOMER.ORDER_DELIVERED' | translate }}</th>
-                        <th data-field="order-in-translate">{{ 'PENALIZE_CUSTOMER.ORDER_TRANSLATE' | translate }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="order-info">{{ getOrdersRegisteredStatus() }}</td>
-                        <td class="order-info">{{ getOrdersInProcessStatus() }}</td>
-                        <td class="order-info">{{ getOrdersInPreparedStatus() }}</td>
-                        <td class="order-info">{{ getOrdersDeliveredStatus() }}</td>
-                        <td class="order-info">{{ getOrdersPendingConfirmStatus() }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <br/>
             <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_MSG' | translate }}</p>
             <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_TABLE' | translate }} <span class="table-number"># {{_tableNumber}}</span> {{ 'PENALIZE_CUSTOMER.PENALIZE_CONFIRM_MSG' | translate }}</p>
             <button mat-raised-button class="primary-button card-button" (click)="close()">{{ 'NO' | translate }}</button>
@@ -44,27 +24,7 @@
                     <p mat-line class="card-subtitle">{{_user.emails[0].address}}</p>
                 </mat-list-item>
             </mat-list>
-            <p class="status-message">{{ 'PENALIZE_CUSTOMER.STATUS_MSG' | translate }} <span class="username">{{_user.username}}</span>: </p>        
-            <table class="centered striped">
-                <thead>
-                    <tr>
-                        <th data-field="order-registered">{{ 'PENALIZE_CUSTOMER.ORDER_REGISTERED' | translate }}</th>
-                        <th data-field="order-in-process">{{ 'PENALIZE_CUSTOMER.ORDER_IN_PROCESS' | translate }}</th>
-                        <th data-field="order-prepared">{{ 'PENALIZE_CUSTOMER.ORDER_PREPARED' | translate }}</th>
-                        <th data-field="order-delivered">{{ 'PENALIZE_CUSTOMER.ORDER_DELIVERED' | translate }}</th>
-                        <th data-field="order-in-translate">{{ 'PENALIZE_CUSTOMER.ORDER_TRANSLATE' | translate }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="order-info">{{ getOrdersRegisteredStatus() }}</td>
-                        <td class="order-info">{{ getOrdersInProcessStatus() }}</td>
-                        <td class="order-info">{{ getOrdersInPreparedStatus() }}</td>
-                        <td class="order-info">{{ getOrdersDeliveredStatus() }}</td>
-                        <td class="order-info">{{ getOrdersPendingConfirmStatus() }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <br/>
             <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_MSG' | translate }}</p>
             <p>{{ 'PENALIZE_CUSTOMER.PENALIZE_TABLE' | translate }} <span class="table-number"># {{_tableNumber}}</span> {{ 'PENALIZE_CUSTOMER.PENALIZE_CONFIRM_MSG' | translate }}</p>        
             <button mat-raised-button class="primary-button card-button" (click)="close()">{{ 'NO' | translate }}</button>

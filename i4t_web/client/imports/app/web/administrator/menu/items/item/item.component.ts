@@ -1,22 +1,22 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog, MatSnackBar } from '@angular/material';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
 import { Item, ItemPrice } from '../../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../../both/collections/menu/item.collection';
-import { ItemEditionComponent } from '../edition/item-edition.component';
 import { Currency } from '../../../../../../../../both/models/general/currency.model';
 import { Currencies } from '../../../../../../../../both/collections/general/currency.collection';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { AlertConfirmComponent } from '../../../../general/alert-confirm/alert-confirm.component';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
+import { Recommended } from "./recommended/recommended.component";
 
 @Component({
     selector: 'item',
@@ -28,20 +28,20 @@ export class ItemComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
     private _itemsSub: Subscription;
     private _currenciesSub: Subscription;
-    private _restaurantSub: Subscription;
-    private _userDetailsSub: Subscription;
+    private _establishmentSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _items: Observable<Item[]>;
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _userDetails: Observable<UserDetail[]>;
 
     public _dialogRef: MatDialogRef<any>;
     private titleMsg: string;
+    private btnCancelLbl: string;
     private btnAcceptLbl: string;
-    private _thereAreRestaurants: boolean = true;
+    private _thereAreEstablishments: boolean = true;
     private _thereAreItems: boolean = true;
-    private _lRestaurantsId: string[] = [];
-    private _thereAreUsers: boolean = false;
+    private _lEstablishmentsId: string[] = [];
     private _usersCount: number;
 
     /**
@@ -58,10 +58,12 @@ export class ItemComponent implements OnInit, OnDestroy {
         private _translate: TranslateService,
         private _ngZone: NgZone,
         public _dialog: MatDialog,
+        public snackBar: MatSnackBar,
         private _userLanguageService: UserLanguageService) {
         _translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         _translate.setDefaultLang('en');
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
+        this.btnCancelLbl = 'CANCEL';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
     }
 
@@ -70,52 +72,31 @@ export class ItemComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._itemsSub = MeteorObservable.subscribe('items', this._user).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('items', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
                 this.countItems();
                 this._items.subscribe(() => { this.countItems(); });
             });
         });
-        this._currenciesSub = MeteorObservable.subscribe('currencies').subscribe();
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+        this._currenciesSub = MeteorObservable.subscribe('currencies').takeUntil(this._ngUnsubscribe).subscribe();
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
-                    this._lRestaurantsId.push(restaurant._id);
+                this._establishments = Establishments.find({}).zone();
+                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                    this._lEstablishmentsId.push(establishment._id);
                 });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByRestaurantsId', this._lRestaurantsId).subscribe(() => {
-                    this._userDetails = UserDetails.find({ current_restaurant: { $in: this._lRestaurantsId } }).zone();
-                    this.countRestaurantsUsers();
-                    this._userDetails.subscribe(() => { this.countRestaurantsUsers(); });
-                });
-                this.countRestaurants();
-                this._restaurants.subscribe(() => { this.countRestaurants(); });
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishments exists
      */
-    countRestaurants(): void {
-        Restaurants.collection.find({}).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
-    }
-
-    /**
-    * Validate if restaurants exists
-    */
-    countRestaurantsUsers(): void {
-        let auxUserCount: number;
-        auxUserCount = UserDetails.collection.find({ current_restaurant: { $in: this._lRestaurantsId } }).count();
-
-        if (auxUserCount > 0) {
-            this._thereAreUsers = true
-            this._usersCount = auxUserCount;
-        } else {
-            this._thereAreUsers = false;
-            this._usersCount = 0;
-        }
+    countEstablishments(): void {
+        Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
@@ -129,10 +110,8 @@ export class ItemComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -147,14 +126,7 @@ export class ItemComponent implements OnInit, OnDestroy {
      * @param {Item} _item
      */
     open(_item: Item) {
-        let dialogRef1 = this._dialog.open(ItemEditionComponent, {
-            disableClose: true,
-            width: '80%'
-        });
-        dialogRef1.componentInstance._itemToEdit = _item;
-        dialogRef1.afterClosed().subscribe(result => {
-            dialogRef1 = null;
-        });
+        this._router.navigate(['app/items-edition', JSON.stringify(_item)], { skipLocationChange: true });
     }
 
     /**
@@ -174,6 +146,64 @@ export class ItemComponent implements OnInit, OnDestroy {
                 modification_date: new Date(),
                 modification_user: Meteor.userId()
             }
+        });
+    }
+
+    /**
+     * Show Recommended dialog
+     * @param _pItem 
+     */
+    openRecommendDialog(_pItem: Item) {
+        this._dialogRef = this._dialog.open(Recommended, {
+            disableClose: true,
+            data: {
+                item: _pItem
+            }
+        });
+    }
+
+    /**
+    * Show confirm dialog to remove the Item
+    * @param {Item} _pItem
+    */
+    confirmRemove(_pItem: Item) {
+        let dialogTitle = "ITEMS.REMOVE_TITLE";
+        let dialogContent = "ITEMS.REMOVE_MSG";
+        let error: string = 'LOGIN_SYSTEM_OPERATIONS_MSG';
+
+        if (!Meteor.userId()) {
+            this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+            return;
+        }
+        this._dialogRef = this._dialog.open(AlertConfirmComponent, {
+            disableClose: true,
+            data: {
+                title: dialogTitle,
+                subtitle: '',
+                content: dialogContent,
+                buttonCancel: this.btnCancelLbl,
+                buttonAccept: this.btnAcceptLbl,
+                showCancel: true
+            }
+        });
+        this._dialogRef.afterClosed().subscribe(result => {
+            this._dialogRef = result;
+            if (result.success) {
+                this.removeItem(_pItem);
+            }
+        });
+    }
+
+    /**
+     * Function to allow remove Item
+     * @param {Item} _pItem
+     */
+    removeItem(_pItem: Item): void {
+        let _lMessage: string;
+        Items.remove(_pItem._id);
+        _lMessage = this.itemNameTraduction('ITEMS.ITEM_REMOVED');
+        this.snackBar.open(_lMessage, '', {
+            duration: 2500
         });
     }
 
@@ -212,10 +242,10 @@ export class ItemComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to add new Restaurant
+     * Go to add new Establishment
      */
-    goToAddRestaurant() {
-        this._router.navigate(['/app/restaurant-register']);
+    goToAddEstablishment() {
+        this._router.navigate(['/app/establishment-register']);
     }
 
     /**
@@ -246,6 +276,18 @@ export class ItemComponent implements OnInit, OnDestroy {
 
             }
         });
+    }
+
+    /**
+     * Return traduction
+     * @param {string} itemName 
+     */
+    itemNameTraduction(itemName: string): string {
+        var wordTraduced: string;
+        this._translate.get(itemName).subscribe((res: string) => {
+            wordTraduced = res;
+        });
+        return wordTraduced;
     }
 
     /**

@@ -4,6 +4,8 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Network } from '@ionic-native/network';
 import { IonicStorageModule } from '@ionic/storage';
 import { MomentModule } from 'angular2-moment';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
@@ -17,6 +19,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { Facebook } from '@ionic-native/facebook';
 import { Device } from '@ionic-native/device';
 import { UserLanguageServiceProvider } from '../providers/user-language-service/user-language-service';
+import { NetworkDetectionServiceProvider } from '../providers/network-detection-service/network-detection-service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -36,7 +39,7 @@ export function createTranslateLoader(http: HttpClient) {
           tabsHideOnSubPages: true
         },
         ios: {
-          tabsPlacement: 'top',
+          tabsPlacement: 'bottom',
           tabsHideOnSubPages: true,
           backButtonText: ''
         }
@@ -66,7 +69,10 @@ export function createTranslateLoader(http: HttpClient) {
     Device,
     UserLanguageServiceProvider,
     GoogleMaps,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    InAppBrowser,
+    Network,
+    NetworkDetectionServiceProvider
   ]
 })
 export class AppModule { }

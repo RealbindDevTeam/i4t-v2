@@ -186,7 +186,6 @@ mat-ink-bar {
     box-shadow: none !important;
     color: $primary-color !important;
     font-weight: 600 !important;
-    min-width: auto !important;
 }
 .primary-button:hover {
     color: $white_color-text !important;
@@ -509,8 +508,7 @@ mat-ink-bar {
 }
 
 .mat-dialog-container {
-    max-height: 80vh !important;
-    max-width: none !important;
+    max-height: 100vh !important;
 }
 
 @media only screen and (max-width: 600px) {
@@ -597,9 +595,9 @@ mat-ink-bar {
 }
 
 .dmpc {
-    padding-top: 12px;
-    margin: 20px auto;
-    width: 95%;
+    padding: 17px 20px 0;
+    margin: 23px auto;
+    width: calc(100% - 40px);
 }
 
 .item-detail {

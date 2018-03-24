@@ -1,0 +1,140 @@
+<div *ngFor="let establishment of _establishments | async">
+    <mat-card>
+        <mat-list>
+            <mat-list-item>
+                <img mat-list-avatar class="img" src="{{ establishment.image.url }}">
+                <h2 mat-line style="font-size: 1.5rem;color: #114b5f;font-weight: 500;white-space: normal !important;"> {{establishment.name}} </h2>
+                <p mat-line class="location">
+                    <mat-icon class="location-icon">location_on</mat-icon>
+                    <span>{{_establishmentCountry}}, {{_establishmentCity}}</span>
+                </p>
+            </mat-list-item>
+        </mat-list>
+    </mat-card>
+
+    <mat-card *ngIf="(_establishmentsProfile | async)?.length <= 0" mat-cell="12">
+        <mat-card-content>
+            <div class="card_initial">
+                <div class="card_initial has-image">
+                    <div class="card_initial-image-container">
+                        <img class="card_initial-image" src="/images/restaurantes.png" />
+                    </div>
+                    <div class="card_initial-copy">
+                        <div class="card_initial-tagline">
+                            {{'RESTAURANT_PROFILE_DETAIL.NO_PROFILE' | translate}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <span *ngFor="let establishmentProfile of _establishmentsProfile | async">
+        <ng-template [ngIf]="establishment._id === establishmentProfile.establishment_id">
+            <mat-card>
+                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.LOCATION' | translate}}</mat-card-title>
+                <mat-card-content>
+                    <p>{{'RESTAURANT_PROFILE_DETAIL.ADDRESS' | translate}}: {{establishment.address}}</p>
+                    <agm-map [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng" [mapDraggable]="false"
+                        [minZoom]="19" [maxZoom]="19" [zoomControl]="false">
+                        <agm-marker [latitude]="establishmentProfile.location.lat" [longitude]="establishmentProfile.location.lng"></agm-marker>
+                    </agm-map>
+                </mat-card-content>
+            </mat-card>
+            <mat-card>
+                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.ABOUT_RESTAURANT' | translate}}</mat-card-title>
+                <mat-card-content>
+                    <p *ngIf="!_showExtended">{{establishmentProfile.establishment_description.substring(0, 450)}}</p>
+                    <p *ngIf="_showExtended">{{establishmentProfile.establishment_description}}</p>
+                    <button *ngIf="_showReadMore" mat-button color="primary" (click)="extendDescription()">{{_btnLabel}}</button>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="photos">
+                <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.PHOTOS' | translate}}</mat-card-title>
+                <div *ngIf="establishmentProfile.images">
+                    <p *ngIf="establishmentProfile.images.length <= 0">{{'RESTAURANT_PROFILE_DETAIL.NO_PHOTOS' | translate}}</p>
+                    <mat-card-content class="content">
+                        <button *ngFor="let restProfileImgeThumb of establishmentProfile.images; let i = index" mat-button class="img-wp">
+                            <img md-card-image class="img-thumb" src="{{restProfileImgeThumb.url}}" (click)="openLightBoxComponent(establishmentProfile.images, i)">
+                        </button>
+                    </mat-card-content>
+                </div>
+                <p *ngIf="!establishmentProfile.images">{{'RESTAURANT_PROFILE_DETAIL.NO_PHOTOS' | translate}}</p>
+            </mat-card>
+
+            <div class="cust-flex">
+                <mat-card class="cust-width cust-margin-right">
+                    <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.CONTACT' | translate}}</mat-card-title>
+                    <mat-card-content>
+                        <mat-list>
+                            <mat-list-item *ngIf="establishmentProfile.social_networks">
+                                <div class="schedule-social-networks">
+                                    <div class="social-networks">
+                                        <button *ngIf="establishmentProfile.social_networks.facebook" mat-icon-button (click)="openFacebookLink(establishmentProfile.social_networks.facebook)">
+                                            <i class="fa fa-facebook fa-2x cust-facebook" aria-hidden="true"></i>
+                                        </button>
+                                        <button *ngIf="establishmentProfile.social_networks.twitter" mat-icon-button (click)="openTwitterLink(establishmentProfile.social_networks.twitter)">
+                                            <i class="fa fa-twitter fa-2x cust-twitter" aria-hidden="true"></i>
+                                        </button>
+                                        <button *ngIf="establishmentProfile.social_networks.instagram" mat-icon-button (click)="openInstagramLink(establishmentProfile.social_networks.instagram)">
+                                            <i class="fa fa-instagram fa-2x cust-instagram" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </mat-list-item>
+
+                            <mat-list-item>
+                                <mat-icon mat-list-icon class="cust-icon">schedule</mat-icon>
+                                <a target="_blank" (click)="openSchedule(establishmentProfile)">Horario de atención</a>
+                            </mat-list-item>
+
+                            <mat-list-item *ngIf="establishmentProfile.web_page">
+                                <mat-icon mat-list-icon class="cust-icon">language</mat-icon>
+                                <a target="_blank" href="{{ getWebPageUrl( establishmentProfile.web_page ) }}">{{establishmentProfile.web_page}}</a>
+                            </mat-list-item>
+
+                            <mat-list-item *ngIf="!establishmentProfile.web_page">
+                                <mat-icon mat-list-icon class="icon cust-icon">language</mat-icon>
+                                <span>{{'RESTAURANT_PROFILE_DETAIL.NO_WEB_PAGE' | translate}}</span>
+                            </mat-list-item>
+
+                            <mat-list-item *ngIf="establishmentProfile.email">
+                                <mat-icon mat-list-icon class="icon cust-icon">email</mat-icon>
+                                <span>{{establishmentProfile.email}}</span>
+                            </mat-list-item>
+
+                            <mat-list-item *ngIf="!establishmentProfile.email">
+                                <mat-icon mat-list-icon class="icon cust-icon">email</mat-icon>
+                                <span>{{'RESTAURANT_PROFILE_DETAIL.NO_EMAIL' | translate}}</span>
+                            </mat-list-item>
+
+                            <mat-list-item *ngIf="establishment.phone">
+                                <mat-icon mat-list-icon class="icon cust-icon">call</mat-icon>
+                                <span>{{establishment.indicative}} {{establishment.phone}}</span>
+                            </mat-list-item>
+
+                            <mat-list-item *ngIf="!establishment.phone">
+                                <mat-icon mat-list-icon class="icon cust-icon">call</mat-icon>
+                                <span>{{'RESTAURANT_PROFILE_DETAIL.NO_PHONE' | translate}}</span>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card class="cust-width">
+                    <mat-card-title>{{'RESTAURANT_PROFILE_DETAIL.PAYMENT_METHODS' | translate}}</mat-card-title>
+                    <mat-card-content>
+                        <mat-list>
+                            <mat-list-item *ngFor="let paymentMethod of _establishmentPaymentMethods | async">
+                                <img matListAvatar class="payment-thumb" src="{{ getPaymentMethodImg( paymentMethod.name ) }}">
+                                <h4 mat-line>{{paymentMethod.name | translate}}</h4>
+                            </mat-list-item>
+                            <mat-list-item>
+                                <p>{{'RESTAURANT_PROFILE_DETAIL.CURRENCY_ACCEPTED' | translate}}: {{_establishmentCurrency}}</p>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </ng-template>
+    </span>
+</div>

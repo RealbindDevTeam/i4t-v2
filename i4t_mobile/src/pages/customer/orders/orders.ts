@@ -1,25 +1,36 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { App, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { App, NavController, NavParams, AlertController, LoadingController, ToastController, ModalController, Platform } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Additions } from 'i4t_web/both/collections/menu/addition.collection';
-import { Order, OrderAddition } from 'i4t_web/both/models/restaurant/order.model';
+import { Order, OrderAddition } from 'i4t_web/both/models/establishment/order.model';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { Items } from 'i4t_web/both/collections/menu/item.collection';
-import { Restaurant } from 'i4t_web/both/models/restaurant/restaurant.model';
-import { Restaurants } from 'i4t_web/both/collections/restaurant/restaurant.collection';
-import { Tables } from 'i4t_web/both/collections/restaurant/table.collection';
-import { Orders } from 'i4t_web/both/collections/restaurant/order.collection';
+import { Establishment } from 'i4t_web/both/models/establishment/establishment.model';
+import { Establishments } from 'i4t_web/both/collections/establishment/establishment.collection';
+import { Tables } from 'i4t_web/both/collections/establishment/table.collection';
+import { Orders } from 'i4t_web/both/collections/establishment/order.collection';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { Storage } from '@ionic/storage';
 import { CodeTypeSelectPage } from '../code-type-select/code-type-select';
 import { SectionsPage } from '../sections/sections';
 import { ItemEditPage } from '../item-edit/item-edit';
 import { AdditionEditPage } from '../addition-edit/addition-edit';
-import { RestaurantProfilePage } from '../restaurant-profile/restaurant-profile';
+import { EstablishmentProfilePage } from '../establishment-profile/establishment-profile';
 import { Currencies } from 'i4t_web/both/collections/general/currency.collection';
-import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.model';
+import { UserDetail, UserRewardPoints } from '../../../../../i4t_web/both/models/auth/user-detail.model';
+import { Meteor } from 'meteor/meteor';
+import { Reward } from 'i4t_web/both/models/establishment/reward.model';
+import { Rewards } from 'i4t_web/both/collections/establishment/reward.collection';
+import { RewardListComponent } from './reward-list';
+import { RewardPoints } from 'i4t_web/both/collections/establishment/reward-point.collection';
+import { EstablishmentExitPage } from '../options/establishment-exit/establishment-exit';
+import { Option } from 'i4t_web/both/models/menu/option.model';
+import { Options } from 'i4t_web/both/collections/menu/option.collection';
+import { OptionValue } from 'i4t_web/both/models/menu/option-value.model';
+import { OptionValues } from 'i4t_web/both/collections/menu/option-value.collection';
+import { Network } from '@ionic-native/network';
 
 @Component({
     selector: 'page-orders',
@@ -28,36 +39,51 @@ import { UserDetail } from '../../../../../i4t_web/both/models/auth/user-detail.
 export class OrdersPage implements OnInit, OnDestroy {
 
     private _userDetailSub: Subscription;
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _tablesSub: Subscription;
     private _ordersSub: Subscription;
     private _additionsSub: Subscription;
     private _itemsSub: Subscription;
     private _currencySub: Subscription;
+    private _rewardsSub: Subscription;
+    private _rewardPointsSub: Subscription;
+    private _usersSub: Subscription;
+    private _otherUSerDetailSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
+    private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userLang: string;
     private _table_code: string = "";
     private _res_code: string = "";
     private _statusArray: string[];
     private _currentUserId: string;
-    private _orderIndex: number = -1;
+    private _orderCustomerIndex: number = 1;
+    private _orderOthersIndex: number = -1;
     private selected: string = "";
     private _currencyCode: string = "";
+    private _toastMsg: string;
 
-    private _restaurants: any;
-    private _restaurant: any;
+    private _establishments: any;
+    private _establishment: any;
     private _table: any;
     private _additions: any;
     private _userDetail;
     private _orders;
     private _items;
     private _userDetails: Observable<UserDetail[]>;
+    private _rewards: Observable<Reward[]>;
+    private _options: Observable<Option[]>;
 
     private _currentOrderUserId: string;
     private _btnOrderItem: boolean = true;
 
     private _thereIsUser: boolean = true;
     private _thereAreOrders: boolean = true;
+    private _showReedemPoints: boolean = true;
+    private _userRewardPoints: number = 0;
+
+    private disconnectSubscription: Subscription;
 
     constructor(public _navCtrl: NavController,
         public _navParams: NavParams,
@@ -66,10 +92,14 @@ export class OrdersPage implements OnInit, OnDestroy {
         public alertCtrl: AlertController,
         public _loadingCtrl: LoadingController,
         private _userLanguageService: UserLanguageServiceProvider,
-        private _ngZone: NgZone) {
+        private toastCtrl: ToastController,
+        public _modalCtrl: ModalController,
+        private _ngZone: NgZone,
+        public _platform: Platform,
+        private _network: Network) {
         _translate.setDefaultLang('en');
         this._currentUserId = Meteor.userId();
-        this._statusArray = ['ORDER_STATUS.REGISTERED', 'ORDER_STATUS.IN_PROCESS', 'ORDER_STATUS.PREPARED'];
+        this._statusArray = ['ORDER_STATUS.SELECTING', 'ORDER_STATUS.CONFIRMED'];
         this.selected = "all";
     }
 
@@ -85,40 +115,67 @@ export class OrdersPage implements OnInit, OnDestroy {
 
     init() {
         this._translate.use(this._userLanguageService.getLanguage(Meteor.user()));
-        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSub = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetails = UserDetails.find({ user_id: Meteor.userId() }).zone();
                 this.validateUser();
                 this._userDetails.subscribe(() => { this.validateUser() });
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 if (this._userDetail) {
-                    this._res_code = this._userDetail.current_restaurant;
-                    this._restaurantSub = MeteorObservable.subscribe('getRestaurantByCurrentUser', Meteor.userId()).subscribe(() => {
+                    this._res_code = this._userDetail.current_establishment;
+                    this.verifyUserRewardPoints();
+                    this._userDetails.subscribe(() => { this.verifyUserRewardPoints() });
+                    this._establishmentSub = MeteorObservable.subscribe('getEstablishmentByCurrentUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
-                            this._restaurants = Restaurants.find({ _id: this._userDetail.current_restaurant }).zone();
+                            this._establishments = Establishments.find({ _id: this._userDetail.current_establishment }).zone();
                         });
                     });
 
-                    this._tablesSub = MeteorObservable.subscribe('getTableById', this._userDetail.current_table).subscribe(() => {
+                    this._tablesSub = MeteorObservable.subscribe('getTableById', this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             this._table = Tables.findOne({ _id: this._userDetail.current_table });
                         });
                     });
 
-                    this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).subscribe(() => {
+                    this._ordersSub = MeteorObservable.subscribe('getOrdersByUserId', Meteor.userId(), this._statusArray).takeUntil(this.ngUnsubscribe).subscribe(() => {
                         this._ngZone.run(() => {
                             this.getOrders();
-                            this._orders = Orders.find({ restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
+                            this._orders = Orders.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
                             this._orders.subscribe(() => { this.getOrders() });
                         });
                     });
+
+                    this._rewardsSub = MeteorObservable.subscribe('getEstablishmentRewards', this._userDetail.current_establishment).takeUntil(this.ngUnsubscribe).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._rewards = Rewards.find({ establishments: { $in: [this._userDetail.current_establishment] } }).zone();
+                            this.countRewards();
+                            this._rewards.subscribe(() => { this.countRewards(); });
+                        });
+                    });
+
+                    this._rewardPointsSub = MeteorObservable.subscribe('getRewardPointsByUserId', this._currentUserId).takeUntil(this.ngUnsubscribe).subscribe();
+                    let _optionIds: string[] = [];
+                    this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this._res_code]).takeUntil(this.ngUnsubscribe).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._options = Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).zone();
+                            this._options.subscribe(() => {
+                                Options.find({ establishments: { $in: [this._res_code] }, is_active: true }).fetch().forEach((opt) => {
+                                    _optionIds.push(opt._id);
+                                });
+                                this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this.ngUnsubscribe).subscribe();
+                            });
+                        });
+                    });
                 }
+
+                this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._userDetail.current_establishment, this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe();
+                this._otherUSerDetailSub = MeteorObservable.subscribe('getUserDetailsByCurrentTable', this._userDetail.current_establishment, this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe();
             });
         });
 
-        this._itemsSub = MeteorObservable.subscribe('itemsByUser', Meteor.userId()).subscribe();
-        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentRestaurant', Meteor.userId()).subscribe();
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', Meteor.userId()).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe();
+        this._additionsSub = MeteorObservable.subscribe('additionsByCurrentEstablishment', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe();
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByCurrentUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 if (Currencies.find({}).fetch().length > 0) {
                     this._currencyCode = Currencies.find({}).fetch()[0].code;
@@ -129,11 +186,46 @@ export class OrdersPage implements OnInit, OnDestroy {
 
     validateUser(): void {
         let _user: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-        _user.current_restaurant !== '' && _user.current_table !== '' ? this._thereIsUser = true : this._thereIsUser = false;
+        if (_user) {
+            if (_user.current_establishment !== '' && _user.current_table !== '') {
+                this._thereIsUser = true;
+            } else {
+                this._thereIsUser = false;
+            }
+        } else {
+            this._thereIsUser = false
+        }
+    }
+
+    /**
+     * Verify user reward points
+     */
+    verifyUserRewardPoints(): void {
+        let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
+        if (_lUserDetail) {
+            let _lRewardPoints: UserRewardPoints[] = _lUserDetail.reward_points;
+
+            if (_lRewardPoints) {
+                if (_lRewardPoints.length > 0) {
+                    let _lPoints: UserRewardPoints = _lUserDetail.reward_points.filter(p => p.establishment_id === this._res_code)[0];
+                    if (_lPoints) {
+                        this._userRewardPoints = _lPoints.points;
+                    } else {
+                        this._userRewardPoints = 0;
+                    }
+                } else {
+                    this._userRewardPoints = 0;
+                }
+            }
+        }
     }
 
     getOrders() {
-        Orders.collection.find({ restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).count() > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
+        Orders.collection.find({ establishment_id: this._userDetail.current_establishment, tableId: this._userDetail.current_table, status: { $in: this._statusArray } }).count() > 0 ? this._thereAreOrders = true : this._thereAreOrders = false;
+    }
+
+    countRewards(): void {
+        Rewards.collection.find({ establishments: { $in: [this._userDetail.current_establishment] } }).count() > 0 ? this._showReedemPoints = true : this._showReedemPoints = false;
     }
 
     goToNewOrder() {
@@ -144,8 +236,8 @@ export class OrdersPage implements OnInit, OnDestroy {
         if (this._userDetail.current_table == "") {
             this._navCtrl.push(CodeTypeSelectPage);
         } else {
-            MeteorObservable.call('getCurrentRestaurantByUser', this._userDetail.current_restaurant).subscribe((restaurant: Restaurant) => {
-                if (restaurant == null) {
+            MeteorObservable.call('getCurrentEstablishmentByUser', this._userDetail.current_establishment).subscribe((establishment: Establishment) => {
+                if (establishment == null) {
                     this._navCtrl.push(CodeTypeSelectPage);
 
                 } else {
@@ -155,7 +247,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 
                     loading.present();
                     setTimeout(() => {
-                        this._navCtrl.push(SectionsPage, { res_id: restaurant._id, table_id: this._userDetail.current_table });
+                        this._navCtrl.push(SectionsPage, { res_id: establishment._id, table_id: this._userDetail.current_table });
                         loading.dismiss();
                     }, 1500);
                 }
@@ -166,27 +258,24 @@ export class OrdersPage implements OnInit, OnDestroy {
     }
 
     showDetail(i) {
-        if (this._orderIndex == i) {
-            this._orderIndex = -1;
+        if (this._orderCustomerIndex == i) {
+            this._orderCustomerIndex = -1;
         } else {
-            this._orderIndex = i;
+            this._orderCustomerIndex = i;
         }
+        this._orderOthersIndex = -1;
+    }
+
+    showOrderDetail(i) {
+        if (this._orderOthersIndex == i) {
+            this._orderOthersIndex = -1;
+        } else {
+            this._orderOthersIndex = i;
+        }
+        this._orderCustomerIndex = -1;
     }
 
     ionViewDidLoad() {
-    }
-
-    filterOrders(orders_selected) {
-        if (orders_selected == 'all') {
-            this._orders = Orders.find({ restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
-            this._orderIndex = -1;
-        } else if (orders_selected == 'me') {
-            this._orders = Orders.find({ creation_user: this._currentUserId, restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
-            this._orderIndex = -1;
-        } else if (orders_selected == 'other') {
-            this._orderIndex = -1;
-            this._orders = Orders.find({ creation_user: { $nin: [this._currentUserId] }, restaurantId: this._userDetail.current_restaurant, tableId: this._userDetail.current_table, status: { $in: this._statusArray } });
-        }
     }
 
     itemNameTraduction(itemName: string): string {
@@ -217,14 +306,54 @@ export class OrdersPage implements OnInit, OnDestroy {
                 {
                     text: dialog_accept_btn,
                     handler: () => {
-                        if (_order.status === 'ORDER_STATUS.REGISTERED') {
+                        if (_order.status === 'ORDER_STATUS.SELECTING') {
+                            //for reward item
+                            _order.items.forEach(item => {
+                                if (item.is_reward) {
+                                    let _lConsumerDetail: UserDetail = UserDetails.findOne({ user_id: _order.creation_user });
+                                    let _lPoints: UserRewardPoints = _lConsumerDetail.reward_points.filter(p => p.establishment_id === _order.establishment_id)[0];
+                                    let _lNewPoints: number = Number.parseInt(_lPoints.points.toString()) + Number.parseInt(item.redeemed_points.toString());
+
+                                    UserDetails.update({ _id: _lConsumerDetail._id }, { $pull: { reward_points: { establishment_id: _order.establishment_id } } });
+                                    UserDetails.update({ _id: _lConsumerDetail._id }, { $push: { reward_points: { index: _lPoints.index, establishment_id: _order.establishment_id, points: _lNewPoints } } });
+
+                                    let _lRedeemedPoints: number = item.redeemed_points;
+                                    let _lValidatePoints: boolean = true;
+                                    RewardPoints.collection.find({ id_user: Meteor.userId(), establishment_id: _order.establishment_id }, { sort: { gain_date: -1 } }).fetch().forEach((pnt) => {
+                                        if (_lValidatePoints) {
+                                            if (pnt.difference !== null && pnt.difference !== undefined && pnt.difference !== 0) {
+                                                let aux: number = pnt.points - pnt.difference;
+                                                _lRedeemedPoints = _lRedeemedPoints - aux;
+                                                RewardPoints.update({ _id: pnt._id }, { $set: { difference: 0 } });
+                                            } else if (!pnt.is_active) {
+                                                _lRedeemedPoints = _lRedeemedPoints - pnt.points;
+                                                RewardPoints.update({ _id: pnt._id }, { $set: { is_active: true } });
+                                                if (_lRedeemedPoints === 0) {
+                                                    _lValidatePoints = false;
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
                             Orders.update({ _id: _order._id }, {
                                 $set: {
                                     status: 'ORDER_STATUS.CANCELED', modification_user: Meteor.userId(),
                                     modification_date: new Date()
                                 }
                             });
-                            this._orderIndex = -1;
+                            this._orderCustomerIndex = -1;
+
+                            this._toastMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CANCELED_MSG');
+                            let toast = this.toastCtrl.create({
+                                message: this._toastMsg,
+                                duration: 1500,
+                                position: 'middle'
+                            });
+                            toast.onDidDismiss(() => {
+                            });
+                            toast.present();
                         } else {
                             alert(alert_not);
                         }
@@ -242,6 +371,7 @@ export class OrdersPage implements OnInit, OnDestroy {
         let dialog_accept_btn = this.itemNameTraduction('MOBILE.ORDERS.YES_ANSWER');
         let alert_not = this.itemNameTraduction('MOBILE.ORDERS.IMPOSSIBLE_CONFIRM');
         let item_not = this.itemNameTraduction('MOBILE.ORDERS.NOT_ITEM_AVAILABLE');
+        let _loadingMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CONFIRM');
 
         let userDetailTmp = UserDetails.collection.findOne({ user_id: Meteor.userId() });
 
@@ -259,24 +389,41 @@ export class OrdersPage implements OnInit, OnDestroy {
                     text: dialog_accept_btn,
                     handler: () => {
                         let _lItemsIsAvailable: boolean = true;
-                        if (_order.status === 'ORDER_STATUS.REGISTERED') {
+                        let loading = this._loadingCtrl.create({
+                            content: _loadingMsg
+                        });
+                        if (_order.status === 'ORDER_STATUS.SELECTING') {
                             let _Items = _order.items;
                             _Items.forEach((item) => {
                                 let _lItem = Items.findOne({ _id: item.itemId });
-                                let aux = _lItem.restaurants.find(element => element.restaurantId === userDetailTmp.current_restaurant);
+                                let aux = _lItem.establishments.find(element => element.establishment_id === userDetailTmp.current_establishment);
                                 if (aux.isAvailable === false) {
                                     _lItemsIsAvailable = false
                                 }
                             });
                             if (_lItemsIsAvailable) {
-                                Orders.update({ _id: _order._id }, {
-                                    $set: {
-                                        status: 'ORDER_STATUS.IN_PROCESS', modification_user: Meteor.userId(),
-                                        modification_date: new Date()
-                                    }
+                                var data: any = {
+                                    establishments: _order.establishment_id,
+                                    tables: _order.tableId,
+                                    user: Meteor.userId(),
+                                    waiter_id: "",
+                                    status: "waiting",
+                                    type: "CUSTOMER_ORDER",
+                                    order_id: _order._id
                                 }
-                                );
-                                this._orderIndex = -1;
+
+                                loading.present();
+
+                                setTimeout(() => {
+                                    MeteorObservable.call('findQueueByEstablishment', data).subscribe(() => {
+                                        Orders.update({ _id: _order._id }, { $set: { status: 'ORDER_STATUS.CONFIRMED', modification_user: Meteor.userId(), modification_date: new Date() } });
+                                        loading.dismiss();
+                                        this.presentToast();
+                                    }, (error) => {
+                                        alert(`Error: ${error}`);
+                                    });
+                                }, 1500);
+                                this._orderCustomerIndex = -1;
                             } else {
                                 alert(item_not);
                             }
@@ -290,6 +437,20 @@ export class OrdersPage implements OnInit, OnDestroy {
         alertConfirm.present();
     }
 
+    presentToast() {
+        this._toastMsg = this.itemNameTraduction('MOBILE.ORDERS.ORDER_CONFIRMED_MSG');
+        let toast = this.toastCtrl.create({
+            message: this._toastMsg,
+            duration: 1500,
+            position: 'middle'
+        });
+
+        toast.onDidDismiss(() => {
+        });
+
+        toast.present();
+    }
+
     goToItemEdit(_itemId: string, _orderItemIndex: number, _order: Order) {
         let loader = this._loadingCtrl.create({
             duration: 300
@@ -297,8 +458,8 @@ export class OrdersPage implements OnInit, OnDestroy {
         loader.present();
         let _lUserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
 
-        if (_lUserDetail.current_restaurant && _lUserDetail.current_table) {
-            this._res_code = _lUserDetail.current_restaurant;
+        if (_lUserDetail.current_establishment && _lUserDetail.current_table) {
+            this._res_code = _lUserDetail.current_establishment;
             this._table_code = _lUserDetail.current_table;
         }
 
@@ -312,17 +473,21 @@ export class OrdersPage implements OnInit, OnDestroy {
         });
     }
 
+    goToRewardList() {
+        this._navCtrl.push(RewardListComponent, { establishment: this._res_code });
+    }
+
     /**
      * Show order additions detail
      * @param {OrderAddition} _pAdition
      */
     showAdditionsDetail(_pAdition: OrderAddition, _pOrder: Order): void {
         let _lUserDetail = UserDetails.findOne({ user_id: Meteor.userId() });
-        if (_lUserDetail.current_restaurant && _lUserDetail.current_table) {
-            this._res_code = _lUserDetail.current_restaurant;
+        if (_lUserDetail.current_establishment && _lUserDetail.current_table) {
+            this._res_code = _lUserDetail.current_establishment;
             this._table_code = _lUserDetail.current_table;
         }
-        this._navCtrl.push(AdditionEditPage, { order_addition: _pAdition, order: _pOrder, restaurant: this._res_code, table: this._table_code });
+        this._navCtrl.push(AdditionEditPage, { order_addition: _pAdition, order: _pOrder, establishment: this._res_code, table: this._table_code });
     }
 
 
@@ -352,7 +517,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     getItemAvailability(itemId: string): boolean {
         let _item = Items.find().fetch().filter((i) => i._id === itemId)[0];
         if (_item) {
-            return (_item.restaurants.filter(r => r.restaurantId === this._res_code)[0]).isAvailable;
+            return (_item.establishments.filter(r => r.establishment_id === this._res_code)[0]).isAvailable;
         }
     }
 
@@ -363,15 +528,82 @@ export class OrdersPage implements OnInit, OnDestroy {
         }
     }
 
-
-    ionViewDidEnter() {
+    /**
+     * Return option value name
+     * @param {string} _valueId
+     */
+    getOptionValueName(_valueId: string): string {
+        let _option_value = OptionValues.findOne({ _id: _valueId });
+        if (_option_value) {
+            return _option_value.name;
+        }
     }
 
-    ionViewDidLeave() {
+    /**
+     * Go to establishment exit page
+     */
+    goToEstablishmentExit() {
+        this._navCtrl.push(EstablishmentExitPage, { res_id: this._userDetail.current_establishment, table_id: this._userDetail.current_table });
+    }
+
+    /** 
+         * This function verify the conditions on page did enter for internet and server connection
+        */
+    ionViewDidEnter() {
+        this.isConnected();
+        this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+            let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+            let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+            let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+            this.presentAlert(title, subtitle, btn);
+        }, error => console.error(error));
+    }
+
+    /** 
+     * This function verify with network plugin if device has internet connection
+    */
+    isConnected() {
+        if (this._platform.is('cordova')) {
+            let conntype = this._network.type;
+            let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+            if (!validateConn) {
+                let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+                let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+                let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+                this.presentAlert(title, subtitle, btn);
+            } else {
+                if (!Meteor.status().connected) {
+                    let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+                    let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+                    let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+                    this.presentAlert(title2, subtitle2, btn2);
+                }
+            }
+        }
+    }
+
+    /**
+     * Present the alert for advice to internet
+    */
+    presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+        let alert = this.alertCtrl.create({
+            title: _pTitle,
+            subTitle: _pSubtitle,
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: _pBtn,
+                    handler: () => {
+                        this.isConnected();
+                    }
+                }
+            ]
+        });
+        alert.present();
     }
 
     ionViewWillLeave() {
-        //this.removeSubscriptions();
+        this.disconnectSubscription.unsubscribe();
     }
 
     ionViewWillUnload() {
@@ -383,23 +615,18 @@ export class OrdersPage implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to restaurant profile
-     * @param _pRestaurant 
+     * Go to establishment profile
+     * @param _pEstablishment 
      */
-    viewRestaurantProfile(_pRestaurant: any) {
-        this._navCtrl.push(RestaurantProfilePage, { restaurant: _pRestaurant });
+    viewEstablishmentProfile(_pEstablishment: any) {
+        this._navCtrl.push(EstablishmentProfilePage, { establishment: _pEstablishment });
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._userDetailSub) { this._userDetailSub.unsubscribe(); }
-        if (this._currencySub) { this._currencySub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }

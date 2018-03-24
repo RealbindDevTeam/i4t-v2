@@ -18,5 +18,6 @@ export const GarnishFoodCol = new MongoObservable.Collection<GarnishFood>('garni
  */
 GarnishFoodCol.allow({
     insert: loggedIn,
-    update: loggedIn
+    update: loggedIn,
+    remove: loggedIn
 });

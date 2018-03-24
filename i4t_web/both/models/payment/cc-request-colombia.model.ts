@@ -84,8 +84,8 @@ export class ExtraParameters {
  */
 export class AdditionalValues {
     TX_VALUE: TX_VALUE;
-    TX_TAX: TX_TAX;
-    TX_TAX_RETURN_BASE: TX_TAX_RETURN_BASE;
+    TX_TAX?: TX_TAX;
+    TX_TAX_RETURN_BASE?: TX_TAX_RETURN_BASE;
 }
 
 /**

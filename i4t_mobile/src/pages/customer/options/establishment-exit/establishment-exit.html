@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            {{'MOBILE.RESTAURANT_EXIT.TITLE' | translate}}
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content align="center">
+    <div *ngIf="_res_code === '' && _table_code === ''" style="padding: 0 16px;">
+        <div class="img">
+            <img src="assets/img/delivery-of-item.png">
+        </div>
+        <div class="content" style="text-align: center">
+            <h1>{{'MOBILE.RESTAURANT_EXIT.NO_RESTAURANT' | translate}}</h1>
+        </div>
+    </div>
+
+    <div *ngIf="_res_code !== '' && _table_code !== ''">
+        <div *ngIf="_establishment">
+            <div id="res-logo">
+                <img *ngIf="_establishment.image" src="{{_establishment.image.url}}">
+                <img *ngIf="!_establishment.image" src="assets/img/default-restaurant.png">
+            </div>
+            <ion-card>
+                <ion-card-content>
+                    <h1>{{_establishment.name}}</h1>
+                    <h2>{{'MOBILE.ORDERS.TABLE' | translate}} {{_table?._number}}</h2>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </div>
+</ion-content>
+
+<ion-footer padding>
+    <button *ngIf="_res_code !== '' && _table_code !== ''" ion-button block outline (click)="exitEstablishment()">{{'MOBILE.RESTAURANT_EXIT.EXIT_MSG' | translate}}</button>
+</ion-footer>

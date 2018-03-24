@@ -1,24 +1,25 @@
 import { Component, NgZone, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { MeteorObservable } from "meteor-rxjs";
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { UserLanguageService } from '../../../../../services/general/user-language.service';
-import { Restaurant } from '../../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../../both/collections/establishment/establishment.collection';
 import { Item } from '../../../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../../../both/collections/menu/item.collection';
 
 @Component({
     selector: 'enable-confirm',
     templateUrl: './enable-confirm.component.html',
-    styleUrls: [ './enable-confirm.component.scss' ],
+    styleUrls: ['./enable-confirm.component.scss'],
     providers: [UserLanguageService]
 })
 
 export class EnableConfirmComponent implements OnInit, OnDestroy {
 
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     constructor(public _dialogRef: MatDialogRef<any>,
         private _zone: NgZone,
@@ -35,34 +36,35 @@ export class EnableConfirmComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', Meteor.userId()).subscribe(() => { });
+        this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => { });
     }
 
     /**
      * Remove all subscriptions
      */
-    removeSubscriptions():void{
-        if( this._restaurantSub ){ this._restaurantSub.unsubscribe(); }
+    removeSubscriptions(): void {
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /** 
-     * Function to ge the restaurant name
+     * Function to ge the establishments name
     */
-    getRestaurantName(_restaurantId: string): string {
-        let restaurant: Restaurant = Restaurants.findOne({ _id: _restaurantId });
-        if (restaurant) {
-            return restaurant.name;
+    getEstablishmentName(_establishmentId: string): string {
+        let establishment: Establishment = Establishments.findOne({ _id: _establishmentId });
+        if (establishment) {
+            return establishment.name;
         } else {
             return;
         }
     }
 
     /**
-     * Function to update de item restaurant avalaibility
+     * Function to update de item establishments avalaibility
      */
-    updateAvailableFlag(_restaurantId: string) {
+    updateAvailableFlag(_establishmentId: string) {
         let snackMsg: string = this.itemNameTraduction('ENABLE_DISABLED.AVAILABILITY_CHANGED');
-        MeteorObservable.call('updateItemAvailable', _restaurantId, this.data.one._id).subscribe();
+        MeteorObservable.call('updateItemAvailable', _establishmentId, this.data.one._id).subscribe();
         this.snackBar.open(snackMsg, '', {
             duration: 1000,
         });

@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { MeteorObservable } from "meteor-rxjs";
-import { Observable, Subscription } from "rxjs";
-import { Restaurant } from "../../../../../../../both/models/restaurant/restaurant.model";
-import { Restaurants } from "../../../../../../../both/collections/restaurant/restaurant.collection";
+import { Observable, Subscription, Subject } from "rxjs";
+import { Establishment } from "../../../../../../../both/models/establishment/establishment.model";
+import { Establishments } from "../../../../../../../both/collections/establishment/establishment.collection";
 import { User } from '../../../../../../../both/models/auth/user.model';
 import { Users } from '../../../../../../../both/collections/auth/user.collection';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
@@ -22,15 +22,16 @@ export class SupervisorCollaboratorsComponent implements OnInit, OnDestroy {
 
     public _dialogRef: MatDialogRef<any>;
     private _userDetailSubscription: Subscription;
-    private _userRestaurantSubscription: Subscription;
+    private _userEstablishmentSubscription: Subscription;
     private _userDetailsSubscription: Subscription;
     private _usersSubscription: Subscription;
     private _roleSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userDetails: Observable<UserDetail[]>;
     private _roles: Observable<Role[]>;
     private _users: Observable<User[]>;
-    private _restaurant: Restaurant;
+    private _establishment: Establishment;
     private _userDetail: UserDetail;
 
     constructor(public _dialog: MatDialog,
@@ -43,25 +44,25 @@ export class SupervisorCollaboratorsComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
             if (this._userDetail) {
                 this._ngZone.run(() => {
-                    this._userRestaurantSubscription = MeteorObservable.subscribe('getRestaurantById', this._userDetail.restaurant_work).subscribe(() => {
-                        this._restaurant = Restaurants.findOne({ _id: this._userDetail.restaurant_work });
+                    this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                        this._establishment = Establishments.findOne({ _id: this._userDetail.establishment_work });
                     });
 
-                    this._userDetailsSubscription = MeteorObservable.subscribe('getUsersDetailsForRestaurant', this._userDetail.restaurant_work).subscribe(() => {
-                        this._userDetails = UserDetails.find({ restaurant_work: this._userDetail.restaurant_work, role_id: { $in: ['200', '300', '500'] } }).zone();
+                    this._userDetailsSubscription = MeteorObservable.subscribe('getUsersDetailsForEstablishment', this._userDetail.establishment_work).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                        this._userDetails = UserDetails.find({ establishment_work: this._userDetail.establishment_work, role_id: { $in: ['200', '300', '500'] } }).zone();
                     });
 
-                    this._usersSubscription = MeteorObservable.subscribe('getUsersByRestaurant', this._userDetail.restaurant_work).subscribe(() => {
+                    this._usersSubscription = MeteorObservable.subscribe('getUsersByEstablishment', this._userDetail.establishment_work).takeUntil(this._ngUnsubscribe).subscribe(() => {
                         this._users = Users.find({}).zone();
                     });
                 });
             }
         });
-        this._roleSubscription = MeteorObservable.subscribe('getRoleCollaborators').subscribe(() => {
+        this._roleSubscription = MeteorObservable.subscribe('getRoleCollaborators').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._roles = Roles.find({}).zone();
         });
     }
@@ -93,10 +94,8 @@ export class SupervisorCollaboratorsComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-        if (this._userRestaurantSubscription) { this._userRestaurantSubscription.unsubscribe(); }
-        if (this._userDetailsSubscription) { this._userDetailsSubscription.unsubscribe(); }
-        if (this._roleSubscription) { this._roleSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**

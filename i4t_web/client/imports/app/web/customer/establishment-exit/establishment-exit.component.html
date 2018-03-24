@@ -1,0 +1,59 @@
+<div *ngFor="let userDetail of _userDetails | async">
+    <div *ngIf=" userDetail.current_establishment !== '' && userDetail.current_table !== '' ">
+        <div *ngFor="let table of _tables | async">
+            <div *ngIf="table._id === userDetail.current_table">
+                <establishment-info [establishmentId]="userDetail.current_establishment" [tableQRCode]="table.QR_code"></establishment-info>
+                <mat-card mat-cell="12" class="demo-card demo-basic">
+                    <mat-card-content>
+                        <div class="card_initial">
+                            <div class="card_initial has-image">
+                                <div class="card_initial-image-container">
+                                    <img class="card_initial-image" 
+                                        src="/images/sections.png"/>
+                                </div>
+                                <div class="card_initial-copy">
+                                    <div class="card_initial-tagline">
+                                        {{'EXIT_TABLE.RESTAURANT_EXIT' | translate}}
+                                    </div>
+                                    <div class="card_initial-additional-links">
+                                        {{'EXIT_TABLE.OPTION_LEAVE_RESTAURANT' | translate}}
+                                    </div>
+                                </div>
+                                <div class="card_initial-button">
+                                    <button mat-raised-button (click)="exitEstablishmentTable(userDetail.current_establishment, userDetail.current_table)">{{'EXIT_TABLE.EXIT_MSG' | translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div *ngIf=" userDetail.current_establishment === '' && userDetail.current_table === '' ">
+        <mat-card mat-cell="12">
+            <mat-card-content>
+                <div class="card_initial">
+                    <div class="card_initial has-image">
+                        <div class="card_initial-image-container">
+                        <img class="card_initial-image" src="/images/orders.png"/>
+                        </div>
+                        <div class="card_initial-copy">
+                        <div class="card_initial-tagline">
+                            {{'EXIT_TABLE.THERE_IS_NOT_REST' | translate}}
+                        </div>
+                        <div class="card_initial-additional-links">
+                            {{'EXIT_TABLE.THERE_IS_NOT_REST_MSG' | translate}}
+                        </div>
+                        </div>
+                        <div class="card_initial-button">
+                        <button mat-raised-button (click)="goToOrders()">{{'EXIT_TABLE.GO_TO_ORDERS' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>

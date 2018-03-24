@@ -1,13 +1,13 @@
 <div *ngFor="let userDetail of _userDetails | async">
-    <div *ngIf=" userDetail.current_restaurant !== '' && userDetail.current_table !== '' ">
+    <div *ngIf=" userDetail.current_establishment !== '' && userDetail.current_table !== '' ">
         <div *ngFor="let table of _tables | async">
             <div *ngIf="table._id === userDetail.current_table">
-                <restaurant-info [restaurantId]="userDetail.current_restaurant" [tableQRCode]="table.QR_code"></restaurant-info>
+                <establishment-info [establishmentId]="userDetail.current_establishment" [tableQRCode]="table.QR_code"></establishment-info>
                 <mat-card mat-cell="12">
                     <mat-card-content>
                         <div class="card_initial">
                             <div class="card_initial has-image">
-                                <form [formGroup]="_changeTableForm" (ngSubmit)="changeUserTable(userDetail.current_restaurant,table.QR_code);">
+                                <form [formGroup]="_changeTableForm" (ngSubmit)="changeUserTable(userDetail.current_establishment,table.QR_code);">
                                     <div class="card_initial-image-container">
                                         <img class="card_initial-image" 
                                             src="/images/delivery-of-item.png"/>
@@ -34,7 +34,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf=" userDetail.current_restaurant === '' && userDetail.current_table === '' ">
+    <div *ngIf=" userDetail.current_establishment === '' && userDetail.current_table === '' ">
         <mat-card mat-cell="12">
             <mat-card-content>
                 <div class="card_initial">

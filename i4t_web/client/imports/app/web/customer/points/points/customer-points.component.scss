@@ -1,0 +1,29 @@
+.main {
+    .image{
+        border-radius: 50%; 
+        width: 100px; 
+        height: 100px;
+    }
+    
+    .card-title{
+        font-size: 1.5rem;
+        color: #114b5f; 
+        font-weight: 500;
+        margin-right: 5rem;
+    }
+
+    .customer-points{
+        font-size: 1.1rem; 
+        margin-top: 0.3rem; 
+        color: green; 
+        font-weight: bold;
+    }
+
+    .expiration-points{
+        color: red;
+    }
+
+    .detail-button{
+        min-width: 100px;
+    }
+}

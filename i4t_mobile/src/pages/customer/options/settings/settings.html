@@ -1,8 +1,5 @@
 <ion-header>
     <ion-navbar>
-        <button ion-button menuToggle icon-only>
-            <ion-icon name='menu'></ion-icon>
-        </button>
         <ion-title>{{'MOBILE.SETTINGS.TITTLE' | translate}}</ion-title>
     </ion-navbar>
 </ion-header>
@@ -11,12 +8,12 @@
     <div id="img-profile">
         <img src="{{ getUsetImage() }}">
     </div>
-    
+
     <ion-card>
         <ion-card-content *ngIf="_user">
             <h2 style="font-weight: bold;">{{'MOBILE.SETTINGS.LOGIN' | translate}}</h2>
             <ion-list no-lines>
-                
+
                 <ion-item>
                     <ion-label stacked>{{'MOBILE.EMAIL' | translate}}</ion-label>
                     <ion-input *ngIf="_user.emails" type="text" value="{{_user.emails[0].address}}" disabled></ion-input>
@@ -55,7 +52,7 @@
                         <ion-input formControlName="last_name" type="text"></ion-input>
                     </ion-item>
                 </ion-list>
-                
+
                 <div *ngIf="this._user.username">
                     <ion-item *ngIf="_userForm.controls['language_code']">
                         <ion-label>{{'MOBILE.SETTINGS.LANGUAGE' | translate}}</ion-label>
@@ -63,10 +60,11 @@
                             <ion-option *ngFor="let lang of _languages | async" value="{{lang.language_code}}">{{'MOBILE.LANGUAGE.' + lang.language_code | translate}}</ion-option>
                         </ion-select>
                     </ion-item>
-                    
-                    <button ion-button block outline type="submit" [disabled]="!_userForm.valid">{{'MOBILE.UPDATE' | translate}}</button>
+
+                    <button ion-button block outline small type="submit" [disabled]="!_userForm.valid">{{'MOBILE.UPDATE' | translate}}</button>
                 </div>
             </form>
+            <button style="margin-top: 30px" ion-button block outline small (click)="showComfirmSignOut()">{{'MOBILE.SETTINGS.SIGN_OUT' | translate}}</button>
         </ion-card-content>
     </ion-card>
 </ion-content>

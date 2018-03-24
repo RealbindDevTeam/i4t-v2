@@ -7,8 +7,8 @@
                 <tr>
                     <td style="width: 50%">
                         <mat-form-field style="width: 95%;">
-                            <mat-select required formControlName="restaurant_work" placeholder="{{'COLLABORATORS_REGISTER.SELECT_RESTAURANT' | translate}}">
-                                <mat-option *ngFor="let rest of _restaurants | async" value="{{rest._id}}">{{rest.name}}</mat-option>
+                            <mat-select required formControlName="establishment_work" placeholder="{{'COLLABORATORS_REGISTER.SELECT_RESTAURANT' | translate}}">
+                                <mat-option *ngFor="let est of _establishments | async" value="{{est._id}}">{{est.name}} - {{est.address}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </td>
@@ -25,15 +25,8 @@
                 <tr>
                     <td colspan="3" style="padding-top: 10px;">
                         <mat-form-field style="width: 100%">
-                            <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName/>
-                            <mat-hint align="end">{{inputName.value.length}} / 70</mat-hint>
-                        </mat-form-field>
-                    </td>
-                    <td colspan="3" style="padding-top: 10px;">
-                        <mat-form-field style="width: 100%">
-                            <input matInput required formControlName="last_name" placeholder="{{'LAST_NAME' | translate}}" minlength="1" maxlength="70"
-                                #inputAddress/>
-                            <mat-hint align="end">{{inputAddress.value.length}} / 70</mat-hint>
+                            <input matInput required formControlName="fullName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName/>
+                            <mat-hint align="end">{{inputName.value.length}} / 50</mat-hint>
                         </mat-form-field>
                     </td>
                 </tr>

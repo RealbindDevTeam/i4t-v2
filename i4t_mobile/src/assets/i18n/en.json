@@ -4,12 +4,16 @@
     "PAYMENT_METHODS.DEBIT_CARD": "Debit card",
     "PAYMENT_METHODS.ONLINE": "Online",
     "ORDER_STATUS": {
-        "REGISTERED": "Registered",
-        "IN_PROCESS": "In Process",
-        "PREPARED": "Cooked",
-        "CANCELED": "Canceled",
-        "DELIVERED": "Delivered",
-        "PENDING_CONFIRM": "Pending payment confirmation"
+        "SELECTING": "Selecting",
+        "CONFIRMED": "Confirmed",
+        "RECEIVED": "Received",
+        "ATTENDED": "Attended",
+        "CANCELED": "Canceled"
+    },
+    "SIGNUP": {
+        "MALE_GENDER": "Male",
+        "FEMALE_GENDER": "Female",
+        "OTHER_GENDER": "Other"
     },
     "MOBILE": {
         "CANCEL": "Cancel",
@@ -34,6 +38,7 @@
         "VIEW": "View",
         "OK": "Ok",
         "SYSTEM_MSG": "System alert",
+        "NO_NAME": "Name unavailable",
         "LANGUAGE": {
             "es": "Spanish",
             "en": "English"
@@ -58,14 +63,18 @@
             "REQUIRED_CONFIRM": "Your must confirm password",
             "PASSWORD_NOT_MATCH": "Passwords doesn't match",
             "CONFIRM_TITLE": "User created",
-            "CONFIRM_SUBTITLE": "Now you can enjoy iurest",
+            "CONFIRM_SUBTITLE": "Now you can enjoy comeygana",
             "CONFIRM_BTN": "Ok",
             "OR": "or",
             "SYSTEM_MSG": "System alert",
             "USER_EMAIL_EXISTS": "The username/email already exists, please try again ",
             "ERROR": "An error has occurred registering the user",
             "ACCEPT": "Accept",
-            "SUCCESS": "The user has been created succesfully"
+            "SUCCESS": "The user has been created succesfully",
+            "GENDER": "Gender",
+            "FEMALE_GENDER": "Female",
+            "OTHER_GENDER": "Other",
+            "GENDER_LBL": "Gender"
         },
         "SIGNIN": {
             "EMAIL_USERNAME": "Email/Username",
@@ -125,8 +134,8 @@
         "CODE_TYPE_SELECT": {
             "TITTLE": "Type of code",
             "CONTENT": "Select the type of code, so you can order what you want",
-            "QR": "QR Code",
-            "ALPHANUMERIC": "Alphanumeric Code"
+            "QR": "Scan QR Code",
+            "ALPHANUMERIC": "Enter Code"
         },
         "ALPHABET_CODE": {
             "TITTLE": "Alphanumeric code",
@@ -166,14 +175,43 @@
             "ADDITION_EDITED": "Addition edited successfullIy",
             "QUANT": "Units",
             "TABLE_NOT_EXISTS": "The table doesn't exist. Please check the code",
-            "TABLE_NO_ACTIVE": "The restaurant doesn't have this table active for the service of iurest",
-            "IUREST_NO_ACTIVE": "The restaurant doesn't have the iurest service active. It is not possible to enter.",
+            "TABLE_NO_ACTIVE": "The restaurant doesn't have this table active for the service of comeygana",
+            "IUREST_NO_ACTIVE": "The restaurant doesn't have the comeygana service active. It is not possible to enter.",
             "TABLE": "Table",
             "RESTAURANT_NOT_EXISTS": "The restaurant doen't exist. It is not possible to enter.",
             "MSG_1": "You can order what you prefer",
             "NO_ORDERS": "You don't have any orders yet, you can create a new order",
             "LOADING_MENU": "Loading menu",
-            "PENALTY": "At the moment you don't have available the option to create orders. Try later"
+            "PENALTY": "At the moment you don't have available the option to create orders. Try later",
+            "ORDER_CONFIRM": "Confirmation in process",
+            "ORDER_CONFIRMED_MSG": "Order confirmed",
+            "REDEEM_POINTS": "Redeem points",
+            "REWARDS_TITLE": "Rewards",
+            "ITEM_REDEEMED": "Redeemed",
+            "ORDER_CANCELED_MSG": "Order canceled",
+            "ITEM": "Item",
+            "FREE": "It's Free!",
+            "TOTAL_ORDER": "Total of your order",
+            "ORDER_LBL": "Order",
+            "USR_ORDER_CONFIRMED": "You confirmed your order! A waiter/waitress will attend it",
+            "NO_USR_ORDER_CONFIRMED": "Order confirmed",
+            "WIN": "You win",
+            "AVAILABLE_POINTS": "Available points",
+            "ADD_BUTTON": "Add dishes",
+            "IS_CONSUMING": "is consuming",
+            "YOU_ARE_TABLE": "You are at the table",
+            "YOU_HAVE": "You have",
+            "POINTS_TO_REDEEM": "Points to redeem",
+            "SHOW_REWARDS": "Show rewards",
+            "EXIT_MSG": "Have you already eaten and are you satisfied? Press exit",
+            "EXIT": "Exit"
+        },
+        "ORDERS_TODAY": {
+            "NO_RECORDS_FOUND": "No orders found",
+            "TODAY": "Today",
+            "YESTERDAY": "Yesterday",
+            "ORDERS_TODAY": "Orders of today",
+            "ORDERS_YESTERDAY": "Orders of yesterday"
         },
         "ORDER_PAYMENT_TRANS": {
             "ORDER_TO_CONFIRM": "Confirm the orders that other users want to pay for you.",
@@ -260,7 +298,7 @@
             "NO_ORDERS": "You have no orders yet"
         },
         "WAITER_CALL": {
-            "TITTLE": "Call waiter/waitress",
+            "TITLE": "Call waiter/waitress",
             "CONTENT": "Press the button to call the waiter/waitress",
             "THERE_IS_NOT_CODE_REST": "!Ups¡ You are not in any restaurant",
             "THERE_IS_NOT_CODE_REST_INS": "Go to the order option and enter the code",
@@ -279,7 +317,20 @@
             "PAY_CLOSE": "Close payments received",
             "NO_WAITERS": "There are no assigned waiter/waitress in the restaurant",
             "ALPHANUMERIC_CODE": "Code",
-            "CALL_LABEL_EXIT_CUSTOMER": "User output"
+            "CALL_LABEL_EXIT_CUSTOMER": "User output",
+            "NO_CALLS": "There are no pending calls"
+        },
+        "CUSTOMER_ORDER": {
+            "TITLE": "Order detail",
+            "ORDER": "Order",
+            "TABLE": "Table",
+            "ALPHANUMERIC_CODE": "Alphanumeric code",
+            "CONSUMMER": "Costumer",
+            "CANCEL": "Cancel",
+            "RECEIVE": "Receive",
+            "CONTENT_PROMPT": "¿Do you want to cancel the customer order?",
+            "RECEIVE_CONTENT_PROMPT": "¿Do you want to receive the customer order?",
+            "ITEM_REDEEMED": "Item Redeemed"
         },
         "SECTIONS": {
             "MENU": "Menu",
@@ -290,22 +341,29 @@
             "UNAVAILABLE": "Unavailable",
             "QUANTITY": "Units:",
             "ENTER_NUMBER": "Enter number",
-            "OBSERVATIONS": "Comments",
-            "ADDITIONS": "Additions",
+            "OBSERVATIONS": "ADD COMMENTS",
+            "ADDITIONS": "Select the additions",
             "GARNISHES": "Side dishes",
             "MODAL_CANCEL": "Cancel",
             "MODEL_INDICATION": "Add your comments (e.g., no onion...)",
             "SAVE_OBS": "Save",
             "ITEM_UNAVAILABLE": "At this time the item is not available to add to the order",
             "UNIT_PRICE": "Unit price: ",
-            "TOTAL": "Total price: ",
+            "TOTAL": "Price:",
             "MAX_GARNISH": "Please select max ",
             "SELECT_MAX_VALID": "You have selected more than ",
             "LOADING_MSG": "Adding to order ...",
             "TOAST_MSG": "Item was added successfully",
             "WAIT_QR": "Please wait ...",
             "TIME": "Cooking time:",
-            "ADDITION": "Additions"
+            "ADDITION": "Additions",
+            "RECOMMENDED": "Recommended",
+            "GET_POINTS": "You get",
+            "CONFIRM_ORDER": "Confirm your order",
+            "FOOD_ACCOMPANIMENT": "Food accompaniment",
+            "ADDITION_LBL": "Addition",
+            "CONFIRM": "Confirm",
+            "OPTIONS_ERROR": "Please complete the information to add the item to the order"
         },
         "ITEM_EDIT": {
             "MODIFY": "Modify",
@@ -356,7 +414,7 @@
             "DIALOG_ALERT": "System alert",
             "CHANGE_TABLE_OK": "Table change applied successfully",
             "TABLE_DESTINY_NOT_EXISTS": "The code for the new table does not exist. Please try again.",
-            "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the iurest service",
+            "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the comeygana service",
             "TABLE_DESTINY_NO_RESTAURANT": "The code of the table entered does not belong to the restaurant where you are located. Please try again.",
             "PENDING_ORDERS": "You have orders pending to confirm affecting your payment. Please check and try again.",
             "ORDERS_PAY_PROCESS": "You have orders in process of payment. It is not possible to change of table.",
@@ -370,29 +428,21 @@
             "NO_RESTAURANT": "You are not in a restaurant yet",
             "OPTION_LEAVE_RESTAURANT": "This option allows you to leave the current restaurant",
             "EXIT_MSG": "Exit",
-            "WAITER_ON_THE_WAY": "Waiter/waitress on the way",
-            "CANCEL_ORDERS_MSG": "Cancel call",
             "RESTAURANT_EXIT": "Restaurant exit",
             "RESTAURANT_EXIT_CONFIRM": "Are you sure you want to leave the restaurant?",
             "YES_CONFIRM": "Yes",
             "NO_CONFIRM": "No",
             "LEAVE_RESTAURANT_MSG": "You left the restaurant. See you later!",
-            "ORDERS_REGISTERED": "You have orders registered!",
+            "ORDERS_SELECTED": "You have orders selected!",
             "ORDERS_CANCEL_CONFIRM": "If you leave the restaurant the orders will be canceled. Are you sure to leave?",
-            "ORDERS_PENDING_CONFIRM": "Orders to be confirmed!",
-            "ORDERS_MUST_BE_ATTENDED": "Orders must be served to leave the restaurant",
             "ACCEPT": "Accept",
             "PENDING_WAITER_CALL": "Calls to the waiter/waitress are pending",
             "WAITER_CALLS_MSG": "The calls must be attended by the waiter/waitress or cancel by you before leaving",
-            "PENDING_PAYMENTS": "You have pending payments",
-            "PENDING_PAYMENTS_MSG": "A waiter/waitress will come to your table and receive your payment so you can leave",
-            "ORDERS_DELIVERED": "You have delivered orders",
-            "ORDERS_DELIVERED_MSG": "Pay the delivered orders so you can leave the restaurant",
             "INVALID_OPERATION": "Invalid operation",
-            "CALL_WAITER_MSG": "The status of your orders don't allow you to leave the restaurant. Do you want to call a waiter/waitress to manage your orders?",
-            "WAITER_ON_THE_WAY_CALL": "A waiter/waitress has received the request and is going to your table",
-            "CALLED_CANCELED": "Call canceled",
-            "GENERAL_ERROR": "An error has occurred. Try again."
+            "GENERAL_ERROR": "An error has occurred. Try again.",
+            "ORDERS_CONFIRMED": "You have orders confirmed!",
+            "ORDERS_CONFIRMED_MSG": "Tell a waiter/waitress that you will leave the establishment to cancel your orders",
+            "ERROR_LEAVE_RESTAURANT": "A problem has occurred. Please try again"
         },
         "WAITER_OPTIONS": {
             "CALLS": "Calls",
@@ -401,31 +451,37 @@
         },
         "SIGN_OUT": {
             "TITLE_CONFIRM": "Sign Out",
-            "CONTENT_CONFIRM": "Are you sure to leave iurest?",
+            "CONTENT_CONFIRM": "Are you sure to leave comeygana?",
             "NO_BTN": "No",
             "YES_BTN": "Yes",
             "LOADING": "Please wait..."
         },
         "HOME": {
             "SLIDE-1": {
-                "WELCOME": "Welcome to iurest",
+                "WELCOME": "Welcome to comeygana",
                 "TEXT": "Order fast and easy in your favorite restaurant"
             },
             "SLIDE-2": {
                 "1": "1. Order what you want",
                 "2": "2. See your order cost",
                 "3": "3. Call a waiter/waitress"
-            }
+            },
+            "HEADER_TITLE": "Welcome to comeygana!, go ahead and enjoy ordering",
+            "TITLE_LIST_BTN": "Look at the restaurant where you can get points",
+            "TITLE_ORDER_BTN": "Ordering in a restaurant",
+            "TITLE_POINTS_BTN": "Check your points accumulated"
         },
         "HOME-MENU": {
             "HOME": "Home",
             "ORDER_RESTAURANT": "Ordering in a restaurant",
-            "PAYMENTS_HISTORY": "Payments history",
+            "POINTS": "My points",
             "SETTINGS": "Settings"
         },
-        "RESTAURANT_PROFILE" : {
-            "MENU_BTN" : "Menu",
-            "PAYMENT_METHODS" : "Payment methods"
+        "RESTAURANT_PROFILE": {
+            "MENU_BTN": "Menu",
+            "PAYMENT_METHODS": "Payment methods",
+            "NO_PROFILE": "This restaurant has not configured its profile",
+            "SHOW_MORE": "Show more"
         },
         "SCHEDULE": {
             "SCHEDULE": "Schedule",
@@ -454,6 +510,61 @@
             "NO_RESTAURANT_HOURS": "No restaurant hours have been entered",
             "DELETE": "Delete a day of the schedule",
             "CLOSE": "Close"
+        },
+        "REWARD_LIST": {
+            "TITLE": "Rewards",
+            "AVALAIBLE_PTS": "Points to redeem: ",
+            "NOT_AVAILABLE": "Unavailable",
+            "REDEEM_BTN": "Redeem",
+            "GET_MORE_PTS": "Get pts",
+            "REWARD_AGGREGATED": "Reward added",
+            "ERROR": "Error adding reward. Try again",
+            "LOADING_MSG": "Adding to your order ...",
+            "REWARD_DELETED": "Reward deleted from order",
+            "ORDER_ERROR": "You can redeem maximum one reward per order",
+            "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!",
+            "NO_REWARDS": "The are no rewards"
+        },
+        "POINTS": {
+            "TITLE": "My points",
+            "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",
+            "ACCUMULATED_POINTS": "Accumulated points",
+            "YOU_HAVE": "You have",
+            "POINTS_FOR_EXPIRING": "points for expiring the day"
+        },
+        "POINTS_DETAIL": {
+            "ORDER": "Order",
+            "YOU_EARNED": "You earned",
+            "POINTS": "Points",
+            "YOU_REDEEMED": "You redeemed",
+            "REWARD": "Reward",
+            "TOTAL": "Total"
+        },
+        "POPOVER_OPTIONS": {
+            "SETTINGS": "Settings",
+            "TERMS": "Terms and conditions",
+            "POLICIES": "Privacy policy"
+        },
+        "SEGMENTS": {
+            "WIN_EATING": "Win eating!",
+            "ORDERS": "Orders",
+            "OPTIONS": "Options"
+        },
+        "OPTIONS": {
+            "WAITER_CALL": "Call a waiter to attend to your concerns",
+            "TABLE_CHANGE": "Take your orders to a new table",
+            "ESTABLISHMENT_EXIT": "Retire from the restaurant whenever you want",
+            "PENDING_CALL": "You have a pending call"
+        },
+        "CONNECTION_ALERT": {
+            "TITLE": "Network error",
+            "SUBTITLE": "Please check your internet connection and try again",
+            "BTN": "Try again"
+        },
+        "SERVER_ALERT": {
+            "TITLE": "Service error",
+            "SUBTITLE": "In this moment the comeygana service is not available, please try again",
+            "BTN": "Try again"
         }
     },
     "CURRENCIES": {
@@ -583,5 +694,45 @@
         "UKRAINE": "Ukraine",
         "URUGUAY": "Uruguay",
         "VENEZUELA": "Venezuela"
+    },
+    "TYPE_OF_FOOD": {
+        "GERMAN_FOOD": "German food",
+        "AMERICAN_FOOD": "American food",
+        "ARABIC_FOOD": "Arabic food",
+        "ARGENTINE_FOOD": "Argentine food",
+        "ASIAN_FOOD": "Asian food",
+        "BRAZILIAN_FOOD": "Brazilian food",
+        "HOMEMADE_FOOD": "homemade food",
+        "CHILEAN_FOOD": "Chilean food",
+        "CHINESE_FOOD": "Chinese Food",
+        "COLOMBIAN_FOOD": "Colombian food",
+        "COREAN_FOOD": "Corean Food",
+        "MIDDLE_EASTERN_FOOD": "Middle eastern food",
+        "SPANISH_FOOD": "Spanish food",
+        "FRENCH_FOOD": "French food",
+        "FUSION_FOOD": "Fusion food",
+        "GOURMET_FOOD": "Gourmet food",
+        "GREEK_FOOD": "Greek food",
+        "INDIAN_FOOD": "Indian food",
+        "INTERNATIONAL_FOOD": "International food",
+        "ITALIAN_FOOD": "Italian food",
+        "JAPANESE_FOOD": "Japanese food",
+        "LATIN_AMERICAN_FOOD": "Latin American food",
+        "MEDITERRANEAN_FOOD": "Mediterranean food",
+        "MEXICAN_FOOD": "Mexican food",
+        "ORGANIC_FOOD": "Organic food",
+        "PERUVIAN_FOOD": "Peruvian food",
+        "FAST_FOOD": "Fast food",
+        "THAI_FOOD": "Thai food",
+        "VEGETARIAN_FOOD": "Vegetarian Food",
+        "VIETNAMESE_FOOD": "Vietnamese food",
+        "OTHERS": "Others",
+        "BARBECUE": "Barbecue",
+        "PASTA": "Pasta",
+        "FISH_AND_SEAFOOD": "Fish and seafood",
+        "PIZZA": "Pizza",
+        "SANDWICHES": "Sándwiches",
+        "SUSHI": "Sushi",
+        "VEGANISM": "Veganism"
     }
 }

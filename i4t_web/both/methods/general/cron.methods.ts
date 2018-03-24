@@ -4,10 +4,10 @@ import { Email } from 'meteor/email';
 import { EmailContents } from '../../collections/general/email-content.collection';
 import { EmailContent } from '../../models/general/email-content.model';
 import { LangDictionary } from '../../models/general/email-content.model';
-import { Restaurants } from '../../collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../models/restaurant/restaurant.model';
-import { Tables } from '../../collections/restaurant/table.collection';
-import { Table } from '../../models/restaurant/table.model';
+import { Establishments } from '../../collections/establishment/establishment.collection';
+import { Establishment } from '../../models/establishment/establishment.model';
+import { Tables } from '../../collections/establishment/table.collection';
+import { Table } from '../../models/establishment/table.model';
 import { PaymentsHistory } from '../../collections/payment/payment-history.collection';
 import { PaymentHistory } from '../../models/payment/payment-history.model';
 import { Users } from '../../collections/auth/user.collection';
@@ -15,6 +15,10 @@ import { User } from '../../models/auth/user.model';
 import { Parameters } from '../../collections/general/parameter.collection';
 import { Parameter } from '../../models/general/parameter.model';
 import { SSR } from 'meteor/meteorhacks:ssr';
+import { RewardPoint } from '../../models/establishment/reward-point.model';
+import { RewardPoints } from '../../collections/establishment/reward-point.collection';
+import { UserDetail, UserRewardPoints } from '../../models/auth/user-detail.model';
+import { UserDetails } from '../../collections/auth/user-detail.collection';
 
 
 if (Meteor.isServer) {
@@ -25,7 +29,7 @@ if (Meteor.isServer) {
          */
 
         changeFreeDaysToFalse: function (_countryId: string) {
-            Restaurants.collection.update({ countryId: _countryId, freeDays: true }, { $set: { freeDays: false } });
+            Establishments.collection.update({ countryId: _countryId, freeDays: true, is_beta_tester: false }, { $set: { freeDays: false } });
         },
 
         /**
@@ -44,8 +48,8 @@ if (Meteor.isServer) {
             let lastMonthDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
             let auxArray: string[] = [];
 
-            Restaurants.collection.find({ countryId: _countryId, isActive: true }).forEach(function <Restaurant>(restaurant, index, ar) {
-                let user: User = Users.collection.findOne({ _id: restaurant.creation_user });
+            Establishments.collection.find({ countryId: _countryId, isActive: true, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
+                let user: User = Users.collection.findOne({ _id: establishment.creation_user });
                 let indexofvar = auxArray.indexOf(user._id);
 
                 if (indexofvar < 0) {
@@ -54,9 +58,9 @@ if (Meteor.isServer) {
             });
 
             Users.collection.find({ _id: { $in: auxArray } }).forEach((user: User) => {
-                let auxRestaurants: string[] = [];
-                Restaurants.collection.find({ creation_user: user._id }, { fields: { _id: 0, name: 1 } }).forEach(function <Restaurant>(name, index, ar) {
-                    auxRestaurants.push(name.name);
+                let auxEstablishments: string[] = [];
+                Establishments.collection.find({ creation_user: user._id, is_beta_tester: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
+                    auxEstablishments.push(name.name);
                 });
 
                 let emailContent: EmailContent = EmailContents.collection.findOne({ language: user.profile.language_code });
@@ -67,7 +71,7 @@ if (Meteor.isServer) {
                 var emailData = {
                     greeting: greeting,
                     reminderMsgVar: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderChargeSoonMsgVar'),
-                    restaurantListVar: auxRestaurants.toString(),
+                    establishmentListVar: auxEstablishments.toString(),
                     reminderMsgVar2: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderChargeSoonMsgVar2'),
                     dateVar: Meteor.call('convertDateToSimple', lastMonthDay),
                     regardVar: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'regardVar'),
@@ -106,8 +110,8 @@ if (Meteor.isServer) {
             maxPaymentDay.setDate(maxPaymentDay.getDate() + (Number(endDay.value) - 1));
             let auxArray: string[] = [];
 
-            Restaurants.collection.find({ countryId: _countryId, isActive: true, freeDays: false }).forEach(function <Restaurant>(restaurant, index, ar) {
-                let user: User = Users.collection.findOne({ _id: restaurant.creation_user });
+            Establishments.collection.find({ countryId: _countryId, isActive: true, freeDays: false, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
+                let user: User = Users.collection.findOne({ _id: establishment.creation_user });
                 let indexofvar = auxArray.indexOf(user._id);
 
                 if (indexofvar < 0) {
@@ -116,9 +120,9 @@ if (Meteor.isServer) {
             });
 
             Users.collection.find({ _id: { $in: auxArray } }).forEach((user: User) => {
-                let auxRestaurants: string[] = [];
-                Restaurants.collection.find({ creation_user: user._id, isActive: true, freeDays: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Restaurant>(name, index, ar) {
-                    auxRestaurants.push(name.name);
+                let auxEstablishments: string[] = [];
+                Establishments.collection.find({ creation_user: user._id, isActive: true, freeDays: false, is_beta_tester: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
+                    auxEstablishments.push(name.name);
                 });
 
                 let emailContent: EmailContent = EmailContents.collection.findOne({ language: user.profile.language_code });
@@ -129,7 +133,7 @@ if (Meteor.isServer) {
                 var emailData = {
                     greeting: greeting,
                     reminderMsgVar: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderExpireSoonMsgVar'),
-                    restaurantListVar: auxRestaurants.toString(),
+                    establishmentListVar: auxEstablishments.toString(),
                     reminderMsgVar2: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderExpireSoonMsgVar2'),
                     dateVar: Meteor.call('convertDateToSimple', maxPaymentDay),
                     reminderMsgVar3: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderExpireSoonMsgVar3'),
@@ -151,25 +155,25 @@ if (Meteor.isServer) {
             });
         },
         /**
-         * This function validate the restaurant registered in history_payment and change isActive to false if is not 
+         * This function validate the establishment registered in history_payment and change isActive to false if is not 
          * @param {string} _countryId
          */
-        validateActiveRestaurants: function (_countryId: string) {
+        validateActiveEstablishments: function (_countryId: string) {
             let currentDate: Date = new Date();
             let currentMonth: string = (currentDate.getMonth() + 1).toString();
             let currentYear: string = currentDate.getFullYear().toString();
 
-            Restaurants.collection.find({ countryId: _countryId, isActive: true, freeDays: false }).forEach(function <Restaurant>(restaurant, index, ar) {
+            Establishments.collection.find({ countryId: _countryId, isActive: true, freeDays: false, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
                 let historyPayment: PaymentHistory;
                 let auxArray: string[] = [];
-                auxArray.push(restaurant._id);
-                //historyPayment = HistoryPayments.collection.findOne({ restaurantIds: restaurant._id, month: currentMonth, year: currentYear, status: 'APPROVED' });
-                historyPayment = PaymentsHistory.collection.findOne({ restaurantIds: { $in: auxArray }, month: currentMonth, year: currentYear, status: 'TRANSACTION_STATUS.APPROVED' });
+                auxArray.push(establishment._id);
+                //historyPayment = HistoryPayments.collection.findOne({ establishment_ids: establishment._id, month: currentMonth, year: currentYear, status: 'APPROVED' });
+                historyPayment = PaymentsHistory.collection.findOne({ establishment_ids: { $in: auxArray }, month: currentMonth, year: currentYear, status: 'TRANSACTION_STATUS.APPROVED' });
 
                 if (!historyPayment) {
-                    Restaurants.collection.update({ _id: restaurant._id }, { $set: { isActive: false, firstPay: false } });
+                    Establishments.collection.update({ _id: establishment._id, is_beta_tester: false }, { $set: { isActive: false, firstPay: false } });
 
-                    Tables.collection.find({ restaurantId: restaurant._id }).forEach(function <Table>(table, index, ar) {
+                    Tables.collection.find({ establishment_id: establishment._id }).forEach(function <Table>(table, index, ar) {
                         Tables.collection.update({ _id: table._id }, { $set: { is_active: false } });
                     });
                 }
@@ -189,8 +193,8 @@ if (Meteor.isServer) {
 
             let auxArray: string[] = [];
 
-            Restaurants.collection.find({ countryId: _countryId, isActive: false, freeDays: false, firstPay: false }).forEach(function <Restaurant>(restaurant, index, ar) {
-                let user: User = Users.collection.findOne({ _id: restaurant.creation_user });
+            Establishments.collection.find({ countryId: _countryId, isActive: false, freeDays: false, firstPay: false, is_beta_tester: false }).forEach(function <Establishment>(establishment, index, ar) {
+                let user: User = Users.collection.findOne({ _id: establishment.creation_user });
                 let indexofvar = auxArray.indexOf(user._id);
 
                 if (indexofvar < 0) {
@@ -199,9 +203,9 @@ if (Meteor.isServer) {
             });
 
             Users.collection.find({ _id: { $in: auxArray } }).forEach((user: User) => {
-                let auxRestaurants: string[] = [];
-                Restaurants.collection.find({ creation_user: user._id, isActive: false, freeDays: false, firstPay: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Restaurant>(name, index, ar) {
-                    auxRestaurants.push(name.name);
+                let auxEstablishments: string[] = [];
+                Establishments.collection.find({ creation_user: user._id, isActive: false, freeDays: false, firstPay: false, is_beta_tester: false }, { fields: { _id: 0, name: 1 } }).forEach(function <Establishment>(name, index, ar) {
+                    auxEstablishments.push(name.name);
                 });
 
                 let emailContent: EmailContent = EmailContents.collection.findOne({ language: user.profile.language_code });
@@ -212,7 +216,7 @@ if (Meteor.isServer) {
                 var emailData = {
                     greeting: greeting,
                     reminderMsgVar: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderRestExpiredVar'),
-                    restaurantListVar: auxRestaurants.toString(),
+                    establishmentListVar: auxEstablishments.toString(),
                     reminderMsgVar2: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderRestExpiredVar2'),
                     reminderMsgVar3: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'reminderRestExpiredVar3'),
                     regardVar: Meteor.call('getEmailContent', emailContent.lang_dictionary, 'regardVar'),
@@ -253,6 +257,38 @@ if (Meteor.isServer) {
             let month = _date.getMonth() + 1;
             let day = _date.getDate();
             return day.toString() + '/' + month.toString() + '/' + year.toString();
+        },
+        /**
+         * This function validate the date of points to expire 
+         */
+        checkPointsToExpire(_countryId: string) {
+            let currentDate = new Date();
+
+            Establishments.collection.find({ countryId: _countryId }).forEach(function <Establishment>(establishment, index, ar) {
+                RewardPoints.collection.find({ establishment_id: establishment._id, is_active: true }).forEach(function <RewardPoint>(rewardPoint, index, ar) {
+                    let rewardPointDayMore = rewardPoint.expire_date.getDate() + 1;
+                    let rewardPointDate = new Date(rewardPoint.expire_date.getFullYear(), rewardPoint.expire_date.getMonth(), rewardPointDayMore);
+
+                    if ((rewardPointDate.getFullYear() === currentDate.getFullYear()) &&
+                        (rewardPointDate.getMonth() === currentDate.getMonth()) &&
+                        (rewardPointDate.getDate() === currentDate.getDate())) {
+
+                        let valueToSubtract: number;
+                        if (rewardPoint.difference === 0 || rewardPoint.difference === null || rewardPoint.difference === undefined) {
+                            valueToSubtract = rewardPoint.points;
+                        } else {
+                            valueToSubtract = rewardPoint.difference;
+                        }
+
+                        RewardPoints.collection.update({ _id: rewardPoint._id }, { $set: { is_active: false } });
+                        let userDetail: UserDetail = UserDetails.findOne({ user_id: rewardPoint.id_user });
+                        let userRewardPoints: UserRewardPoints = userDetail.reward_points.find(usrPoints => usrPoints.establishment_id === rewardPoint.establishment_id);
+
+                        UserDetails.update({ user_id: rewardPoint.id_user, 'reward_points.establishment_id': rewardPoint.establishment_id },
+                            { $set: { 'reward_points.$.points': (userRewardPoints.points - valueToSubtract) } });
+                    }
+                });
+            });
         }
     });
 }

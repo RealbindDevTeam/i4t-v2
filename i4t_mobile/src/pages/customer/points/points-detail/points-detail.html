@@ -1,0 +1,70 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>{{'MOBILE.POINTS.TITLE' | translate}}</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content text-wrap>
+    <div *ngFor="let orderHistory of _orderHistories | async; let i = index">
+        <ion-card>
+            <ion-card-content>
+                <ion-list no-lines class="order">
+                    <button ion-item detail-none (click)="showDetail(i)">
+                        <div>
+                            <h2 class="creation-date">{{orderHistory.creation_date | date: 'MM/dd/yyyy HH:mm a'}}</h2>
+                            <h2 class="creation-date">{{'MOBILE.POINTS_DETAIL.TOTAL'| translate}}: {{orderHistory.total_order}} {{orderHistory.currency}}</h2>
+                            <p *ngIf="orderHistory.total_reward_points" class="reward-points">{{'MOBILE.POINTS_DETAIL.YOU_EARNED' | translate}} {{orderHistory.total_reward_points}} {{'MOBILE.POINTS_DETAIL.POINTS'| translate}}!</p>
+                            <p *ngIf="getRedeemedPoints(orderHistory) > 0" class="redeemed-points">{{'MOBILE.POINTS_DETAIL.YOU_REDEEMED' | translate}} {{getRedeemedPoints(orderHistory)}} {{'MOBILE.POINTS_DETAIL.POINTS'| translate}}</p>
+                        </div>
+                    </button>
+                </ion-list>
+                <div *ngIf="_orderIndex === i">
+                    <div class="item-divider-custom"></div>
+                    <ion-item-group *ngFor="let item of orderHistory.items">
+                        <ion-item *ngIf="item.is_reward">
+                            <span>{{item.quantity}}</span>
+                            <div class="item-name">
+                                <span>{{itemNameCrop(item.item_name)}} ({{'MOBILE.POINTS_DETAIL.REWARD' | translate}})</span>
+                            </div>
+                            <span class="span">{{(item.price * item.quantity)}} {{orderHistory.currency}}</span>
+                        </ion-item>
+                        <ion-item *ngIf="!item.is_reward">
+                            <span>{{item.quantity}}</span>
+                            <div class="item-name">
+                                <span>{{itemNameCrop(item.item_name)}}</span>
+                            </div>
+                            <span class="span">{{(item.price * item.quantity)}} {{orderHistory.currency}}</span>
+                        </ion-item>
+                        <div *ngIf="item.option_values.length > 0">
+                            <ion-item *ngFor="let opt of item.option_values">
+                                <span *ngIf="opt.price">{{item.quantity}}</span>
+                                <div class="item-name">
+                                    <span>{{itemNameCrop(opt.option_value_name)}}</span>
+                                </div>
+                                <span *ngIf="opt.price" class="span">{{(opt.price * item.quantity)}} {{orderHistory.currency}}</span>
+                            </ion-item>
+                        </div>
+                        <div *ngIf="item.additions.length > 0">
+                            <ion-item *ngFor="let ad of item.additions">
+                                <span>{{item.quantity}}</span>
+                                <div class="item-name">
+                                    <span>{{itemNameCrop(ad.addition_name)}}</span>
+                                </div>
+                                <span class="span">{{(ad.price * item.quantity)}} {{orderHistory.currency}}</span>
+                            </ion-item>
+                        </div>
+                    </ion-item-group>
+
+                    <ion-item-group *ngFor="let addition of orderHistory.additions">
+                        <ion-item>
+                            <span>{{addition.quantity}}</span>
+                            <div class="item-name">
+                                <span>{{itemNameCrop(addition.addition_name)}}</span>
+                            </div>
+                            <span class="span">{{((addition.price * addition.quantity))}} {{orderHistory.currency}}</span>
+                        </ion-item>
+                    </ion-item-group>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </div>
+</ion-content>

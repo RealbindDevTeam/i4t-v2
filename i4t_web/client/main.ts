@@ -18,14 +18,13 @@ import '../both/methods/general/change-email.methods';
 import '../both/methods/general/country.methods';
 import '../both/methods/general/iurest-invoice.methods';
 import '../both/methods/general/push-notifications.methods';
-import '../both/methods/restaurant/restaurant.methods';
-import '../both/methods/restaurant/invoice.methods';
-import '../both/methods/restaurant/order.methods';
-import '../both/methods/restaurant/payment.methods';
-import '../both/methods/restaurant/schedule.methods';
-import '../both/methods/restaurant/table.method';
-import '../both/methods/restaurant/waiter-queue/waiter-queue.methods';
-import '../both/methods/restaurant/waiter-queue/queues.methods';
+import '../both/methods/establishment/establishment.methods';
+import '../both/methods/establishment/order-history.methods';
+import '../both/methods/establishment/order.methods';
+import '../both/methods/establishment/schedule.methods';
+import '../both/methods/establishment/table.method';
+import '../both/methods/establishment/waiter-queue/waiter-queue.methods';
+import '../both/methods/establishment/waiter-queue/queues.methods';
 
 function setClass(css:any) {
     if (!document.body.className) {

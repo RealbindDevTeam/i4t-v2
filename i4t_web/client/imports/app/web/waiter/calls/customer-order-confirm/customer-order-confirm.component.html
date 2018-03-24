@@ -1,0 +1,83 @@
+<div *ngFor="let order of _orders | async">
+    <mat-card-title>{{ 'CUSTOMER_ORDER.ORDER' | translate }}: {{order.code}} - {{ 'CUSTOMER_ORDER.TABLE' | translate }} {{_tableNumber}}
+        ( {{ 'CUSTOMER_ORDER.CODE' | translate }} {{_tableQRCode}} )</mat-card-title>
+    <mat-card-subtitle>{{ 'CUSTOMER_ORDER.CUSTOMER' | translate }}: {{ getUserName(order.creation_user) }}</mat-card-subtitle>
+    <mat-card-content>
+        <mat-divider></mat-divider>
+        <span *ngFor="let it of order.items">
+            <span *ngFor="let item of _items | async">
+                <ng-template [ngIf]="it.itemId === item._id">
+                    <span *ngIf="it.is_reward">
+                        <h2 class="name">{{it.quantity}} - {{item.name}}</h2>
+                        <mat-chip-list mat-line>
+                            <mat-chip style="background-color: #ffbf00;color: #fff;height: 10px;">{{ 'CUSTOMER_ORDER.ITEM_REDEEMED' | translate }}
+                                <mat-icon style="margin-left: 5px;">redeem</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
+                        <p *ngIf="it.observations" class="observations">{{ 'CUSTOMER_ORDER.OBSERVATIONS' | translate }}: {{it.observations}}</p>
+                        <div *ngIf="(it.options.length > 0)" class="value">
+                            <span *ngFor="let value of _optionValues | async">
+                                <span *ngFor="let opt of it.options">
+                                    <ng-template [ngIf]="opt.value_id === value._id">
+                                        <p class="value-name">{{value.name}}</p>
+                                    </ng-template>
+                                </span>
+                            </span>
+                        </div>
+                        <div *ngIf="(it.additions.length > 0)" class="addition">
+                            <p class="addition-title">{{ 'CUSTOMER_ORDER.ADDITIONS' | translate }}:</p>
+                            <span *ngFor="let addition of _additions | async">
+                                <span *ngFor="let add of it.additions">
+                                    <ng-template [ngIf]="add === addition._id">
+                                        <p class="addition-name">- {{addition.name}}</p>
+                                    </ng-template>
+                                </span>
+                            </span>
+                        </div>
+                        <mat-divider></mat-divider>
+                    </span>
+                    <span *ngIf="!it.is_reward">
+                        <h2 class="name">{{it.quantity}} - {{item.name}}</h2>
+                        <p *ngIf="it.observations" class="observations">{{ 'CUSTOMER_ORDER.OBSERVATIONS' | translate }}: {{it.observations}}</p>
+                        <div *ngIf="(it.options.length > 0)" class="value">
+                            <span *ngFor="let value of _optionValues | async">
+                                <span *ngFor="let opt of it.options">
+                                    <ng-template [ngIf]="opt.value_id === value._id">
+                                        <p class="value-name">{{value.name}}</p>
+                                    </ng-template>
+                                </span>
+                            </span>
+                        </div>
+                        <div *ngIf="(it.additions.length > 0)" class="addition">
+                            <p class="addition-title">{{ 'CUSTOMER_ORDER.ADDITIONS' | translate }}:</p>
+                            <span *ngFor="let addition of _additions | async">
+                                <span *ngFor="let add of it.additions">
+                                    <ng-template [ngIf]="add === addition._id">
+                                        <p class="addition-name">- {{addition.name}}</p>
+                                    </ng-template>
+                                </span>
+                            </span>
+                        </div>
+                        <mat-divider></mat-divider>
+                    </span>
+                </ng-template>
+            </span>
+        </span>
+        <span *ngFor="let addit of _additions | async">
+            <span *ngFor="let ad of order.additions">
+                <ng-template [ngIf]="addit._id === ad.additionId">
+                    <h2 class="name">{{ad.quantity}} {{ 'CUSTOMER_ORDER.ADDITION' | translate }} - {{addit.name}}</h2>
+                    <mat-divider></mat-divider>
+                </ng-template>
+            </span>
+        </span>
+    </mat-card-content>
+    <mat-card-actions class="mobile">
+        <button mat-raised-button class="button-second" (click)="close()">{{ 'CLOSE' | translate }}</button>
+        <button mat-raised-button class="primary-button" (click)="cancelOrder()">{{ 'CUSTOMER_ORDER.CANCEL_ORDER' | translate }}</button>
+        <button mat-raised-button class="primary-button" (click)="receiveOrder()">{{ 'CUSTOMER_ORDER.RECEIVE_ORDER' | translate }}</button>
+    </mat-card-actions>
+</div>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>

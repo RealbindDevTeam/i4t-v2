@@ -23,6 +23,14 @@ export function loadMenus() {
                 order: 910
             },
             {
+                _id: "10000",
+                is_active: true,
+                name: "MENUS.REWARDS",
+                url: "/app/rewards",
+                icon_name: "grade",
+                order: 10000
+            },
+            {
                 _id: "1000",
                 is_active: true,
                 name: "MENUS.ADMINISTRATION.MANAGEMENT",
@@ -44,14 +52,14 @@ export function loadMenus() {
                                         _id: "10011",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.MY_RESTAURANTS",
-                                        url: "/app/restaurant",
+                                        url: "/app/establishment",
                                         icon_name: "",
                                         order: 10011
                                     }, {
                                         _id: "10012",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.PROFILE",
-                                        url: "/app/restaurant-profile",
+                                        url: "/app/establishment-profile",
                                         icon_name: "",
                                         order: 10012
                                     }, {
@@ -83,7 +91,7 @@ export function loadMenus() {
                                         _id: "10022",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.TABLE_CONTROL",
-                                        url: "/app/restaurant-table-control",
+                                        url: "/app/establishment-table-control",
                                         icon_name: "",
                                         order: 10022
                                     }
@@ -94,14 +102,7 @@ export function loadMenus() {
                             name: "MENUS.ADMINISTRATION.COLLABORATORS",
                             url: "/app/collaborators",
                             icon_name: "",
-                            order: 1005
-                        }, {
-                            _id: "1004",
-                            is_active: true,
-                            name: "MENUS.ADMINISTRATION.INVOICES_DOWNLOAD",
-                            url: "/app/invoices-download",
-                            icon_name: "",
-                            order: 1007
+                            order: 1003
                         }
                     ]
             },
@@ -125,13 +126,13 @@ export function loadMenus() {
                 _id: "1300",
                 is_active: true,
                 name: "MENUS.ADMINISTRATION.TABLE_CONTROL",
-                url: "/app/supervisor-restaurant-table-control",
+                url: "/app/supervisor-establishment-table-control",
                 icon_name: "list",
                 order: 1300
             },
             {
                 _id: "2000",
-                is_active: true,
+                is_active: false,
                 name: "MENUS.PAYMENTS.PAYMENTS",
                 url: "",
                 icon_name: "payment",
@@ -158,11 +159,19 @@ export function loadMenus() {
                             _id: "2003",
                             is_active: true,
                             name: "MENUS.PAYMENTS.REACTIVATE_RESTAURANT",
-                            url: "/app/reactivate-restaurant",
+                            url: "/app/reactivate-establishment",
                             icon_name: "",
                             order: 2003
                         }
                     ]
+            },
+            {
+                _id: "1400",
+                is_active: true,
+                name: "MENUS.ADMINISTRATION.ORDERS_TODAY",
+                url: "/app/orders-today",
+                icon_name: "list",
+                order: 1300
             },
             {
                 _id: "3000",
@@ -204,10 +213,28 @@ export function loadMenus() {
                         }, {
                             _id: "3005",
                             is_active: true,
-                            name: "MENUS.MENU_DEFINITION.GARNISHFOOD",
-                            url: "/app/garnishFood",
+                            name: "MENUS.MENU_DEFINITION.OPTIONS_VALUES",
+                            url: "",
                             icon_name: "",
-                            order: 3005
+                            order: 3005,
+                            children: [
+                                {
+                                    _id: "30051",
+                                    is_active: true,
+                                    name: "MENUS.MENU_DEFINITION.OPTIONS",
+                                    url: "/app/options",
+                                    icon_name: "",
+                                    order: 30051
+                                },
+                                {
+                                    _id: "30052",
+                                    is_active: true,
+                                    name: "MENUS.MENU_DEFINITION.VALUES",
+                                    url: "/app/option-values",
+                                    icon_name: "",
+                                    order: 30052
+                                }
+                            ]
                         }, {
                             _id: "3006",
                             is_active: true,
@@ -240,14 +267,6 @@ export function loadMenus() {
                 url: "/app/orders",
                 icon_name: "dns",
                 order: 4000
-            },
-            {
-                _id: "5000",
-                is_active: true,
-                name: "MENUS.PAYMENTS.PAYMENTS",
-                url: "/app/payments",
-                icon_name: "local_atm",
-                order: 5000
             },
             {
                 _id: "6000",
@@ -301,17 +320,25 @@ export function loadMenus() {
                 _id: "12000",
                 is_active: true,
                 name: "MENUS.RESTAURANT_EXIT",
-                url: "/app/restaurant-exit",
+                url: "/app/establishment-exit",
                 icon_name: "exit_to_app",
                 order: 12000
             },
             {
                 _id: "19000",
                 is_active: true,
-                name: "MENUS.PAYMENT_HISTORY",
-                url: "/app/customer-payments-history",
+                name: "MENUS.POINTS",
+                url: "/app/points",
                 icon_name: "payment",
                 order: 19000
+            },
+            {
+                _id: "13000",
+                is_active: true,
+                name: "MENUS.ADMINISTRATION.ORDERS_TODAY",
+                url: "/app/cashier-orders-today",
+                icon_name: "list",
+                order: 13000
             }
         ];
         menus.forEach((menu: Menu) => Menus.insert(menu));

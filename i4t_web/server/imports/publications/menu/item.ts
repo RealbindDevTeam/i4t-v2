@@ -14,11 +14,20 @@ Meteor.publish('items', function (_userId: string) {
 });
 
 /**
- * Meteor publication return items with restaurant condition
+ * Meteor publication admin active items
+ * @param {string} _userId
  */
-Meteor.publish('itemsByRestaurant', function (_restaurantId: string) {
-    check(_restaurantId, String);
-    return Items.find({ 'restaurants.restaurantId': { $in: [_restaurantId] }, is_active: true });
+Meteor.publish('getAdminActiveItems', function (_userId: string) {
+    check(_userId, String);
+    return Items.find({ creation_user: _userId, is_active: true });
+});
+
+/**
+ * Meteor publication return items with establishment condition
+ */
+Meteor.publish('itemsByEstablishment', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return Items.find({ 'establishments.establishment_id': { $in: [_establishmentId] }, is_active: true });
 });
 
 /**
@@ -29,8 +38,8 @@ Meteor.publish('itemsByUser', function (_userId: string) {
     let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
 
     if (_lUserDetail) {
-        if (_lUserDetail.current_restaurant) {
-            return Items.find({ 'restaurants.restaurantId': { $in: [_lUserDetail.current_restaurant] }, is_active: true });
+        if (_lUserDetail.current_establishment) {
+            return Items.find({ 'establishments.establishment_id': { $in: [_lUserDetail.current_establishment] }, is_active: true });
         } else {
             return;
         }
@@ -48,17 +57,17 @@ Meteor.publish('itemById', function (_itemId: string) {
 });
 
 /**
- * Meteor publication return items by restaurant work
+ * Meteor publication return items by establishment work
  * @param {string} _userId
  */
-Meteor.publish('getItemsByRestaurantWork', function (_userId: string) {
+Meteor.publish('getItemsByEstablishmentWork', function (_userId: string) {
     check(_userId, String);
     let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
     let _sections: string[] = [];
 
     if (_lUserDetail) {
-        if (_lUserDetail.restaurant_work) {
-            return Items.find({ 'restaurants.restaurantId': { $in: [_lUserDetail.restaurant_work] }, is_active: true });
+        if (_lUserDetail.establishment_work) {
+            return Items.find({ 'establishments.establishment_id': { $in: [_lUserDetail.establishment_work] }, is_active: true });
         } else {
             return;
         }
@@ -68,25 +77,25 @@ Meteor.publish('getItemsByRestaurantWork', function (_userId: string) {
 });
 
 /**
- * Meteor publication return restaurants items
- * @param {string[]} _pRestaurantIds
+ * Meteor publication return establishments items
+ * @param {string[]} _pEstablishmentIds
  */
-Meteor.publish('getItemsByRestaurantIds', function (_pRestaurantIds: string[]) {
-    return Items.find({ 'restaurants.restaurantId': { $in: _pRestaurantIds } });
+Meteor.publish('getItemsByEstablishmentIds', function (_pEstablishmentIds: string[]) {
+    return Items.find({ 'establishments.establishment_id': { $in: _pEstablishmentIds } });
 });
 
 
 /**
- * Meetor publication return items by restaurant work
+ * Meetor publication return items by establishment work
  * @param {string} _userId
  */
-Meteor.publish('getItemsByUserRestaurantWork', function (_userId: string) {
+Meteor.publish('getItemsByUserEstablishmentWork', function (_userId: string) {
     check(_userId, String);
     let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
 
     if (_lUserDetail) {
-        if (_lUserDetail.restaurant_work) {
-            return Items.find({ 'restaurants.restaurantId': { $in: [_lUserDetail.restaurant_work] }, is_active: true });
+        if (_lUserDetail.establishment_work) {
+            return Items.find({ 'establishments.establishment_id': { $in: [_lUserDetail.establishment_work] }, is_active: true });
         } else {
             return;
         }
@@ -94,3 +103,16 @@ Meteor.publish('getItemsByUserRestaurantWork', function (_userId: string) {
         return;
     }
 });
+
+
+/***
+ * Meteor publication return items sorted by item name
+ */
+/**
+ * Meteor publication return items with establishment condition
+ */
+Meteor.publish('itemsByEstablishmentSortedByName', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return Items.find({ 'establishments.establishment_id': { $in: [_establishmentId] }, is_active: true }, { sort: { name: 1 } });
+});
+

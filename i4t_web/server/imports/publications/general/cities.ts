@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Cities } from '../../../../both/collections/general/city.collection';
-import { Restaurants } from '../../../../both/collections/restaurant/restaurant.collection';
+import { Establishments } from '../../../../both/collections/establishment/establishment.collection';
 import { check } from 'meteor/check';
 
 /**
@@ -9,13 +9,13 @@ import { check } from 'meteor/check';
 Meteor.publish('cities', () => Cities.find({ is_active: true }));
 
 /**
- * City by restaurant
+ * City by establishment
  */
-Meteor.publish('getCityByRestaurantId', function (_restaurantId: string) {
-    check(_restaurantId, String);
-    let restaurant = Restaurants.findOne({ _id: _restaurantId });
-    if (restaurant) {
-        return Cities.find({ _id: restaurant.cityId });
+Meteor.publish('getCityByEstablishmentId', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    let establishment = Establishments.findOne({ _id: _establishmentId });
+    if (establishment) {
+        return Cities.find({ _id: establishment.cityId });
     } else {
         return Cities.find({ is_active: true });
     }

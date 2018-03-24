@@ -1,0 +1,30 @@
+page-lightbox {
+    ion-content {
+        background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)) !important;
+    }
+
+    ion-slide {
+        background-color: transparent !important;
+    }
+
+    .hide {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .text-ios, .button-clear-md {
+        color: white !important;        
+    }
+
+    .lightbox {
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+}

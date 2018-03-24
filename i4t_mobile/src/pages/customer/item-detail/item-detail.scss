@@ -88,4 +88,12 @@ page-item-detail {
     .list-ios > .item-block:first-child{
         border-top: none;
     }
+
+    ion-badge.tb{
+        margin: 12px 0;
+    }
+
+    h2.fc {
+        float: left;
+    }
 }

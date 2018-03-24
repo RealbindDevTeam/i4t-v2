@@ -1,0 +1,153 @@
+<div class="dpa">
+    <div class="dcf">
+        <div class="dc">
+            <div class="dmpc">
+                <mat-form-field style="display: block">
+                    <mat-select placeholder="{{'ORDER_CREATE.SEARCH_MENU' | translate}}">
+                        <mat-option (click)="showAllItems()">{{'ORDER_CREATE.SHOW_ALL' | translate}}</mat-option>
+                        <mat-option (click)="showItemsRecommended()">{{'ORDER_CREATE.RECOMMENDED' | translate}}</mat-option>
+                        <mat-option *ngFor="let sec of _sectionsFilter | async" (click)="changeSection(sec._id)" value="{{sec._id}}">{{sec.name}}</mat-option>
+                        <mat-option *ngIf="_showAdditionsOption" (click)="showAdditions()">{{'ORDER_CREATE.ADDITIONS' | translate}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <h3 *ngIf="(_itemsRecommended | async)?.length > 0">{{'ORDER_CREATE.RECOMMENDED' | translate}}</h3>
+                <mat-card class="item-consumer" *ngFor="let item of _itemsRecommended | async">
+                    <img mat-card-image *ngIf="item.image" src="{{ item.image.url }}" alt="{{item.name}}">
+                    <img mat-card-image *ngIf="!item.image" src="/images/default-plate.png" alt="{{item.name}}">
+                    <mat-card-content>
+                        <mat-card-title>{{item.name}}</mat-card-title>
+                        <p *ngIf="item.description.length > 50">{{item.description.substring(0, 50)}}...</p>
+                        <p *ngIf="item.description.length <= 50">{{item.description}}</p>
+                        <mat-list>
+                            <mat-list-item *ngIf="!getItemAvailability(item._id)" class="available-button">
+                                <mat-icon mat-list-icon>clear</mat-icon>
+                                <h3>{{'ORDER_CREATE.UNAVAILABLE' | translate}}</h3>
+                            </mat-list-item>
+                            <mat-list-item *ngIf="getItemAvailability(item._id)">
+                                <mat-icon mat-list-icon>done</mat-icon>
+                                <h3>{{ getItemPrice( item ) }} {{_currencyCode}}</h3>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
+                    </mat-card-actions>
+                </mat-card>
+
+                <h3 *ngIf="(_items | async)?.length > 0">{{'ORDER_CREATE.MENU' | translate}}</h3>
+                <span *ngFor="let section of _sections | async">
+                    <span *ngFor="let item of _items | async">
+                        <ng-template [ngIf]="item.sectionId === section._id">
+                            <mat-card class="item-consumer">
+                                <img mat-card-image *ngIf="item.image" src="{{ item.image.url }}" alt="{{item.name}}">
+                                <img mat-card-image *ngIf="!item.image" src="/images/default-plate.png" alt="{{item.name}}">
+                                <mat-card-content>
+                                    <mat-card-title>{{item.name}}</mat-card-title>
+                                    <p *ngIf="item.description.length > 50">{{item.description.substring(0, 50)}}...</p>
+                                    <p *ngIf="item.description.length <= 50">{{item.description}}</p>
+                                    <mat-list>
+                                        <mat-list-item *ngIf="!getItemAvailability(item._id)" class="available-button">
+                                            <mat-icon mat-list-icon>clear</mat-icon>
+                                            <h3>{{'ORDER_CREATE.UNAVAILABLE' | translate}}</h3>
+                                        </mat-list-item>
+                                        <mat-list-item *ngIf="getItemAvailability(item._id)">
+                                            <mat-icon mat-list-icon>done</mat-icon>
+                                            <h3>{{ getItemPrice( item ) }} {{_currencyCode}}</h3>
+                                        </mat-list-item>
+                                    </mat-list>
+                                </mat-card-content>
+                                <mat-card-actions>
+                                    <button mat-button (click)="showItemInformation(item)">{{'VIEW' | translate}}</button>
+                                </mat-card-actions>
+                            </mat-card>
+                        </ng-template>
+                    </span>
+                </span>
+            </div>
+        </div>
+        <div id="item-selected" class="item-detail animated">
+            <div *ngFor="let itemDet of _itemDetail | async">
+                <div class="header-detail-static">
+                    <button class="btn-close" mat-raised-button (click)="viewItemDetail('item-selected', true)">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div id="mt" class="header-detail header-detail-hide">
+                    <label>{{itemDet.name}}</label>
+                    <button class="btn-close" mat-raised-button (click)="viewItemDetail('item-selected', true)">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div id="is" class="item-detail-card" (scroll)="showHeaderDetail()">
+                    <div class="card-content">
+                        <div class="crop">
+                            <img *ngIf="itemDet.image" src="{{ itemDet.image.url }}">
+                            <img *ngIf="!itemDet.image" src="/images/default-plate.png">
+                        </div>
+                        <div class="content">
+                            <mat-card-subtitle *ngIf='itemDet.description != ""' class="description">{{itemDet.description}}</mat-card-subtitle>
+                            <mat-card-subtitle *ngIf='itemDet.time != ""' class="description">{{'ORDER_CREATE.COOKING_TIME' | translate}} {{itemDet.time}}</mat-card-subtitle>
+                            <mat-card-subtitle class="price">{{'ORDER_CREATE.PRICE' | translate}}: {{ getItemPrice( itemDet ) }} {{_currencyCode}}</mat-card-subtitle>
+                            <mat-card-subtitle class="price" *ngIf='itemDet.has_reward'>
+                                <mat-chip-list>
+                                    <mat-chip>{{itemDet.reward_points}} pts</mat-chip>
+                                </mat-chip-list>
+                            </mat-card-subtitle>
+                            <div *ngIf="(itemDet.options.length > 0)">
+                                <div *ngFor="let option of _options | async">
+                                    <span *ngFor="let opt of itemDet.options">
+                                        <ng-template [ngIf]="option._id === opt.option_id">
+                                            <p style="font-weight:bold;">{{option.name}}</p>
+                                            <span *ngFor="let value of _optionValues | async">
+                                                <span *ngFor="let val of opt.values">
+                                                    <div *ngIf="value._id === val.option_value_id" style="display: flex;">
+                                                        <span style="margin: 5px;">{{value.name}}</span>
+                                                        <span class="app-flex-filler"></span>
+                                                        <span *ngIf="val.have_price" style="line-height: 32px;">{{val.price}} {{_currencyCode}}</span>
+                                                    </div>
+                                                </span>
+                                            </span>
+                                        </ng-template>
+                                    </span>
+                                </div>
+                            </div>
+                            <div *ngIf="(itemDet.additions.length > 0)">
+                                <p style="font-weight:bold">Adiciones:</p>
+                                <p *ngFor="let addition of _additions | async">
+                                    <span *ngFor="let add of itemDet.additions">
+                                        <ng-template [ngIf]="addition._id === add">
+                                            {{ getAdditionInformation(addition) }} {{_currencyCode}}
+                                        </ng-template>
+                                    </span>
+                                </p>
+                            </div>
+                            <p *ngIf="!getItemAvailability(itemDet._id)" class="available-button">{{'ORDER_CREATE.ITEM_UNAVAILABLE' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="addition-detail" class="item-detail animated">
+            <div class="header-detail-static pr">
+                <button class="btn-close" mat-raised-button (click)="viewItemDetail('addition-detail', true)">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="item-detail-card">
+                <div class="card-content">
+                    <div class="crop"></div>
+                    <div class="content">
+                        <mat-list>
+                            <mat-list-item *ngFor="let add of _additions | async">
+                                <mat-icon mat-list-icon>local_dining</mat-icon>
+                                <h4 mat-line style="white-space: normal;">{{add.name}}</h4>
+                                <p mat-line>{{getAdditionPrice(add)}} {{_currencyCode}}</p>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            {{ 'MOBILE.CUSTOMER_ORDER.TITLE' | translate }}
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div *ngFor="let order of _orders | async">
+        <ion-list no-line>
+            <ion-item>
+                <ion-avatar item-start>
+                    <img src="assets/img/tables.png">
+                </ion-avatar>
+                <h2>{{ 'MOBILE.CUSTOMER_ORDER.ORDER' | translate }} # {{order.code}}</h2>
+                <h3>{{ 'MOBILE.CUSTOMER_ORDER.CONSUMMER' | translate }}: {{ getUserName(order.creation_user) }}</h3>
+                <p>{{ 'MOBILE.CUSTOMER_ORDER.TABLE' | translate }} {{_table?._number}} ({{ 'MOBILE.CUSTOMER_ORDER.ALPHANUMERIC_CODE'|
+                    translate }} {{_table?.QR_code}})</p>
+            </ion-item>
+
+            <span *ngFor="let it of order.items">
+                <span *ngIf="it.is_reward">
+                    <ion-item>
+                        <h2 style="font-weight: bold;">{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
+                        <ion-badge style="background-color: #ffbf00;color: #fff;">{{ 'MOBILE.CUSTOMER_ORDER.ITEM_REDEEMED' | translate }}
+                            <ion-icon name="ribbon"></ion-icon>
+                        </ion-badge>
+                        <p *ngIf="it.observations">{{it.observations}}</p>
+                        <div *ngIf="(it.options.length > 0)">
+                            <span *ngFor="let opt of it.options">
+                                <h2>{{getOptionValueName(opt.value_id)}}</h2>
+                            </span>
+                        </div>
+                        <div *ngIf="(it.additions.length > 0)">
+                            <h2 style="margin-top: 10px;">{{'MOBILE.SECTIONS.ADDITION' | translate}}:</h2>
+                            <span *ngFor="let ad of it.additions">
+                                <h2 style="margin-left: 1rem;">- {{getAdditionName(ad)}}</h2>
+                            </span>
+                        </div>
+                    </ion-item>
+                </span>
+                <span *ngIf="!it.is_reward">
+                    <ion-item>
+                        <h2 style="font-weight: bold;">{{it.quantity}} - {{getItemName(it.itemId)}}</h2>
+                        <p *ngIf="it.observations">{{it.observations}}</p>
+                        <div *ngIf="(it.options.length > 0)">
+                            <span *ngFor="let opt of it.options">
+                                <h2>{{getOptionValueName(opt.value_id)}}</h2>
+                            </span>
+                        </div>
+                        <div *ngIf="(it.additions.length > 0)">
+                            <h2 style="margin-top: 10px;">{{'MOBILE.SECTIONS.ADDITION' | translate}}:</h2>
+                            <span *ngFor="let ad of it.additions">
+                                <h2 style="margin-left: 1rem;">- {{getAdditionName(ad)}}</h2>
+                            </span>
+                        </div>
+                    </ion-item>
+                </span>
+            </span>
+            <span *ngFor="let addition of order.additions">
+                <ion-item>
+                    <h2 style="font-weight: bold;">{{addition.quantity}} - {{getAdditionName(addition.additionId)}}</h2>
+                </ion-item>
+            </span>
+        </ion-list>
+    </div>
+</ion-content>
+
+
+<ion-footer padding>
+    <div class="action">
+        <button ion-button outline class="action" (click)="showComfirm('cancel')">{{'MOBILE.CUSTOMER_ORDER.CANCEL' | translate}}</button>
+        <button ion-button outline class="action" (click)="showComfirm('receive')">{{'MOBILE.CUSTOMER_ORDER.RECEIVE' | translate}}</button>
+    </div>
+</ion-footer>

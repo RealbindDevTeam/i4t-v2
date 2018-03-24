@@ -27,7 +27,7 @@
     "JOB": "Job title",
     "VALIDATE": "Validate",
     "TIP_PERCENTAGE": "Tip service",
-    "CLOSE": "Close",
+    "CLOSE": "CLOSE",
     "VIEW_DETAIL": "View Detail",
     "OTHER": "Other...",
     "SIGN_OUT": "Sign Out",
@@ -37,13 +37,13 @@
     "LOGIN_SYSTEM_OPERATIONS_MSG": "Please log in to manage system operations",
     "YES": "Yes",
     "NO": "No",
+    "VIEW": "VIEW",
     "ORDER_STATUS": {
-        "REGISTERED": "Registered",
-        "IN_PROCESS": "In Process",
-        "PREPARED": "Cooked",
-        "CANCELED": "Canceled",
-        "DELIVERED": "Delivered",
-        "PENDING_CONFIRM": "Pending payment confirmation"
+        "SELECTING": "Selecting",
+        "CONFIRMED": "Confirmed",
+        "RECEIVED": "Received",
+        "ATTENDED": "Attended",
+        "CANCELED": "Canceled"
     },
     "DATE_VALIDATE": {
         "DAY_FORMAT": "Wrong day format",
@@ -52,7 +52,7 @@
     },
     "LANDING": {
         "HOME": "Home",
-        "ABOUT": "About iurest",
+        "ABOUT": "About comeygana",
         "OWNER": "Restaurant owner",
         "CONTACT": "Contact",
         "SIGNIN": "Log In",
@@ -82,7 +82,7 @@
             "FIVE": "Request that you want to pay and a waiter will go to your table"
         },
         "OWNER_CONTENT": {
-            "TITLE1": "Do you have a restaurant and would you like use the Iurest service?",
+            "TITLE1": "Do you have a restaurant and would you like use the comeygana service?",
             "TEXT1": "",
             "TEXT2": "We offer a system that improve your business"
         },
@@ -117,9 +117,14 @@
         "USER_EMAIL_EXISTS": "The username/email already exists, please try again ",
         "ERROR": "An internal error has occurred registering the user",
         "ACCEPT": "Accept",
-        "SUCCESS": "The user has been created successfully"
+        "SUCCESS": "The user has been created successfully",
+        "MALE_GENDER": "Male",
+        "FEMALE_GENDER": "Female",
+        "OTHER_GENDER": "Other",
+        "GENDER_LBL": "Gender"
     },
     "SIGNIN": {
+        "TITLE": "SIGNIN FOR RESTAURANT ADMINISTRATORS AND EMPLOYEES",
         "EMAIL_USERNAME": "Email/Username",
         "PASSWORD": "Password",
         "KEEP_SIGNED": "Keep me logged in",
@@ -137,7 +142,9 @@
         "ACCEPT": "Accept",
         "USER_NO_ACTIVE": "The user is not activated. Please contact the admin",
         "RESTAURANT_NO_ACTIVE": "The restaurant is not activated. Please contact the admin",
-        "DONT_ACCOUNT": "Not an account?"
+        "DONT_ACCOUNT": "Not an administrator account?",
+        "DOWNLOAD_APP": "Download comeygana",
+        "DOWNLOAD_APP_P": "Free on play store and apple store"
     },
     "RESET_PASWORD": {
         "TITLE": "Reset your password",
@@ -147,9 +154,9 @@
         "SLOGAN": "Reset your Password"
     },
     "SECTIONS": {
-        "SECTION_CREATION": "Create Sections",
+        "SECTION_CREATION": "Create sections",
         "SECTION_TEXT": "Create the sections of the menu for each restaurant",
-        "SECTION_EDIT": "Section Edition",
+        "SECTION_EDIT": "Section edition",
         "RESTAURANTS": "Restaurants",
         "NO_RESTAURANT": "No selected restaurant ",
         "RESTAURANT_SECTION": "Select the restaurants where the section is available",
@@ -157,14 +164,19 @@
         "MODIFY": "Edit",
         "ACTIVATE": "Activate",
         "INACTIVATE": "Inactivate",
-        "SECTION_CREATED": "Section Created Correctly",
-        "SECTION_EDITED": "Section Edited Correctly",
+        "REMOVE": "Remove",
+        "SECTION_CREATED": "Section created correctly",
+        "SECTION_EDITED": "Section edited correctly",
         "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
         "RESTAURANT_REGISTER": "Register Restaurant",
         "MESSAGE": "Register at least one restaurant to enable this option",
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
-        "WARNING_3": "Changing the configuration of the sections could affect the experience of the users"
+        "WARNING_3": "Changing the configuration of the sections could affect the experience of the users",
+        "REMOVE_TITLE": "Section remove",
+        "REMOVE_MSG": "Do you want to remove the section?",
+        "SECTION_REMOVED": "Section removed correctly",
+        "SECTION_NOT_REMOVED": "The section have categories or items, it could not be removed"
     },
     "CATEGORIES": {
         "CATEGORIES_CREATION": "Create Categories",
@@ -179,7 +191,11 @@
         "CATEGORY_EDITED": "Category edited successfully",
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
-        "WARNING_3": "Changing the configuration of the categories could affect the experience of the users"
+        "WARNING_3": "Changing the configuration of the categories could affect the experience of the users",
+        "REMOVE_TITLE": "Category remove",
+        "REMOVE_MSG": "Do you want to remove the category?",
+        "CATEGORY_REMOVED": "Category removed correctly",
+        "CATEGORY_NOT_REMOVED": "The category have subcategories or items, it could not be removed"
     },
     "SUBCATEGORIES": {
         "SUBCATEGORY_CREATION": "Create Subcategories",
@@ -195,7 +211,11 @@
         "SUBCATEGORY_EDITED": "Subcategory edited successfully",
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
-        "WARNING_3": "Changing the configuration of the subcategories could affect the experience of the users"
+        "WARNING_3": "Changing the configuration of the subcategories could affect the experience of the users",
+        "REMOVE_TITLE": "Subcategory remove",
+        "REMOVE_MSG": "Do you want to remove the subcategory?",
+        "SUBCATEGORY_REMOVED": "Subcategory removed correctly",
+        "SUBCATEGORY_NOT_REMOVED": "The subcategory have items, it could not be removed"
     },
     "ADDITIONS": {
         "ADDITION_CREATION": "Create Additions",
@@ -217,7 +237,10 @@
         "ADDITION_EDITED": "Addition edited successfully",
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
-        "WARNING_3": "Changing the configuration of the additions could affect the experience of the users"
+        "WARNING_3": "Changing the configuration of the additions could affect the experience of the users",
+        "REMOVE_TITLE": "Addition remove",
+        "REMOVE_MSG": "Do you want to remove the addition?",
+        "ADDITION_REMOVED": "Addition removed correctly"
     },
     "SETTINGS": {
         "TITTLE": "Settings",
@@ -226,6 +249,7 @@
         "USERNAME": "Username",
         "FIRST_NAME": "First Name",
         "LAST_NAME": "Last Name",
+        "FULL_NAME": "Full Name",
         "LANGUAGE": "Language",
         "CHANGE_EMAIL": "Change your email",
         "CHANGE_PASSWORD": "Change your password",
@@ -245,6 +269,7 @@
         "DASHBOARD": {
             "DASHBOARD": "Dashboard"
         },
+        "REWARDS": "Rewards",
         "ADMINISTRATION": {
             "MANAGEMENT": "Management",
             "RESTAURANTS": "Restaurants",
@@ -255,10 +280,11 @@
             "INVOICES_DOWNLOAD": "Invoices download",
             "PROFILE": "Profiles",
             "TABLES_SEARCH": "Tables search",
-            "MY_RESTAURANTS": "My Restaurants"
+            "MY_RESTAURANTS": "My Restaurants",
+            "ORDERS_TODAY": "Orders of the day"
         },
         "PAYMENTS": {
-            "PAYMENTS": "Payments",
+            "PAYMENTS": "Service payment",
             "MONTHLY_PAYMENT": "Monthly Payment",
             "PAYMENT_HISTORY": "Payment History",
             "REACTIVATE_RESTAURANT": "Reactivate restaurant"
@@ -273,7 +299,10 @@
             "GARNISHFOOD": "Side dishes",
             "ITEMS": "Items",
             "ITEMS_ENABLE": "Available Items",
-            "ORDERS_CHEF": "Orders"
+            "ORDERS_CHEF": "Orders",
+            "OPTIONS_VALUES": "Options and Values",
+            "OPTIONS": "Options",
+            "VALUES": "Values"
         },
         "ORDERS": "Orders",
         "WAITER_CALL": "Waiter/waitress call",
@@ -281,7 +310,7 @@
         "SETTINGS": "Settings",
         "TABLES": "Change table",
         "RESTAURANT_EXIT": "Leave Restaurant",
-        "PAYMENT_HISTORY": "Payment history"
+        "POINTS": "My points"
     },
     "PROMOTIONS": {
         "PROMOTION_CREATION": "Creation promotion",
@@ -319,13 +348,17 @@
         "GARNISH_FOOD_EDITED": "SIde dishes edited succesfully",
         "WARNING": "Warning: You have ",
         "WARNING_2": "logged users in your restaurants",
-        "WARNING_3": "Changing the side dishes configuration could affect the experience of the users"
+        "WARNING_3": "Changing the side dishes configuration could affect the experience of the users",
+        "REMOVE_TITLE": "Garnishfood remove",
+        "REMOVE_MSG": "Do you want to remove the garnishfood?",
+        "GARNISHFOOD_REMOVED": "Garnishfood removed correctly"
     },
     "RESTAURANT_REGISTER": {
         "SELECT_COUNTRY": "Select Country",
         "SELECT_CITY": "Select City",
-        "ADDRESS": "Address",
-        "PHONE": "Phone",
+        "NAME": "Restaurant name",
+        "ADDRESS": "Restaurant address",
+        "PHONE": "Phone contact",
         "WEBPAGE": "Web Page",
         "EMAIL": "Email",
         "WEEKDAY": "Weekday",
@@ -340,7 +373,7 @@
         "GENERAL_INFO_TEXT": "Please enter the information of the restaurant. This information will be displayed to people on the internet and will give you greater visibility",
         "LEGAL_LABEL": "Legal",
         "LEGAL_INFO": "Restaurant's Legal Information",
-        "LEGAL_INFO_TEXT": "The legal information of the restaurant will be managed according to the regulations of the country to which it belongs. This will allow iurest to help you with the accounts and expenses of your business.",
+        "LEGAL_INFO_TEXT": "The legal information of the restaurant will be managed according to the regulations of the country to which it belongs. This will allow comeygana to help you with the accounts and expenses of your business.",
         "ADD_LOCATION": "Enter the location of the establishment",
         "SCHEDULE_LABEL": "Schedule",
         "SCHEDULE_INFO": "Timing hours",
@@ -357,8 +390,8 @@
         "TABLES": "tables",
         "MORE": "more",
         "RESTAURANT_CREATION": "Restaurant creation",
-        "ACTIVATION_MESSAGE": "The monthly iurest service charge will be activated per restaurant",
-        "CLARIFICATION_MESSAGE_1": "iurest charges the service fee on the ",
+        "ACTIVATION_MESSAGE": "The monthly comeygana service charge will be activated per restaurant",
+        "CLARIFICATION_MESSAGE_1": "comeygana charges the service fee on the ",
         "CLARIFICATION_MESSAGE_2": " day of each month, the first charge is up to",
         "ACCEPT_CREATION": "Accept",
         "CANCEL_CREATION": "Cancel",
@@ -366,7 +399,13 @@
         "MAX_TABLES": "max ",
         "TABLES_MSG": "In case you need more tables for your restaurant, in the option Management -> Restaurants -> Configuration, you can add more.",
         "CREATION_ERROR": "An error has occurred creating the restaurant. Please try again.",
-        "RESTAURANT_CREATED": "Restaurant created"
+        "RESTAURANT_CREATED": "Restaurant created",
+        "POINTS_VALIDITY": "Select the validity of the reward points",
+        "DAYS": "Days",
+        "DIALOG_SENTENCE_1A": "Since the restaurant creation you are going to have a bag of ",
+        "DIALOG_SENTENCE_1B": "comeygana points ",
+        "DIALOG_SENTENCE_2": "The points are subtracted from the bag every time when a consumer redeem a reward",
+        "DIALOG_SENTENCE_3": "Are you sure to create the restaurant?"
     },
     "WEEK": {
         "MONDAY": "Monday",
@@ -534,7 +573,8 @@
         "ADD_FACEBOOK_LINK": "Add the link of your page to Facebook so your customers can see it",
         "FACEBOOK_LINK": "Link to your page on Facebook",
         "RESTAURANT_INACTIVE": "Inactive Restaurant",
-        "RESTAURANT_ACTIVE": "Active Restaurant"
+        "RESTAURANT_ACTIVE": "Active Restaurant",
+        "WAITERS_ERROR": "There are restaurants that don't have waiters/waitress. please check the collaborators option"
     },
     "TABLES": {
         "TABLES_CREATION": "Create tables",
@@ -559,13 +599,13 @@
     },
     "GO_TO_STORE": {
         "CLIENT": {
-            "TITTLE": "What do you ",
-            "SUB_TITTLE": "like to eat?",
-            "CONTENT": "We did most of the heavy lifting for you to provide a default stylings that incorporate our custom components",
+            "TITTLE": "Order from your smartphone, accumulate and redeem your points",
+            "SUB_TITTLE": "",
+            "CONTENT": "Free download: ",
             "BUTTON": "Download"
         },
         "COLLABORATOR": {
-            "TITTLE": "Please signin from computer to enjoy iurest",
+            "TITTLE": "Please signin from computer to enjoy comeygana",
             "BUTTON": "Return"
         }
     },
@@ -608,7 +648,7 @@
         "CREATE_NEW_ITEM": "Create a new item",
         "PRICE": "Price",
         "ACTIVE_INACTIVE_ITEM": "Enable or disable item",
-        "EDIT_ITEM": "Edit Item",
+        "EDIT_ITEM": "EDIT",
         "SECTIONS_CATEGORIES": "Sections and Categories",
         "SECTIONS_CATEGORIES_TEXT": "Choose the section, category and subcategory of the item you want to create",
         "SELECT_SECTION": "Select the section",
@@ -633,7 +673,7 @@
         "GENERAL_TEXT_EDIT": "Edit the general information of the item",
         "UPDATE_IMAGE": "Update item image",
         "GARNISHFOOD_TEXT_EDIT": "Edit the side dishes that will be available for the item (If applicable)",
-        "OBSERVATIONS": "Enable comments for the item",
+        "OBSERVATIONS": "Enable comments for the item (By enabling this option your customers can give additional instructions on the dish)",
         "ITEM_GARNISHFOOD_QUANTITY": "Number of side dishes allowed for item",
         "ADDITIONS_TEXT": "Please select the additions that will be available for the item (If applicable)",
         "NOT_ADDITIONS": "No additions created for the establishment",
@@ -651,7 +691,30 @@
         "WARNING_2": "logged users in your restaurants",
         "WARNING_3": "Changing the item configuration could affect the experience of the users",
         "ITEM_CREATED": "Item created successfully",
-        "CREATION_ERROR": "An error has occurred creating the item. Please try again."
+        "CREATION_ERROR": "An error has occurred creating the item. Please try again.",
+        "REMOVE": "REMOVE",
+        "REMOVE_TITLE": "Item remove",
+        "REMOVE_MSG": "Do you want to remove the item?",
+        "ITEM_REMOVED": "Item removed correctly",
+        "REWARD_LABEL": "Assigning reward points",
+        "POINTS_PLACEHOLER": "Points",
+        "MENU_RECOMMENDED": "Menu recommended",
+        "ESTABLISHMENTS": "Establishments",
+        "RECOMMENDED_CHANGED": "Item recommendation changed",
+        "NO_TIME": "No time",
+        "RESTAURANTS_MSG": "Select the restaurants where the item and the price will be available",
+        "RESTAURANTS_ITEMS_ERROR": "Please enter the item name and select at least one restaurant",
+        "OPTION_ADDITION": "Options and additions",
+        "OPTIONS": "Options",
+        "OPTIONS_MSG": "Enable options for the item",
+        "NO_OPTIONS_CREATED": "Can not find options created for the restaurants previously selected",
+        "AVAILABLE": "Available?",
+        "IS_REQUIRED": "Is required?",
+        "QUANT_MIN": "Quant. Min",
+        "QUANT_MAX": "Quant. Máx",
+        "HAVE_PRICE": "Have price?",
+        "ADDITIONS": "Additions",
+        "ADDITIONS_SUBTITLE": "Please select the additions that will be available for the item (If applicable)"
     },
     "ROLE": {
         "ADMINISTRATOR": "Administrator",
@@ -701,7 +764,7 @@
         "EMAIL": "Email",
         "LEGAL_LABEL": "Legal",
         "LEGAL_INFO": "Restaurant's Legal Information",
-        "LEGAL_INFO_TEXT": "Edit the legal information of the restaurant. This will allow iurest to help you with business accounts and expenses",
+        "LEGAL_INFO_TEXT": "Edit the legal information of the restaurant. This will allow comeygana to help you with business accounts and expenses",
         "INVOICE_CODE": "Invoice code",
         "TIP_PERCENTAGE": "Tip Percentage",
         "TAX_PERCENTAGE": "Tax Percentage",
@@ -740,7 +803,8 @@
         "TABLE_CODE": "Table Number",
         "INFORMATION": "Information",
         "SCHEDULE": "Schedule",
-        "LOCATION": "Location"
+        "LOCATION": "Location",
+        "POINTS": "Available points"
     },
     "RESTAURANT_LOCATION_INFO": {
         "TITTLE": "Location of the establishment",
@@ -760,7 +824,7 @@
         "SELECT_MAX_VALID": "More than ",
         "ELEMENTS": "units",
         "ADDITIONS": "Additions",
-        "SELECT_ADDITIONS": "Please select the additions",
+        "SELECT_ADDITIONS": "Select the additions",
         "TOTAL_PRICE": "Total Price",
         "ADD_ITEM": "Add to Order",
         "SHOW_ALL": "Show All",
@@ -769,7 +833,14 @@
         "ADD_ADDITION_ORDER": "Add additions to the order",
         "ITEM_AGGREGATED": "Item added successfully",
         "ADDITON_AGGREGATED": "Addition added succesfully",
-        "SEARCH_MENU": "Search menu"
+        "SEARCH_MENU": "Search menu",
+        "RECOMMENDED": "Recommended",
+        "REWARD": "Reward",
+        "POINTS": "points",
+        "TOTAL_ITEM_POINTS": "Total",
+        "MENU": "Menu",
+        "GET_POINTS": "You get",
+        "OPTIONS_ERROR": "Please complete the information to add the item to the order"
     },
     "ORDER_LIST": {
         "TABLE_ORDERS": "Table Orders",
@@ -793,7 +864,7 @@
         "SELECT_MAX_VALID": "More than ",
         "ELEMENTS": "elements",
         "ADDITIONS": "Additions",
-        "SELECT_ADDITIONS": "Please select the additions",
+        "SELECT_ADDITIONS": "Select the additions",
         "TOTAL_PRICE": "Total Price",
         "MODIFY_ITEM": "Modify",
         "DELETE_ITEM": "Delete",
@@ -817,7 +888,20 @@
         "DELETE_ITEM_DLG": "Delete order item",
         "DELETE_ADITION_DLG": "Delete order addition",
         "CANCEL_ORDER_DLG": "Cancel order",
-        "CONFIRM_ORDER_DLG": "Confirm order"
+        "CONFIRM_ORDER_DLG": "Confirm order",
+        "ORDER_CONFIRMED_MSG": "Order confirmed",
+        "CANCEL_ORDER_MSG": "Order canceled",
+        "REMOVE_REWARD": "Delete Reward",
+        "REMOVE_REWARD_MSG": "Do you want to delete this reward from the order?",
+        "REWARD_DELETED": "Reward deleted from order",
+        "ITEM": "Item Redeemed",
+        "FREE": "It's Free!",
+        "TOTAL_ORDER": "Total of your order",
+        "ORDER_LBL": "Order",
+        "USR_ORDER_CONFIRMED": "You confirmed your order! A waiter/waitress will attend it",
+        "NO_USR_ORDER_CONFIRMED": "Order confirmed",
+        "WIN": "You win",
+        "OPTIONS_ERROR": "Please complete the information to add the item to the order"
     },
     "PAYMENTS": {
         "THERE_IS_NOT_REST": "You are not in any restaurant",
@@ -844,7 +928,7 @@
             "FULL_PAYMENT": "Total order payment",
             "RETURN_ORDER_USER": "Do you want to return the order to the user ",
             "ORDER_PENDING_STATUS": "You have orders pending to confirm. You must confirm them or wait til someone confirm",
-            "NO_ONLINE_PAYMENT": "Online payment is not available in iurest yet",
+            "NO_ONLINE_PAYMENT": "Online payment is not available in comeygana yet",
             "PLEASE_SELECT_PAYMENT_METHOD": "Please select payment method",
             "PAYMENT_UNAVAILABLE": "Payment option is currently unavailable.",
             "WAITER_ATTEND": "A waiter/waitress will attend at your table soon",
@@ -887,7 +971,7 @@
         "YES_ANSWER": "Yes",
         "TURN": "Turn",
         "TABLE": "Table",
-        "CALL_LABEL_SEND_ORDER": "Order to deliver",
+        "CALL_LABEL_CUSTOMER_ORDER": "Customer order",
         "CALL_LABEL_CUSTOMER": "Calls from customer",
         "CALL_LABEL_CUSTOMER_PAYMENT": "Payment from customer",
         "BTN_CALL_WAITER": "Request waiter/waitress",
@@ -916,7 +1000,7 @@
     },
     "FINANCIAL_INFO": {
         "COLOMBIA": {
-            "INC": "According to Colombian laws, restaurants must discriminate in the pre invoice, cash receipt, invoice or equivalent document, the National Consumption Tax (INC), therefore, iurest will calculate the INC equivalent to 8% at time to request the total value of the account for the customer.",
+            "INC": "According to Colombian laws, restaurants must discriminate in the pre invoice, cash receipt, invoice or equivalent document, the National Consumption Tax (INC), therefore, comeygana will calculate the INC equivalent to 8% at time to request the total value of the account for the customer.",
             "BUSINESS_NAME": "Enter surname and firstname (if natural person) or legal name (if legal person):",
             "BUSINESS_NAME_LABEL": "Names - Legal name",
             "NIT": "Enter NIT of who sells the ods or Services. Please include verification digit:",
@@ -936,14 +1020,15 @@
         "MSG_1": "You can order what you prefer",
         "NO_ORDERS": "You do not have any orders yet, you can create a new order",
         "ORDER": "Order",
-        "TABLE_NO_ACTIVE": "The restaurant does not have this table active for the service of iurest",
+        "TABLE_NO_ACTIVE": "The restaurant does not have this table active for the service of comeygana",
         "TABLE_NOT_EXISTS": "The table does not exist. Please check the code.",
-        "IUREST_NO_ACTIVE": "The restaurant does not have the iurest service active. It is not possible to enter.",
+        "IUREST_NO_ACTIVE": "The restaurant does not have the comeygana service active. It is not possible to enter.",
         "RESTAURANT_NOT_EXISTS": "The restaurant does not exist. It is not possible to enter.",
-        "PENALTY": "At the moment you do not have available the option to create orders. Try later"
+        "PENALTY": "At the moment you do not have available the option to create orders. Try later",
+        "REDEEM_POINTS": "Redeem points"
     },
     "MONTHLY_PAYMENT": {
-        "TITLE": "iurest services",
+        "TITLE": "comeygana services",
         "SUBTITLE": "Here you can see the charges by restaurant and number of tables",
         "RESTAURANT_NAME": "Restaurant name",
         "RESTAURANT_PRICE": "Restaurant price",
@@ -1042,18 +1127,20 @@
         "TABLE_MODIFIED": "Table modified",
         "NUMBER_TABLES": "Number of tables, Max "
     },
-    "SEND_ORDER": {
+    "CUSTOMER_ORDER": {
         "ORDER": "Order",
         "TABLE": "Table",
         "CODE": "Code: ",
         "CUSTOMER": "Customer",
         "OBSERVATIONS": "Comments",
-        "NO_GARNISH_FOOD": "No side dishes",
         "GARNISH_FOOD": "Side dishes",
-        "NO_ADDITIONS": "No additions",
         "ADDITIONS": "additions",
         "ADDITION": "addition",
-        "ORDER_DELIVERED": "Order delivered"
+        "RECEIVE_ORDER": "Receive order",
+        "RECEIVE_ORDER_CONFIRM": "Order received",
+        "CANCEL_ORDER": "Cancel Order",
+        "CANCEL_ORDER_CONFIRM": "Order Canceled",
+        "ITEM_REDEEMED": "Item Redeemed"
     },
     "PAYU_PAYMENT_FORM": {
         "TITLE": "Payment method",
@@ -1086,11 +1173,11 @@
         "ADDRESS_MAX": "The address cannot exceed 100 characters long",
         "PHONE_NUMBER": "Phone number *",
         "PHONE_NUMBER_MAX": "The phone number cannot exceed 20 characteres long",
-        "SECURITY_MSG": "* For security, iurest doesn't save your credit card info",
+        "SECURITY_MSG": "* For security, comeygana doesn't save your credit card info",
         "CONTINUE_PAYMENT": "Continue",
         "DIALOG_TITLE": "Payment Confirm",
         "DIALOG_PLEASE": "Please verify the information before to confirm",
-        "IUREST_SERVICE": "iurest service",
+        "IUREST_SERVICE": "comeygana service",
         "MONTHLY_SERVICE": "Monthly",
         "PERSONAL_INFO": "Billing information",
         "PERSONAL_TEL": "Tel. ",
@@ -1099,7 +1186,7 @@
         "PRICE": "Price: ",
         "PAY_CONFIRM": "Confirm",
         "PAY_CANCEL": "Cancel",
-        "ORDER_DESCRIPTION": "Monthly payment for iurest service",
+        "ORDER_DESCRIPTION": "Monthly payment for comeygana service",
         "TRANSACTION_STATUS": "Transaction status",
         "TRANSACTION_APPROVED": "Payment has been approved",
         "TRANSACTION_DECLINED": "Payment has been rejected",
@@ -1113,7 +1200,7 @@
         "LAST_NAME": "Lastname",
         "UNAVAILABLE_PAYMENT": "The payment option is not available at this moment, please try later",
         "CC_PAYMENT_METHOD": "Credit card",
-        "DESCRIPTION": "Monthly Iurest service"
+        "DESCRIPTION": "Monthly comeygana service"
     },
     "RES_PAYMENT_HISTORY": {
         "TITLE": "Payment history",
@@ -1143,9 +1230,9 @@
         "DATE_LBL": "Fecha: ",
         "CUSTOMER_LBL": "Cliente",
         "DESCRIPTION_LBL": "Descripción",
-        "DESCRIPTION": "Servicio mensual iurest",
+        "DESCRIPTION": "Licencia de software para el desarrollo comercial de contenidos digitales. Servicio mensual comeygana",
         "PERIOD_LBL": "Periodo",
-        "AMOUNT_LBL": "Valor sin IVA",
+        "AMOUNT_LBL": "Valor",
         "SUBTOTAL": "SubTotal: ",
         "IVA": "IVA: ",
         "TOTAL": "Total: ",
@@ -1205,8 +1292,8 @@
     },
     "ADMIN_SIGNUP": {
         "HOME_CONTENT": {
-            "TITLE": "It improves the service of your restaurant and the attention to your clients with our system",
-            "SUB_TITLE": "It reduces time receiving and delivering the orders of your diners"
+            "TITLE": "Know and reward your customers for their loyalty",
+            "SUB_TITLE": "It reduces time receiving and delivering the orders of your dinersWe offer you a quick and easy system that allows you to create a stable relationship with your customers through a customizable points system"
         },
         "ABOUT_CONTENT": {
             "MSG_1": "Add the detailed information of the menu, in order to the clients can see it, and ordering from his phones, tablets or computers",
@@ -1234,6 +1321,9 @@
         "MIN_LENGTH_FIRSTNAME": "",
         "MAX_LENGTH_FIRSTNAME": "Your firstame cannot exceed 70 characters long",
         "LASTNAME": "Lastname",
+        "FULLNAME": "Fullname",
+        "REQUIRED_FULLNAME": "You must include a fullname",
+        "MAX_LENGTH_FULLNAME": "Your fullname cannot exceed 200 characters long",
         "REQUIRED_LASTNAME": "You must include a lastname",
         "MIN_LENGTH_LASTNAME": "",
         "MAX_LENGTH_LASTNAME": "Your lastame cannot exceed 70 characters long",
@@ -1261,12 +1351,12 @@
         "SIGNIN": "Sign In",
         "LABEL_LEGAL": "By clicking on 'Register', ",
         "LABEL_LEGAL_END": "you agree the terms and conditions.",
-        "GENERAL_INFO": "Personal information",
+        "GENERAL_INFO": "Sign up for free",
         "USER_PASSWD": "User and password",
         "PAYMENT_PLAN_INFO": {
             "HOW_ITS_WORKS": "How its works?",
             "FIRST_DAYS_TITLE": "First days",
-            "FIRST_DAYS_CONTENT": "Starting from the restaurant register day to the first day of the next month. you can able to use iurest completely free.",
+            "FIRST_DAYS_CONTENT": "Starting from the restaurant register day to the first day of the next month. you can able to use comeygana completely free.",
             "FIRST_DAYS_SUGGEST": "We recommend that you register in the first days of the month in order to enjoy more the service.",
             "ABOUT_MONTHLY_PAYMENT": "About monthly payment",
             "ABOUT_MONTHLY_PAYMENT_TEXT_1": "Starting from 1 to 5 of each month, after you configure the number of tables that will be use by restaurant, you can able to pay just for the restaurants and tables that you are going to use in that month.",
@@ -1274,16 +1364,21 @@
             "ABOUT_MONTHLY_PAYMENT_TEXT_3": "The charge is:",
             "ABOUT_MONTHLY_PAYMENT_TEXT_4": "The price by restaurant",
             "ABOUT_MONTHLY_PAYMENT_TEXT_5": "The unit price of table * number of tables by restaurant",
-            "REACTIVATE_IUREST_SERVICE": "Reactivate iurest service",
+            "REACTIVATE_IUREST_SERVICE": "Reactivate comeygana service",
             "REACTIVATE_IUREST_SERVICE_CONTENT": "If you can't able to pay in the normal payment period (1 to 5 of each month), you have the possibility to reactivate your restaurants in the remaining days of the month, the charge will be made for the total price of the month.",
             "CALCULATOR": "Pricing calculator",
             "RESTAURANT_PRICE": "Price by restaurant",
             "TABLE_PRICE": "Unit price of table",
             "TOTAL": "Total"
-        }
+        },
+        "ORDER_MANAGEMENT": "Notify waiters/waitress",
+        "ORDER_MANAGEMENT_TEXT": "The orders that your clients make will be assigned to the servers that you link in the system, the orders can be viewed from any mobile device or computer.",
+        "ORDERS_DAY": "Orders of the day",
+        "ORDERS_DAY_TEXT": "Through the cashier role, you can see the detailed information of the orders that have been made in your restaurant, and thus be able to identify what is consumed by each client and the rewards that have been redeemed.",
+        "COPYRIGHT": "All rights reserved"
     },
     "ADMIN_DASHBOARD": {
-        "TITLE": "Welcome to iurest",
+        "TITLE": "Welcome to comeygana",
         "CARD_CONTENT": "Your best investment. Enjoy a new experience with the platform that will grow your business.",
         "LINK": {
             "NEW_RESTAURANT": "Restaurants",
@@ -1293,7 +1388,7 @@
         },
         "SALES": "Sales ",
         "USERS": "Active users",
-        "ITEMS": "Items sold",
+        "ITEMS": "Items ordered today",
         "SOLD": "Sold",
         "ADDITIONS": "Additions",
         "GARNISHFOOD": "Side dishes",
@@ -1304,12 +1399,59 @@
         "BUSY": "Busy tables",
         "THERE_NOT_RESTAURANTS": "No restaurants registered yet",
         "RESTAURANT_REGISTER": "Restaurant registration",
-        "MESSAGE": "Register one to enable this option"
+        "MESSAGE": "Register one to enable this option",
+        "REWARDS": "Rewards redeemed today",
+        "ITEMS_HISTORY": "Items ordered historically",
+        "REWARDS_HISTORY": "Rewards redeemed historically"
+    },
+    "ITEM_UNIT_CHART": {
+        "TODAY": "Today",
+        "YESTERDAY": "Yesterday",
+        "THIS_WEEK": "This week",
+        "SEVEN_DAYS": "Last 7 days",
+        "THIRTY_DAYS": "Last 30 days",
+        "FROM": "From",
+        "TO": "to",
+        "CHART_TITLE": "Units of items ordered today",
+        "UNITS_LBL": "Units",
+        "ITEMS_LBL": "Items",
+        "CHART_SUBTITLE": "Sorted alphabetically"
+    },
+    "ITEM_HISTORY_CHART": {
+        "YESTERDAY": "Yesterday",
+        "THIS_WEEK": "This week",
+        "SEVEN_DAYS": "Last 7 days",
+        "THIRTY_DAYS": "Last 30 days",
+        "CHART_TITLE": "Units of items ordered by time range",
+        "UNITS_LBL": "Units",
+        "ITEMS_LBL": "Items",
+        "CHART_SUBTITLE": "Sorted alphabetically"
+    },
+    "REWARD_UNIT_CHART": {
+        "TODAY": "Today",
+        "YESTERDAY": "Yesterday",
+        "THIS_WEEK": "This week",
+        "SEVEN_DAYS": "Last 7 days",
+        "THIRTY_DAYS": "Last 30 days",
+        "CHART_TITLE": "Units of rewards redeemed today",
+        "UNITS_LBL": "Units",
+        "REWARDS_LBL": "Rewards",
+        "CHART_SUBTITLE": "Sorted alphabetically"
+    },
+    "REWARD_HISTORY_CHART": {
+        "YESTERDAY": "Yesterday",
+        "SEVEN_DAYS": "Last 7 days",
+        "THIRTY_DAYS": "Last 30 days",
+        "CHART_TITLE": "Units of rewards redeemed by time range",
+        "UNITS_LBL": "Units",
+        "REWARDS_LBL": "Rewards",
+        "CHART_SUBTITLE": "Sorted alphabetically"
     },
     "ENABLE_DISABLED": {
-        "BTN_TOGGLE_MSG": "Enable/disable Item",
+        "TITLE_TOGGLE_MSG": "Enable/disable Item",
+        "BTN_TOGGLE_MSG": "ENABLE",
         "DIALOG_SUBTITLE": "Change the restaurant where you want to enable/disable the item",
-        "CLOSE_DIALOG": "Close",
+        "CLOSE_DIALOG": "CLOSE",
         "AVAILABILITY_CHANGED": "Item availability changed"
     },
     "NOT_FOUND": {
@@ -1334,44 +1476,31 @@
         "ENTER": "Enter Code",
         "CHANGE_TABLE_OK": "Table change applied successfully",
         "TABLE_DESTINY_NOT_EXISTS": "The code for the new table does not exist. Please try again.",
-        "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the iurest service",
+        "TABLE_DESTINY_NO_ACTIVE": "The table entered is not active for the comeygana service",
         "TABLE_DESTINY_NO_RESTAURANT": "The code of the table entered does not belong to the restaurant where you are located. Please try again.",
-        "PENDING_ORDERS": "You have orders pending to confirm affecting your payment. Please check and try again.",
-        "ORDERS_PAY_PROCESS": "You have orders in process of payment. It is not possible to change of table.",
         "WAITER_CALL_PENDING": "There are calls request to the waiter/waitress pending to be served. Once the call is attended you can change the table.",
         "TABLE_DESTINY_STATUS_ERROR": "An error has occurred while validating the status of the new table. Please try again.",
         "GENERAL_ERROR": "An error has occurred while changing the table. Please try again.",
         "SAME_TABLE_ERROR": "It is not possible to perform the operation with the actual table code. Please check and try again."
     },
     "EXIT_TABLE": {
-        "RESTAURANT_EXIT": "Restaurant exit",
-        "RESTAURANT_EXIT_CONFIRM": "Are you sure you want to leave the restaurant?",
-        "LEAVE_RESTAURANT_MSG": "You left the restaurant. See you later!",
-        "ORDERS_REGISTERED": "You have orders registered!",
-        "ORDERS_CANCEL_CONFIRM": "If you leave the restaurant the orders will be canceled. Are you sure to leave?",
-        "ORDERS_PENDING_CONFIRM": "Orders to be confirmed!",
-        "ORDERS_MUST_BE_ATTENDED": "Orders must be served to leave the restaurant",
+        "RESTAURANT_EXIT": "Establishment exit",
+        "RESTAURANT_EXIT_CONFIRM": "Are you sure you want to leave the establishment?",
+        "LEAVE_RESTAURANT_MSG": "You left the establishment. See you later!",
+        "ORDERS_SELECTED": "You have orders selected!",
+        "ORDERS_CANCEL_CONFIRM": "If you leave the establishment the orders will be canceled. Are you sure to leave?",
         "PENDING_WAITER_CALL": "Calls to the waiter/waitress are pending",
         "WAITER_CALLS_MSG": "The calls must be attended by the waiter/waitress or cancel by you before leaving",
-        "PENDING_PAYMENTS": "You have pending payments",
-        "PENDING_PAYMENTS_MSG": "A waiter/waitress will come to your table and receive your payment so you can leave",
-        "ORDERS_DELIVERED": "You have delivered orders",
-        "ORDERS_DELIVERED_MSG": "Pay the delivered orders so you can leave the restaurant",
-        "INVALID_OPERATION": "Invalid operation",
-        "CALL_WAITER_MSG": "The status of your orders don't allow you to leave the restaurant. Do you want to call a waiter/waitress to manage your orders?",
-        "WAITER_HAS_BEEN_CALLED": "The waiter/waitress has been called",
-        "WAITER_ON_THE_WAY": "Waiter/waitress on the way",
-        "WAITER_ON_THE_WAY_CALL": "A waiter/waitress has received the request and is going to your table",
-        "CALLED_CANCELED": "Call canceled",
-        "CANCEL_ORDERS_MSG": "Your orders delivered or in Process will be canceled ",
-        "CANCEL_CALL": "Cancel Call",
-        "OPTION_LEAVE_RESTAURANT": "This option allows you to leave the restaurant where you are",
+        "OPTION_LEAVE_RESTAURANT": "This option allows you to leave the establishment where you are",
         "EXIT_MSG": "Exit",
-        "THERE_IS_NOT_REST": "You are not in a restaurant",
+        "THERE_IS_NOT_REST": "You are not in a establishment",
         "THERE_IS_NOT_REST_MSG": "Go to the order option and enter the code",
         "GO_TO_ORDERS": "Go to Orders",
         "ACCEPT": "Accept",
-        "GENERAL_ERROR": "An error has occurred. Try again."
+        "GENERAL_ERROR": "An error has occurred. Try again.",
+        "ORDERS_CONFIRMED": "You have orders confirmed!",
+        "ORDERS_CONFIRMED_MSG": "Tell a waiter/waitress that you will leave the establishment to cancel your orders",
+        "ERROR_LEAVE_RESTAURANT": "A problem has occurred. Please try again"
     },
     "EXIT_TABLE_CONFIRM": {
         "CUSTOMER": "Customer",
@@ -1418,7 +1547,7 @@
         "ORDER_PREPARED": "Cooked",
         "ORDER_DELIVERED": "Delivered",
         "ORDER_TRANSLATE": "In Transfer",
-        "PENALIZE_MSG": "Creating a penalty, will mark the user on iurest system for notify the administrator when his/her is in establishment again",
+        "PENALIZE_MSG": "Creating a penalty, will mark the user on comeygana system for notify the administrator when his/her is in establishment again",
         "PENALIZE_TABLE": "The penalty will delete the user of the table",
         "PENALIZE_CONFIRM_MSG": "and cancel all his/her orders. Do you want to continue creating the penalty?",
         "ACCOUNT_ERROR": "An error has occurred with the user account. Please check if the user is still at the table with the option ADMINISTRATION -> TABLES CONTROL",
@@ -1491,7 +1620,7 @@
         "RESTAURANTS_PROFILE_MSG": "Create the profile of your restaurants for everyone to see",
         "SELECT_RESTAURANT": "Select Restaurant",
         "SELECT_RESTAURANT_TO_MODIFY": "Please select a restaurant to create or modify your profile",
-        "PROFILE_SUBTITLE": "Enter the following information so that people know you more when looking for you in iurest. You can modify the information to keep it updated.",
+        "PROFILE_SUBTITLE": "Enter the following information so that people know you more when looking for you in comeygana. You can modify the information to keep it updated.",
         "GENERAL_INFO": "General Information",
         "DESCRIPTION": "Write about your restaurant. Tell us about your story, what motivates you, your food and your services",
         "DESCRIPTION_LBL": "Restaurant Description",
@@ -1521,7 +1650,10 @@
         "PROFILE_UPDATED": "Restaurant Profile Updated",
         "PROFILE_CREATED": "Restaurant Profile Created",
         "REMOVE_IMAGE_CONFIRM": "are you sure to delete the image?",
-        "IMAGE_REMOVED": "Image deleted"
+        "IMAGE_REMOVED": "Image deleted",
+        "FOOD": "Food",
+        "TYPE_OF_FOOD": "Types of food",
+        "TYPE_OF_FOOD_MSG": "Select the type(s) of food they offer in your restaurant"
     },
     "RESTAURANT_PROFILE_DETAIL": {
         "VIEW_MENU": "View Menu",
@@ -1539,5 +1671,167 @@
         "ADDRESS": "Address",
         "READ_MORE": "Read more",
         "READ_LESS": "Read less"
+    },
+    "AFTER_RESTAURANT_CREATION": {
+        "A": "Go to Administrator/collaborators option, and create the employees of the restaurant",
+        "B": "Go to Administrator/Tables/Search tables, to select and print the QR code of the tables",
+        "C": "Charge the information of your menu from the menu option, in order to the users can see it from their devices",
+        "NOT_SHOW": "Do not show again"
+    },
+    "REWARD": {
+        "THERE_NOT_ESTABLISHMENTS": "There are not establishment register yet",
+        "MESSAGE": "Register at least one establishment to enable this option",
+        "ESTABLISHMENT_REGISTER": "Register Establishment",
+        "MSG_INITIAL": "Make an orderly and easy way to view your menu",
+        "CREATE_NEW_ITEM": "Create new item",
+        "TITLE": "Rewards",
+        "SUBTITLE": "Create the rewards for your consumers. Enter the items you will to grant (units), the item and points needed to redeem the reward",
+        "QUANTITY": "Quantity",
+        "ESTABLISHMENTS": "Select the establishments where the reward is available",
+        "NO_ESTABLISHMENTS_CREATED": "There are not establishments created on the platform",
+        "POINTS": "Points",
+        "NO_ESTABLISHMENTS": "There are not establishments",
+        "MODIFY": "MODIFY",
+        "REMOVE": "REMOVE",
+        "SELECT_ITEM": "Select item",
+        "SELECT_POINTS": "Select points",
+        "REWARD_CREATED": "Reward created",
+        "REMOVE_TITLE": "Remove reward",
+        "REMOVE_MSG": "Do you want to remove the reward?",
+        "REWARD_REMOVED": "Reward removed",
+        "EDIT_REWARD": "Reward Edition",
+        "REWARD_EDITED": "Reward edited"
+    },
+    "REWARD_DETAIL": {
+        "REWARD_TITLE": "Rewards",
+        "POINTS_TO_REDEEM": "Available points to redeem",
+        "POINTS": "Points",
+        "UNAVAILABLE": "Unavailable",
+        "REDEEM": "Redeem",
+        "GET_POINTS": "Get points",
+        "REWARD_AGGREGATED": "Reward aggregated",
+        "ERROR": "Error aggregating reward. Try again",
+        "ORDER_ERROR": "You can redeem maximum one reward per order",
+        "REWARDS_MSG": "Redeeming a reward and the item is free! Enjoy it!",
+        "NO_REWARDS": "The are no rewards"
+    },
+    "CUSTOMER_POINTS": {
+        "NO_POINTS_MSG": "You have not accumulated points in any restaurant yet. Encourage!",
+        "GO_TO_ORDERS": "Go to orders",
+        "ADDRESS": "Address",
+        "ACCUMULATED_POINTS": "Accumulated points",
+        "POINTS": "Points",
+        "YOU_HAVE": "You have",
+        "POINTS_FOR_EXPIRING": "points for expiring the day",
+        "DETAIL": "Detail"
+    },
+    "POINTS_DETAIL": {
+        "TITLE": "Orders and points history",
+        "SUBTITLE": "We present the orders you have ordered in the restaurant, the points you have earned and redeemed",
+        "ORDER": "Order",
+        "YOU_EARNED": "You earned",
+        "POINTS": "Points",
+        "YOU_REDEEMED": "You redeemed",
+        "QUANT": "Quant. ",
+        "REWARD": "Reward",
+        "TOTAL": "Total"
+    },
+    "OPTIONS": {
+        "OPTION_CREATION": "Create options",
+        "OPTION_TEXT": "Create the options you need for your items",
+        "OPTION_EDIT": "Option edition",
+        "RESTAURANTS": "Restaurants",
+        "NO_RESTAURANT": "No selected restaurant ",
+        "RESTAURANT_OPTION": "Select the restaurants where the option is available",
+        "NO_RESTAURANT_CREATED": "There are not restaurants created on the platform",
+        "MODIFY": "Edit",
+        "ACTIVATE": "Activate",
+        "INACTIVATE": "Inactivate",
+        "REMOVE": "Remove",
+        "OPCION_CREATED": "Option created correctly",
+        "OPTION_EDITED": "Option edited correctly",
+        "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
+        "RESTAURANT_REGISTER": "Register Restaurant",
+        "MESSAGE": "Register at least one restaurant to enable this option",
+        "REMOVE_TITLE": "Option remove",
+        "REMOVE_MSG": "Do you want to remove the option?",
+        "OPTION_REMOVED": "Option removed correctly",
+        "OPTION_NOT_REMOVED": "The option has associated values, it could not be removed"
+    },
+    "OPTION_VALUE": {
+        "THERE_NOT_RESTAURANTS": "There are not restaurants register yet",
+        "RESTAURANT_REGISTER": "Register Restaurant",
+        "MESSAGE": "Register at least one restaurant to enable this option",
+        "OPTION_VALUE_CREATION": "Create Values",
+        "OPTION_SELECTION": "Select option",
+        "OPTION_VALUE_TEXT": "Create the values to the options, then you can use it when creating an item",
+        "OPTION_VALUE_EDIT": "Value edition",
+        "OPTION": "Option",
+        "MODIFY": "Edit",
+        "ACTIVATE": "Activate",
+        "INACTIVATE": "Inactivate",
+        "REMOVE": "Remove",
+        "OPTION_VALUE_CREATED": "Option created successfully",
+        "OPTION_VALUE_EDITED": "Option edited successfully",
+        "REMOVE_TITLE": "Option remove",
+        "REMOVE_MSG": "Do you want to remove option?",
+        "OPTION_VALUE_REMOVED": "Option removed correctly",
+        "OPTION_VALUE_NOT_REMOVED": "The option have items, it could not be removed"
+    },
+    "ORDERS_TODAY": {
+        "TITLE": "It consults orders of the day",
+        "ORDERS_TODAY_TEXT": "Selected the restaurant and fill username/email field",
+        "NAME_FILTER": "Search by name or email",
+        "SELECT_ESTABLISHMENT": "Select restaurant",
+        "ALL_ESTABLISHMENT": "All restaurants",
+        "NO_RECORDS_FOUND": "No orders found",
+        "ACCUMULATED": "accumulated",
+        "REDEEMED": "Redeemed"
+    },
+    "TYPE_OF_FOOD": {
+        "GERMAN_FOOD": "German food",
+        "AMERICAN_FOOD": "American food",
+        "ARABIC_FOOD": "Arabic food",
+        "ARGENTINE_FOOD": "Argentine food",
+        "ASIAN_FOOD": "Asian food",
+        "BRAZILIAN_FOOD": "Brazilian food",
+        "HOMEMADE_FOOD": "homemade food",
+        "CHILEAN_FOOD": "Chilean food",
+        "CHINESE_FOOD": "Chinese Food",
+        "COLOMBIAN_FOOD": "Colombian food",
+        "COREAN_FOOD": "Corean Food",
+        "MIDDLE_EASTERN_FOOD": "Middle eastern food",
+        "SPANISH_FOOD": "Spanish food",
+        "FRENCH_FOOD": "French food",
+        "FUSION_FOOD": "Fusion food",
+        "GOURMET_FOOD": "Gourmet food",
+        "GREEK_FOOD": "Greek food",
+        "INDIAN_FOOD": "Indian food",
+        "INTERNATIONAL_FOOD": "International food",
+        "ITALIAN_FOOD": "Italian food",
+        "JAPANESE_FOOD": "Japanese food",
+        "LATIN_AMERICAN_FOOD": "Latin American food",
+        "MEDITERRANEAN_FOOD": "Mediterranean food",
+        "MEXICAN_FOOD": "Mexican food",
+        "ORGANIC_FOOD": "Organic food",
+        "PERUVIAN_FOOD": "Peruvian food",
+        "FAST_FOOD": "Fast food",
+        "THAI_FOOD": "Thai food",
+        "VEGETARIAN_FOOD": "Vegetarian Food",
+        "VIETNAMESE_FOOD": "Vietnamese food",
+        "OTHERS": "Others",
+        "BARBECUE": "Barbecue",
+        "PASTA": "Pasta",
+        "FISH_AND_SEAFOOD": "Fish and seafood",
+        "PIZZA": "Pizza",
+        "SANDWICHES": "Sándwiches",
+        "SUSHI": "Sushi",
+        "VEGANISM": "Veganism"
+    },
+    "BAG_PLAN": {
+        "FREE": "FREE",
+        "SMALL": "NORMAL",
+        "MEDIUM": "EXECUTIVE",
+        "LARGE": "A LA CARTÉ"
     }
 }

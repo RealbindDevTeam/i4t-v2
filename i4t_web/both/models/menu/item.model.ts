@@ -11,13 +11,14 @@ export interface Item extends CollectionObject {
     name: string;
     description: string;
     time: string;
-    restaurants: ItemRestaurant[];
+    establishments: ItemEstablishment[];
     prices: ItemPrice[];
     observations: boolean;
     image?: ItemImage;
-    garnishFoodQuantity: number;
-    garnishFood: string[];
+    options: ItemOption[];
     additions: string[];
+    has_reward?: boolean;
+    reward_points?: string;
 }
 
 /**
@@ -40,13 +41,15 @@ export interface ItemImage {
 }
 
 /**
- * Item Restaurant model
+ * Item Establishment model
  */
-export interface ItemRestaurant {
-    restaurantId: string;
+export interface ItemEstablishment {
+    establishment_id: string;
     price: number;
     itemTax?: number;
     isAvailable: boolean;
+    recommended?: boolean;
+    aply_reward?: boolean;
 }
 
 /**
@@ -56,4 +59,22 @@ export interface ItemPrice {
     currencyId: string;
     price: number;
     itemTax?: number;
+}
+
+/**
+ * Item Option model
+ */
+export interface ItemOption {
+    option_id: string;
+    is_required: boolean;
+    values: ItemOptionValue[];
+}
+
+/**
+ * Item Option Value model
+ */
+export interface ItemOptionValue {
+    option_value_id: string;
+    have_price: boolean;
+    price?: number;
 }

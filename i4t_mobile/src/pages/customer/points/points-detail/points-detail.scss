@@ -1,0 +1,29 @@
+points-detail{
+    .order {
+        margin: 0 -16px;
+
+        .creation-date {
+            font-weight: bold;
+        }
+
+        .reward-points {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .redeemed-points {
+            font-weight: bold;
+            color: darkgoldenrod;
+        }
+    }
+
+    .item-name {
+        display: inline-flex;
+        width: 60%;
+    
+        span {
+            width: 100%;
+            white-space: normal;
+        }
+    }
+}

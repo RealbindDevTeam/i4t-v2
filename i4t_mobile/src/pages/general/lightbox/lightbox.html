@@ -1,0 +1,15 @@
+<ion-header>
+    <ion-buttons start>
+        <button ion-button clear (click)="dismiss(true)">
+            <span ion-text color="primary" showWhen="ios">Cancel</span>
+            <ion-icon name="md-close" showWhen="android"></ion-icon>
+        </button>
+    </ion-buttons>
+</ion-header>
+<ion-content>
+    <ion-slides class="lightbox" zoom="true">
+        <ion-slide>
+            <img [src]="_img"/>
+        </ion-slide>
+    </ion-slides>
+</ion-content>

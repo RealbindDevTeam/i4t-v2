@@ -1,0 +1,21 @@
+<ion-header>
+    <ion-navbar no-border-bottom>
+        <ion-title>
+            {{'MOBILE.SEGMENTS.WIN_EATING' | translate}}
+        </ion-title>
+    </ion-navbar>
+    <ion-segment [(ngModel)]="_option">
+        <ion-segment-button value="orders">
+            {{'MOBILE.SEGMENTS.ORDERS' | translate}}
+        </ion-segment-button>
+        <ion-segment-button value="options">
+            {{'MOBILE.SEGMENTS.OPTIONS' | translate}}
+        </ion-segment-button>
+    </ion-segment>
+</ion-header>
+<ion-content text-wrap>
+    <div [ngSwitch]="_option">
+        <page-orders *ngSwitchCase="'orders'"></page-orders>
+        <page-options *ngSwitchCase="'options'"></page-options>
+    </div>
+</ion-content>

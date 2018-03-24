@@ -1,0 +1,23 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>{{'MOBILE.SECTIONS.MENU' | translate}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content text-wrap>
+    <ion-card *ngFor="let establishment of _establishments | async" (click)="viewEstablishmentProfile(establishment)">
+        <ion-card-content>
+            <button ion-item detail-none>
+                <ion-thumbnail item-left>
+                    <img *ngIf="establishment.image" src="{{ establishment.image.url }}">
+                    <img *ngIf="!establishment.image" src="assets/img/default-restaurant.png">
+                </ion-thumbnail>
+                <h2>{{establishment.name}}</h2>
+                <p>
+                    <ion-icon name="pin" item-start></ion-icon>
+                    {{establishment.address}}{{getCityName(establishment.cityId)}}
+                </p>
+            </button>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

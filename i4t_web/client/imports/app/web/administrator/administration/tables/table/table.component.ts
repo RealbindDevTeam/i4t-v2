@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
-import { generateQRCode, createTableCode } from '../../../../../../../../both/methods/restaurant/restaurant.methods';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
-import { Table } from '../../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../../both/collections/restaurant/table.collection';
+import { generateQRCode, createTableCode } from '../../../../../../../../both/methods/establishment/establishment.methods';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
+import { Table } from '../../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../../both/collections/establishment/table.collection';
 import { Parameters } from '../../../../../../../../both/collections/general/parameter.collection';
 import { Parameter } from '../../../../../../../../both/models/general/parameter.model';
 
@@ -27,27 +27,27 @@ export class TableComponent implements OnInit, OnDestroy {
 
   private _user = Meteor.userId();
   private tableForm: FormGroup;
-  private restaurantSub: Subscription;
+  private establishmentSub: Subscription;
   private tableSub: Subscription;
   private parameterSub: Subscription;
+  private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
-  private restaurants: Observable<Restaurant[]>;
+  private establishments: Observable<Establishment[]>;
   private tables: Observable<Table[]>;
   private tables2: Table[];
 
-  selectedRestaurantValue: string;
-  private restaurantCode: string = '';
+  private selectedEstablishmentValue: string;
   private tables_count: number = 0;
   private all_checked: boolean;
   private enable_print: boolean;
-  private restaurant_name: string = '';
+  private establishment_name: string = '';
 
   private tables_selected: Table[];
   private isChecked: false;
   private tooltip_msg: string = '';
   private show_cards: boolean;
   finalImg: any;
-  private _thereAreRestaurants: boolean = true;
+  private _thereAreEstablishments: boolean = true;
   private _thereAreTables: boolean = true;
 
   /**
@@ -64,7 +64,7 @@ export class TableComponent implements OnInit, OnDestroy {
     private _userLanguageService: UserLanguageService) {
     translate.use(this._userLanguageService.getLanguage(Meteor.user()));
     translate.setDefaultLang('en');
-    this.selectedRestaurantValue = "";
+    this.selectedEstablishmentValue = "";
     this.tables_selected = [];
     this.all_checked = false;
     this.enable_print = true;
@@ -77,33 +77,33 @@ export class TableComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.removeSubscriptions();
     this.tableForm = new FormGroup({
-      restaurant: new FormControl('', [Validators.required]),
+      establishment: new FormControl('', [Validators.required]),
       tables_number: new FormControl('', [Validators.required])
     });
-    this.restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+    this.establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
-        this.restaurants = Restaurants.find({ creation_user: this._user }).zone();
-        this.countRestaurants();
-        this.restaurants.subscribe(() => { this.countRestaurants(); });
+        this.establishments = Establishments.find({ creation_user: this._user }).zone();
+        this.countEstablishments();
+        this.establishments.subscribe(() => { this.countEstablishments(); });
       });
     });
 
-    this.tableSub = MeteorObservable.subscribe('tables', this._user).subscribe(() => {
+    this.tableSub = MeteorObservable.subscribe('tables', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
         this.tables = Tables.find({ creation_user: this._user }).zone();
         this.countTables();
         this.tables.subscribe(() => { this.countTables(); });
       });
     });
-    this.parameterSub = MeteorObservable.subscribe('getParameters').subscribe();
+    this.parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe();
     this.tooltip_msg = this.itemNameTraduction('TABLES.MSG_TOOLTIP');
   }
 
   /**
-   * Verify if restaurants exists
+   * Verify if establishments exists
    */
-  countRestaurants(): void {
-    Restaurants.collection.find({ creation_user: this._user }).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+  countEstablishments(): void {
+    Establishments.collection.find({ creation_user: this._user }).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
   }
 
   countTables(): void {
@@ -114,23 +114,23 @@ export class TableComponent implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this.restaurantSub) { this.restaurantSub.unsubscribe(); }
-    if (this.tableSub) { this.tableSub.unsubscribe(); }
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
   }
 
-  changeRestaurant(_pRestaurant) {
-    this.selectedRestaurantValue = _pRestaurant;
-    this.tableForm.controls['restaurant'].setValue(_pRestaurant);
+  changeEstablishment(_pEstablishment) {
+    this.selectedEstablishmentValue = _pEstablishment;
+    this.tableForm.controls['establishment'].setValue(_pEstablishment);
   }
 
-  changeRestaurantFilter(_pRestaurant) {
-    if (_pRestaurant == 'All') {
+  changeEstablishmentFilter(_pEstablishment) {
+    if (_pEstablishment == 'All') {
       this.tables2 = Tables.collection.find({ creation_user: Meteor.userId() }).fetch();
       this.enable_print = true;
       this.tooltip_msg = this.itemNameTraduction('TABLES.MSG_TOOLTIP');
     } else {
-      this.restaurant_name = Restaurants.findOne({ _id: _pRestaurant }).name;
-      this.tables2 = Tables.collection.find({ restaurantId: _pRestaurant, creation_user: Meteor.userId() }).fetch();
+      this.establishment_name = Establishments.findOne({ _id: _pEstablishment }).name;
+      this.tables2 = Tables.collection.find({ establishment_id: _pEstablishment, creation_user: Meteor.userId() }).fetch();
       this.enable_print = false;
       this.tooltip_msg = "";
       this.show_cards = true;
@@ -140,7 +140,7 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    if (this.selectedRestaurantValue !== "") { this.selectedRestaurantValue = ""; }
+    if (this.selectedEstablishmentValue !== "") { this.selectedEstablishmentValue = ""; }
     this.tableForm.controls['tables_number'].reset();
   }
 
@@ -199,7 +199,7 @@ export class TableComponent implements OnInit, OnDestroy {
           qr_pdf.addPage();
         }
       });
-      qr_pdf.output('save', this.restaurant_name.substr(0, 15) + '_' + file_name + '.pdf');
+      qr_pdf.output('save', this.establishment_name.substr(0, 15) + '_' + file_name + '.pdf');
       this.tables_selected = [];
     } else if (!this.all_checked && this.tables_selected.length > 0) {
       this.tables_selected.forEach(table2 => {
@@ -225,7 +225,7 @@ export class TableComponent implements OnInit, OnDestroy {
           qr_pdf.addPage();
         }
       });
-      qr_pdf.output('save', this.restaurant_name.substr(0, 15) + '_' + file_name + '.pdf');
+      qr_pdf.output('save', this.establishment_name.substr(0, 15) + '_' + file_name + '.pdf');
     }
     //qr_pdf.save('qr_codes.pdf');
   }
@@ -241,10 +241,10 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Go to add new Restaurant
+   * Go to add new Establishment
    */
-  goToAddRestaurant() {
-    this._router.navigate(['/app/restaurant-register']);
+  goToAddEstablishment() {
+    this._router.navigate(['/app/establishment-register']);
   }
 
   itemNameTraduction(itemName: string): string {

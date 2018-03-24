@@ -1,0 +1,29 @@
+.name {
+    width: 40%;
+}
+
+.select {
+    width: 40%;
+    margin-left: 2%;
+}
+
+.option-value {
+    width: 27%;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 1%;
+
+    .option-value-active {
+        color: green;
+        font-weight: bold;
+    }
+
+    .option-value-inactive {
+        color: red;
+        font-weight: bold;
+    }
+}
+
+.lh {
+    line-height: 36px;
+}
