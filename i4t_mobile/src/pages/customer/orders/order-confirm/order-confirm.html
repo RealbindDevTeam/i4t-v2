@@ -1,0 +1,69 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            {{'MOBILE.SECTIONS.CONFIRM_ORDER' | translate}}
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content>
+    <div *ngFor="let order of _orders | async">
+        <ion-item>
+            <order-detail [order]="order" [isUser]="true" [currencyCode]="_currencyCode"></order-detail>
+        </ion-item>
+        <ion-card>
+            <ion-card-content>
+                <div *ngFor="let item of order.items">
+                    <button ion-item detail-none (click)="goToItemEdit(item.itemId, item.index, order)" style="padding-left: 0">
+                        <ion-thumbnail item-left>
+                            <img src="{{getItemThumb(item.itemId)}}">
+                        </ion-thumbnail>
+                        <h2 style="white-space: normal;">{{getItemName(item.itemId)}}</h2>
+                        <p *ngIf="!item.is_reward">{{item.paymentItem}} {{_currencyCode}}</p>
+                        <p *ngIf="item.is_reward">{{'MOBILE.ORDERS.FREE' | translate}}</p>
+                        <ion-badge *ngIf="item.is_reward" style="background-color: #fff;color: #ffbf00;padding: 0;">{{'MOBILE.ORDERS.ITEM' | translate}} {{'MOBILE.ORDERS.ITEM_REDEEMED' | translate}}
+                            <ion-icon name="ribbon"></ion-icon>
+                        </ion-badge>
+                        <p *ngIf="!getItemAvailability(item.itemId)" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
+                        <p>{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{item.quantity}}</p>
+                        <ion-badge *ngIf="item.reward_points > 0 && !item.is_reward" style="background-color: #fff;color: #4CAF50;padding: 0;">{{'MOBILE.SECTIONS.GET_POINTS' | translate}} {{item.reward_points}} pts
+                            <ion-icon name="star"></ion-icon>
+                        </ion-badge>
+                        <div *ngIf="item.options.length > 0">
+                            <p *ngFor="let opt of item.options" style="white-space: normal;">{{getOptionValueName(opt.value_id)}}</p>
+                        </div>
+                        <div *ngIf="item.additions.length > 0">
+                            <p>{{'MOBILE.SECTIONS.ADDITION' | translate}}:</p>
+                            <p *ngFor="let add of item.additions" style="margin-left: 15px;white-space: normal;">- {{getAdditionName(add)}}</p>
+                        </div>
+                        <button ion-button icon-only clear item-right style="margin-right: 0px">
+                            <ion-icon name="create"></ion-icon>
+                        </button>
+                    </button>
+                    <div class="item-divider-custom"></div>
+                </div>
+                <div *ngIf="order.additions.length > 0">
+                    <div *ngFor="let addition of order.additions">
+                        <button ion-item detail-none style="padding-left: 0" (click)="showAdditionsDetail(addition, order)">
+                            <ion-thumbnail item-left>
+                                <img src="assets/img/default_addition.png">
+                            </ion-thumbnail>
+                            <h2 style="white-space: normal;">{{getAdditionName(addition.additionId)}} ({{'MOBILE.SECTIONS.ADDITION_LBL' | translate}})</h2>
+                            <p style="white-space: normal;">{{addition.paymentAddition}} {{_currencyCode}}</p>
+                            <p style="white-space: normal; margin-bottom: 11px;">{{'MOBILE.SECTIONS.QUANTITY' | translate}} {{addition.quantity}}</p>
+                            <button ion-button icon-only clear item-right style="margin-right: 0px">
+                                <ion-icon name="create"></ion-icon>
+                            </button>
+                        </button>
+                        <div class="item-divider-custom"></div>
+                    </div>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </div>
+</ion-content>
+<ion-footer class="ion-footer-custom" padding>
+    <div style="text-align: center;">
+        <button ion-button outline style="width: 46%;" (click)="cancelOrder(order)">{{'MOBILE.SECTIONS.CANCEL' | translate}}</button>
+        <button ion-button outline style="width: 46%;" (click)="confirmOrder()">{{'MOBILE.SECTIONS.CONFIRM' | translate}}</button>
+    </div>
+</ion-footer>

@@ -12,12 +12,13 @@ export interface UserDetail extends CollectionObject {
     country_id?: string;
     city_id?: string;
     other_city?: string;
+    show_after_rest_creation?: boolean;
     //
 
-    restaurant_work?: string;
+    establishment_work?: string;
     jobs?: number;
     penalties?: UserDetailPenalty[];
-    current_restaurant?: string;
+    current_establishment?: string;
     current_table?: string;
     birthdate?: Date;
     phone?: string;
@@ -25,10 +26,11 @@ export interface UserDetail extends CollectionObject {
     table_assignment_init?: number;
     table_assignment_end?: number;
     image?: UserDetailImage;
+    reward_points?: UserRewardPoints[];
 }
 
 export interface UserDetailPenalty {
-    restaurant_id: string;
+    establishment_id: string;
     date: Date;
 }
 
@@ -49,4 +51,10 @@ export class UserDetailImage {
     key?: string;
     container?: string;
     uploadId: string;
+}
+
+export interface UserRewardPoints {
+    index: number;
+    establishment_id: string;
+    points: number;
 }

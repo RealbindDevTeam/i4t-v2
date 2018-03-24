@@ -1,13 +1,13 @@
 <mat-card style="box-shadow: none">
-    <mat-card-title>{{'ENABLE_DISABLED.BTN_TOGGLE_MSG' | translate}}</mat-card-title>
+    <mat-card-title>{{'ENABLE_DISABLED.TITLE_TOGGLE_MSG' | translate}}</mat-card-title>
     <mat-card-subtitle>{{'ENABLE_DISABLED.DIALOG_SUBTITLE' | translate}}</mat-card-subtitle>
     <mat-card-content>
         <table width="100%">
             <tbody>
-                <tr *ngFor="let restaurant of data.one.restaurants">
-                    <td>{{getRestaurantName(restaurant.restaurantId)}}</td>
+                <tr *ngFor="let establishment of data.one.establishments">
+                    <td>{{getEstablishmentName(establishment.establishment_id)}}</td>
                     <td>
-                        <mat-slide-toggle style="float:right" [checked]="restaurant.isAvailable" (change)="updateAvailableFlag(restaurant.restaurantId)"></mat-slide-toggle>
+                        <mat-slide-toggle style="float:right" [checked]="establishment.isAvailable" (change)="updateAvailableFlag(establishment.establishment_id)"></mat-slide-toggle>
                     </td>
                 </tr>
             </tbody>

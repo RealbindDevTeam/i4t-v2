@@ -18,5 +18,6 @@ export const Additions = new MongoObservable.Collection<Addition>('additions');
  */
 Additions.allow({
     insert: loggedIn,
-    update: loggedIn
+    update: loggedIn,
+    remove: loggedIn
 });

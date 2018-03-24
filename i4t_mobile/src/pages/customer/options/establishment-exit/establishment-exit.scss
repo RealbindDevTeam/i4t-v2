@@ -1,0 +1,43 @@
+establishment-exit {
+
+    #res-logo {
+        text-align: center;
+        padding-top: 30px;
+        padding-bottom: 10px;
+    }
+
+    #res-logo img {
+        border-radius: 50%;
+        width: 15rem;
+        height: 15rem;
+    }
+
+    .img-cards{
+        width: 40px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .header-title {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        overflow: hidden;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-justify-content: space-between;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 4.4rem;
+        border: 0;
+        font-weight: normal;
+        line-height: normal;
+        text-align: initial;
+        text-decoration: none;
+        color: inherit;
+    }
+}

@@ -1,44 +1,35 @@
-<mat-card *ngIf="_thereAreUsers">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{'ADDITIONS.WARNING' | translate}} {{_usersCount}} {{'ADDITIONS.WARNING_2' | translate}}</mat-card-title>
-    <mat-card-subtitle style="margin-bottom: 0px">{{'ADDITIONS.WARNING_3' | translate}}</mat-card-subtitle>
-  </mat-card-header>
-</mat-card>
-
-<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreRestaurants">
-    <mat-card-content>
-        <div class="card_initial">
-            <div class="card_initial has-image">
-                <div class="card_initial-image-container">
-                    <img class="card_initial-image" 
-                        src="/images/aditions.png"/>
-                </div>
-                <div class="card_initial-copy">
-                    <div class="card_initial-tagline">
-                        {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
-                    </div>
-                    <div class="card_initial-additional-links">
-                      {{'SECTIONS.MESSAGE' | translate}}
-                    </div>
-                </div>
-                <div class="card_initial-button">
-                    <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
-                </div>
-            </div>
+<mat-card mat-cell="12" *ngIf="!_thereAreEstablishments">
+  <mat-card-content>
+    <div class="card_initial">
+      <div class="card_initial has-image">
+        <div class="card_initial-image-container">
+          <img class="card_initial-image" src="/images/aditions.png" />
         </div>
-    </mat-card-content>
+        <div class="card_initial-copy">
+          <div class="card_initial-tagline">
+            {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+          </div>
+          <div class="card_initial-additional-links">
+            {{'SECTIONS.MESSAGE' | translate}}
+          </div>
+        </div>
+        <div class="card_initial-button">
+          <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="_thereAreRestaurants">
+<mat-card *ngIf="_thereAreEstablishments">
   <mat-card-title>{{'ADDITIONS.ADDITION_CREATION' | translate}}</mat-card-title>
   <mat-card-subtitle>{{'ADDITIONS.ADDITIONS_TEXT' | translate}}</mat-card-subtitle>
   <mat-card-content>
     <form [formGroup]="_additionForm" (ngSubmit)="addAddition();">
       <div>
         <mat-form-field class="name">
-          <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="50" #inputName>
-          <mat-hint align="end">{{inputName.value.length}} / 50</mat-hint>
+          <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="30" #inputName>
+          <mat-hint align="end">{{inputName.value.length}} / 30</mat-hint>
         </mat-form-field>
       </div>
       <div>
@@ -47,7 +38,7 @@
         <p *ngIf="_showTaxes" class="message">{{'ADDITIONS.ADDITION_TAXES' | translate}}</p>
         <div *ngFor="let currency of _currencies | async">
           <div *ngIf="_showCurrencies" formGroupName="currencies" class="currencies">
-            <div *ngFor="let cur of _restaurantCurrencies">
+            <div *ngFor="let cur of _establishmentCurrencies">
                 <mat-form-field *ngIf="currency._id === cur" class="currency">
                   <input matInput required [formControlName]="cur" [class.invalid]="!_additionForm.controls.currencies.valid" type="number" placeholder="{{'ADDITIONS.ADITION_PRICE' | translate}}" min="0" [step]="currency.decimal">
                   <span matSuffix>{{currency.code}} - {{currency.name | translate}} </span>
@@ -55,9 +46,10 @@
             </div>
           </div>
           <div *ngIf="_showTaxes" formGroupName="taxes" class="taxes">
-            <div *ngFor="let tax of _restaurantTaxes">
+            <div *ngFor="let tax of _establishmentTaxes">
               <mat-form-field *ngIf="currency._id === tax" class="tax">
-                <input matInput required [formControlName]="tax" [class.invalid]="!_additionForm.controls.taxes.valid" type="number" placeholder="{{'ADDITIONS.TAXES' | translate}}" min="0" max="100">
+                <input matInput required [formControlName]="tax" [class.invalid]="!_additionForm.controls.taxes.valid" type="number" placeholder="{{'ADDITIONS.TAXES' | translate}}"
+                  min="0" max="100">
                 <span matSuffix>% {{currency.code}} - {{currency.name | translate}} </span>
               </mat-form-field>
             </div>
@@ -66,9 +58,10 @@
       </div>
       <button mat-raised-button class="secondary-button" type="button" (click)="cancel()">{{'CANCEL' | translate}}</button>
       <button mat-raised-button class="primary-button" [disabled]="!_additionForm.valid" type="submit">{{'CREATE' | translate}}</button>
-    </form>    
+    </form>
   </mat-card-content>
 </mat-card>
+
 <mat-card *ngFor="let addition of _additions | async" class="cards">
   <mat-card-subtitle class="card-subtitle">
     <label class="prices">{{'ADDITIONS.PRICES' | translate}}</label>&emsp;-&emsp;
@@ -77,11 +70,13 @@
   <mat-card-title class="card-title">{{addition.name}}</mat-card-title>
   <mat-card-content>
     <div class="card-addition-price">{{showAdditionPrices(addition.prices)}}</div>
-    <div class="card-addition-tax">{{showAdditionTaxes(addition.prices)}}</div>    
+    <div class="card-addition-tax">{{showAdditionTaxes(addition.prices)}}</div>
   </mat-card-content>
-  <mat-card-actions class="card-actions">
+  <mat-card-actions align="end">
     <button mat-raised-button (click)="open(addition)" class="secondary-button">{{'ADDITIONS.MODIFY' | translate}}</button>
-    <button mat-raised-button *ngIf="addition.is_active" class="inactive-button" (click)="updateStatus(addition)">{{'ADDITIONS.INACTIVATE' | translate}}</button>
-    <button mat-raised-button *ngIf="!addition.is_active" class="active-button" (click)="updateStatus(addition)">{{'ADDITIONS.ACTIVATE' | translate}}</button>
+    <button mat-button (click)="confirmRemove(addition)">{{'SECTIONS.REMOVE' | translate}}</button>
+    <span class="app-flex-filler lh">
+      <mat-slide-toggle [(checked)]="addition.is_active" (change)="updateStatus(addition)"></mat-slide-toggle>
+    </span>
   </mat-card-actions>
 </mat-card>

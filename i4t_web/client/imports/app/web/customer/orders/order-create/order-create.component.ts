@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,13 +16,15 @@ import { Item } from '../../../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../../../both/collections/menu/item.collection';
 import { OrderMenu } from '../order-navigation/order-menu';
 import { OrderNavigationService } from '../../../services/navigation/order-navigation.service';
-import { GarnishFood } from '../../../../../../../both/models/menu/garnish-food.model';
-import { GarnishFoodCol } from '../../../../../../../both/collections/menu/garnish-food.collection';
 import { Addition } from '../../../../../../../both/models/menu/addition.model';
 import { Additions } from '../../../../../../../both/collections/menu/addition.collection';
-import { Order, OrderItem, OrderAddition } from '../../../../../../../both/models/restaurant/order.model';
-import { Orders } from '../../../../../../../both/collections/restaurant/order.collection';
+import { Order, OrderItem, OrderAddition, OptionReference, ValueReference, OrderOption } from '../../../../../../../both/models/establishment/order.model';
+import { Orders } from '../../../../../../../both/collections/establishment/order.collection';
 import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
+import { Option } from '../../../../../../../both/models/menu/option.model';
+import { Options } from '../../../../../../../both/collections/menu/option.collection';
+import { OptionValue } from '../../../../../../../both/models/menu/option-value.model';
+import { OptionValues } from '../../../../../../../both/collections/menu/option-value.collection';
 import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/alert-confirm.component';
 
 @Component({
@@ -32,13 +34,13 @@ import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/ale
 })
 export class OrderCreateComponent implements OnInit, OnDestroy {
 
-    @Input() restaurantId: string;
+    @Input() establishmentId: string;
     @Input() tableQRCode: string;
-    @Input() restaurantCurrency: string;
+    @Input() establishmentCurrency: string;
     @Output() finishOrdenCreation = new EventEmitter();
 
     private _newOrderForm: FormGroup;
-    private _garnishFormGroup: FormGroup = new FormGroup({});
+    private _optionsFormGroup: FormGroup = new FormGroup({});
     private _additionsFormGroup: FormGroup = new FormGroup({});
     private _additionsDetailFormGroup: FormGroup = new FormGroup({});
     private _mdDialogRef: MatDialogRef<any>;
@@ -47,24 +49,25 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     private _categoriesSub: Subscription;
     private _subcategoriesSub: Subscription;
     private _itemsSub: Subscription;
-    private _garnishFoodSub: Subscription;
     private _additionsSub: Subscription;
     private _ordersSub: Subscription;
     private _currenciesSub: Subscription;
+    private _optionSub: Subscription;
+    private _optionValuesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _sections: Observable<Section[]>;
     private _categories: Observable<Category[]>;
     private _subcategories: Observable<Subcategory[]>;
     private _items: Observable<Item[]>;
+    private _itemsRecommended: Observable<Item[]>;
     private _itemDetail: Observable<Item[]>;
-    private _garnishFoodCol: Observable<GarnishFood[]>;
     private _additions: Observable<Addition[]>;
+    private _options: Observable<Option[]>;
+    private _optionValues: Observable<OptionValue[]>;
 
     private _finalPrice: number = 0;
-    private _maxGarnishFoodElements: number = 0;
-    private _garnishFoodElementsCount: number = 0;
     private _numberColums: number = 3;
-    private _showGarnishFoodError: boolean = false;
     private _unitPrice: number = 0;
     private _lastQuantity: number = 1;
     private _quantityCount: number = 1;
@@ -75,6 +78,11 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
 
     private _orderMenus: OrderMenu[] = [];
     private orderMenuSetup: OrderMenu[] = [];
+
+    private _finalPoints: number = 0;
+    private _unitRewardPoints: number = 0;
+    private _radioReferences: OptionReference[] = [];
+    private _showOptionsError: boolean = false;
 
     /**
      * OrderCreateComponent Constructor
@@ -116,55 +124,64 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * ngOnInit implementation
      */
     ngOnInit() {
+        let _optionIds: string[] = [];
         this.removeSubscriptions();
-        this._itemsSub = MeteorObservable.subscribe('itemsByRestaurant', this.restaurantId).subscribe(() => {
+        this._itemsSub = MeteorObservable.subscribe('itemsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._items = Items.find({}).zone();
+                this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
             });
         });
-        this._ordersSub = MeteorObservable.subscribe('getOrders', this.restaurantId, this.tableQRCode, ['ORDER_STATUS.REGISTERED']).subscribe(() => { });
-        this._garnishFoodSub = MeteorObservable.subscribe('garnishFoodByRestaurant', this.restaurantId).subscribe(() => {
+        this._ordersSub = MeteorObservable.subscribe('getOrders', this.establishmentId, this.tableQRCode, ['ORDER_STATUS.SELECTING']).takeUntil(this._ngUnsubscribe).subscribe(() => { });
+        this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._garnishFoodCol = GarnishFoodCol.find({}).zone();
-                GarnishFoodCol.collection.find({}).fetch().forEach((gar) => {
-                    let control: FormControl = new FormControl(false);
-                    this._garnishFormGroup.addControl(gar._id, control);
+                this._options = Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).zone();
+                this._options.subscribe(() => {
+                    this.buildOptionForm();
+                    Options.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).fetch().forEach((opt) => {
+                        _optionIds.push(opt._id);
+                    });
+                    this._optionValuesSub = MeteorObservable.subscribe('getOptionValuesByOptionIds', _optionIds).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                        this._ngZone.run(() => {
+                            this._optionValues = OptionValues.find({ option_id: { $in: _optionIds }, is_active: true }).zone();
+                        });
+                    });
                 });
             });
         });
-        this._additionsSub = MeteorObservable.subscribe('additionsByRestaurant', this.restaurantId).subscribe(() => {
+        this._additionsSub = MeteorObservable.subscribe('additionsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._additions = Additions.find({}).zone();
                 this._additions.subscribe(() => { this.buildCustomerMenu(); this.buildAdditionsForms(); });
             });
         });
-        this._sectionsSub = MeteorObservable.subscribe('sectionsByRestaurant', this.restaurantId).subscribe(() => {
+        this._sectionsSub = MeteorObservable.subscribe('sectionsByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._sections = Sections.find({}).zone();
                 this._sections.subscribe(() => { this.buildCustomerMenu(); });
             });
         });
-        this._categoriesSub = MeteorObservable.subscribe('categoriesByRestaurant', this.restaurantId).subscribe(() => {
+        this._categoriesSub = MeteorObservable.subscribe('categoriesByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._categories = Categories.find({}).zone();
                 this._categories.subscribe(() => { this.buildCustomerMenu(); });
             });
         });
-        this._subcategoriesSub = MeteorObservable.subscribe('subcategoriesByRestaurant', this.restaurantId).subscribe(() => {
+        this._subcategoriesSub = MeteorObservable.subscribe('subcategoriesByEstablishment', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._subcategories = Subcategories.find({}).zone();
                 this._subcategories.subscribe(() => { this.buildCustomerMenu(); });
             });
         });
-        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', [this.restaurantId]).subscribe(() => {
+        this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', [this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._currencyCode = Currencies.findOne({ _id: this.restaurantCurrency }).code + ' ';
+                this._currencyCode = Currencies.findOne({ _id: this.establishmentCurrency }).code + ' ';
             });
         });
 
         this._newOrderForm = new FormGroup({
             observations: new FormControl('', [Validators.maxLength(50)]),
-            garnishFood: this._garnishFormGroup,
+            options: this._optionsFormGroup,
             additions: this._additionsFormGroup
         });
     }
@@ -173,14 +190,8 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._sectionsSub) { this._sectionsSub.unsubscribe(); }
-        if (this._categoriesSub) { this._categoriesSub.unsubscribe(); }
-        if (this._subcategoriesSub) { this._subcategoriesSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._garnishFoodSub) { this._garnishFoodSub.unsubscribe(); }
-        if (this._additionsSub) { this._additionsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -248,17 +259,50 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Build controls in option form
+     */
+    buildOptionForm(): void {
+        Options.collection.find({ establishments: { $in: [this.establishmentId] }, is_active: true }).fetch().forEach((opt) => {
+            if (this._optionsFormGroup.contains(opt._id)) {
+                this._optionsFormGroup.controls[opt._id].setValue(false);
+            } else {
+                let control: FormControl = new FormControl(false);
+                this._optionsFormGroup.addControl(opt._id, control);
+            }
+        });
+    }
+
+    /**
      * This function evaluate Id returned in the menu and filter item collection
      * @param {any} _any 
      */
-    evaluateId(_any: any): void {
-        if (_any.type === 'Se') {
-            this._items = Items.find({ sectionId: { $in: ['' + _any.id + ''] } }).zone();
-        } else if (_any.type === 'Ca') {
-            this._items = Items.find({ categoryId: { $in: ['' + _any.id + ''] } }).zone();
-        } else if (_any.type === 'Sub') {
-            this._items = Items.find({ subcategoryId: { $in: ['' + _any.id + ''] } }).zone();
-        } else if (_any.type === 'Ad') {
+    validateSection(_pSelected: string, _pId: string): void {
+        this._items = null;
+        this._itemsRecommended = null;
+
+        if (_pSelected === 'all') {
+            this._items = Items.find({});
+            this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
+            this._sections = Sections.find({});
+            this._categories = Categories.find({});
+            this._subcategories = Subcategories.find({});
+        } else if (_pSelected === 'recommended') {
+            this._sections = null;
+            this._categories = null;
+            this._subcategories = null;
+            this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
+        } else if (_pSelected === 'section') {
+            this._itemsRecommended = null;
+            this._sections = Sections.find({ _id: _pId }).zone();
+            this._categories = Categories.find({ section: _pId }).zone();
+            this._items = Items.find({ sectionId: _pId }).zone();
+        } else if (_pSelected === 'category') {
+            let category = Categories.findOne({_id: _pId});
+            this._sections = Sections.find({ _id: category.section }).zone();
+            this._categories = Categories.find({ _id: _pId }).zone();
+            this._items = Items.find({ categoryId: _pId }).zone();
+        }
+        else if (_pSelected === 'addition') {
             this.showAllItems();
             this._additionsDetailFormGroup.reset();
             this.viewItemDetail('item-selected', true);
@@ -267,10 +311,11 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Show All restaurant items
+     * Show All establishment items
      */
     showAllItems(): void {
         this._items = Items.find({}).zone();
+        this._itemsRecommended = Items.find({ 'establishments.establishment_id': this.establishmentId, 'establishments.recommended': true }).zone();
     }
 
     /**
@@ -284,14 +329,49 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
         this.resetItemDetailVariables();
         this.viewItemDetail('addition-detail', true);
         this.viewItemDetail('item-selected', false);
+        //reward points
+        this._finalPoints = this.getItemPoints(_pItem);
+        this._unitRewardPoints = this.getItemPoints(_pItem);
+        this.createOptionsReferences(_pItem);
+        this._showOptionsError = false;
     }
 
     /**
-     * Return Item price by current restaurant
+     * Create radio button options references
+     * @param {Item} _pItem 
+     */
+    createOptionsReferences(_pItem: Item): void {
+        this._radioReferences = [];
+        _pItem.options.forEach((item_option) => {
+            let _reference: OptionReference = { option_id: '', is_required: false, values: [] };
+            let _valuesRef: ValueReference[] = [];
+            _reference.option_id = item_option.option_id;
+            _reference.is_required = item_option.is_required;
+            item_option.values.forEach((item_option_value) => {
+                let _value: ValueReference = { value_id: item_option_value.option_value_id, price: 0, in_use: false };
+                if (item_option_value.have_price) {
+                    _value.price = item_option_value.price;
+                }
+                _valuesRef.push(_value);
+            });
+            _reference.values = _valuesRef;
+            this._radioReferences.push(_reference);
+        });
+    }
+
+    /**
+     * Return Item price by current establishment
      * @param {Item} _pItem 
      */
     getItemPrice(_pItem: Item): number {
-        return _pItem.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        return _pItem.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
+    }
+
+    /**
+     * Return Item points by current establishment
+     */
+    getItemPoints(_pItem: Item): number {
+        return Number(_pItem.reward_points);
     }
 
     /**
@@ -305,9 +385,20 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (this._newOrderForm.valid) {
+        this._radioReferences.forEach((option) => {
+            if (option.is_required) {
+                let valid: ValueReference[] = option.values.filter(val => val.in_use === true);
+                if (valid.length === 0) {
+                    this._showOptionsError = true;
+                } else {
+                    this._showOptionsError = false;
+                }
+            }
+        });
+
+        if (this._newOrderForm.valid && !this._showOptionsError) {
             let _lOrderItemIndex: number = 0;
-            let _lOrder: Order = Orders.collection.find({ creation_user: Meteor.userId() }).fetch()[0];
+            let _lOrder: Order = Orders.collection.find({ creation_user: Meteor.userId(), establishment_id: this.establishmentId }).fetch()[0];
 
             if (_lOrder) {
                 _lOrderItemIndex = _lOrder.orderItemCount + 1;
@@ -315,12 +406,19 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 _lOrderItemIndex = 1;
             }
 
-            let arr: any[] = Object.keys(this._newOrderForm.value.garnishFood);
-            let _lGarnishFoodToInsert: string[] = [];
+            let _arrOption: any[] = Object.keys(this._newOrderForm.value.options);
+            let _lOptionsToInsert: OrderOption[] = [];
 
-            arr.forEach((gar) => {
-                if (this._newOrderForm.value.garnishFood[gar]) {
-                    _lGarnishFoodToInsert.push(gar);
+            _arrOption.forEach((opt) => {
+                if (this._newOrderForm.value.options[opt]) {
+                    let _lOrderOption: OrderOption = { option_id: opt, value_id: '' };
+                    let _reference: OptionReference = this._radioReferences.find(ref => ref.option_id === opt);
+                    _reference.values.forEach((val) => {
+                        if (val.in_use) {
+                            _lOrderOption.value_id = val.value_id;
+                        }
+                    });
+                    _lOptionsToInsert.push(_lOrderOption);
                 }
             });
 
@@ -338,11 +436,14 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 itemId: _pItemToInsert,
                 quantity: this._quantityCount,
                 observations: this._newOrderForm.value.observations,
-                garnishFood: _lGarnishFoodToInsert,
+                options: _lOptionsToInsert,
                 additions: _lAdditionsToInsert,
-                paymentItem: this._finalPrice
+                paymentItem: this._finalPrice,
+                reward_points: this._finalPoints,
+                is_reward: false
             };
-            MeteorObservable.call('AddItemToOrder', _lOrderItem, this.restaurantId, this.tableQRCode, this.finalPrice).subscribe(() => {
+            MeteorObservable.call('AddItemToOrder', _lOrderItem, this.establishmentId, this.tableQRCode, this.finalPrice, this._finalPoints).subscribe(() => {
+                this._showOptionsError = false;
                 let _lMessage: string = this.itemNameTraduction('ORDER_CREATE.ITEM_AGGREGATED');
                 this.snackBar.open(_lMessage, '', {
                     duration: 2500
@@ -383,27 +484,26 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     resetItemDetailVariables(): void {
         this._lastQuantity = 1;
         this._quantityCount = 1;
-        this._showGarnishFoodError = false;
-        this._garnishFoodElementsCount = 0;
         this._newOrderForm.reset();
     }
 
     /**
-     * Calculate final price when garnish food is selected
-     * @param {any} _event 
-     * @param {number} _price 
+     * Calculate final price when option value is selected
+     * @param {string} _pOptionId 
+     * @param {any} _pEvent 
      */
-    calculateFinalPriceGarnishFood(_event: any, _pGarnishFood: GarnishFood): void {
-        let _price = _pGarnishFood.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
-        if (_event.checked) {
-            this._finalPrice = (Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount));
-            this._garnishFoodElementsCount += 1;
-            this.validateGarnishFoodElements();
-        } else {
-            this._finalPrice = Number.parseInt(this._finalPrice.toString()) - (Number.parseInt(_price.toString()) * this._quantityCount);
-            this._garnishFoodElementsCount -= 1;
-            this.validateGarnishFoodElements();
-        }
+    calculateFinalPriceOptionValue(_pOptionId: string, _pEvent: any): void {
+        let _lReference: OptionReference = this._radioReferences.find(reference => reference.option_id === _pOptionId);
+        _lReference.values.forEach((value) => {
+            if (value.in_use) {
+                this._finalPrice = this._finalPrice - (value.price * this._quantityCount);
+                value.in_use = false;
+            }
+            if (_pEvent.value === value.value_id) {
+                this._finalPrice = this._finalPrice + (value.price * this._quantityCount);
+                value.in_use = true;
+            }
+        });
     }
 
     /**
@@ -412,7 +512,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * @param {number} _price 
      */
     calculateFinalPriceAddition(_event: any, _pAddition: Addition): void {
-        let _price = _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        let _price = _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
         if (_event.checked) {
             this._finalPrice = (Number.parseInt(this._finalPrice.toString()) + (Number.parseInt(_price.toString()) * this._quantityCount));
         } else {
@@ -430,44 +530,43 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     /**
      * Add quantity item
      */
-    addCount(): void {
+    addCount(_pItem: Item): void {
         this._lastQuantity = this._quantityCount;
         this._quantityCount += 1;
-        this.calculateFinalPriceQuantity();
+        this.calculateFinalPriceQuantity(_pItem);
+        this.calculateFinalPointsQuantity();
     }
 
     /**
      * Subtract quantity item
      */
-    removeCount(): void {
+    removeCount(_pItem: Item): void {
         if (this._quantityCount > 1) {
             this._lastQuantity = this._quantityCount;
             this._quantityCount -= 1;
         }
-        this.calculateFinalPriceQuantity();
+        this.calculateFinalPriceQuantity(_pItem);
+        this.calculateFinalPointsQuantity();
     }
 
     /**
      * Calculate final price when item quantity is entered
      */
-    calculateFinalPriceQuantity(): void {
+    calculateFinalPriceQuantity(_pItem: Item): void {
         if (Number.isFinite(this._quantityCount)) {
             this._finalPrice = this._unitPrice * this._quantityCount;
-            this._garnishFoodElementsCount = 0;
-            this._garnishFormGroup.reset();
+            this.createOptionsReferences(_pItem);
+            this._optionsFormGroup.reset();
             this._additionsFormGroup.reset();
-            this._showGarnishFoodError = false;
         }
     }
 
     /**
-     * Validate Garnish food selections and show message error if count is greater than item.garnishFoodQuantity
+     * Calculate final points when item quantity is entered
      */
-    validateGarnishFoodElements(): void {
-        if (this._garnishFoodElementsCount > this._maxGarnishFoodElements) {
-            this._showGarnishFoodError = true;
-        } else {
-            this._showGarnishFoodError = false;
+    calculateFinalPointsQuantity(): void {
+        if (Number.isFinite(this._quantityCount)) {
+            this._finalPoints = this._unitRewardPoints * this._quantityCount;
         }
     }
 
@@ -479,27 +578,11 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Set max garnish food elements
-     * @param {number} _pGarnishFoodQuantity
-     */
-    setMaxGarnishFoodElements(_pGarnishFoodQuantity: number): void {
-        this._maxGarnishFoodElements = _pGarnishFoodQuantity;
-    }
-
-    /**
      * Return addition information
      * @param {Addition} _pAddition
      */
     getAdditionInformation(_pAddition: Addition): string {
-        return _pAddition.name + ' - ' + _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price + ' ';
-    }
-
-    /**
-     * Return garnish food information
-     * @param {GarnishFood} _pGarnishFood
-     */
-    getGarnishFoodInformation(_pGarnishFood: GarnishFood): string {
-        return _pGarnishFood.name + ' - ' + _pGarnishFood.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price + ' ';
+        return _pAddition.name + ' - ' + _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price + ' ';
     }
 
     /**
@@ -519,7 +602,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * @param {Addition} _pAddition 
      */
     getAdditionPrice(_pAddition: Addition): number {
-        return _pAddition.restaurants.filter(r => r.restaurantId === this.restaurantId)[0].price;
+        return _pAddition.establishments.filter(r => r.establishment_id === this.establishmentId)[0].price;
     }
 
     /**
@@ -548,7 +631,7 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
                 _lOrderAdditionsToInsert.push(_lOrderAddition);
             }
         });
-        MeteorObservable.call('AddAdditionsToOrder', _lOrderAdditionsToInsert, this.restaurantId, this.tableQRCode, _lAdditionsPrice).subscribe(() => {
+        MeteorObservable.call('AddAdditionsToOrder', _lOrderAdditionsToInsert, this.establishmentId, this.tableQRCode, _lAdditionsPrice).subscribe(() => {
             let _lMessage: string = this.itemNameTraduction('ORDER_CREATE.ADDITON_AGGREGATED');
             this.snackBar.open(_lMessage, '', {
                 duration: 2500
@@ -563,8 +646,8 @@ export class OrderCreateComponent implements OnInit, OnDestroy {
      * Function to get item avalaibility 
      */
     getItemAvailability(itemId: string): boolean {
-        let _itemRestaurant: Item = Items.collection.findOne({ _id: itemId }, { fields: { _id: 0, restaurants: 1 } });
-        let aux = _itemRestaurant.restaurants.find(element => element.restaurantId === this.restaurantId);
+        let _itemEstablishment: Item = Items.collection.findOne({ _id: itemId }, { fields: { _id: 0, establishments: 1 } });
+        let aux = _itemEstablishment.establishments.find(element => element.establishment_id === this.establishmentId);
         return aux.isAvailable;
     }
 

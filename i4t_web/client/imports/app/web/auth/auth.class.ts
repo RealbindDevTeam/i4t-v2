@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MatDialog, MatDialogConfig } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { UserDetails } from '../../../../../both/collections/auth/user-detail.collection';
-import { UserLogin } from '../../../../../both/models/auth/user-login.model';
+import { UserLogin  } from '../../../../../both/models/auth/user-login.model';
 import { AlertConfirmComponent } from '../../web/general/alert-confirm/alert-confirm.component';
 
 export class AuthClass {
@@ -27,10 +27,10 @@ export class AuthClass {
         protected zone: NgZone,
         protected translate: TranslateService,
         protected _mdDialog: MatDialog) {
-        
+
         this.userLang = navigator.language.split('-')[0];
         translate.setDefaultLang('en');
-        translate.use( this.userLang );
+        translate.use(this.userLang);
 
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
@@ -40,23 +40,17 @@ export class AuthClass {
      * This function creates an iurest user with facebook info
      */
     loginWithFacebook() {
-        let respLogin = this.devicesValidate();
-        if (respLogin) {
-            Meteor.loginWithFacebook({ requestPermissions: ['public_profile', 'email'] }, (err) => {
-                let error: string;
-                error = 'SIGNUP.ERROR';
-                this.zone.run(() => {
-                    if (err) {
-                        this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
-                    } else {
-                        this.insertUserDetail();
-                    }
-                });
+        Meteor.loginWithFacebook({ requestPermissions: ['public_profile', 'email'] }, (err) => {
+            let error: string;
+            error = 'SIGNUP.ERROR';
+            this.zone.run(() => {
+                if (err) {
+                    this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
+                } else {
+                    this.insertUserDetail();
+                }
             });
-        }
-        else {
-            this.router.navigate(['go-to-store', 't'], { skipLocationChange: true });
-        }
+        });
     }
 
     /**
@@ -111,9 +105,8 @@ export class AuthClass {
                     user_id: Meteor.userId(),
                     role_id: '400',
                     is_active: true,
-                    restaurant_work: '',
                     penalties: [],
-                    current_restaurant: '',
+                    current_establishment: '',
                     current_table: ''
                 });
             }
@@ -190,8 +183,8 @@ export class AuthClass {
     /**
      * Insert User Info
      */
-    insertUserInfo():void{
-        let _lUserLogin:UserLogin = new UserLogin();
+    insertUserInfo(): void {
+        let _lUserLogin: UserLogin = new UserLogin();
         _lUserLogin.user_id = Meteor.userId();
         _lUserLogin.login_date = new Date();
         _lUserLogin.app_code_name = navigator.appCodeName;
@@ -200,6 +193,6 @@ export class AuthClass {
         _lUserLogin.cookie_enabled = navigator.cookieEnabled;
         _lUserLogin.language = navigator.language;
         _lUserLogin.platform = navigator.platform;
-        MeteorObservable.call( 'insertUserLoginInfo', _lUserLogin ).subscribe();
+        MeteorObservable.call('insertUserLoginInfo', _lUserLogin).subscribe();
     }
 }

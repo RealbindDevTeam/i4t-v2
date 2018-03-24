@@ -1,0 +1,29 @@
+<div class="df">
+    <div class="di">
+        <div class="mat-step-icon-cust">
+            <span>a</span>
+        </div>
+        <img alt="iurest" src="/images/admin-register-pmc.png">
+        <p>{{'AFTER_RESTAURANT_CREATION.A' | translate}}</p>
+    </div>
+    <div class="di">
+        <div class="mat-step-icon-cust">
+            <span>b</span>
+        </div>
+        <img alt="iurest" src="/images/admin-register-pmt.png">
+        <p>{{'AFTER_RESTAURANT_CREATION.B' | translate}}</p>
+    </div>
+    <div class="di">
+        <div class="mat-step-icon-cust">
+            <span>c</span>
+        </div>
+        <img alt="iurest" src="/images/admin-register-pmo.png">
+        <p>{{'AFTER_RESTAURANT_CREATION.C' | translate}}</p>
+    </div>
+</div>
+
+
+<mat-dialog-actions>
+    <mat-checkbox [(ngModel)]="showAfterRestCreation">{{'AFTER_RESTAURANT_CREATION.NOT_SHOW' | translate}}</mat-checkbox>
+    <button mat-raised-button class="secondary-button" (click)="validateShowDialog()">{{'CLOSE' | translate}}</button>
+</mat-dialog-actions>

@@ -2,20 +2,18 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from "meteor-rxjs";
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { UserLanguageService } from '../../../services/general/user-language.service';
-import { Restaurants } from "../../../../../../../both/collections/restaurant/restaurant.collection";
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
-import { WaiterCallDetail } from '../../../../../../../both/models/restaurant/waiter-call-detail.model';
-import { WaiterCallDetails } from '../../../../../../../both/collections/restaurant/waiter-call-detail.collection';
+import { Establishments } from "../../../../../../../both/collections/establishment/establishment.collection";
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
+import { WaiterCallDetail } from '../../../../../../../both/models/establishment/waiter-call-detail.model';
+import { WaiterCallDetails } from '../../../../../../../both/collections/establishment/waiter-call-detail.collection';
 import { User } from '../../../../../../../both/models/auth/user.model';
 import { Users } from '../../../../../../../both/collections/auth/user.collection';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 import { CallCloseConfirmComponent } from '../call-close-confirm/call-close-confirm.component';
-import { PaymentConfirmComponent } from '../payment-confirm/payment-confirm.component';
-import { SendOrderConfirmComponent } from '../send-order-confirm/send-order-confirm.component';
-import { RestaurantExitConfirmComponent } from '../restaurant-exit-confirm/restaurant-exit-confirm.component';
+import { CustomerOrderConfirmComponent } from '../customer-order-confirm/customer-order-confirm.component';
 
 @Component({
     selector: 'calls',
@@ -27,16 +25,16 @@ export class CallsComponent implements OnInit, OnDestroy {
     private _user = Meteor.userId();
 
     private _userDetailSubscription: Subscription;
-    private _userRestaurantSubscription: Subscription;
+    private _userEstablishmentSubscription: Subscription;
     private _callsDetailsSubscription: Subscription;
     private _tableSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _mdDialogRef: MatDialogRef<any>;
 
     private _userDetail: UserDetail;
-    private _restaurants: any;
+    private _establishments: any;
     private _waiterCallDetail: any;
-    private _imgRestaurant: any;
 
     private _loading: boolean;
     private _thereAreCalls: boolean = true;
@@ -61,16 +59,16 @@ export class CallsComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
             if (this._userDetail) {
-                this._userRestaurantSubscription = MeteorObservable.subscribe('getRestaurantById', this._userDetail.restaurant_work).subscribe(() => {
-                    this._restaurants = Restaurants.find({ _id: this._userDetail.restaurant_work });
+                this._userEstablishmentSubscription = MeteorObservable.subscribe('getEstablishmentById', this._userDetail.establishment_work).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                    this._establishments = Establishments.find({ _id: this._userDetail.establishment_work });
                 });
             }
         });
 
-        this._callsDetailsSubscription = MeteorObservable.subscribe('waiterCallDetailByWaiterId', this._user).subscribe(() => {
+        this._callsDetailsSubscription = MeteorObservable.subscribe('waiterCallDetailByWaiterId', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._waiterCallDetail = WaiterCallDetails.find({}).zone();
                 this.countCalls();
@@ -78,17 +76,15 @@ export class CallsComponent implements OnInit, OnDestroy {
             });
         });
 
-        this._tableSubscription = MeteorObservable.subscribe('getTablesByRestaurantWork', this._user).subscribe();
+        this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-        if (this._userRestaurantSubscription) { this._userRestaurantSubscription.unsubscribe(); }
-        if (this._callsDetailsSubscription) { this._callsDetailsSubscription.unsubscribe(); }
-        if (this._tableSubscription) { this._tableSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -121,38 +117,11 @@ export class CallsComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * This function show modal dialog with payment information
+     * This function show modal dialog with customer order information
      * @param {WaiterCallDetail} _call 
      */
-    showPayment(_call: WaiterCallDetail) {
-        this._mdDialogRef = this._mdDialog.open(PaymentConfirmComponent, {
-            disableClose: true
-        });
-        this._mdDialogRef.componentInstance.call = _call;
-        this._mdDialogRef.afterClosed().subscribe(result => {
-            this._mdDialogRef = null;
-        });
-    }
-
-    /**
-     * This function show modal dialog with order information
-     * @param {WaiterCallDetail} _call 
-     */
-    showSendOrder(_call: WaiterCallDetail): void {
-        this._mdDialogRef = this._mdDialog.open(SendOrderConfirmComponent, {
-            disableClose: true
-        });
-        this._mdDialogRef.componentInstance.call = _call;
-        this._mdDialogRef.afterClosed().subscribe(result => {
-            this._mdDialogRef = null;
-        });
-    }
-
-    /**
-     * This function show modal dialog with exit user information
-     */
-    showUserExitTable(_call: WaiterCallDetail): void {
-        this._mdDialogRef = this._mdDialog.open(RestaurantExitConfirmComponent, {
+    showCustomerOrder(_call: WaiterCallDetail): void {
+        this._mdDialogRef = this._mdDialog.open(CustomerOrderConfirmComponent, {
             disableClose: true
         });
         this._mdDialogRef.componentInstance.call = _call;

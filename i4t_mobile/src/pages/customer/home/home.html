@@ -1,27 +1,50 @@
 <ion-header>
     <ion-navbar>
-        <button ion-button menuToggle icon-only>
-            <ion-icon name='menu'></ion-icon>
-        </button>
-        <ion-title class="logo">
+        <ion-title>
             <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
         </ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="presentPopover($event)">
+                <ion-icon name="more"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
-<ion-content>
-    <ion-slides pager>
-        <ion-slide>
-            <img src="assets/img/slide-1.png" class="slide-image"/>
-            <h2 class="slide-title">{{'MOBILE.HOME.SLIDE-1.WELCOME' | translate}}</h2>
-            <p>{{'MOBILE.HOME.SLIDE-1.TEXT' | translate}}</p>
-        </ion-slide>
-        <ion-slide>
-            <img src="assets/img/slide-2.png" class="slide-image"/>
-            <p>{{'MOBILE.HOME.SLIDE-2.1' | translate}}</p>
-            <p>{{'MOBILE.HOME.SLIDE-2.2' | translate}}</p>
-            <p>{{'MOBILE.HOME.SLIDE-2.3' | translate}}</p>
-        </ion-slide>
-    </ion-slides>
-</ion-content> 
-    
+<ion-content text-wrap>
+    <h6 style="margin: 20px">
+        {{'MOBILE.HOME.HEADER_TITLE' | translate}}
+    </h6>
+
+    <ion-card (click)="goToMyAccumulatedPoints()">
+        <ion-card-content>
+            <ion-item>
+                <ion-thumbnail item-start>
+                    <img src="assets/img/orders-detail.png">
+                </ion-thumbnail>
+                <h2>{{'MOBILE.HOME.TITLE_POINTS_BTN' | translate}}</h2>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+    <ion-card (click)="goToOrderInEstablishment()">
+        <ion-card-content>
+            <ion-item>
+                <ion-thumbnail item-end>
+                    <img src="assets/img/tables.png">
+                </ion-thumbnail>
+                <h2>{{'MOBILE.HOME.TITLE_ORDER_BTN' | translate}}</h2>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+    <ion-card (click)="goToEstablishmentList()">
+        <ion-card-content>
+            <ion-item>
+                <ion-thumbnail item-start>
+                    <img src="assets/img/restaurante.png">
+                </ion-thumbnail>
+                <h2>{{'MOBILE.HOME.TITLE_LIST_BTN' | translate}}</h2>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+</ion-content>

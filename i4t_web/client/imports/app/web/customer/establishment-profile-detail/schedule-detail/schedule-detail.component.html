@@ -1,0 +1,65 @@
+
+    <h2 style="text-align: -webkit-center;">{{'SCHEDULE.SCHEDULE' | translate}}</h2>
+    
+        <table class="centered striped" style="width: 100%;" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>{{'SCHEDULE.WEEKDAY' | translate}}</th>
+                    <th>{{'SCHEDULE.OPENING_HOUR' | translate}}</th>
+                    <th>{{'SCHEDULE.CLOSING_HOUR' | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="!_establishmentSchedule.schedule.monday.isActive && !_establishmentSchedule.schedule.tuesday.isActive && 
+                        !_establishmentSchedule.schedule.wednesday.isActive && !_establishmentSchedule.schedule.thursday.isActive && 
+                        !_establishmentSchedule.schedule.friday.isActive && !_establishmentSchedule.schedule.saturday.isActive && 
+                        !_establishmentSchedule.schedule.sunday.isActive && !_establishmentSchedule.schedule.holiday.isActive">
+                    <td colspan="3">
+                        <label>{{'SCHEDULE.NO_RESTAURANT_HOURS' | translate}}</label>
+                    </td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.monday.isActive">
+                    <td><label>{{'WEEK.MONDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.monday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.monday.closing_time}}</label></td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.tuesday.isActive">
+                    <td><label>{{'WEEK.TUESDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.tuesday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.tuesday.closing_time}}</label></td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.wednesday.isActive">
+                    <td><label>{{'WEEK.WEDNESDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.wednesday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.wednesday.closing_time}}</label></td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.thursday.isActive">
+                    <td><label>{{'WEEK.THURSDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.thursday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.thursday.closing_time}}</label></td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.friday.isActive">
+                    <td><label>{{'WEEK.FRIDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.friday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.friday.closing_time}}</label></td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.saturday.isActive">
+                    <td><label>{{'WEEK.SATURDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.saturday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.saturday.closing_time}}</label></td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.sunday.isActive">
+                    <td><label>{{'WEEK.SUNDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.sunday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.sunday.closing_time}}</label></td>
+                </tr>
+                <tr *ngIf="_establishmentSchedule.schedule.holiday.isActive">
+                    <td><label>{{'WEEK.HOLIDAY' | translate}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.holiday.opening_time}}</label></td>
+                    <td><label>{{_establishmentSchedule.schedule.holiday.closing_time}}</label></td>
+                </tr>
+            </tbody>                        
+        </table>
+        <mat-dialog-actions>
+            <button mat-raised-button class="secondary-button" type="button" (click)="_dialogRef.close()">{{'SCHEDULE.CLOSE' | translate}}</button>
+        </mat-dialog-actions>

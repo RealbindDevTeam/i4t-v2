@@ -1,0 +1,89 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title class="logo">
+            <img class="nav-logo" src="assets/img/logo_iurest_1000_x_260.png">
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-list *ngFor="let _res of _establishments | async" style="margin: 0 auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);"
+        text-wrap>
+        <ion-item style="background-image: url(assets/img/background_waiter.png);" class="img-header">
+            <ion-thumbnail item-left>
+                <img *ngIf="_res.image" src="{{ _res.image.url }}">
+                <img *ngIf="!_res.image" src="assets/img/default-restaurant.png">
+            </ion-thumbnail>
+            <h2>{{_res.name}}</h2>
+            <p>{{_res.address}}</p>
+        </ion-item>
+    </ion-list>
+
+    <ion-card [hidden]="true">
+        <ion-card-content>
+            <ion-list style="margin-bottom: 0px" no-lines>
+                <ion-item>
+                    <ion-label>{{'MOBILE.SECTIONS.SELECTION' | translate}}</ion-label>
+                    <ion-select #select1 [(ngModel)]="selected" interface="action-sheet" (ionChange)="validateSection(selected)" cancelText="{{'MOBILE.SECTIONS.CANCEL'| translate}}"
+                        class="custom-select">
+                        <ion-option value="all" selected="true">{{'MOBILE.SECTIONS.ALL' | translate}}</ion-option>
+                        <ion-option value="recommended" selected="true">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-option>
+                        <ion-option *ngFor="let section of _sections | async" value="{{section._id}}">{{section.name}}</ion-option>
+                        <ion-option *ngIf="_additionsShow" value="addition">{{'MOBILE.SECTIONS.ADDITION' | translate}}</ion-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-label margin-start *ngIf="(_itemsRecommended | async)?.length > 0">{{'MOBILE.SECTIONS.RECOMMENDED' | translate}}</ion-label>
+    <div *ngFor="let item of _itemsRecommended | async">
+        <ion-card >
+            <ion-card-content>
+                <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+    <div *ngFor="let section of _sections | async">
+        <div *ngFor="let item of _items | async">
+            <div *ngIf="(item.sectionId == section._id) && item.categoryId == '' && item.subcategoryId == ''" (click)="goToDetail(item._id)">
+                <ion-card>
+                    <ion-card-content>
+                        <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
+                    </ion-card-content>
+                </ion-card>
+            </div>
+        </div>
+    </div>
+
+    <ion-item-group *ngFor="let category of _categories | async">
+        <h5 margin-start>{{category.name}}</h5>
+        <div *ngFor="let item of _items | async">
+            <ion-card *ngIf="(item.categoryId == category._id) && item.subcategoryId == ''" (click)="goToDetail(item._id)">
+                <ion-card-content>
+                    <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
+                </ion-card-content>
+            </ion-card>
+        </div>
+        <div *ngFor="let subcategory of _subcategories | async">
+            <div *ngIf="subcategory.category == category._id">
+                <h6 margin-start>{{subcategory.name}}</h6>
+                <div *ngFor="let item of _items | async">
+                    <ion-card *ngIf="item.subcategoryId == subcategory._id" (click)="goToDetail(item._id)">
+                        <ion-card-content>
+                            <item-card-waiter [itemIdIn]="item" [resCode]="_userDetail.establishment_work"></item-card-waiter>
+                        </ion-card-content>
+                    </ion-card>
+                </div>
+            </div>
+        </div>
+    </ion-item-group>
+</ion-content>
+<ion-footer>
+    <ion-fab right bottom>
+        <button style="bottom: 0px;background-color: #ef5350;color: white;" ion-fab color="light" mini (click)="goTop()">
+            <ion-icon name="menu"></ion-icon>
+        </button>
+    </ion-fab>
+</ion-footer>

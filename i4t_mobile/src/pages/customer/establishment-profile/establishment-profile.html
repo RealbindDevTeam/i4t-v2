@@ -1,0 +1,129 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title style="width: 90%;" *ngFor="let _establishment of _establishments | async;">{{_establishment?.name}}</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div *ngIf="(_establishmentsProfiles | async)?.length <= 0" padding>
+        <div class="img">
+            <img src="assets/img/restaurantes.png">
+        </div>
+        <div style="text-align: center">
+            <h1>{{'MOBILE.RESTAURANT_PROFILE.NO_PROFILE' | translate}}</h1>
+        </div>
+    </div>
+
+    <div *ngIf="(_establishmentsProfiles | async)?.length > 0" class="initial">
+        <ion-fab *ngIf="_establishmentProfile?.web_page || _establishmentProfile?.social_networks?.facebook || _establishmentProfile?.social_networks?.twitter  || _establishmentProfile?.social_networks?.instagram"
+            top right>
+            <button ion-fab color="vibrant" mini class="custom">
+                <ion-icon name="more"></ion-icon>
+            </button>
+            <ion-fab-list side="bottom">
+                <a ion-fab *ngIf="_establishmentProfile?.web_page" href="{{_establishmentProfile?.web_page}}">
+                    <ion-icon name="navigate"></ion-icon>
+                </a>
+                <a ion-fab *ngIf="_establishmentProfile?.social_networks?.facebook" href="{{_establishmentProfile?.social_networks?.facebook}}">
+                    <ion-icon name="logo-facebook" class="fb"></ion-icon>
+                </a>
+                <a ion-fab *ngIf="_establishmentProfile?.social_networks?.twitter" href="{{_establishmentProfile?.social_networks?.twitter}}">
+                    <ion-icon name="logo-twitter" class="tw"></ion-icon>
+                </a>
+                <a ion-fab *ngIf="_establishmentProfile?.social_networks?.instagram" href="{{_establishmentProfile?.social_networks?.instagram}}">
+                    <ion-icon name="logo-instagram" class="im"></ion-icon>
+                </a>
+            </ion-fab-list>
+        </ion-fab>
+
+        <div id="map_canvas"></div>
+
+        <ion-card *ngFor="let _establishment of _establishments | async;" class="card-nm">
+            <ion-card-content>
+                <ion-item>
+                    <ion-card-title style="white-space: normal;">{{_establishment?.name}}</ion-card-title>
+                </ion-item>
+                <p *ngIf="_establishmentProfile?.establishment_description?.length <= 20" class="margin">
+                    {{_establishmentProfile?.establishment_description}}
+                </p>
+                <div *ngIf="_establishmentProfile?.establishment_description?.length > 20">
+                    <p *ngIf="!_showDescription" class="margin">
+                        {{_establishmentProfile?.establishment_description.substring(0, 70)}}...
+                    </p>
+                    <p *ngIf="_showDescription" class="margin">
+                        {{_establishmentProfile?.establishment_description}}
+                    </p>
+                    <a *ngIf="_showDescription" (click)="showInformation()">
+                        {{'MOBILE.RESTAURANT_PROFILE.SHOW_MORE' | translate}}
+                    </a>
+                </div>
+                <ion-list inset class="margin" no-lines>
+                    <ion-item *ngIf="_establishmentCity !== '' || _establishmentCountry !== ''">
+                        <ion-icon name="map"></ion-icon>
+                        <span *ngIf="_establishmentCity !== ''">{{_establishmentCity}},</span>
+                        <span *ngIf="_establishmentCountry !== ''">{{_establishmentCountry}}</span>
+                    </ion-item>
+
+                    <ion-item *ngIf="_establishment?.address">
+                        <ion-icon name="pin"></ion-icon>
+                        {{_establishment.address}}
+                    </ion-item>
+                    <ion-item *ngIf="_establishment?.phone">
+                        <ion-icon name="call"></ion-icon>
+                        {{_establishment.indicative}} {{_establishment.phone}}
+                    </ion-item>
+                    <ion-item *ngIf="_establishmentProfile?.email">
+                        <ion-icon name="chatbubbles"></ion-icon>
+                        {{_establishmentProfile?.email}}
+                    </ion-item>
+                    <ion-item *ngIf="_establishmentProfile?.types_of_food">
+                        <ion-icon style="vertical-align: top;" name="restaurant"></ion-icon>
+                        <div style="white-space: normal;display: inline-block;">
+                            <span *ngFor="let typeOfFood of _typesOfFood | async">
+                                <span *ngFor="let type of _establishmentProfile.types_of_food">
+                                    <span *ngIf="type === typeOfFood._id">{{typeOfFood.type_of_food | translate}}</span>
+                                </span>
+                            </span>
+                        </div>
+                    </ion-item>
+
+                    <button ion-item (click)="openSchedule()" *ngIf="_establishmentProfile?.schedule.monday.isActive || _establishmentProfile?.schedule.tuesday.isActive || 
+                    _establishmentProfile?.schedule.wednesday.isActive || _establishmentProfile?.schedule.thursday.isActive ||
+                    _establishmentProfile?.schedule.friday.isActive || _establishmentProfile?.schedule.saturday.isActive || 
+                    _establishmentProfile?.schedule.sunday.isActive || _establishmentProfile?.schedule.holiday.isActive">
+                        <ion-icon name="time"></ion-icon>
+                        {{'MOBILE.SCHEDULE.SCHEDULE' | translate}}
+                    </button>
+                </ion-list>
+            </ion-card-content>
+        </ion-card>
+
+        <span *ngFor="let establishmentProfile of _establishmentsProfiles | async">
+            <ion-slides *ngIf="establishmentProfile.images?.length > 0" zoom>
+                <ion-slide *ngFor="let restProfileImgeThumb of establishmentProfile.images">
+                    <img src="{{restProfileImgeThumb.url}}" />
+                </ion-slide>
+            </ion-slides>
+        </span>
+
+        <ion-card *ngFor="let _establishment of _establishments | async;" class="card-nm">
+            <ion-card-content>
+
+                <div class="pm">
+                    <h2>{{'MOBILE.RESTAURANT_PROFILE.PAYMENT_METHODS' | translate}}</h2>
+                    <ion-list no-lines>
+                        <ion-item *ngFor="let pm of _paymentMethods | async">
+                            <ion-avatar item-start class="custom">
+                                <img *ngIf="pm.name === 'PAYMENT_METHODS.CASH'" src="assets/img/cash-payment.png">
+                                <img *ngIf="pm.name === 'PAYMENT_METHODS.CREDIT_CARD'" src="assets/img/credit-card-payment.png">
+                                <img *ngIf="pm.name === 'PAYMENT_METHODS.DEBIT_CARD'" src="assets/img/debit-card-payment.png">
+                                <img *ngIf="pm.name === 'PAYMENT_METHODS.ONLINE'" src="assets/img/payment-online.png">
+                            </ion-avatar>
+                            <h2>{{pm.name | translate}}</h2>
+                        </ion-item>
+                    </ion-list>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </div>
+</ion-content>

@@ -1,4 +1,4 @@
-<div class="page">
+<div class="{{auxClass}}">
     <div class="signup-logo animated fadeInDown" data-animation="fadeIn" data-timeout="300">
         <a [routerLink]="['/']">
             <img src="/images/logo_iurest_190_x_60.png">
@@ -8,25 +8,24 @@
     <div *ngIf="_ic === 't'" class="content animated fadeInDown" data-animation="fadeInUp" data-timeout="500">
         <h1>
             {{'GO_TO_STORE.CLIENT.TITTLE' | translate}}
-            <br class="visible-phone"/>
-            {{'GO_TO_STORE.CLIENT.SUB_TITTLE' | translate}}
+            <br class="visible-phone" /> {{'GO_TO_STORE.CLIENT.SUB_TITTLE' | translate}}
         </h1>
         <h3>
             {{'GO_TO_STORE.CLIENT.CONTENT' | translate}}
         </h3>
-        
+
         <div class="dwtl opacity animated fadeInDown" data-animation="fadeInUp" data-timeout="1500">
-            <a href="">
-                <img *ngIf="_userLang === 'en'" alt="" src="/images/asd-en.png"/>
-                <img *ngIf="_userLang === 'es'" alt="" src="/images/asd-es.png"/>
+            <a href="https://play.google.com/store/apps?hl=es" style="margin-right: 10px">
+                <img *ngIf="_userLang === 'en'" alt="" src="/images/psd-en.png" />
+                <img *ngIf="_userLang === 'es'" alt="" src="/images/psd-es.png" />
             </a>
-            <a href="">
-                <img *ngIf="_userLang === 'en'" alt="" src="/images/psd-en.png"/>
-                <img *ngIf="_userLang === 'es'" alt="" src="/images/psd-es.png"/>
+            <a href="https://itunes.apple.com/co/app/apple-store/id375380948?mt=8">
+                <img *ngIf="_userLang === 'en'" alt="" src="/images/asd-en.png" />
+                <img *ngIf="_userLang === 'es'" alt="" src="/images/asd-es.png" />
             </a>
         </div>
     </div>
-    
+
     <div *ngIf="_ic === 'f'" class="content animated fadeInDown" data-animation="fadeInUp" data-timeout="600">
         <h1>
             {{'GO_TO_STORE.COLLABORATOR.TITTLE' | translate}}

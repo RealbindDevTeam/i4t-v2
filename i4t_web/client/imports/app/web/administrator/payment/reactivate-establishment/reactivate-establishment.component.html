@@ -1,0 +1,59 @@
+<mat-card *ngIf="validatePeriodDays()">
+    <mat-card-title>{{'REACTIVATE_RESTAURANT.TITLE' | translate }}</mat-card-title>
+    <mat-card-subtitle>{{'REACTIVATE_RESTAURANT.SUBTITLE' | translate}}</mat-card-subtitle>
+    <mat-card-subtitle>
+        <h3>{{'REACTIVATE_RESTAURANT.SUBTITLE_2' | translate}}</h3>
+    </mat-card-subtitle>
+    <mat-card-content style="background: #FFF">
+        <div *ngFor="let currency of _currencies | async">
+            <mat-toolbar color="primary">
+                <span>{{getCountryByCurrency(currency._id) | translate}}</span>
+                <span class="app-flex-filler"></span>
+                <span> {{'REACTIVATE_RESTAURANT.PRICE_BY_TABLE' | translate}} {{getUnitTablePrice(currency._id)}} {{currency.code}}</span>
+            </mat-toolbar>
+            <table class="striped" width="100%" style="border:0.5px solid; border-color: lightgrey">
+                <thead>
+                    <tr>
+                        <th data-field="name" style="width: 40%">{{'REACTIVATE_RESTAURANT.RESTAURANT_NAME' | translate}}</th>
+                        <th data-field="establishment_price" style="width: 12%">{{'REACTIVATE_RESTAURANT.RESTAURANT_PRICE' | translate}}</th>
+                        <th data-field="tables_number" style="width: 12%">{{'REACTIVATE_RESTAURANT.TABLES_NUMBER' | translate}}</th>
+                        <th data-field="tables_price" style="width: 12%">{{'REACTIVATE_RESTAURANT.TABLES_PRICE' | translate}}</th>
+                        <th data-field="total_price" style="width: 12%">{{'REACTIVATE_RESTAURANT.FINAL_PRICE' | translate}}</th>
+                        <th data-field="action" style="width: 12%">{{'REACTIVATE_RESTAURANT.ACTION' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let establishment of _establishments | async" style="background-color: whitesmoke !important">
+                        <td *ngIf="establishment.currencyId === currency._id">{{establishment.name}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id">{{getEstablishmentPrice(establishment)}} {{currency.code}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id" class="cust-center-align">{{getTables(establishment)}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id">{{getTablePrice(establishment)}} {{currency.code}}</td>
+                        <td *ngIf="establishment.currencyId === currency._id">{{getTotalEstablishment(establishment)}} {{currency.code}}</td>
+                        <td>
+                            <div align="center">
+                                <button mat-raised-button (click)="goToPayByEstablishment(establishment, currency.code)">{{'REACTIVATE_RESTAURANT.PAY_BTN' | translate}}</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="!_thereAreEstablishments || !validatePeriodDays()" mat-cell="12" class="demo-card demo-basic" style="width: 90%; margin: 0 auto">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/reactivate-restaurant.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{ 'REACTIVATE_RESTAURANT.MSG_INITIAL' | translate }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

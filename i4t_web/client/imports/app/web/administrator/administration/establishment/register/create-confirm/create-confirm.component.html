@@ -1,0 +1,21 @@
+<mat-card style="box-shadow: none">
+    <mat-card-title>{{ 'RESTAURANT_REGISTER.RESTAURANT_CREATION' | translate }}</mat-card-title>
+    <mat-card-content>
+        <div style="width: 450px; margin-bottom: 15px">
+            <span style="color:red">* </span>{{'RESTAURANT_REGISTER.DIALOG_SENTENCE_1A' | translate}} {{getValuePoints()}} 
+            {{'RESTAURANT_REGISTER.DIALOG_SENTENCE_1B' | translate}} {{getBagPlanLabel() | translate}}
+        </div>
+
+        <div style="width: 450px; margin-bottom: 15px">
+            <span style="color:red">* </span>{{'RESTAURANT_REGISTER.DIALOG_SENTENCE_2' | translate}} 
+        </div>
+
+        <div style="width: 450px; margin-bottom: 15px">
+            {{ 'RESTAURANT_REGISTER.DIALOG_SENTENCE_3' | translate }}
+        </div>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="secondary-button" (click)="cancel()">{{ 'RESTAURANT_REGISTER.CANCEL_CREATION' | translate }}</button>
+        <button mat-raised-button class="primary-button" (click)="closeConfirm()" type="submit">{{ 'RESTAURANT_REGISTER.ACCEPT_CREATION' | translate }}</button>
+    </mat-card-actions>
+</mat-card>

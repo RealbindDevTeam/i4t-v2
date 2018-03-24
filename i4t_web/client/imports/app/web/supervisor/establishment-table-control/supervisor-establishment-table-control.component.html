@@ -1,0 +1,45 @@
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
+        <mat-card-content>
+            <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                <img class="card_initial-image" src="/images/tables.png" />
+                </div>
+                <div class="card_initial-copy">
+                <div class="card_initial-tagline">
+                    {{ 'RESTAURANT_TABLE_CONTROL.THERE_NOT_RESTAURANTS' | translate }}
+                </div>
+                <div class="card_initial-additional-links">
+                    {{ 'RESTAURANT_TABLE_CONTROL.MESSAGE' | translate }}
+                </div>
+                </div>
+                <div class="card_initial-button">
+                </div>
+            </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="_thereAreEstablishments">
+        <mat-card-title>{{ 'RESTAURANT_TABLE_CONTROL.TABLE_CONTROL' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'RESTAURANT_TABLE_CONTROL.TABLE_CONTROL_MSG' | translate }}</mat-card-subtitle>
+        <mat-card-content>
+            <div *ngFor="let establishment of _establishments | async">
+                <mat-toolbar color="primary">
+                    <span>{{establishment.name}} - {{getEstablishmentUsers(establishment._id)}} {{ 'RESTAURANT_TABLE_CONTROL.USERS' | translate }}</span>
+                </mat-toolbar>
+                <table class="responsive-table centered striped table-control" width="100%">
+                    <tbody>
+                        <tr *ngFor="let table of _tables | async">
+                            <td *ngIf="table.establishment_id === establishment._id && (table.status === 'BUSY' || table.status === 'FREE' )">{{ 'RESTAURANT_TABLE_CONTROL.TABLE' | translate }} # {{table._number}}</td>
+                            <td *ngIf="table.establishment_id === establishment._id && table.status === 'BUSY'">{{ table.amount_people }} {{ 'RESTAURANT_TABLE_CONTROL.USERS' | translate }}</td>
+                            <td *ngIf="table.establishment_id === establishment._id && table.status === 'FREE'">{{ 'RESTAURANT_TABLE_CONTROL.FREE_TABLE' | translate }}</td>                 
+                            <td *ngIf="table.establishment_id === establishment._id && table.status === 'BUSY'">
+                                <button mat-raised-button class="primary-button" (click)="openTableDetail(establishment._id, table._id, table._number, establishment.currencyId)">{{ 'RESTAURANT_TABLE_CONTROL.VIEW_DETAIL' | translate }}</button>
+                            </td>
+                            <td *ngIf="table.establishment_id === establishment._id && table.status === 'FREE'">{{ 'RESTAURANT_TABLE_CONTROL.DETAIL_NOT_AVAILABLE' | translate }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-card-content>
+    </mat-card>

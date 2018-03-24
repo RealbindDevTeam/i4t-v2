@@ -1,0 +1,12 @@
+<button ion-item detail-none>
+    <ion-thumbnail item-left>
+        <img src="{{getItemThumb(itemIdIn._id)}}">
+    </ion-thumbnail>
+    <h2 style="white-space: normal">{{itemIdIn.name}}</h2>
+    <p class="custom-paragraph">{{itemIdIn.description}}</p>
+    <p>{{ getItemPrice( itemIdIn ) }} {{_currencyCode}}</p>
+    <p *ngIf="!getItemAvailability()" class="unavailable-item"> {{'MOBILE.SECTIONS.UNAVAILABLE' | translate}} </p>
+    <ion-badge style="background-color: darkorange;float: right;" *ngIf="itemIdIn.has_reward">{{'MOBILE.SECTIONS.GET_POINTS' | translate}} {{itemIdIn.reward_points}} pts
+        <ion-icon name="star"></ion-icon>
+    </ion-badge>
+</button>

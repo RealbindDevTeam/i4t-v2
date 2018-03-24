@@ -8,10 +8,21 @@ if (Meteor.isServer) {
      * @param {UserDetail} _userDetail
      * @param {Item} _item
      */
-    updateItemAvailable: function (_restaurantId: string, _itemId: string) {
-      let _itemRestaurant = Items.collection.findOne({ _id: _itemId }, { fields: { _id: 0, restaurants: 1 } });
-      let aux = _itemRestaurant.restaurants.find(element => element.restaurantId === _restaurantId);
-      Items.update({ _id: _itemId, "restaurants.restaurantId": _restaurantId }, { $set: { 'restaurants.$.isAvailable': !aux.isAvailable, modification_date: new Date(), modification_user: Meteor.userId() } });
+    updateItemAvailable: function (_establishmentId: string, _itemId: string) {
+      let _itemEstablishment = Items.collection.findOne({ _id: _itemId }, { fields: { _id: 0, establishments: 1 } });
+      let aux = _itemEstablishment.establishments.find(element => element.establishment_id === _establishmentId);
+      Items.update({ _id: _itemId, "establishments.establishment_id": _establishmentId }, { $set: { 'establishments.$.isAvailable': !aux.isAvailable, modification_date: new Date(), modification_user: Meteor.userId() } });
+    },
+    
+    /**
+     * Function to update item recommended
+     * @param {UserDetail} _userDetail
+     * @param {Item} _item
+     */
+    updateRecommended: function (_establishmentId: string, _itemId: string) {
+      let _itemEstablishment = Items.collection.findOne({ _id: _itemId }, { fields: { _id: 0, establishments: 1 } });
+      let aux = _itemEstablishment.establishments.find(element => element.establishment_id === _establishmentId);
+      Items.update({ _id: _itemId, "establishments.establishment_id": _establishmentId }, { $set: { 'establishments.$.recommended': !aux.recommended, modification_date: new Date(), modification_user: Meteor.userId() } });
     }
   })
 }

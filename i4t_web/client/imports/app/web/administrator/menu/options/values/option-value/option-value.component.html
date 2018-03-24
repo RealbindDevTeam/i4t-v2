@@ -1,0 +1,64 @@
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/categories.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{'OPTION_VALUE.THERE_NOT_RESTAURANTS' | translate}}
+                    </div>
+                    <div class="card_initial-additional-links">
+                        {{'OPTION_VALUE.MESSAGE' | translate}}
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'OPTION_VALUE.RESTAURANT_REGISTER' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="_thereAreEstablishments">
+    <mat-card-title>{{'OPTION_VALUE.OPTION_VALUE_CREATION' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'OPTION_VALUE.OPTION_VALUE_TEXT' | translate}}</mat-card-subtitle>
+    <mat-card-content>
+        <form [formGroup]="_optionValueForm" (ngSubmit)="addOptionValue();">
+            <div>
+                <mat-form-field class="name">
+                    <input matInput required formControlName="name" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="30" #inputName>
+                    <mat-hint align="end">{{inputName.value.length}} / 30</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="select">
+                    <mat-select formControlName="option" required placeholder="{{'OPTION_VALUE.OPTION_SELECTION' | translate}}" [(ngModel)]="_selectedValue">
+                        <mat-option *ngFor="let option of _options | async" value="{{option._id}}" (click)="changeOption(option._id);">{{option.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <br/>
+            <button mat-raised-button class="secondary-button" [disabled]="!_optionValueForm.valid" type="button" (click)="cancel()">{{'CANCEL' | translate}}</button>
+            <button mat-raised-button class="primary-button" [disabled]="!_optionValueForm.valid" type="submit">{{'CREATE' | translate}}</button>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngFor="let _optionValue of _optionValues | async" class="option-value">
+    <mat-card-title>{{_optionValue.name}}</mat-card-title>
+    <mat-card-content>
+        <span *ngFor="let option of _options | async">
+            <ng-template [ngIf]="option._id == _optionValue.option_id">
+                <p *ngIf="option.is_active" class="option-value-active">{{'OPTION_VALUE.OPTION' | translate}}: {{option.name}}</p>
+                <p *ngIf="!option.is_active" class="option-value-inactive">{{'OPTION_VALUE.OPTION' | translate}}: {{option.name}}</p>
+            </ng-template>
+        </span>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-raised-button (click)="open(_optionValue)" class="secondary-button">{{'OPTION_VALUE.MODIFY' | translate}}</button>
+        <button mat-button (click)="confirmRemove(_optionValue)">{{'OPTION_VALUE.REMOVE' | translate}}</button>
+        <span class="app-flex-filler lh">
+            <mat-slide-toggle [(checked)]="_optionValue.is_active" (change)="updateStatus(_optionValue)"></mat-slide-toggle>
+        </span>
+    </mat-card-actions>
+</mat-card>

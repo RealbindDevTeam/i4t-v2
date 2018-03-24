@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Currencies } from '../../../../both/collections/general/currency.collection';
-import { Restaurants } from '../../../../both/collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../../../both/models/restaurant/restaurant.model';
+import { Establishments } from '../../../../both/collections/establishment/establishment.collection';
+import { Establishment } from '../../../../both/models/establishment/establishment.model';
 import { UserDetails } from '../../../../both/collections/auth/user-detail.collection';
 
 /**
@@ -10,12 +10,12 @@ import { UserDetails } from '../../../../both/collections/auth/user-detail.colle
 Meteor.publish('currencies', () => Currencies.find({ isActive: true }));
 
 /**
- * Meteor publication return currencies by restaurants Id
+ * Meteor publication return currencies by establishments Id
  */
-Meteor.publish('getCurrenciesByRestaurantsId', function (_restaurantsId: string[]) {
+Meteor.publish('getCurrenciesByEstablishmentsId', function (_establishmentsId: string[]) {
     let _ids: string[] = [];
-    Restaurants.collection.find({ _id: { $in: _restaurantsId } }).forEach(function <Restaurant>(restaurant, index, ar) {
-        _ids.push(restaurant.currencyId);
+    Establishments.collection.find({ _id: { $in: _establishmentsId } }).forEach(function <Establishment>(establishment, index, ar) {
+        _ids.push(establishment.currencyId);
     });
     return Currencies.find({ _id: { $in: _ids } });
 });
@@ -25,8 +25,8 @@ Meteor.publish('getCurrenciesByRestaurantsId', function (_restaurantsId: string[
  */
 Meteor.publish('getCurrenciesByUserId', function () {
     let _currenciesIds: string[] = [];
-    Restaurants.collection.find({ creation_user: this.userId }).forEach(function <Restaurant>(restaurant, index, args) {
-        _currenciesIds.push(restaurant.currencyId);
+    Establishments.collection.find({ creation_user: this.userId }).forEach(function <Establishment>(establishment, index, args) {
+        _currenciesIds.push(establishment.currencyId);
     });
 
     return Currencies.find({ _id: { $in: _currenciesIds } });
@@ -38,24 +38,24 @@ Meteor.publish('getCurrenciesByUserId', function () {
 Meteor.publish('getCurrenciesByCurrentUser', function (_userId: string) {
     let _userDetail = UserDetails.findOne({ user_id: _userId });
 
-    if (_userDetail.current_restaurant != '') {
-        let _restaurant = Restaurants.findOne({ _id: _userDetail.current_restaurant });
-        return Currencies.find({ _id: _restaurant.currencyId });
+    if (_userDetail.current_establishment != '') {
+        let establishment = Establishments.findOne({ _id: _userDetail.current_establishment });
+        return Currencies.find({ _id: establishment.currencyId });
     } else {
         return Currencies.find({ _id: '0' });
     }
 });
 
 /**
- * Meteor publication return currency by restaurant work
+ * Meteor publication return currency by establishment work
  * @param {string} _userId
  */
-Meteor.publish('getCurrenciesByRestaurantWork', function (_userId: string) {
+Meteor.publish('getCurrenciesByEstablishmentWork', function (_userId: string) {
     let _userDetail = UserDetails.findOne({ user_id: _userId });
     let _currenciesIds: string[] = [];
-    if (_userDetail.restaurant_work != '') {
-        let _restaurant = Restaurants.findOne({ _id: _userDetail.restaurant_work });
-        return Currencies.find({ _id: _restaurant.currencyId });
+    if (_userDetail.establishment_work != '') {
+        let establishment = Establishments.findOne({ _id: _userDetail.establishment_work });
+        return Currencies.find({ _id: establishment.currencyId });
     } else {
         return Currencies.find({ _id: '0' });
     }

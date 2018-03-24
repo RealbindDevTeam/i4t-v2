@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
-import { App, AlertController, LoadingController, NavController, NavParams, ViewController } from 'ionic-angular';
+import { App, AlertController, LoadingController, NavController, NavParams, ViewController, Platform } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Restaurant } from 'i4t_web/both/models/restaurant/restaurant.model';
-import { Table } from 'i4t_web/both/models/restaurant/table.model';
+import { Establishment } from 'i4t_web/both/models/establishment/establishment.model';
+import { Table } from 'i4t_web/both/models/establishment/table.model';
 import { UserLanguageServiceProvider } from '../../../providers/user-language-service/user-language-service';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { AlphanumericCodePage } from '../alphanumeric-code/alphanumeric-code';
 import { SectionsPage } from '../sections/sections';
+import { Network } from '@ionic-native/network';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'page-code-type-select',
@@ -19,6 +21,8 @@ export class CodeTypeSelectPage {
   private _userLang: string;
   private _id_table: string;
   private _waitMsg: string;
+
+  private disconnectSubscription: Subscription;
 
   /**
    * CodeTypeSelectPage constructor
@@ -39,7 +43,9 @@ export class CodeTypeSelectPage {
     public _loadingCtrl: LoadingController,
     public _app: App,
     private _userLanguageService: UserLanguageServiceProvider,
-    private barcodeScanner: BarcodeScanner) {
+    private barcodeScanner: BarcodeScanner,
+    public _platform: Platform,
+    private _network: Network) {
     _translate.setDefaultLang('en');
   }
 
@@ -64,7 +70,10 @@ export class CodeTypeSelectPage {
     loader.present();
   }
 
-  goToSections(qr_code: string) {
+  goToSections(_pQRCode: string) {
+
+    var split = _pQRCode.split('qr?', 2);
+    var qr_code: string = split[1];
     MeteorObservable.call('getIdTableByQr', qr_code).subscribe((table: Table) => {
       if (table) {
         if (table.is_active) {
@@ -81,10 +90,10 @@ export class CodeTypeSelectPage {
 
   forwardToSections(qr_code: string) {
     if (this._id_table) {
-      MeteorObservable.call('getRestaurantByQRCode', qr_code, Meteor.userId()).subscribe((restaurant: Restaurant) => {
+      MeteorObservable.call('getEstablishmentByQRCode', qr_code, Meteor.userId()).subscribe((establishment: Establishment) => {
 
-        if (restaurant) {
-          this._navCtrl.push(SectionsPage, { res_id: restaurant._id, table_id: this._id_table }).then(() => {
+        if (establishment) {
+          this._navCtrl.push(SectionsPage, { res_id: establishment._id, table_id: this._id_table }).then(() => {
             const index = this._viewCtrl.index;
             this._navCtrl.remove(index);
           });
@@ -129,6 +138,66 @@ export class CodeTypeSelectPage {
 
   goToAlphanumericCode() {
     this._navCtrl.push(AlphanumericCodePage);
+  }
+
+  /** 
+         * This function verify the conditions on page did enter for internet and server connection
+        */
+  ionViewDidEnter() {
+    this.isConnected();
+    this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+      let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+      let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+      let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+      this.presentAlert(title, subtitle, btn);
+    }, error => console.error(error));
+  }
+
+  /** 
+   * This function verify with network plugin if device has internet connection
+  */
+  isConnected() {
+    if (this._platform.is('cordova')) {
+      let conntype = this._network.type;
+      let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+      if (!validateConn) {
+        let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+        let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+        let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+        this.presentAlert(title, subtitle, btn);
+      } else {
+        if (!Meteor.status().connected) {
+          let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+          let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+          let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+          this.presentAlert(title2, subtitle2, btn2);
+        }
+      }
+    }
+  }
+
+  /**
+   * Present the alert for advice to internet
+  */
+  presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+    let alert = this._alertCtrl.create({
+      title: _pTitle,
+      subTitle: _pSubtitle,
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: _pBtn,
+          handler: () => {
+            this.isConnected();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  ionViewWillLeave() {
+    this.disconnectSubscription.unsubscribe();
   }
 
   itemNameTraduction(itemName: string): string {

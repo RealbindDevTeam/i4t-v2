@@ -4,12 +4,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatListModule, MatCardModule, MatButtonModule, MatInputModule, MatSelectModule, MatSlideToggleModule, MatTabsModule, MatCheckboxModule, MatSliderModule, MatProgressSpinnerModule, MatTooltipModule, MatIconModule, MatToolbarModule, MatMenuModule, MatButtonToggleModule, MatRadioModule, MatExpansionModule, MatStepperModule } from '@angular/material';
+import { MatGridListModule, MatSnackBarModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatListModule, MatCardModule, MatButtonModule, MatInputModule, MatSelectModule, MatSlideToggleModule, MatTabsModule, MatCheckboxModule, MatSliderModule, MatProgressSpinnerModule, MatTooltipModule, MatIconModule, MatToolbarModule, MatMenuModule, MatButtonToggleModule, MatRadioModule, MatExpansionModule, MatStepperModule, MatChipsModule } from '@angular/material';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AgmCoreModule } from '@agm/core';
 import { NgxPageScrollModule } from 'ngx-page-scroll';
+import { ChartModule } from 'angular-highcharts';
 
 import { routes } from './app.routes';
 import { AppComponent } from './web/app.component';
@@ -22,7 +23,6 @@ import { CustomerGuard } from './web/services/navigation/customer-guard.service'
 import { AdminGuard } from './web/services/navigation/admin-guard.service';
 import { WaiterGuard } from './web/services/navigation/waiter-guard.service';
 import { SupervisorGuard } from './web/services/navigation/supervisor-guard.service';
-import { ChefGuard } from './web/services/navigation/chef-guard.service';
 import { CashierGuard } from './web/services/navigation/cashier-guard.service';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -48,6 +48,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     NgxPageScrollModule,
     BrowserAnimationsModule,
+    MatGridListModule,
     MatSnackBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -71,9 +72,11 @@ export function createTranslateLoader(http: HttpClient) {
     MatRadioModule,
     MatExpansionModule,
     MatStepperModule,
+    MatChipsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyCFXGTI9kCa4U7YyMd2USL9LCV_JlQinyw'
-    })
+    }),
+    ChartModule
   ],
   declarations: [
     ...WEB_DECLARATIONS,
@@ -85,7 +88,6 @@ export function createTranslateLoader(http: HttpClient) {
     AdminGuard,
     WaiterGuard,
     SupervisorGuard,
-    ChefGuard,
     CashierGuard
   ],
   bootstrap: [

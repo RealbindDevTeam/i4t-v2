@@ -4,13 +4,13 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../both/shared-components/validators/custom-validator';
 import { Role } from '../../../../../../../both/models/auth/role.model';
 import { Roles } from '../../../../../../../both/collections/auth/role.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
 import { UserProfile } from '../../../../../../../both/models/auth/user-profile.model';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
@@ -26,6 +26,7 @@ import { AlertConfirmComponent } from '../../../../web/general/alert-confirm/ale
 export class SupervisorCollaboratorsEditionComponent implements OnInit, OnDestroy {
 
     private _tableSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
     private _collaboratorEditionForm: FormGroup;
     private _mdDialogRef: MatDialogRef<any>;
 
@@ -45,7 +46,6 @@ export class SupervisorCollaboratorsEditionComponent implements OnInit, OnDestro
     private _userLang: string;
     private _error: string
     private _message: string;
-    private _selectedRestaurant: string;
     private _showConfirmError: boolean = false;
     private _showTablesSelect: boolean = false;
     private _disabledTablesAssignment: boolean = true;
@@ -96,14 +96,15 @@ export class SupervisorCollaboratorsEditionComponent implements OnInit, OnDestro
         this._tableInit = this.selectUserDetail.table_assignment_init;
         this._tableEnd = this.selectUserDetail.table_assignment_end;
         this._roles = Roles.find({}).zone();
-        this._tableSub = MeteorObservable.subscribe('getTablesByRestaurantWork', this.selectUser._id).subscribe();
+        this._tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this.selectUser._id).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._tableSub) { this._tableSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -181,7 +182,7 @@ export class SupervisorCollaboratorsEditionComponent implements OnInit, OnDestro
                     if (this._collaboratorEditionForm.value.role === '200') {
                         UserDetails.update({ _id: this.selectUserDetail._id }, {
                             $set: {
-                                restaurant_work: this.selectUserDetail.restaurant_work,
+                                establishment_work: this.selectUserDetail.establishment_work,
                                 birthdate: this._collaboratorEditionForm.value.birthdate,
                                 phone: this._collaboratorEditionForm.value.phone,
                                 table_assignment_init: Number.parseInt(this._collaboratorEditionForm.value.table_init.toString()),
@@ -191,7 +192,7 @@ export class SupervisorCollaboratorsEditionComponent implements OnInit, OnDestro
                     } else {
                         UserDetails.update({ _id: this.selectUserDetail._id }, {
                             $set: {
-                                restaurant_work: this.selectUserDetail.restaurant_work,
+                                establishment_work: this.selectUserDetail.establishment_work,
                                 birthdate: this._collaboratorEditionForm.value.birthdate,
                                 phone: this._collaboratorEditionForm.value.phone
                             }

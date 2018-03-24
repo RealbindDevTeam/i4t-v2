@@ -1,12 +1,14 @@
 <div class="item-block">
-    <img class="img-cards" *ngIf="isUser" src="assets/img/my-orders.png" style="width: 50px; height: 50px;">
-    <img class="img-cards" *ngIf="!isUser" src="assets/img/others-orders.png" style="width: 50px; height: 50px;">
+    <img class="img-cards" style="width: 50px; height: 50px;border-radius: 50%;" src="{{getUserImage(order.creation_user)}}">
     <div class="custom-header-title">
         <div class="custom-label">
-            <h2>{{'MOBILE.ORDERS.ORDER' | translate}}{{order.code}}</h2>
-            <h2>{{'MOBILE.ORDERS.TOTAL' | translate}}{{order.totalPayment}} {{currencyCode}}</h2>
-            <h2>{{'MOBILE.ORDERS.STATUS' | translate}}{{order.status | translate}}</h2>
+            <h2 *ngIf="isUser">{{'MOBILE.ORDERS.TOTAL_ORDER' | translate}}: {{order.totalPayment}} {{currencyCode}}</h2>
+            <h2 *ngIf="!isUser">{{getUserName(order.creation_user)}} {{'MOBILE.ORDERS.IS_CONSUMING' | translate}} {{order.totalPayment}} {{currencyCode}}</h2>
+            <h3 *ngIf="order.status === 'ORDER_STATUS.CONFIRMED' && isUser" style="color: #4CAF50">{{'MOBILE.ORDERS.USR_ORDER_CONFIRMED' | translate}}</h3>
+            <h3 *ngIf="order.status === 'ORDER_STATUS.CONFIRMED' && !isUser" style="color: #4CAF50">{{'MOBILE.ORDERS.NO_USR_ORDER_CONFIRMED' | translate}}</h3>
+            <ion-badge style="background-color: #4CAF50;color: #fff;" *ngIf="order.total_reward_points && isUser">{{'MOBILE.ORDERS.WIN' | translate}} {{order.total_reward_points}} pts
+                <ion-icon name="star"></ion-icon>
+            </ion-badge>
         </div>
     </div>
-    <ion-icon showWhen="android" name="ios-arrow-forward" style="color: gray; float: right"></ion-icon>
 </div>

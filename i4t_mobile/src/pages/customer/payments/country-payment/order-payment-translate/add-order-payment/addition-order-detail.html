@@ -1,9 +1,0 @@
-<div *ngFor="let addition of _additions | async">
-    <ion-item>
-        <ion-thumbnail item-left>
-            <img src="assets/img/default-plate.png">
-        </ion-thumbnail>
-        <h2 style="white-space: normal;">{{addition.name}} {{'MOBILE.ORDERS.ADDITION' | translate}}</h2> 
-        <p style="white-space: normal;">{{'MOBILE.PRICING' | translate}}: {{price}} {{currency}} • {{'MOBILE.ORDERS.QUANT' | translate}} {{quantity}}</p>
-    </ion-item>
-</div>

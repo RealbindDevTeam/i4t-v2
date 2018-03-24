@@ -1,0 +1,95 @@
+agm-map {
+    height: 300px;
+}
+
+.img {
+    width: 100px !important; 
+    height: 100px !important;
+}
+
+.name {
+    font-size: 1.3rem;
+    white-space: normal !important;
+}
+
+.location {
+    font-size: 1rem;
+}
+
+.location-icon {
+    vertical-align: middle;
+    color: #EF5350
+}
+
+.social-networks{
+    display: inline;
+}
+
+.payment-thumb {
+    width: 25px; 
+    height: 25px;
+}
+
+.photos {
+    height: 150px;
+}
+
+.content {
+    overflow: auto;
+    white-space: nowrap;
+}
+
+button.img-wp {
+    padding: 1px 7px 2px;
+}
+
+.img-thumb {
+    margin-right: 1%;
+    width: 100px;
+    height: 100px;
+}
+
+
+button i.cust-facebook {
+    color: #3b5998;
+}
+
+button i.cust-twitter {
+    color: #00aced;
+}
+
+button i.cust-instagram {
+    color: #c13584;
+}
+
+.cust-icon {
+    color: #fd8c09;
+}
+
+.cust-content {
+    text-align: center;
+}
+
+@media only screen and (min-width: 600px){
+    .cust-width {
+        width: 50%;
+    }
+
+    .cust-margin-right {
+        margin-right: 20px;
+    }
+
+    .cust-flex {
+        display: flex;
+    }
+
+    .cust-paragraph{
+        margin-top: 14px;
+    }
+}
+
+.schedule-social-networks {
+    text-align: -webkit-center; 
+    color: #EF5350;
+}
+//

@@ -11,7 +11,7 @@ import { CompanyInfo, ClientInfo } from '../../models/payment/iurest-invoice.mod
 if (Meteor.isServer) {
     Meteor.methods({
         /**
-         * This function allow generate iurest invoice for admin restaurant
+         * This function allow generate iurest invoice for admin establishment
          * @param { string } _paymentHistoryId
          * @param { string } _userId 
          */
@@ -146,8 +146,8 @@ if (Meteor.isServer) {
                 period: _firstMonthDay.getDate() + '/' + (_firstMonthDay.getMonth() + 1) + '/' + _firstMonthDay.getFullYear() +
                     ' - ' + _lastMonthDay.getDate() + '/' + (_lastMonthDay.getMonth() + 1) + '/' + _lastMonthDay.getFullYear(),
                 amount_no_iva: Meteor.call('getReturnBase', lPaymentHistory.paymentValue).toString(),
-                subtotal: Meteor.call('getReturnBase', lPaymentHistory.paymentValue).toString(),
-                iva: Meteor.call('getValueTax', lPaymentHistory.paymentValue).toString(),
+                subtotal: "0",
+                iva: "0",
                 total: lPaymentHistory.paymentValue.toString(),
                 currency: lPaymentHistory.currency,
                 company_info: company_info,

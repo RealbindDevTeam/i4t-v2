@@ -1,4 +1,4 @@
-page-sections, item-card {
+page-sections, item-card, menu-by-establishment-page {
     .img-header{
         background-position: center center;
         background-repeat: no-repeat;
@@ -43,5 +43,9 @@ page-sections, item-card {
         border-bottom: 0.55px solid #c8c7cc; 
         width: 90%; 
         margin: auto;
+    }
+
+    .text-align-center {
+        text-align: center;
     }
 }

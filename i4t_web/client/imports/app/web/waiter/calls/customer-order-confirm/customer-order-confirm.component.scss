@@ -1,0 +1,29 @@
+.name{
+    margin-bottom: 0%;
+}
+
+.observations{
+    margin-bottom: 0%;
+}
+
+.value {
+    .value-name {
+        font-weight: bold;
+    }
+}
+
+.no-addition{
+    display: inline-block;
+    font-weight: bold;
+}
+
+.addition{
+    .addition-title{
+        font-weight: bold;
+    }
+
+    .addition-name{
+        margin-left: 1rem;
+        font-weight: bold;
+    }
+}

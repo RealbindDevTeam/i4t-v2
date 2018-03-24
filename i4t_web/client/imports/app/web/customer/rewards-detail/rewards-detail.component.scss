@@ -1,0 +1,29 @@
+img.br {
+    border-radius: 0 !important;
+}
+
+.button-show {
+    display: none;
+}
+
+@media only screen and (min-width: 600px) {
+    img.custom {
+        width: 80px !important;
+        height: 80px !important;
+    }
+    mat-list-item {
+        margin: 12px 8px 0;
+    }
+    
+    .divider{
+        margin-left: 122px;
+    }
+    
+    .button-show {
+        display: block;
+    }
+
+    .icon-button {
+        display: none;
+    }
+}

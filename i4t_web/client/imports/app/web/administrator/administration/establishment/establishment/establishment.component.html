@@ -1,0 +1,64 @@
+<mat-card *ngIf="!_thereAreEstablishments" mat-cell="12" class="demo-card demo-basic">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/restaurantes.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{ 'RESTAURANT.MSG_INITIAL' | translate }}
+                    </div>
+                    <div class="card_initial-additional-links">
+
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="openEstablishmentRegister()">{{'RESTAURANT.REGISTER_RESTAURANT' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<div class="global-div" *ngIf="_thereAreEstablishments">
+    <div class="div-whitout-overflow">
+        <div class="cards-div" style="padding: 20px 0 0 20px;">
+            <mat-toolbar color="warn" style="width: 96%;" *ngIf="!_thereAreCollaborators">
+                <span>{{'RESTAURANT.WAITERS_ERROR' | translate}}</span>
+                <span style="flex: 1 1 auto;"></span>
+                <mat-icon style="padding: 0 14px;">report_problem</mat-icon>
+            </mat-toolbar>
+            <br/>
+            <mat-card *ngFor="let establishment of establishments | async" class="custom-cards">
+                <div class="header-card">
+                    <img *ngIf="establishment.image" src="{{ establishment.image.url }}">
+                    <img *ngIf="!establishment.image" src="/images/default-restaurant.png">
+                    <span class="mat-card-title">{{establishment.name}}</span>
+                    <span class="mat-card-subtitle">{{establishment.address}}</span>
+                    <button mat-fab class="btn-position-edition" (click)="openEstablishmentEdition(establishment)">
+                        <mat-icon style="color: white;" class="mat-24">create</mat-icon>
+                    </button>
+                </div>
+                <mat-card-content>
+                    <ul class="list">
+                        <li>
+                            <mat-icon class="vertical-align-middle" matTooltip="{{'RESTAURANT.COUNTRY' | translate}}">room</mat-icon>
+                            <label>{{ getEstablishmentCountry(establishment.countryId) | translate }} - {{ getEstablishmentCity(establishment.cityId,establishment.other_city)
+                                | translate }}</label>
+                        </li>
+                        <li>
+                            <mat-icon class="vertical-align-middle" matTooltip="{{'RESTAURANT.PHONE' | translate}}">call</mat-icon>
+                            <label>{{establishment.indicative}} {{establishment.phone}}</label>
+                        </li>
+                    </ul>
+                    <p *ngIf="!establishment.isActive" class="establishment-inactive">{{'RESTAURANT.RESTAURANT_INACTIVE' | translate}}</p>
+                    <p *ngIf="establishment.isActive" class="establishment-active">{{'RESTAURANT.RESTAURANT_ACTIVE' | translate}}</p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    <button *ngIf="_thereAreEstablishments" class="fixed-action-btn" mat-fab (click)="openEstablishmentRegister()">
+        <mat-icon style="color: white;">add</mat-icon>
+    </button>
+</div>

@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../../services/general/user-language.service';
-import { Restaurant } from '../../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../../both/collections/establishment/establishment.collection';
 import { Role } from '../../../../../../../../both/models/auth/role.model';
 import { Roles } from '../../../../../../../../both/collections/auth/role.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
@@ -24,22 +24,23 @@ import { AlertConfirmComponent } from '../../../../../web/general/alert-confirm/
 export class CollaboratorsComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
     private _userDetails: Observable<UserDetail[]>;
     private _users: Observable<User[]>;
     private _roles: Observable<Role[]>;
 
-    private _restaurantSub: Subscription;
+    private _establishmentSub: Subscription;
     private _userDetailsSub: Subscription;
     private _roleSub: Subscription;
     private _usersSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     //private _form                   : FormGroup;
     public _dialogRef: MatDialogRef<any>;
     private _mdDialogRef: MatDialogRef<any>;
     private titleMsg: string;
     private btnAcceptLbl: string;
-    private _thereAreRestaurants: boolean = true;
+    private _thereAreEstablishments: boolean = true;
 
     /**
      * CollaboratorsComponent Constructor
@@ -66,11 +67,11 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        this._restaurantSub = MeteorObservable.subscribe('restaurants', this._user).subscribe(() => {
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                this.countRestaurants();
-                this._restaurants.subscribe(() => { this.countRestaurants(); });
+                this._establishments = Establishments.find({}).zone();
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.countEstablishments(); });
             });
         });
         this._roleSub = MeteorObservable.subscribe('getRoleCollaborators').subscribe(() => {
@@ -81,31 +82,29 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Validate if restaurants exists
+     * Validate if establishments exists
      */
-    countRestaurants(): void {
-        Restaurants.collection.find({}).count() > 0 ? this._thereAreRestaurants = true : this._thereAreRestaurants = false;
+    countEstablishments(): void {
+        Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._restaurantSub) { this._restaurantSub.unsubscribe(); }
-        if (this._roleSub) { this._roleSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._usersSub) { this._usersSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
-     * This method allow search collaborators by restaurant id
+     * This method allow search collaborators by establishment id
      */
-    collaboratorsSearch(_pRestaurantId: string) {
-        this._userDetailsSub = MeteorObservable.subscribe('getUsersDetailsForRestaurant', _pRestaurantId).subscribe(() => {
-            this._userDetails = UserDetails.find({ restaurant_work: _pRestaurantId }).zone();
+    collaboratorsSearch(_pEstablishmentId: string) {
+        this._userDetailsSub = MeteorObservable.subscribe('getUsersDetailsForEstablishment', _pEstablishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
+            this._userDetails = UserDetails.find({ establishment_work: _pEstablishmentId }).zone();
         });
 
-        this._usersSub = MeteorObservable.subscribe('getUsersByRestaurant', _pRestaurantId).subscribe(() => {
+        this._usersSub = MeteorObservable.subscribe('getUsersByEstablishment', _pEstablishmentId).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._users = Users.find({}).zone();
         });
     }
@@ -131,7 +130,9 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
      * @param {string} _pUserDetailId
      */
     changeUserState(_pUserDetail: UserDetail): void {
-        UserDetails.update({ _id: _pUserDetail._id }, { $set: { is_active: !_pUserDetail.is_active } });
+        if (_pUserDetail) {
+            UserDetails.update({ _id: _pUserDetail._id }, { $set: { is_active: !_pUserDetail.is_active } });
+        }
     }
 
     /**
@@ -142,10 +143,10 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Go to add new Restaurant
+     * Go to add new Establishment
      */
-    goToAddRestaurant() {
-        this._router.navigate(['/app/restaurant-register']);
+    goToAddEstablishment() {
+        this._router.navigate(['/app/establishment-register']);
     }
 
     /**

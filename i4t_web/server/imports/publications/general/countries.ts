@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Countries } from '../../../../both/collections/general/country.collection';
-import { Restaurants } from '../../../../both/collections/restaurant/restaurant.collection';
-import { Restaurant } from '../../../../both/models/restaurant/restaurant.model';
+import { Establishments } from '../../../../both/collections/establishment/establishment.collection';
+import { Establishment } from '../../../../both/models/establishment/establishment.model';
 import { check } from 'meteor/check';
 
 /**
@@ -12,25 +12,25 @@ Meteor.publish('countries', function () {
 });
 
 /**
- * Country by restaurant
+ * Country by establishment
  */
-Meteor.publish('getCountryByRestaurantId', function (_restaurantId: string) {
-    check(_restaurantId, String);
-    let restaurant = Restaurants.findOne({ _id: _restaurantId });
-    if (restaurant) {
-        return Countries.find({ _id: restaurant.countryId });
+Meteor.publish('getCountryByEstablishmentId', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    let establishment = Establishments.findOne({ _id: _establishmentId });
+    if (establishment) {
+        return Countries.find({ _id: establishment.countryId });
     } else {
         return Countries.find({ is_active: true });;
     }
 });
 
 /**
- * Meteor publication return countries by restaurants Id
+ * Meteor publication return countries by establishments Id
  */
-Meteor.publish('getCountriesByRestaurantsId', function (_restaurantsId: string[]) {
+Meteor.publish('getCountriesByEstablishmentsId', function (_establishmentsId: string[]) {
     let _ids: string[] = [];
-    Restaurants.collection.find({ _id: { $in: _restaurantsId } }).forEach(function <Restaurant>(restaurant, index, ar) {
-        _ids.push(restaurant.countryId);
+    Establishments.collection.find({ _id: { $in: _establishmentsId } }).forEach(function <Establishment>(establishment, index, ar) {
+        _ids.push(establishment.countryId);
     });
     return Countries.find({ _id: { $in: _ids } });
 });
@@ -41,8 +41,8 @@ Meteor.publish('getCountriesByRestaurantsId', function (_restaurantsId: string[]
  */
 Meteor.publish('getCountriesByAdminUser', function () {
     let _countriesIds: string[] = [];
-    Restaurants.collection.find({ creation_user: this.userId }).forEach(function <Restaurant>(restaurant, index, ar) {
-        _countriesIds.push(restaurant.countryId);
+    Establishments.collection.find({ creation_user: this.userId }).forEach(function <Establishment>(establishment, index, ar) {
+        _countriesIds.push(establishment.countryId);
     });
 
     return Countries.find({ _id: { $in: _countriesIds }, is_active: true });

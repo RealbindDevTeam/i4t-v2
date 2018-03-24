@@ -12,7 +12,7 @@ export interface Country {
     currencyId: string;
     itemsWithDifferentTax: boolean;
     queue: string[];
-    restaurantPrice: number;
+    establishment_price: number;
     tablePrice: number;
     cronValidateActive: string;
     cronChangeFreeDays?: string;
@@ -20,4 +20,5 @@ export interface Country {
     cronEmailExpireSoon: string;
     cronEmailRestExpired: string;
     max_number_tables?: number;
+    cronPointsExpire: string
 }

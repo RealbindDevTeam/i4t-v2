@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Meteor } from 'meteor/meteor';
 import { UserLanguageService } from '../../services/general/user-language.service';
-import { Restaurant } from '../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../both/collections/establishment/establishment.collection';
 import { UserDetail } from '../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
-import { Tables } from '../../../../../../both/collections/restaurant/table.collection';
+import { Tables } from '../../../../../../both/collections/establishment/table.collection';
 import { Items } from '../../../../../../both/collections/menu/item.collection';
-import { Payment } from '../../../../../../both/models/restaurant/payment.model';
-import { Payments } from '../../../../../../both/collections/restaurant/payment.collection';
-import { Order, OrderItem, OrderAddition } from '../../../../../../both/models/restaurant/order.model';
-import { Orders } from '../../../../../../both/collections/restaurant/order.collection';
+//import { Payment } from '../../../../../../both/models/establishment/payment.model';
+//import { Payments } from '../../../../../../both/collections/establishment/payment.collection';
+import { Order, OrderItem, OrderAddition } from '../../../../../../both/models/establishment/order.model';
+import { Orders } from '../../../../../../both/collections/establishment/order.collection';
 import { Currency } from '../../../../../../both/models/general/currency.model';
 import { Currencies } from '../../../../../../both/collections/general/currency.collection';
 
@@ -26,15 +26,15 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
 
     private _user = Meteor.userId();
 
-    private _restaurants: Observable<Restaurant[]>;
+    private _establishments: Observable<Establishment[]>;
 
-    private _restaurantsSub: Subscription;
+    private _establishmentsSub: Subscription;
     private _userDetailsSub: Subscription;
     private _itemsSub: Subscription;
-    private _paymentsSub: Subscription;
     private _ordersSub: Subscription;
     private _currenciesSub: Subscription;
     private _tablesSub: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _currentDate: Date = new Date();
     private _currentDay: number = this._currentDate.getDate();
@@ -59,95 +59,89 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.removeSubscriptions();
-        let _lRestaurantsId: string[] = [];
-        this._restaurantsSub = MeteorObservable.subscribe('getRestaurantByRestaurantWork', this._user).subscribe(() => {
+        let _lEstablishmentsId: string[] = [];
+        this._establishmentsSub = MeteorObservable.subscribe('getEstablishmentByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
-                this._restaurants = Restaurants.find({}).zone();
-                Restaurants.collection.find({}).fetch().forEach((restaurant: Restaurant) => {
-                    _lRestaurantsId.push(restaurant._id);
+                this._establishments = Establishments.find({}).zone();
+                Establishments.collection.find({}).fetch().forEach((establishment: Establishment) => {
+                    _lEstablishmentsId.push(establishment._id);
                 });
-                this._userDetailsSub = MeteorObservable.subscribe('getUsersByRestaurantsId', _lRestaurantsId).subscribe();
-                this._itemsSub = MeteorObservable.subscribe('getItemsByRestaurantIds', _lRestaurantsId).subscribe();
-                this._paymentsSub = MeteorObservable.subscribe('getPaymentsByRestaurantIds', _lRestaurantsId).subscribe();
-                this._ordersSub = MeteorObservable.subscribe('getOrdersByRestaurantIds', _lRestaurantsId, ['ORDER_STATUS.CLOSED']).subscribe();
-                this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByRestaurantsId', _lRestaurantsId).subscribe();
+                this._userDetailsSub = MeteorObservable.subscribe('getUsersByEstablishmentsId', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
+                this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentIds', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
+                this._ordersSub = MeteorObservable.subscribe('getOrdersByEstablishmentIds', _lEstablishmentsId, ['ORDER_STATUS.CLOSED']).takeUntil(this._ngUnsubscribe).subscribe();
+                this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
             });
         });
-        this._tablesSub = MeteorObservable.subscribe('getTablesByRestaurantWork', this._user).subscribe();
+        this._tablesSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this._user).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._restaurantsSub) { this._restaurantsSub.unsubscribe(); }
-        if (this._userDetailsSub) { this._userDetailsSub.unsubscribe(); }
-        if (this._tablesSub) { this._tablesSub.unsubscribe(); }
-        if (this._itemsSub) { this._itemsSub.unsubscribe(); }
-        if (this._paymentsSub) { this._paymentsSub.unsubscribe(); }
-        if (this._ordersSub) { this._ordersSub.unsubscribe(); }
-        if (this._currenciesSub) { this._currenciesSub.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
-     * Get Users in restaurant
-     * @param {string} _pRestaurantId
+     * Get Users in establishment
+     * @param {string} _pEstablishmentId
      */
-    getRestaurantUsers(_pRestaurantId: string): number {
-        return UserDetails.collection.find({ current_restaurant: _pRestaurantId }).count();
+    getEstablishmentUsers(_pEstablishmentId: string): number {
+        return UserDetails.collection.find({ current_establishment: _pEstablishmentId }).count();
     }
 
     /**
      * Get Tables with Free Status
-     * @param {string} _pRestaurantId 
+     * @param {string} _pEstablishmentId 
      */
-    getTablesWithFreeStatus(_pRestaurantId: string): number {
-        return Tables.collection.find({ restaurantId: _pRestaurantId, status: 'FREE' }).count();
+    getTablesWithFreeStatus(_pEstablishmentId: string): number {
+        return Tables.collection.find({ establishment_id: _pEstablishmentId, status: 'FREE' }).count();
     }
 
     /**
      * Get Tables With Busy Status
-     * @param {string} _pRestaurantId 
+     * @param {string} _pEstablishmentId 
      */
-    getTablesWithBusyStatus(_pRestaurantId: string): number {
-        return Tables.collection.find({ restaurantId: _pRestaurantId, status: 'BUSY' }).count();
+    getTablesWithBusyStatus(_pEstablishmentId: string): number {
+        return Tables.collection.find({ establishment_id: _pEstablishmentId, status: 'BUSY' }).count();
     }
 
     /**
      * Get available items
-     * @param {string} _pRestaurantId 
+     * @param {string} _pEstablishmentId 
      */
-    getAvailableItems(_pRestaurantId: string): number {
-        return Items.collection.find({ 'restaurants.restaurantId': _pRestaurantId, 'restaurants.isAvailable': true }).count();
+    getAvailableItems(_pEstablishmentId: string): number {
+        return Items.collection.find({ 'establishments.establishment_id': _pEstablishmentId, 'establishments.isAvailable': true }).count();
     }
 
     /**
      * Get not available items
-     * @param {string} _pRestaurantId
+     * @param {string} _pEstablishmentId
      */
-    getNotAvailableItems(_pRestaurantId: string): number {
-        return Items.collection.find({ 'restaurants.restaurantId': _pRestaurantId, 'restaurants.isAvailable': false }).count();
+    getNotAvailableItems(_pEstablishmentId: string): number {
+        return Items.collection.find({ 'establishments.establishment_id': _pEstablishmentId, 'establishments.isAvailable': false }).count();
     }
 
     /**
      * Get daily sales
-     * @param {string} _pRestaurantId
+     * @param {string} _pEstablishmentId
      */
-    getDailySales(_pRestaurantId: string): number {
+    getDailySales(_pEstablishmentId: string): number {
         let _lTotalSale: number = 0;
-        Payments.collection.find({ restaurantId: _pRestaurantId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             _lTotalSale += pay.totalToPayment;
-        });
+        });*/
         return _lTotalSale;
     }
 
     /**
      * Get Items Sold
-     * @param {string} _pRestaurantId
+     * @param {string} _pEstablishmentId
      */
-    getItemsSold(_pRestaurantId: string): number {
+    getItemsSold(_pEstablishmentId: string): number {
         let _lItemCount: number = 0;
-        Payments.collection.find({ restaurantId: _pRestaurantId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             pay.orders.forEach((orderId) => {
                 let _lOrder: Order = Orders.findOne({ _id: orderId });
                 if (_lOrder) {
@@ -156,17 +150,17 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
                     });
                 }
             });
-        });
+        });*/
         return _lItemCount;
     }
 
     /**
      * Get GarnishFood Sold
-     * @param {string} _pRestaurantId
+     * @param {string} _pEstablishmentId
      */
-    getGarnishFoodSold(_pRestaurantId: string): number {
+    getGarnishFoodSold(_pEstablishmentId: string): number {
         let _lGarnishFoodCount: number = 0;
-        Payments.collection.find({ restaurantId: _pRestaurantId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             pay.orders.forEach((orderId) => {
                 let _lOrder: Order = Orders.findOne({ _id: orderId });
                 if (_lOrder) {
@@ -175,17 +169,17 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
                     });
                 }
             });
-        });
+        });*/
         return _lGarnishFoodCount;
     }
 
     /**
      * Get Additions Sold
-     * @param {string} _pRestaurantId
+     * @param {string} _pEstablishmentId
      */
-    getAdditionsSold(_pRestaurantId: string): number {
+    getAdditionsSold(_pEstablishmentId: string): number {
         let _lAdditions: number = 0;
-        Payments.collection.find({ restaurantId: _pRestaurantId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
+        /*Payments.collection.find({ establishment_id: _pEstablishmentId, creation_date: { $gte: new Date(this._currentYear, this._currentMonth, this._currentDay) } }).forEach(function <Payment>(pay, index, ar) {
             pay.orders.forEach((orderId) => {
                 let _lOrder: Order = Orders.findOne({ _id: orderId });
                 if (_lOrder) {
@@ -197,15 +191,15 @@ export class SupervisorDashboardComponent implements OnInit, OnDestroy {
                     });
                 }
             });
-        });
+        });*/
         return _lAdditions;
     }
 
     /**
-     * Get Restaurant Currency
+     * Get Establishment Currency
      * @param {string} _pCurrencyId 
      */
-    getRestaurantCurrency(_pCurrencyId: string): string {
+    getEstablishmentCurrency(_pCurrencyId: string): string {
         let _lCurrency: Currency = Currencies.collection.findOne({ _id: _pCurrencyId });
         if (_lCurrency) {
             return _lCurrency.code;

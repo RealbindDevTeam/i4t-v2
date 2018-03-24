@@ -5,10 +5,9 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Subject, Observable } from 'rxjs';
 import { UserLanguageService } from '../../services/general/user-language.service';
-import { Restaurants } from "../../../../../../both/collections/restaurant/restaurant.collection";
 import { UserDetail } from '../../../../../../both/models/auth/user-detail.model';
 import { UserDetails } from '../../../../../../both/collections/auth/user-detail.collection';
-import { WaiterCallDetails } from '../../../../../../both/collections/restaurant/waiter-call-detail.collection';
+import { WaiterCallDetails } from '../../../../../../both/collections/establishment/waiter-call-detail.collection';
 import { AlertConfirmComponent } from '../../../web/general/alert-confirm/alert-confirm.component';
 
 @Component({
@@ -20,15 +19,15 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
 
   private _userDetailSubscription: Subscription;
   private _waiterCallDetailSubscription: Subscription;
+  private _ngUnsubscribe: Subject<void> = new Subject<void>();
   public _dialogRef: MatDialogRef<any>;
 
-  private _restaurants: any;
   private _userDetail: any;
   private _userDetails: any;
   private _waiterCallDetail: any;
 
   private _countDetails: number;
-  private _userRestaurant: boolean;
+  private _userEstablishment: boolean;
   private _validatedWaterCall: boolean;
   private _loading: boolean;
   private titleMsg: string;
@@ -58,20 +57,20 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.removeSubscriptions();
-    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe();
-    this._waiterCallDetailSubscription = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).subscribe();
+    this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
+    this._waiterCallDetailSubscription = MeteorObservable.subscribe('countWaiterCallDetailByUsrId', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
 
     MeteorObservable.autorun().subscribe(() => {
       this._userDetails = UserDetails.find({ user_id: Meteor.userId() });
       this._userDetail = UserDetails.collection.findOne({ user_id: Meteor.userId() });
       if (this._userDetail) {
-        if (this._userDetail.current_table == "" && this._userDetail.current_restaurant == "") {
-          this._userRestaurant = false;
+        if (this._userDetail.current_table == "" && this._userDetail.current_establishment == "") {
+          this._userEstablishment = false;
         } else {
-          this._userRestaurant = true;
+          this._userEstablishment = true;
         }
-        if (this._userRestaurant) {
-          this._countDetails = WaiterCallDetails.collection.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', restaurant_id: this._userDetail.current_restaurant, status: { $in: ["waiting", "completed"] } }).count();
+        if (this._userEstablishment) {
+          this._countDetails = WaiterCallDetails.collection.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status: { $in: ["waiting", "completed"] } }).count();
           if (this._countDetails > 0) {
             this._validatedWaterCall = true;
           } else {
@@ -86,23 +85,23 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
    * Remove all subscriptions
    */
   removeSubscriptions(): void {
-    if (this._waiterCallDetailSubscription) { this._waiterCallDetailSubscription.unsubscribe(); }
-    if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
   }
 
   /**
    * Function that allows add calls to waiters enabled
    */
   addWaiterCall() {
-    if (this._userDetail.current_table == "" && this._userDetail.current_restaurant == "") {
+    if (this._userDetail.current_table == "" && this._userDetail.current_establishment == "") {
       return;
     } else {
-      var restaurant_id = this._userDetail.current_restaurant;
+      var establishment_id = this._userDetail.current_establishment;
       var table_id = this._userDetail.current_table;
       var usrId = Meteor.userId();
 
       var data: any = {
-        restaurants: restaurant_id,
+        establishments: establishment_id,
         tables: table_id,
         user: usrId,
         waiter_id: "",
@@ -112,7 +111,7 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
 
       this._loading = true;
       setTimeout(() => {
-        MeteorObservable.call('findQueueByRestaurant', data).subscribe(() => {
+        MeteorObservable.call('findQueueByEstablishment', data).subscribe(() => {
           this._loading = false;
         }, (error) => {
           this.openDialog(this.titleMsg, '', error, '', this.btnAcceptLbl, false);
@@ -127,7 +126,7 @@ export class WaiterCallComponent implements OnInit, OnDestroy {
   cancelWaiterCall() {
     this._loading = true;
     setTimeout(() => {
-      let waiterCall = WaiterCallDetails.collection.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', restaurant_id: this._userDetail.current_restaurant, status: { $in: ["waiting", "completed"] } }).fetch()[0];
+      let waiterCall = WaiterCallDetails.collection.find({ user_id: Meteor.userId(), type: 'CALL_OF_CUSTOMER', establishment_id: this._userDetail.current_establishment, status: { $in: ["waiting", "completed"] } }).fetch()[0];
       MeteorObservable.call('cancelCallClient', waiterCall, Meteor.userId()).subscribe(() => {
         this._loading = false;
       });

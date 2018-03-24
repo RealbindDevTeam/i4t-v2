@@ -3,7 +3,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { MeteorObservable } from 'meteor-rxjs';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { UserLanguageService } from '../../services/general/user-language.service';
 import { Countries } from '../../../../../../both/collections/general/country.collection';
 import { Country } from '../../../../../../both/models/general/country.model';
@@ -34,6 +34,7 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
     private _subscription: Subscription;
     private _countrySubscription: Subscription;
     private _citySubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _countries: Observable<Country[]>;
     private _cities: Observable<City[]>;
@@ -87,23 +88,23 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
 
-        this._userSubscription = MeteorObservable.subscribe('getUserSettings').subscribe();
+        this._userSubscription = MeteorObservable.subscribe('getUserSettings').takeUntil(this._ngUnsubscribe).subscribe();
 
-        this._countrySubscription = MeteorObservable.subscribe('countries').subscribe(() => {
+        this._countrySubscription = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._countries = Countries.find({}).zone();
             });
         });
 
-        this._citySubscription = MeteorObservable.subscribe('cities').subscribe();
+        this._citySubscription = MeteorObservable.subscribe('cities').takeUntil(this._ngUnsubscribe).subscribe();
 
-        this._subscription = MeteorObservable.subscribe('languages').subscribe(() => {
+        this._subscription = MeteorObservable.subscribe('languages').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._languages = Languages.find({}).zone();
             });
         });
 
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
 
                 this._user = Users.findOne({ _id: Meteor.userId() });;
@@ -120,8 +121,7 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
                 if (this._user.username) {
                     this._userForm = new FormGroup({
                         username: new FormControl({ value: this._user.username, disabled: true }),
-                        first_name: new FormControl({ value: this._user.profile.first_name, disabled: false }),
-                        last_name: new FormControl({ value: this._user.profile.last_name, disabled: false }),
+                        full_name: new FormControl({ value: this._user.profile.full_name, disabled: false }, [Validators.maxLength(50)]),
                         language_code: new FormControl({ value: this._user.profile.language_code, disabled: false })
                     });
                     this._validateChangePass = false;
@@ -129,13 +129,13 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
                         this._validateChangeEmail = false;
                     } else if (this._userDetail.role_id === '100') {
                         this._validateChangeEmail = false;
-                        let dniNumber: FormControl = new FormControl({ value: this._userDetail.dni_number, disabled: false }, [Validators.required, Validators.minLength(1), Validators.maxLength(20)]);
+                        let dniNumber: FormControl = new FormControl({ value: this._userDetail.dni_number, disabled: false }, [Validators.maxLength(20)]);
                         this._userForm.addControl('dniNumber', dniNumber);
 
-                        let contactPhone: FormControl = new FormControl({ value: this._userDetail.contact_phone, disabled: false }, [Validators.required, Validators.minLength(1), Validators.maxLength(20)]);
+                        let contactPhone: FormControl = new FormControl({ value: this._userDetail.contact_phone, disabled: false }, [Validators.maxLength(20)]);
                         this._userForm.addControl('contactPhone', contactPhone);
 
-                        let shippingAddress: FormControl = new FormControl({ value: this._userDetail.address, disabled: false }, [Validators.required, Validators.minLength(1), Validators.maxLength(150)]);
+                        let shippingAddress: FormControl = new FormControl({ value: this._userDetail.address, disabled: false }, [Validators.maxLength(150)]);
                         this._userForm.addControl('shippingAddress', shippingAddress);
 
                         let country: FormControl = new FormControl({ value: this._userDetail.country_id, disabled: false }, [Validators.required]);
@@ -155,8 +155,7 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
                             this._userForm.controls['otherCity'].setValue(this._userDetail.other_city);
                         }
                     } else {
-                        this._userForm.controls['first_name'].disable();
-                        this._userForm.controls['last_name'].disable();
+                        this._userForm.controls['full_name'].disable();
                     }
                 }
             });
@@ -167,11 +166,8 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._userSubscription) { this._userSubscription.unsubscribe(); }
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
-        if (this._subscription) { this._subscription.unsubscribe(); }
-        if (this._countrySubscription) { this._countrySubscription.unsubscribe(); }
-        if (this._citySubscription) { this._citySubscription.unsubscribe() }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -235,8 +231,7 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
             Users.update({ _id: Meteor.userId() }, {
                 $set: {
                     profile: {
-                        first_name: this._userForm.value.first_name,
-                        last_name: this._userForm.value.last_name,
+                        full_name: this._userForm.value.full_name,
                         language_code: this._userForm.value.language_code
                     }
                 }

@@ -15,12 +15,12 @@ Meteor.publish('additions', function (_userId: string) {
 });
 
 /**
- * Meteor publication return additions with restaurant condition
- * @param {string} _restaurantId
+ * Meteor publication return additions with establishment condition
+ * @param {string} _establishmentId
  */
-Meteor.publish('additionsByRestaurant', function (_restaurantId: string) {
-    check(_restaurantId, String);
-    return Additions.find({ 'restaurants.restaurantId': { $in: [_restaurantId] }, is_active: true });
+Meteor.publish('additionsByEstablishment', function (_establishmentId: string) {
+    check(_establishmentId, String);
+    return Additions.find({ 'establishments.establishment_id': { $in: [_establishmentId] }, is_active: true });
 });
 
 /**
@@ -34,13 +34,13 @@ Meteor.publish('additionsById', function ( _pId: string) {
 
 /**
  * Meteor publication return additions with userId condition
- * @param {string} _restaurantId
+ * @param {string} _userId
  */
-Meteor.publish('additionsByCurrentRestaurant', function ( _userId : string ) {
+Meteor.publish('additionsByCurrentEstablishment', function ( _userId : string ) {
     check(_userId, String);
     let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
     if( _lUserDetail ){
-        return Additions.find({ 'restaurants.restaurantId': { $in: [_lUserDetail.current_restaurant] }, is_active: true });
+        return Additions.find({ 'establishments.establishment_id': { $in: [_lUserDetail.current_establishment] }, is_active: true });
     } else {
         return;
     }
@@ -63,14 +63,14 @@ Meteor.publish('additionsByItem', function (_itemId: string) {
 });
 
 /**
- * Meteor publication additions by restaurant work
+ * Meteor publication additions by establishment work
  * @param {string} _userId
  */
-Meteor.publish('additionsByRestaurantWork', function (_userId: string) {
+Meteor.publish('additionsByEstablishmentWork', function (_userId: string) {
     check(_userId, String);
     let _lUserDetail: UserDetail = UserDetails.findOne({ user_id: _userId });
     if( _lUserDetail ){
-        return Additions.find({ 'restaurants.restaurantId': { $in: [_lUserDetail.restaurant_work] }, is_active: true });
+        return Additions.find({ 'establishments.establishment_id': { $in: [_lUserDetail.establishment_work] }, is_active: true });
     } else {
         return;
     }

@@ -4,15 +4,15 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
 import { CustomValidators } from '../../../../../../../both/shared-components/validators/custom-validator';
-import { Restaurant } from '../../../../../../../both/models/restaurant/restaurant.model';
-import { Restaurants } from '../../../../../../../both/collections/restaurant/restaurant.collection';
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
 import { Role } from '../../../../../../../both/models/auth/role.model';
 import { Roles } from '../../../../../../../both/collections/auth/role.collection';
-import { Table } from '../../../../../../../both/models/restaurant/table.model';
-import { Tables } from '../../../../../../../both/collections/restaurant/table.collection';
+import { Table } from '../../../../../../../both/models/establishment/table.model';
+import { Tables } from '../../../../../../../both/collections/establishment/table.collection';
 import { UserProfile } from '../../../../../../../both/models/auth/user-profile.model';
 import { UserDetails } from '../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../both/models/auth/user-detail.model';
@@ -30,8 +30,8 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
     private _roleSubscription: Subscription;
     private _tableSubscription: Subscription;
     private _userDetailSubscription: Subscription;
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
-    private _restaurants: Observable<Restaurant[]>;
     private _roles: Observable<Role[]>;
     private _tables: Observable<Table[]>;
 
@@ -42,7 +42,6 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
     public _selectedIndex: number = 0;
     private _userLang: string;
     private _error: string;
-    private _selectedRestaurant: string;
     private _message: string;
     private titleMsg: string;
     private btnAcceptLbl: string;
@@ -91,17 +90,17 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
             table_end: new FormControl(0),
         });
 
-        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).subscribe(() => {
+        this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._userDetail = UserDetails.findOne({ user_id: Meteor.userId() });
                 if (this._userDetail) {
-                    this._tableSubscription = MeteorObservable.subscribe('getTablesByRestaurant', this._userDetail.restaurant_work).subscribe(() => {
+                    this._tableSubscription = MeteorObservable.subscribe('getTablesByEstablishment', this._userDetail.establishment_work).takeUntil(this._ngUnsubscribe).subscribe(() => {
                     });
                 }
             });
         });
 
-        this._roleSubscription = MeteorObservable.subscribe('getRoleCollaborators').subscribe(() => {
+        this._roleSubscription = MeteorObservable.subscribe('getRoleCollaborators').takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._ngZone.run(() => {
                 this._roles = Roles.find({ _id: { $in: ["200", "500"] } }).zone();
             });
@@ -113,9 +112,8 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
      * Remove all subscriptions
      */
     removeSubscriptions(): void {
-        if (this._roleSubscription) { this._roleSubscription.unsubscribe(); }
-        if (this._tableSubscription) { this._tableSubscription.unsubscribe(); }
-        if (this._userDetailSubscription) { this._userDetailSubscription.unsubscribe(); }
+        this._ngUnsubscribe.next();
+        this._ngUnsubscribe.complete();
     }
 
     /**
@@ -141,9 +139,7 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
         if (_pEvent.checked) {
             this._disabledTablesAssignment = false;
             let tablesCount: number = 0;
-            console.log(this._userDetail.restaurant_work);
-            tablesCount = Tables.collection.find({ restaurantId: this._userDetail.restaurant_work }).count();
-            console.log(tablesCount);
+            tablesCount = Tables.collection.find({ establishment_id: this._userDetail.establishment_work }).count();
             for (var index = 1; index <= tablesCount; index++) {
                 this._tablesNumber.push(index);
             }
@@ -217,7 +213,7 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
 
                         if (this._collaboratorRegisterForm.value.role === '200') {
                             if (this._disabledTablesAssignment || (this._collaboratorRegisterForm.value.table_init === 0 && this._collaboratorRegisterForm.value.table_end === 0)) {
-                                this._collaboratorRegisterForm.value.table_end = Tables.collection.find({ restaurantId: this._userDetail.restaurant_work }).count();
+                                this._collaboratorRegisterForm.value.table_end = Tables.collection.find({ establishment_id: this._userDetail.establishment_work }).count();
                                 if (this._collaboratorRegisterForm.value.table_end > 0) {
                                     this._collaboratorRegisterForm.value.table_init = 1;
                                 }
@@ -243,10 +239,10 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
                                     user_id: result.toString(),
                                     role_id: this._collaboratorRegisterForm.value.role,
                                     is_active: true,
-                                    restaurant_work: this._userDetail.restaurant_work,
+                                    establishment_work: this._userDetail.establishment_work,
                                     jobs: 0,
                                     penalties: [],
-                                    current_restaurant: "",
+                                    current_establishment: "",
                                     current_table: '',
                                     birthdate: this._collaboratorRegisterForm.value.birthdate,
                                     phone: this._collaboratorRegisterForm.value.phone,
@@ -259,10 +255,10 @@ export class SupervisorCollaboratorsRegisterComponent implements OnInit, OnDestr
                                     user_id: result.toString(),
                                     role_id: this._collaboratorRegisterForm.value.role,
                                     is_active: true,
-                                    restaurant_work: this._userDetail.restaurant_work,
+                                    establishment_work: this._userDetail.establishment_work,
                                     jobs: 0,
                                     penalties: [],
-                                    current_restaurant: "",
+                                    current_establishment: "",
                                     current_table: '',
                                     birthdate: new Date("<" + this._collaboratorRegisterForm.value.birthdate_yyyy + "-" +
                                         this._collaboratorRegisterForm.value.birthdate_mm + "-" +

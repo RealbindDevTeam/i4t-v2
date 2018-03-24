@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, Platform } from 'ionic-angular';
+import { AlertController, Platform, ToastController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -7,8 +7,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Device } from '@ionic-native/device';
 import { InitialComponent } from '../pages/auth/initial/initial';
 import { HomeMenu } from '../pages/customer/home-menu/home-menu';
-import { Menu } from '../pages/waiter/menu/menu';
-import { UserLogin  } from 'i4t_web/both/models/auth/user-login.model';
+import { TabsPage } from '../pages/waiter/tabs/tabs';
+import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
+import { HomePage } from '../pages/customer/home/home';
+import { Network } from '@ionic-native/network';
 
 @Component({
   templateUrl: 'app.html'
@@ -23,7 +25,9 @@ export class MyApp {
     splashScreen: SplashScreen,
     public translate: TranslateService,
     public _alertCtrl: AlertController,
-    private _device: Device) {
+    private _device: Device,
+    private _network: Network,
+    private _toastCtrl: ToastController) {
     this._userId = Meteor.userId();
     this._userLang = navigator.language.split('-')[0];
     translate.setDefaultLang('en');
@@ -37,39 +41,39 @@ export class MyApp {
         statusBar.styleLightContent();
         splashScreen.hide();
       }
-    });
 
-    if (this._userId) {
-      MeteorObservable.call('getRole').subscribe((role) => {
-        if (role == "400") {
-          this.insertUserInfo();
-          this.rootPage = HomeMenu;
-        } else if (role == "200") {
-          MeteorObservable.call('validateRestaurantIsActive').subscribe((_restaruantActive) => {
-            if (_restaruantActive) {
-              MeteorObservable.call('validateUserIsActive').subscribe((active) => {
-                if (active) {
-                  this.insertUserInfo();
-                  this.rootPage = Menu;
-                } else {
-                  this.rootPage = InitialComponent;
-                  let contentMessage = this.itemNameTraduction("MOBILE.SIGNIN.USER_NO_ACTIVE");
-                  this.showComfirm(contentMessage);
-                  Meteor.logout();
-                }
-              });
-            } else {
-              this.rootPage = InitialComponent;
-              let confirmMsg = this.itemNameTraduction('MOBILE.SIGNIN.RESTAURANT_NO_ACTIVE');
-              this.showComfirm(confirmMsg);
-              Meteor.logout();
-            }
-          });
-        }
-      });
-    } else {
-      this.rootPage = InitialComponent;
-    }
+      if (this._userId) {
+        MeteorObservable.call('getRole').subscribe((role) => {
+          if (role == "400") {
+            this.insertUserInfo();
+            this.rootPage = HomePage;
+          } else if (role == "200") {
+            MeteorObservable.call('validateEstablishmentIsActive').subscribe((_restaruantActive) => {
+              if (_restaruantActive) {
+                MeteorObservable.call('validateUserIsActive').subscribe((active) => {
+                  if (active) {
+                    this.insertUserInfo();
+                    this.rootPage = TabsPage;
+                  } else {
+                    this.rootPage = InitialComponent;
+                    let contentMessage = this.itemNameTraduction("MOBILE.SIGNIN.USER_NO_ACTIVE");
+                    this.showComfirm(contentMessage);
+                    Meteor.logout();
+                  }
+                });
+              } else {
+                this.rootPage = InitialComponent;
+                let confirmMsg = this.itemNameTraduction('MOBILE.SIGNIN.RESTAURANT_NO_ACTIVE');
+                this.showComfirm(confirmMsg);
+                Meteor.logout();
+              }
+            });
+          }
+        });
+      } else {
+        this.rootPage = InitialComponent;
+      }
+    });
   }
 
   itemNameTraduction(itemName: string): string {

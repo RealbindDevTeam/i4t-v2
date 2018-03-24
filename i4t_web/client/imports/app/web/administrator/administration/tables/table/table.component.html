@@ -1,4 +1,4 @@
-<mat-card *ngIf="!_thereAreRestaurants" mat-cell="12" class="demo-card demo-basic">
+<mat-card *ngIf="!_thereAreEstablishments" mat-cell="12" class="demo-card demo-basic">
     <mat-card-content>
         <div class="card_initial">
             <div class="card_initial has-image">
@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div class="card_initial-button">
-                    <button mat-raised-button (click)="goToAddRestaurant()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <mat-card-content>
             <mat-form-field style="width: 95%; margin-bottom: 30px">
                 <mat-select placeholder="{{'TABLES.SELECT_RESTAURANT' | translate}}">
-                    <mat-option *ngFor="let rest of restaurants | async" (click)="changeRestaurantFilter(rest._id);" value="{{rest._id}}">{{rest.name}}</mat-option>
+                    <mat-option *ngFor="let est of establishments | async" (click)="changeEstablishmentFilter(est._id);" value="{{est._id}}">{{est.name}} - {{est.address}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <div *ngIf="show_cards">
@@ -47,9 +47,9 @@
 <div *ngIf="show_cards">
     <mat-card id="qr-card" *ngFor="let table of tables2" style="display: inline-block; margin-right: 20px; width:250px">
         <mat-card-header>
-            <mat-card-title *ngFor="let rest of restaurants | async">
-                <div *ngIf="rest._id == table.restaurantId">
-                    <label>{{rest.name}}</label>
+            <mat-card-title *ngFor="let est of establishments | async">
+                <div *ngIf="est._id == table.establishment_id">
+                    <label>{{est.name}}</label>
                 </div>
             </mat-card-title>
             <mat-card-subtitle>
@@ -65,7 +65,7 @@
             <br/>
             <label style="margin-left: 8px"></label>
             <div align="center">
-                <img style="width:100px;height:100px;" src='{{table.QR_URI}}'>
+                <img style="width:150px;height:150px;" src='{{table.QR_URI}}'>
             </div>
             <div align="center" style="margin-top: 10px">
                 <mat-checkbox [checked]="all_checked" (change)="addToPrintArray(table, $event.checked)" [disabled]="enable_print">{{'TABLES.SELECT' | translate}}</mat-checkbox>
@@ -73,7 +73,7 @@
         </mat-card-content>
     </mat-card>
 </div>
-<div *ngIf="!show_cards" mat-cell="12" class="demo-card demo-basic">
+<div *ngIf="!show_cards && _thereAreEstablishments" mat-cell="12" class="demo-card demo-basic">
     <mat-card>
         <mat-card-content>
             <div class="card_initial">

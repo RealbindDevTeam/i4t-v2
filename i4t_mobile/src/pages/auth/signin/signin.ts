@@ -7,11 +7,15 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { Device } from '@ionic-native/device';
 import { UserDetails } from 'i4t_web/both/collections/auth/user-detail.collection';
 import { Meteor } from 'meteor/meteor';
-import { HomeMenu } from '../../customer/home-menu/home-menu';
-import { Menu } from '../../waiter/menu/menu';
-import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
+//import { HomeMenu } from '../../customer/home-menu/home-menu';
+import { HomePage } from '../../customer/home/home';
+//import { Menu } from '../../waiter/menu/menu';
+import { TabsPage } from '../../waiter/tabs/tabs';
+import { UserLogin } from 'i4t_web/both/models/auth/user-login.model';
 import { Accounts } from 'meteor/accounts-base';
 import { Facebook } from '@ionic-native/facebook';
+import { Network } from '@ionic-native/network';
+import { Subscription } from 'rxjs/Subscription';
 
 /*
   Generated class for the Signin page.
@@ -29,6 +33,7 @@ export class SigninComponent implements OnInit {
     error: string;
     role_id: string;
     userLang: string;
+    private disconnectSubscription: Subscription;
 
     constructor(public _app: App,
         public zone: NgZone,
@@ -39,13 +44,11 @@ export class SigninComponent implements OnInit {
         public viewCtrl: ViewController,
         public _loadingCtrl: LoadingController,
         public _platform: Platform,
+        private _network: Network,
         private _device: Device) {
         this.userLang = navigator.language.split('-')[0];
         translate.setDefaultLang('en');
         translate.use(this.userLang);
-    }
-
-    ionViewDidLoad() {
     }
 
     ngOnInit() {
@@ -83,14 +86,14 @@ export class SigninComponent implements OnInit {
                                     //role 400 customer
                                     //this.addUserDevice();
                                     this.insertUserInfo();
-                                    this.navCtrl.push(HomeMenu);
+                                    this.navCtrl.setRoot(HomePage);
                                 } else if (role == "200") {
-                                    MeteorObservable.call('validateRestaurantIsActive').subscribe((_restaruantActive) => {
-                                        if (_restaruantActive) {
+                                    MeteorObservable.call('validateEstablishmentIsActive').subscribe((_establishmenttActive) => {
+                                        if (_establishmenttActive) {
                                             MeteorObservable.call('validateUserIsActive').subscribe((active) => {
                                                 if (active) {
                                                     this.insertUserInfo();
-                                                    this.navCtrl.push(Menu);
+                                                    this.navCtrl.push(TabsPage);
                                                 } else {
                                                     let contentMessage = this.itemNameTraduction("MOBILE.SIGNIN.USER_NO_ACTIVE");
                                                     this.showComfirm(contentMessage);
@@ -168,13 +171,13 @@ export class SigninComponent implements OnInit {
                         user_id: Meteor.userId(),
                         role_id: '400',
                         is_active: true,
-                        restaurant_work: '',
+                        establishment_work: '',
                         penalties: [],
-                        current_restaurant: '',
+                        current_establishment: '',
                         current_table: ''
                     });
                 }
-                this.navCtrl.push(HomeMenu);
+                this.navCtrl.push(HomePage);
             }, (error) => {
                 this.error;
             });
@@ -262,8 +265,8 @@ export class SigninComponent implements OnInit {
     /**
      * Insert User Info
      */
-    insertUserInfo():void{
-        let _lUserLogin:UserLogin = new UserLogin();
+    insertUserInfo(): void {
+        let _lUserLogin: UserLogin = new UserLogin();
         _lUserLogin.user_id = Meteor.userId();
         _lUserLogin.login_date = new Date();
         _lUserLogin.app_code_name = navigator.appCodeName;
@@ -276,7 +279,67 @@ export class SigninComponent implements OnInit {
         _lUserLogin.model = this._device.model;
         _lUserLogin.platform_device = this._device.platform;
         _lUserLogin.version = this._device.version;
-        MeteorObservable.call( 'insertUserLoginInfo', _lUserLogin ).subscribe();
+        MeteorObservable.call('insertUserLoginInfo', _lUserLogin).subscribe();
+    }
+
+    /** 
+     * This function verify the conditions on page did enter for internet and server connection
+    */
+    ionViewDidEnter() {
+        this.isConnected();
+        this.disconnectSubscription = this._network.onDisconnect().subscribe(data => {
+            let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+            let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+            let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+            this.presentAlert(title, subtitle, btn);
+        }, error => console.error(error));
+    }
+
+    /** 
+     * This function verify with network plugin if device has internet connection
+    */
+    isConnected() {
+        if (this._platform.is('cordova')) {
+            let conntype = this._network.type;
+            let validateConn = conntype && conntype !== 'unknown' && conntype !== 'none';
+            if (!validateConn) {
+                let title = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.TITLE');
+                let subtitle = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.SUBTITLE');
+                let btn = this.itemNameTraduction('MOBILE.CONNECTION_ALERT.BTN');
+                this.presentAlert(title, subtitle, btn);
+            } else {
+                if (!Meteor.status().connected) {
+                    let title2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.TITLE');
+                    let subtitle2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.SUBTITLE');
+                    let btn2 = this.itemNameTraduction('MOBILE.SERVER_ALERT.BTN');
+                    this.presentAlert(title2, subtitle2, btn2);
+                }
+            }
+        }
+    }
+
+    /**
+     * Present the alert for advice to internet
+    */
+    presentAlert(_pTitle: string, _pSubtitle: string, _pBtn: string) {
+        let alert = this._alertCtrl.create({
+            title: _pTitle,
+            subTitle: _pSubtitle,
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: _pBtn,
+                    handler: () => {
+                        this.isConnected();
+                    }
+                }
+            ]
+        });
+        alert.present();
+    }
+
+    ionViewWillLeave() {
+        this.disconnectSubscription.unsubscribe();
     }
 
     itemNameTraduction(itemName: string): string {
@@ -286,6 +349,4 @@ export class SigninComponent implements OnInit {
         });
         return wordTraduced;
     }
-
-
 }

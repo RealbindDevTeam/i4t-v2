@@ -8,14 +8,19 @@
             </div>
         </div>
         <div class="login-form login-form-right">
-            <button mat-raised-button class="btn-facebook" type="submit" (click)="loginWithFacebook()">
-                <i class="fa fa-facebook" aria-hidden="true"></i>Facebook
-            </button>
+            <!--
+                <button mat-raised-button class="btn-facebook" type="submit" (click)="loginWithFacebook()">
+                    <i class="fa fa-facebook" aria-hidden="true"></i>Facebook
+                </button>
+            
             <div class="display-inline-block">
                 <hr/>
                 <span style="color: #e0e0e0">{{'SIGNUP.OR' | translate}}</span>
                 <hr/>
             </div>
+            -->
+
+            <p>{{'SIGNIN.TITLE' | translate}}</p>
 
             <form [formGroup]="signinForm" (ngSubmit)="login()" novalidate>
                 <div>
@@ -44,7 +49,10 @@
                 <button style="margin: 0 auto" mat-button (click)="openDialogForgotPassword()">{{'SIGNIN.FORGOT_PASSWORD' | translate}}</button>
             </div>
             <div style="text-align: center; padding-top: 10px">
-                {{'SIGNIN.DONT_ACCOUNT'| translate}} <span class="right-align"><a routerLink="/signup">{{'LANDING.SIGNUP' | translate}}</a></span>
+                {{'SIGNIN.DONT_ACCOUNT'| translate}}
+                <span class="right-align">
+                    <a routerLink="/admin-signup">{{'LANDING.SIGNUP' | translate}}</a>
+                </span>
             </div>
         </div>
     </div>

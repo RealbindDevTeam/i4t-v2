@@ -12,7 +12,7 @@ import { AuthClass } from '../auth.class';
 @Component({
     selector: 'signup',
     templateUrl: './signup.web.component.html',
-    styleUrls: [ '../auth.component.scss' ]
+    styleUrls: ['../auth.component.scss']
 })
 export class SignupWebComponent extends AuthClass implements OnInit {
 
@@ -20,6 +20,8 @@ export class SignupWebComponent extends AuthClass implements OnInit {
     private showLoginPassword: boolean = true;
     private showConfirmError: boolean = false;
     private userProfile = new UserProfile();
+    private _genderArray: any[] = [];
+    private _selectedGender: string;
 
     /**
      * SignupWebComponent Constructor
@@ -41,8 +43,13 @@ export class SignupWebComponent extends AuthClass implements OnInit {
             username: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20), CustomValidators.noSpacesValidator]),
             email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(255), CustomValidators.emailValidator]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)])
+            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
+            gender: new FormControl('', [Validators.required])
         });
+
+        this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+        { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+        { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
     }
 
     /**
@@ -54,6 +61,7 @@ export class SignupWebComponent extends AuthClass implements OnInit {
             this.userProfile.first_name = "";
             this.userProfile.last_name = "";
             this.userProfile.language_code = this.getUserLang();
+            this.userProfile.gender = this.signupForm.value.gender;
 
             if (this.signupForm.valid) {
                 let confirmMsg: string;
@@ -77,14 +85,13 @@ export class SignupWebComponent extends AuthClass implements OnInit {
                                 user_id: Meteor.userId(),
                                 role_id: '400',
                                 is_active: true,
-                                restaurant_work: '',
                                 penalties: [],
-                                current_restaurant: '',
+                                current_establishment: '',
                                 current_table: ''
                             });
                             this.openDialog(this.titleMsg, '', confirmMsg, '', this.btnAcceptLbl, false);
                             Meteor.logout();
-                            this.router.navigate(['signin']);
+                            this.router.navigate(['']);
                         }
                     });
                 });

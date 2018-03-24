@@ -1,0 +1,163 @@
+.mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
+    min-height: 48px;
+}
+
+.image{
+    width: 40px; 
+    height: 40px;
+}
+
+.title{
+    color: black;
+    font-weight: normal;
+}
+
+.example-headers-align .mat-expansion-panel-header-description, .example-headers-align .mat-expansion-panel-header-title{
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-headers-align .mat-expansion-panel-header {
+    height: auto !important;
+    padding: 12px 24px !important;
+}
+
+.cust-justify{
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.item-name {
+    display: inline-block;
+    white-space: normal;
+    vertical-align: super;
+}
+
+.item-price-quantity {
+    display: inline-block;
+    vertical-align: super;
+}
+
+.quantity{
+    display: inline;
+    margin-left: 2rem;
+}
+
+.price{
+    float: right;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+}
+
+.display-inline {
+    display: inline;
+}
+
+.item-icon-color{
+    color: orange;
+}
+
+.addition-icon-color {
+    color: blueviolet;
+}
+
+.option-icon-color{
+    color: cadetblue;
+}
+
+
+
+.main{
+    width: 55%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+
+    .order-info{
+
+        .image{
+            border-radius: 50%; 
+            width: 80px; 
+            height: 80px;
+        }
+        .title{
+            color: black;
+            font-weight: bold;
+        }
+    }
+
+    .divider{
+        margin-left: 7rem;
+        width: 80%;
+    }
+
+    .order-details{
+        .element{
+            margin-left: 7rem;
+
+            .display-inline {
+                display: inline;
+            }
+            
+            .quantity{
+                display: inline;
+                margin-left: 2rem;
+            }
+            
+            .price{
+                float: right;
+                -webkit-margin-before: 0;
+                -webkit-margin-after: 0;
+            }
+
+            .total{
+                display: inline;
+                margin-left: 3rem;
+                color: black;
+            }
+        }
+    }
+}
+
+.img-cards {
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.initial-card {
+    .img {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        color: #114b5f; 
+        font-weight: 500;
+        margin-right: 5rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+}
+
+.panel-title {
+    font-weight: bold;
+}
+
+.total-reward-points {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.redeemed-points {
+    font-weight: bold;
+    color: darkgoldenrod;
+}
+
+.price {
+    margin-left: 16px;
+}

@@ -1,0 +1,214 @@
+<mat-card mat-cell="12" class="demo-card demo-basic" *ngIf="!_thereAreEstablishments">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/default-restaurant-profile.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{ 'RESTAURANT_PROFILE.PROFILE_TXT' | translate }}
+                    </div>
+                    <div class="card_initial-additional-links">
+                        {{ 'RESTAURANT_PROFILE.NO_RESTAURANTS' | translate }}
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{ 'RESTAURANT_PROFILE.REGISTER_RESTAURANT' | translate }}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<div class="main" *ngIf="_thereAreEstablishments">
+    <mat-card>
+        <mat-card-title>{{ 'RESTAURANT_PROFILE.RESTAURANTS_PROFILE' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'RESTAURANT_PROFILE.RESTAURANTS_PROFILE_MSG' | translate }}</mat-card-subtitle>
+        <mat-card-content>
+            <mat-form-field class="establishment-select">
+                <mat-select placeholder="{{ 'RESTAURANT_PROFILE.SELECT_RESTAURANT' | translate }}">
+                    <mat-option *ngFor="let est of _establishments | async" (click)="changeEstablishment(est._id, est.name);" value="{{est._id}}">
+                        {{est.name}} - {{est.address}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="_thereAreEstablishments && !_anyEstablishmentIsSelected">
+        <mat-card-content>
+            <div class="card_initial">
+                <div class="card_initial has-image">
+                    <div class="card_initial-image-container">
+                        <img class="card_initial-image" src="/images/default-restaurant-profile.png" />
+                    </div>
+                    <div class="card_initial-copy">
+                        <div class="card_initial-tagline">
+                            {{ 'RESTAURANT_PROFILE.SELECT_RESTAURANT_TO_MODIFY' | translate }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="_thereAreEstablishments && _anyEstablishmentIsSelected">
+        <mat-card-title class="establishment-name">{{_establishmentName}}</mat-card-title>
+        <mat-card-subtitle>{{ 'RESTAURANT_PROFILE.PROFILE_SUBTITLE' | translate }}</mat-card-subtitle>
+        <mat-tab-group [(selectedIndex)]="_selectedIndex" (selectedTabChange)="tabChanged($event)">
+            <mat-tab label="{{ 'RESTAURANT_PROFILE.GENERAL_INFO' | translate }}">
+                <mat-card class="general-info">
+                    <mat-card-title>- {{ 'RESTAURANT_PROFILE.GENERAL_INFO' | translate }}</mat-card-title>
+                    <mat-card-content>
+                        <form [formGroup]="_profileForm">
+                            <div class="description">
+                                <p>{{ 'RESTAURANT_PROFILE.DESCRIPTION' | translate }}:</p>
+                                <mat-form-field class="description-detail">
+                                    <textarea matInput required formControlName="establishment_description" placeholder="{{ 'RESTAURANT_PROFILE.DESCRIPTION_LBL' | translate }}"
+                                        minlength="1" maxlength="2000" #inputDescription></textarea>
+                                    <mat-hint align="end">{{inputDescription.value.length}} / 2000</mat-hint>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <div class="input">
+                                    <p>{{ 'RESTAURANT_PROFILE.WEB_PAGE' | translate }}:</p>
+                                    <mat-form-field class="input-left">
+                                        <input matInput formControlName="web_page" placeholder="{{ 'RESTAURANT_PROFILE.WEB_PAGE_LBL' | translate }}" minlength="1"
+                                            maxlength="40" #inputWebpage>
+                                        <mat-hint align="end">{{inputWebpage.value.length}} / 40</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <div class="input">
+                                    <p>{{ 'RESTAURANT_PROFILE.EMAIL' | translate }}:</p>
+                                    <mat-form-field class="input-left">
+                                        <input matInput formControlName="email" placeholder="{{ 'RESTAURANT_PROFILE.EMAIL_LBL' | translate }}" minlength="1" maxlength="40"
+                                            #inputEmail>
+                                        <mat-hint align="end">{{inputEmail.value.length}} / 40</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="input">
+                                    <p>{{ 'RESTAURANT_PROFILE.FACEBOOK_LINK' | translate }}:</p>
+                                    <mat-form-field class="input-right">
+                                        <input matInput formControlName="facebookLink" placeholder="{{ 'RESTAURANT_PROFILE.FACEBOOK_LINK_LBL' | translate }}" minlength="1"
+                                            maxlength="60" #inputFacebooklink>
+                                        <mat-hint align="end">{{inputFacebooklink.value.length}} / 60</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <div class="input">
+                                    <p>{{ 'RESTAURANT_PROFILE.INSTAGRAM_LINK' | translate }}:</p>
+                                    <mat-form-field class="input-left">
+                                        <input matInput formControlName="instagramLink" placeholder="{{ 'RESTAURANT_PROFILE.INSTAGRAM_LINK_LBL' | translate }}" minlength="1"
+                                            maxlength="60" #inputInstagramlink>
+                                        <mat-hint align="end">{{inputInstagramlink.value.length}} / 60</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="input">
+                                    <p>{{ 'RESTAURANT_PROFILE.TWITTER_LINK' | translate }}:</p>
+                                    <mat-form-field class="input-right">
+                                        <input matInput formControlName="twitterLink" placeholder="{{ 'RESTAURANT_PROFILE.TWITTER_LINK_LBL' | translate }}" minlength="1"
+                                            maxlength="60" #inputTwitterlink>
+                                        <mat-hint align="end">{{inputTwitterlink.value.length}} / 60</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+            </mat-tab>
+            <mat-tab label="{{ 'RESTAURANT_PROFILE.FOOD' | translate }}">
+                <mat-card>
+                    <mat-card-title>- {{ 'RESTAURANT_PROFILE.TYPE_OF_FOOD' | translate }}</mat-card-title>
+                    <mat-card-content>
+                        <p>{{ 'RESTAURANT_PROFILE.TYPE_OF_FOOD_MSG' | translate }}:</p>
+                        <form [formGroup]="_profileForm">
+                            <div *ngIf="_showTypesOfFood" formGroupName="types_of_food">
+                                <p *ngFor="let typeFood of _typesOfFood | async">
+                                    <mat-checkbox [formControlName]="typeFood._id" [class.invalid]="!_profileForm.controls.types_of_food.valid">{{typeFood.type_of_food | translate}}</mat-checkbox>
+                                </p>
+                            </div>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+            </mat-tab>
+            <mat-tab label="{{ 'RESTAURANT_PROFILE.SCHEDULE' | translate }}">
+                <mat-card>
+                    <mat-card-title>- {{ 'RESTAURANT_PROFILE.SCHEDULE' | translate }}</mat-card-title>
+                    <p>{{ 'RESTAURANT_PROFILE.SCHEDULE_TXT' | translate }}</p>
+                    <div *ngIf="!_scheduleInEditMode" class="schedule">
+                        <iu-schedule (finalSchedule)="receiveSchedule($event)"></iu-schedule>
+                    </div>
+                    <div *ngIf="_scheduleInEditMode" class="schedule">
+                        <iu-schedule [scheduleToEdit]="_scheduleToEdit" (finalSchedule)="receiveSchedule($event)"></iu-schedule>
+                    </div>
+                </mat-card>
+            </mat-tab>
+            <mat-tab label="{{ 'RESTAURANT_PROFILE.IMAGES' | translate }}">
+                <mat-card class="images">
+                    <mat-card-title>- {{ 'RESTAURANT_PROFILE.IMAGES' | translate }}</mat-card-title>
+                    <p>{{ 'RESTAURANT_PROFILE.IMAGES_TXT' | translate }}:</p>
+                    <p *ngIf="_profileImages.length <= 0" class="no-image-msg">{{ 'RESTAURANT_PROFILE.NO_RESTAURANT_IMAGES' | translate }}</p>
+                    <div class="img-thumb" *ngFor="let img of _profileImages" (click)="removeImageProfile(img.handle)">
+                        <label>
+                            <div class="wrapper">
+                                <div class="avatar">
+                                    <div class="uploadOverlay">
+                                        <i class="fa fa-trash"></i>
+                                    </div>
+                                    <img md-card-image style="width: 100px;height: 100px;" src="{{img.url}}">
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="select-img">
+                        <input (click)="changeImage()" style="display: none;" name="file-1[]" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected"
+                            multiple/>
+                        <label for="file-1" style="width: 40%;text-align: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                                />
+                            </svg>
+                            <span>{{'CHOOSE_FILE' | translate}}&hellip;</span>
+                        </label>
+                    </div>
+                    <mat-list>
+                        <mat-list-item *ngIf="(_filesToUpload)?.length <= 0">
+                            <p mat-line>{{ 'RESTAURANT_PROFILE.NO_NEW_IMAGES' | translate }}</p>
+                        </mat-list-item>
+                        <h3 mat-subheader *ngIf="(_filesToUpload)?.length > 0">{{ 'RESTAURANT_PROFILE.IMAGES_TO_SAVE' | translate }}</h3>
+                        <span *ngFor="let file of _filesToUpload">
+                            <mat-list-item>
+                                <mat-icon mat-list-icon>image</mat-icon>
+                                <p mat-line>{{file.filename}}</p>
+                            </mat-list-item>
+                            <mat-divider></mat-divider>
+                        </span>
+                    </mat-list>
+                </mat-card>
+            </mat-tab>
+            <mat-tab label="{{ 'RESTAURANT_PROFILE.LOCATION' | translate }}">
+                <mat-card>
+                    <mat-card-content>
+                        <mat-card-title>- {{ 'RESTAURANT_PROFILE.LOCATION' | translate }}</mat-card-title>
+                        <p>{{ 'RESTAURANT_PROFILE.LOCATION_TXT' | translate }}</p>
+                        <ng-container *ngIf="_mapRender">
+                            <agm-map [latitude]="_lat" [longitude]="_lng" (mapClick)="mapClicked($event)" [zoom]="16">
+                                <agm-marker [latitude]="_lat" [longitude]="_lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"></agm-marker>
+                            </agm-map>
+                        </ng-container>
+                    </mat-card-content>
+                </mat-card>
+            </mat-tab>
+        </mat-tab-group>
+        <br/>
+        <mat-card-actions>
+            <button mat-raised-button class="primary-button" [disabled]="!_profileForm.valid" (click)="setEstablishmentProfile()">{{ 'RESTAURANT_PROFILE.SAVE_INFO' | translate }}</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+<div class="loading" *ngIf="_loading">
+    <mat-spinner></mat-spinner>
+</div>
