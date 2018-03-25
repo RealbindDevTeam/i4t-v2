@@ -574,7 +574,8 @@
         "FACEBOOK_LINK": "Link to your page on Facebook",
         "RESTAURANT_INACTIVE": "Inactive Restaurant",
         "RESTAURANT_ACTIVE": "Active Restaurant",
-        "WAITERS_ERROR": "There are restaurants that don't have waiters/waitress. please check the collaborators option"
+        "WAITERS_ERROR": "There are restaurants that don't have waiters/waitress. please check the collaborators option",
+        "AVAILABLE_POINTS": "Available Points"
     },
     "TABLES": {
         "TABLES_CREATION": "Create tables",
@@ -1402,7 +1403,8 @@
         "MESSAGE": "Register one to enable this option",
         "REWARDS": "Rewards redeemed today",
         "ITEMS_HISTORY": "Items ordered historically",
-        "REWARDS_HISTORY": "Rewards redeemed historically"
+        "REWARDS_HISTORY": "Rewards redeemed historically",
+        "AVAILABLE_POINTS": "Available Points"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Today",

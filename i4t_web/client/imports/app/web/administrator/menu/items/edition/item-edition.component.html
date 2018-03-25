@@ -92,7 +92,7 @@
                     <p *ngIf="!_showCurrencies">{{'ITEMS.NO_RESTAURANTS_SELECTED' | translate}}</p>
                     <p *ngIf="_showCurrencies">{{'ITEMS.ENTER_PRICE' | translate}}</p>
                     <p *ngIf="_showTaxes">{{'ITEMS.ENTER_TAX' | translate}}</p>
-                    <span *ngFor="let currency of _currencies | async">
+                    <div *ngFor="let currency of _currencies | async">
                         <div *ngIf="_showCurrencies" formGroupName="editCurrencies" class="currencies">
                             <div *ngFor="let cur of _establishmentCurrencies">
                                 <mat-form-field *ngIf="currency._id === cur" class="currency">
@@ -111,7 +111,7 @@
                                 </mat-form-field>
                             </div>
                         </div>
-                    </span>
+                    </div>
                 </div>
                 <p *ngIf="_showGeneralError" style="color:red">{{'ITEMS.RESTAURANTS_ITEMS_ERROR' | translate}}</p>
             </mat-card>

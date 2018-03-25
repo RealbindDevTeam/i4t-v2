@@ -33,7 +33,7 @@ import { PointValidity } from '../../../../../../../../both/models/general/point
 import { PointsValidity } from '../../../../../../../../both/collections/general/point-validity.collection';
 import { Parameter } from '../../../../../../../../both/models/general/parameter.model';
 import { Parameters } from '../../../../../../../../both/collections/general/parameter.collection';
-import { EstablishmentPoint } from '../../../../../../../../both/models/points/establishment-point.model';
+import { EstablishmentPoint, EstablishmentPointDistribution } from '../../../../../../../../both/models/points/establishment-point.model';
 import { EstablishmentPoints } from '../../../../../../../../both/collections/points/establishment-points.collection';
 import { BagPlan } from '../../../../../../../../both/models/points/bag-plan.model';
 import { BagPlans } from '../../../../../../../../both/collections/points/bag-plans.collection';
@@ -344,16 +344,16 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 }
                 //Insert establishment points
                 let _lBagPlan: BagPlan = BagPlans.findOne({ _id: "100" });
-                if (_lBagPlan) {
-                    _lNewEstablishmentPoint = EstablishmentPoints.collection.insert({
-                        establishments_ids: [_lNewEstablishment],
-                        current_points: _lBagPlan.value_points,
-                        negative_balance: false,
-                        negative_advice_counter: 0,
-                        creation_user: this._user,
-                        creation_date: new Date()
-                    });
-                }
+
+                let _pointDistribution: EstablishmentPointDistribution = { establishment_id: _lNewEstablishment, points: _lBagPlan.value_points };
+                _lNewEstablishmentPoint = EstablishmentPoints.collection.insert({
+                    establishments_ids: [_pointDistribution],
+                    current_points: _lBagPlan.value_points,
+                    negative_balance: false,
+                    negative_advice_counter: 0,
+                    creation_user: this._user,
+                    creation_date: new Date()
+                });
 
                 let pricePoints: PricePoints = {
                     country_id: _lBagPlan.price.country_id,

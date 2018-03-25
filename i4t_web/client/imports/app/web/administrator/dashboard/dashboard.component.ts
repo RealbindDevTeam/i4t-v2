@@ -123,6 +123,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Get Establishment Points
+   * @param {string} _pEstablishmentId 
+   */
+  getEstablishmentPoints(_pEstablishmentId: string): number {
+    let _establishmentPoint: EstablishmentPoint = EstablishmentPoints.findOne({ 'establishments_ids.establishment_id': _pEstablishmentId });
+    if (_establishmentPoint) {
+      return _establishmentPoint.establishments_ids.find(est => est.establishment_id === _pEstablishmentId).points;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
    * Get available items
    * @param {string} _pEstablishmentId 
    */

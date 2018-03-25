@@ -574,7 +574,8 @@
         "FACEBOOK_LINK": "Link de tu página en Facebook",
         "RESTAURANT_INACTIVE": "Restaurante inactivo",
         "RESTAURANT_ACTIVE": "Restaurante activo",
-        "WAITERS_ERROR": "Hay restaurantes que no cuentan con meseros. Por favor verifica en la opción de colaboradores"
+        "WAITERS_ERROR": "Hay restaurantes que no cuentan con meseros. Por favor verifica en la opción de colaboradores",
+        "AVAILABLE_POINTS": "Puntos Disponibles"
     },
     "TABLES": {
         "TABLES_CREATION": "Creación de mesas",
@@ -1402,7 +1403,8 @@
         "MESSAGE": "Regístra uno para habilitar esta opción",
         "REWARDS": "Recompensas redimidas hoy",
         "ITEMS_HISTORY": "Items ordenados históricamente",
-        "REWARDS_HISTORY": "Recompensas redimidas históricamente"
+        "REWARDS_HISTORY": "Recompensas redimidas históricamente",
+        "AVAILABLE_POINTS": "Puntos Disponibles"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Hoy",

@@ -7,5 +7,5 @@ import { EstablishmentPoints } from '../../../../both/collections/points/establi
  * @param {string[]} _pIds
  */
 Meteor.publish('getEstablishmentPointsByIds', function (_pIds: string[]) {
-    return EstablishmentPoints.find({ establishments_ids: { $in: _pIds } });
+    return EstablishmentPoints.find({ 'establishments_ids.establishment_id': { $in: _pIds } });
 });
