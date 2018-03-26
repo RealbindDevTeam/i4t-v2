@@ -14,6 +14,8 @@ import { Order, OrderItem, OrderAddition } from '../../../../../../both/models/e
 import { Orders } from '../../../../../../both/collections/establishment/order.collection';
 import { Currency } from '../../../../../../both/models/general/currency.model';
 import { Currencies } from '../../../../../../both/collections/general/currency.collection';
+import { EstablishmentPoint } from '../../../../../../both/models/points/establishment-point.model';
+import { EstablishmentPoints } from '../../../../../../both/collections/points/establishment-points.collection';
 import { Chart } from 'angular-highcharts';
 
 @Component({
@@ -33,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private _itemsSub: Subscription;
   private _ordersSub: Subscription;
   private _currenciesSub: Subscription;
+  private _establishmentPointsSub: Subscription;
   private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
   private _currentDate: Date = new Date();
@@ -74,6 +77,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this._itemsSub = MeteorObservable.subscribe('getItemsByEstablishmentIds', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
         this._ordersSub = MeteorObservable.subscribe('getOrdersByEstablishmentIds', _lEstablishmentsId, ['ORDER_STATUS.RECEIVED']).takeUntil(this._ngUnsubscribe).subscribe();
         this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
+        this._establishmentPointsSub = MeteorObservable.subscribe('getEstablishmentPointsByIds', _lEstablishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
       });
     });
     this._tablesSub = MeteorObservable.subscribe('tables', this._user).takeUntil(this._ngUnsubscribe).subscribe();
@@ -116,6 +120,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   getTablesWithBusyStatus(_pEstablishmentId: string): number {
     return Tables.collection.find({ establishment_id: _pEstablishmentId, status: 'BUSY' }).count();
+  }
+
+  /**
+   * Get Establishment Points
+   * @param {string} _pEstablishmentId 
+   */
+  getEstablishmentPoints(_pEstablishmentId: string): number {
+    let _establishmentPoint: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: _pEstablishmentId });
+    if (_establishmentPoint) {
+      return _establishmentPoint.current_points;
+    } else {
+      return 0;
+    }
   }
 
   /**

@@ -38,6 +38,7 @@ import './imports/publications/establishment/reward';
 import './imports/publications/establishment/reward-point';
 import './imports/publications/establishment/order-history';
 import './imports/publications/points/bag_plans'
+import './imports/publications/points/establishment_points'
 
 import '../both/methods/menu/item.methods';
 import '../both/methods/auth/collaborators.methods';

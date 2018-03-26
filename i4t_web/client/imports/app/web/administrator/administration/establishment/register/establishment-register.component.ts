@@ -344,16 +344,15 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 }
                 //Insert establishment points
                 let _lBagPlan: BagPlan = BagPlans.findOne({ _id: "100" });
-                if (_lBagPlan) {
-                    _lNewEstablishmentPoint = EstablishmentPoints.collection.insert({
-                        establishments_ids: [_lNewEstablishment],
-                        current_points: _lBagPlan.value_points,
-                        negative_balance: false,
-                        negative_advice_counter: 0,
-                        creation_user: this._user,
-                        creation_date: new Date()
-                    });
-                }
+
+                _lNewEstablishmentPoint = EstablishmentPoints.collection.insert({
+                    establishment_id: _lNewEstablishment,
+                    current_points: _lBagPlan.value_points,
+                    negative_balance: false,
+                    negative_advice_counter: 0,
+                    creation_user: this._user,
+                    creation_date: new Date()
+                });
 
                 let pricePoints: PricePoints = {
                     country_id: _lBagPlan.price.country_id,

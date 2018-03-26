@@ -2,14 +2,14 @@
     <mat-card-title>{{'ORDERS_TODAY.TITLE' | translate}}</mat-card-title>
     <mat-card-subtitle>{{'ORDERS_TODAY.ORDERS_TODAY_TEXT' | translate}}</mat-card-subtitle>
     <mat-card-content>
-        <mat-form-field style="width: 25%;">
+        <mat-form-field style="width: 45%;">
             <mat-select placeholder="{{'ORDERS_TODAY.SELECT_ESTABLISHMENT' | translate}}" [(ngModel)]="_establishmentFilter" required>
                 <mat-option *ngFor="let _establishment of _establishments | async" [value]="_establishment._id">
-                    {{ _establishment.name }}
+                    {{ _establishment.name }} - {{_establishment.address}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field style="width: 25%">
+        <mat-form-field style="width: 30%">
             <input matInput type="text" placeholder="{{'ORDERS_TODAY.NAME_FILTER' | translate}}" [(ngModel)]="_userFilter" (change)="doFilter()"
                 [disabled]="_establishmentFilter===''" />
             <button mat-button *ngIf="_userFilter" matSuffix mat-icon-button (click)="_userFilter=''; doFilter(null)">
@@ -20,7 +20,9 @@
 </mat-card>
 
 <div class="today">
-    <span>{{_lToday | date:'MM/dd/yyyy'}}</span>
+    <span *ngIf="_establishmentFilter !== '' && getEstablishmentPoints() > 0" class="points">{{getEstablishmentPoints()}} {{'ORDERS_TODAY.AVAILABLE_POINTS' | translate}}</span>
+    <span *ngIf="_establishmentFilter !== '' && getEstablishmentPoints() <= 0" class="negative-points">{{getEstablishmentPoints()}} {{'ORDERS_TODAY.AVAILABLE_POINTS' | translate}}</span>
+    <span style="font-size: large;"> - {{_lToday | date:'MM/dd/yyyy'}}</span>
 </div>
 
 <div *ngIf="_loading">

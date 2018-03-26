@@ -142,6 +142,7 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.removeSubscriptions();
         let _establishmentsId: string[] = [];
+        let _currenciesIds: string[] = [];
         let _optionIds: string[] = [];
 
         this._sectionsFormGroup = new FormGroup({
@@ -181,11 +182,12 @@ export class ItemCreationComponent implements OnInit, OnDestroy {
             this._ngZone.run(() => {
                 Establishments.collection.find({}).fetch().forEach((res) => {
                     _establishmentsId.push(res._id);
+                    _currenciesIds.push(res.currencyId);
                 });
                 this._countriesSub = MeteorObservable.subscribe('getCountriesByEstablishmentsId', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe();
                 this._currenciesSub = MeteorObservable.subscribe('getCurrenciesByEstablishmentsId', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe(() => {
                     this._ngZone.run(() => {
-                        this._currencies = Currencies.find({}).zone();
+                        this._currencies = Currencies.find({ _id: { $in: _currenciesIds } }).zone();
                     });
                 });
                 this._optionSub = MeteorObservable.subscribe('optionsByEstablishment', _establishmentsId).takeUntil(this._ngUnsubscribe).subscribe(() => {
