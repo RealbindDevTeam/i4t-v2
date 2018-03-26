@@ -9,6 +9,10 @@ import { UserDetail, UserRewardPoints } from '../../models/auth/user-detail.mode
 import { UserDetails } from '../../collections/auth/user-detail.collection';
 import { RewardPoint } from '../../models/establishment/reward-point.model';
 import { RewardPoints } from '../../collections/establishment/reward-point.collection';
+import { EstablishmentPoint } from '../../models/points/establishment-point.model';
+import { EstablishmentPoints } from '../../collections/points/establishment-points.collection';
+import { NegativePoint } from '../../models/points/negative-point.model';
+import { NegativePoints } from '../../collections/points/negative-points.collection';
 
 if (Meteor.isServer) {
     Meteor.methods({
@@ -21,6 +25,7 @@ if (Meteor.isServer) {
 
             let _lTable: Table = Tables.collection.findOne({ QR_code: _tableQRCode });
             let _lEstablishment: Establishment = Establishments.collection.findOne({ _id: _establishmentId });
+            let _finalOrderId: string = '';
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
@@ -30,6 +35,7 @@ if (Meteor.isServer) {
             });
 
             if (_lOrder) {
+                _finalOrderId = _lOrder._id;
                 let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_itemToInsert.paymentItem.toString());
                 let _lTotalPointsAux: number = Number.parseInt(_lOrder.total_reward_points.toString()) + Number.parseInt(_itemToInsert.reward_points.toString());
                 Orders.update({
@@ -61,7 +67,7 @@ if (Meteor.isServer) {
                 _lEstablishment.orderNumberCount = _orderCount;
 
                 Establishments.update({ _id: _lEstablishment._id }, _lEstablishment);
-                Orders.insert({
+                _finalOrderId = Orders.collection.insert({
                     creation_user: Meteor.userId(),
                     creation_date: new Date(),
                     establishment_id: _establishmentId,
@@ -95,6 +101,27 @@ if (Meteor.isServer) {
                         }
                     }
                 });
+
+                let _establishmentPoints: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: _lEstablishment._id });
+                let _pointsResult: number = Number.parseInt(_establishmentPoints.current_points.toString()) - Number.parseInt(_itemToInsert.redeemed_points.toString());
+
+                if (_pointsResult >= 0) {
+                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult } });
+                } else {
+                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: true } });
+
+                    let _negativePoints: number = Number.parseInt(_itemToInsert.redeemed_points.toString()) - Number.parseInt(_establishmentPoints.current_points.toString());
+                    if (_negativePoints < 0) { _negativePoints = (_negativePoints * (-1)); }
+                    NegativePoints.insert({
+                        establishment_id: _lEstablishment._id,
+                        order_id: _finalOrderId,
+                        user_id: _lConsumerDetail.user_id,
+                        redeemed_points: _itemToInsert.redeemed_points,
+                        points: _negativePoints,
+                        was_cancelled: false,
+                        paid: false
+                    });
+                }
             }
         },
 
@@ -102,6 +129,7 @@ if (Meteor.isServer) {
 
             let _lTable: Table = Tables.collection.findOne({ _id: _idTable });
             let _lEstablishment: Establishment = Establishments.collection.findOne({ _id: _establishmentId });
+            let _finalOrderId: string = '';
 
             let _lOrder: Order = Orders.collection.findOne({
                 creation_user: Meteor.userId(),
@@ -111,6 +139,7 @@ if (Meteor.isServer) {
             });
 
             if (_lOrder) {
+                _finalOrderId = _lOrder._id;
                 let _lTotalPaymentAux: number = Number.parseInt(_lOrder.totalPayment.toString()) + Number.parseInt(_itemToInsert.paymentItem.toString());
                 let _lTotalPointsAux: number = Number.parseInt(_lOrder.total_reward_points.toString()) + Number.parseInt(_itemToInsert.reward_points.toString());
                 Orders.update({
@@ -142,7 +171,7 @@ if (Meteor.isServer) {
                 _lEstablishment.orderNumberCount = _orderCount;
 
                 Establishments.update({ _id: _lEstablishment._id }, _lEstablishment);
-                Orders.insert({
+                _finalOrderId = Orders.collection.insert({
                     creation_user: Meteor.userId(),
                     creation_date: new Date(),
                     establishment_id: _establishmentId,
@@ -176,6 +205,27 @@ if (Meteor.isServer) {
                         }
                     }
                 });
+
+                let _establishmentPoints: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: _lEstablishment._id });
+                let _pointsResult: number = Number.parseInt(_establishmentPoints.current_points.toString()) - Number.parseInt(_itemToInsert.redeemed_points.toString());
+
+                if (_pointsResult >= 0) {
+                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult } });
+                } else {
+                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: true } });
+
+                    let _negativePoints: number = Number.parseInt(_itemToInsert.redeemed_points.toString()) - Number.parseInt(_establishmentPoints.current_points.toString());
+                    if (_negativePoints < 0) { _negativePoints = (_negativePoints * (-1)); }
+                    NegativePoints.insert({
+                        establishment_id: _lEstablishment._id,
+                        order_id: _finalOrderId,
+                        user_id: _lConsumerDetail.user_id,
+                        redeemed_points: _itemToInsert.redeemed_points,
+                        points: _negativePoints,
+                        was_cancelled: false,
+                        paid: false
+                    });
+                }
             }
         },
 

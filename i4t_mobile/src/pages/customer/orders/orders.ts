@@ -31,6 +31,10 @@ import { Options } from 'i4t_web/both/collections/menu/option.collection';
 import { OptionValue } from 'i4t_web/both/models/menu/option-value.model';
 import { OptionValues } from 'i4t_web/both/collections/menu/option-value.collection';
 import { Network } from '@ionic-native/network';
+import { EstablishmentPoint } from 'i4t_web/both/models/points/establishment-point.model';
+import { EstablishmentPoints } from 'i4t_web/both/collections/points/establishment-points.collection';
+import { NegativePoint } from 'i4t_web/both/models/points/negative-point.model';
+import { NegativePoints } from 'i4t_web/both/collections/points/negative-points.collection';
 
 @Component({
     selector: 'page-orders',
@@ -51,6 +55,8 @@ export class OrdersPage implements OnInit, OnDestroy {
     private _otherUSerDetailSub: Subscription;
     private _optionSub: Subscription;
     private _optionValuesSub: Subscription;
+    private _establishmentPointsSub: Subscription;
+    private _negativePointsSub: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     private _userLang: string;
@@ -166,6 +172,8 @@ export class OrdersPage implements OnInit, OnDestroy {
                             });
                         });
                     });
+                    this._establishmentPointsSub = MeteorObservable.subscribe('getEstablishmentPointsByIds',[this._res_code]).takeUntil(this.ngUnsubscribe).subscribe();
+                    this._negativePointsSub = MeteorObservable.subscribe('getNegativePointsByEstablishmentId', this._res_code).takeUntil(this.ngUnsubscribe).subscribe();
                 }
 
                 this._usersSub = MeteorObservable.subscribe('getUserByTableId', this._userDetail.current_establishment, this._userDetail.current_table).takeUntil(this.ngUnsubscribe).subscribe();
@@ -334,6 +342,22 @@ export class OrdersPage implements OnInit, OnDestroy {
                                             }
                                         }
                                     });
+
+                                    let _establishmentPoints: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: _order.establishment_id });
+                                    let _negativePoints: NegativePoint = NegativePoints.findOne({ establishment_id: _order.establishment_id, order_id: _order._id, user_id: _order.creation_user });
+
+                                    if (_negativePoints) {
+                                        NegativePoints.update({ _id: _negativePoints._id }, { $set: { was_cancelled: true } });
+                                        let _newPoints: number = Number.parseInt(_establishmentPoints.current_points.toString()) + Number.parseInt(_negativePoints.redeemed_points.toString());
+                                        if (_newPoints >= 0) {
+                                            EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _newPoints, negative_balance: false } });
+                                        } else {
+                                            EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _newPoints, negative_balance: true } });
+                                        }
+                                    } else {
+                                        let _pointsResult: number = Number.parseInt(_establishmentPoints.current_points.toString()) + Number.parseInt(item.redeemed_points.toString());
+                                        EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: false } });
+                                    }
                                 }
                             });
 
