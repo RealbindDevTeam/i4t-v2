@@ -57,15 +57,15 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
     ngOnInit() {
         this.removeSubscriptions();
         this.signupForm = new FormGroup({
+            fullName: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]),
             username: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20), CustomValidators.noSpacesValidator]),
             email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(255), CustomValidators.emailValidator]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
             confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            country: new FormControl('', [Validators.required]),
-            city: new FormControl('', [Validators.required]),
-            otherCity: new FormControl(),
-            gender: new FormControl('', [Validators.required]),
-            fullName: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)])
+            //country: new FormControl('', [Validators.required]),
+            //city: new FormControl('', [Validators.required]),
+            //otherCity: new FormControl(),
+            //gender: new FormControl('', [Validators.required]), 
         });
 
         this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe(() => {
@@ -128,7 +128,7 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
         if (this.signupForm.value.password == this.signupForm.value.confirmPassword) {
             this.userProfile.full_name = this.signupForm.value.fullName;
             this.userProfile.language_code = this.getUserLang();
-            this.userProfile.gender = this.signupForm.value.gender;
+            this.userProfile.gender = "";
 
             if (this.signupForm.valid) {
                 let confirmMsg: string;
@@ -163,9 +163,9 @@ export class AdminSignupComponent extends AuthClass implements OnInit, OnDestroy
                                 contact_phone: "",
                                 dni_number: "",
                                 address: "",
-                                country_id: this._selectedCountry,
-                                city_id: cityIdAux,
-                                other_city: cityAux,
+                                country_id: "",
+                                city_id: "",
+                                other_city: "",
                                 show_after_rest_creation: true,
                             });
                             this.openDialog(this.titleMsg, '', confirmMsg, '', this.btnAcceptLbl, false);
