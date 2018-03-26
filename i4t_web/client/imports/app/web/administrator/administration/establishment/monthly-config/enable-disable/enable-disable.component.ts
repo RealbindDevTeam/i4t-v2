@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, NgZone } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,11 +29,6 @@ import * as QRious from 'qrious';
 })
 export class EnableDisableComponent implements OnInit, OnDestroy {
 
-    @Input()
-    establishmentId: string;
-
-    @Output('gotoestablishmentlist')
-    establishmentStatus: EventEmitter<any> = new EventEmitter<any>();
 
     private _tableForm: FormGroup;
     private _establishmentSub: Subscription;
@@ -53,6 +49,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
     private _establishment: Establishment;
 
     private _mdDialogRef: MatDialogRef<any>;
+    private establishmentId: string;
 
     /**
      * EnableDisableComponent Constructor
@@ -66,12 +63,18 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
         public snackBar: MatSnackBar,
         public _mdDialog: MatDialog,
         private _userLanguageService: UserLanguageService,
-        private _ngZone: NgZone) {
+        private _ngZone: NgZone,
+        private _activateRoute: ActivatedRoute,
+        private _router: Router) {
         translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         translate.setDefaultLang('en');
         this.selectedEstablishmentValue = "";
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
+
+        this._activateRoute.params.forEach((param: Params) => {
+            this.establishmentId = param['param1'];
+        });
     }
 
     ngOnInit() {
@@ -87,6 +90,10 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                     this._ngZone.run(() => {
                         let _lEstablishmentCountry: Country = Countries.findOne({ _id: this._establishment.countryId });
                         this.max_table_number = _lEstablishmentCountry.max_number_tables;
+
+                        console.log('---------');
+                        console.log(this.max_table_number - this._establishment.tables_quantity);
+
                         this._tableForm.controls['tables_number'].setValidators(Validators.max(this.max_table_number));
                     });
                 });
@@ -112,68 +119,71 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
      * This function adds the number indicated of tables to the establishment
      */
     addTables() {
-        let snackMsg: string = this.itemNameTraduction('MONTHLY_CONFIG.TABLES_CREATE');
 
-        if (!Meteor.userId()) {
-            this.openDialog(this.titleMsg, '', 'LOGIN_SYSTEM_OPERATIONS_MSG', '', this.btnAcceptLbl, false);
-            return;
-        }
+        if (true) {
+            let snackMsg: string = this.itemNameTraduction('MONTHLY_CONFIG.TABLES_CREATE');
 
-        if (this._tableForm.valid) {
-            let _lEstablishment: Establishment = Establishments.findOne({ _id: this.establishmentId });
-            let _lTableNumber: number = this._tableForm.value.tables_number;
-            let _lParameterUrl: Parameter = Parameters.collection.findOne({ _id: "50000" });
-
-            this.establishmentCode = _lEstablishment.establishment_code;
-            this.tables_count = Tables.collection.find({ establishment_id: this.establishmentId }).count();
-            let _lUrl: string = _lParameterUrl.value;
-
-            for (let _i = 0; _i < _lTableNumber; _i++) {
-                let _lEstablishmentTableCode: string = '';
-                let _lTableCode: string = '';
-
-                _lTableCode = this.generateTableCode();
-
-                _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
-                let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
-                let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode();
-
-                let _lQrCode = new QRious({
-                    background: 'white',
-                    backgroundAlpha: 1.0,
-                    foreground: 'black',
-                    foregroundAlpha: 1.0,
-                    level: 'H',
-                    mime: 'image/svg',
-                    padding: null,
-                    size: 150,
-                    value: _lUriRedirect
-                });
-
-                let _lNewTable: Table = {
-                    creation_user: Meteor.userId(),
-                    creation_date: new Date(),
-                    establishment_id: this.establishmentId,
-                    table_code: _lTableCode,
-                    is_active: true,
-                    QR_code: _lCodeGenerator.getQRCode(),
-                    QR_information: {
-                        significativeBits: _lCodeGenerator.getSignificativeBits(),
-                        bytes: _lCodeGenerator.getFinalBytes()
-                    },
-                    amount_people: 0,
-                    status: 'FREE',
-                    QR_URI: _lQrCode.toDataURL(),
-                    _number: this.tables_count + (_i + 1),
-                    uri_redirect: _lUriRedirect,
-                };
-                Tables.insert(_lNewTable);
-                Establishments.update({ _id: this.establishmentId }, { $set: { tables_quantity: _lEstablishment.tables_quantity + (_i + 1) } })
+            if (!Meteor.userId()) {
+                this.openDialog(this.titleMsg, '', 'LOGIN_SYSTEM_OPERATIONS_MSG', '', this.btnAcceptLbl, false);
+                return;
             }
-            this._tableForm.reset();
-            this.snackBar.open(snackMsg, '', {
-                duration: 1500,
-            });
+
+            if (this._tableForm.valid) {
+                let _lEstablishment: Establishment = Establishments.findOne({ _id: this.establishmentId });
+                let _lTableNumber: number = this._tableForm.value.tables_number;
+                let _lParameterUrl: Parameter = Parameters.collection.findOne({ _id: "50000" });
+
+                this.establishmentCode = _lEstablishment.establishment_code;
+                this.tables_count = Tables.collection.find({ establishment_id: this.establishmentId }).count();
+                let _lUrl: string = _lParameterUrl.value;
+
+                for (let _i = 0; _i < _lTableNumber; _i++) {
+                    let _lEstablishmentTableCode: string = '';
+                    let _lTableCode: string = '';
+
+                    _lTableCode = this.generateTableCode();
+
+                    _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
+                    let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
+                    let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode();
+
+                    let _lQrCode = new QRious({
+                        background: 'white',
+                        backgroundAlpha: 1.0,
+                        foreground: 'black',
+                        foregroundAlpha: 1.0,
+                        level: 'H',
+                        mime: 'image/svg',
+                        padding: null,
+                        size: 150,
+                        value: _lUriRedirect
+                    });
+
+                    let _lNewTable: Table = {
+                        creation_user: Meteor.userId(),
+                        creation_date: new Date(),
+                        establishment_id: this.establishmentId,
+                        table_code: _lTableCode,
+                        is_active: true,
+                        QR_code: _lCodeGenerator.getQRCode(),
+                        QR_information: {
+                            significativeBits: _lCodeGenerator.getSignificativeBits(),
+                            bytes: _lCodeGenerator.getFinalBytes()
+                        },
+                        amount_people: 0,
+                        status: 'FREE',
+                        QR_URI: _lQrCode.toDataURL(),
+                        _number: this.tables_count + (_i + 1),
+                        uri_redirect: _lUriRedirect,
+                    };
+                    Tables.insert(_lNewTable);
+                    Establishments.update({ _id: this.establishmentId }, { $set: { tables_quantity: _lEstablishment.tables_quantity + (_i + 1) } })
+                }
+                this._tableForm.reset();
+                this.snackBar.open(snackMsg, '', {
+                    duration: 1500,
+                });
+            }
         }
     }
 
@@ -259,8 +269,6 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                 Tables.collection.find({ establishment_id: _establishment._id }).forEach(function <Table>(table, index, ar) {
                     Tables.collection.update({ _id: table._id }, { $set: { is_active: !_establishment.isActive } });
                 });
-
-                this.establishmentStatus.emit(true);
                 this.snackBar.open(snackMsg, '', {
                     duration: 1500,
                 });
@@ -282,12 +290,6 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
         return wordTraduced;
     }
 
-    /**
-     * This function back to de establishment list
-     */
-    backToList() {
-        this.establishmentStatus.emit(true);
-    }
     /**
      * This function cleans the tables_number fields form
      */
@@ -324,6 +326,10 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
 
             }
         });
+    }
+
+    backToList() {
+        this._router.navigate(['app/establishment-list']);
     }
 
     /**
