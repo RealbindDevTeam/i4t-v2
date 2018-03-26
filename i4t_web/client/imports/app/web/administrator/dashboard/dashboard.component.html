@@ -2,7 +2,10 @@
     <mat-card-header>
         <img mat-card-avatar *ngIf="establishment.image" src="{{establishment.image.url }}">
         <img mat-card-avatar *ngIf="!establishment.image" src="/images/default-restaurant.png">
-        <mat-card-title>{{establishment.name}} - {{getEstablishmentPoints(establishment._id)}} {{'ADMIN_DASHBOARD.AVAILABLE_POINTS' | translate}}</mat-card-title>
+        <mat-card-title>{{establishment.name}} -
+            <span *ngIf="getEstablishmentPoints(establishment._id) > 0" style="font-weight: bold;color: green;font-size: large;">{{getEstablishmentPoints(establishment._id)}} {{'ADMIN_DASHBOARD.AVAILABLE_POINTS' | translate}}</span>
+            <span *ngIf="getEstablishmentPoints(establishment._id) <= 0" style="font-weight: bold;color: red;font-size: large;">{{getEstablishmentPoints(establishment._id)}} {{'ADMIN_DASHBOARD.AVAILABLE_POINTS' | translate}}</span>
+        </mat-card-title>
         <mat-card-subtitle>{{establishment.address}}</mat-card-subtitle>
     </mat-card-header>
 

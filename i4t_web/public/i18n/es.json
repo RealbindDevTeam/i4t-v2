@@ -1788,7 +1788,8 @@
         "ALL_ESTABLISHMENT": "Todos los restaurantes",
         "NO_RECORDS_FOUND": "No se encontrarón ordenes",
         "ACCUMULATED": "acumulados",
-        "REDEEMED": "redimidos"
+        "REDEEMED": "redimidos",
+        "AVAILABLE_POINTS": "Puntos Disponibles"
     },
     "TYPE_OF_FOOD": {
         "GERMAN_FOOD": "Comida Alemana",

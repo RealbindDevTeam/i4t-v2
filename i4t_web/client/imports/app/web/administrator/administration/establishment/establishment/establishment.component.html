@@ -54,7 +54,8 @@
                     </ul>
                     <p *ngIf="!establishment.isActive" class="establishment-inactive">{{'RESTAURANT.RESTAURANT_INACTIVE' | translate}}</p>
                     <p *ngIf="establishment.isActive" class="establishment-active">{{'RESTAURANT.RESTAURANT_ACTIVE' | translate}}</p>
-                    <p class="points">{{getEstablishmentPoints(establishment._id)}} {{'RESTAURANT.AVAILABLE_POINTS' | translate}}</p>
+                    <p *ngIf="getEstablishmentPoints(establishment._id) > 0" class="points">{{getEstablishmentPoints(establishment._id)}} {{'RESTAURANT.AVAILABLE_POINTS' | translate}}</p>
+                    <p *ngIf="getEstablishmentPoints(establishment._id) <= 0" class="negative-points">{{getEstablishmentPoints(establishment._id)}} {{'RESTAURANT.AVAILABLE_POINTS' | translate}}</p>
                 </mat-card-content>
             </mat-card>
         </div>
