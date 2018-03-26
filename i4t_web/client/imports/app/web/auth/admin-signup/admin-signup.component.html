@@ -32,32 +32,6 @@
                             <div *ngIf="signupForm.controls['fullName'].hasError('required') && signupForm.controls['fullName'].touched" class="error-message">{{'ADMIN_SIGNUP.REQUIRED_FULLNAME' | translate}}</div>
                             <div *ngIf="signupForm.controls['fullName'].hasError('maxlength') && signupForm.controls['fullName'].touched" class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_FULLNAME' | translate}}</div>
 
-                            <mat-form-field style="width: 100%">
-                                <mat-select formControlName="gender" placeholder="{{'SIGNUP.GENDER_LBL' | translate}}">
-                                    <mat-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
-                            <mat-form-field style="width: 100%; margin-top: 10px">
-                                <mat-select formControlName="country" [(ngModel)]="_selectedCountry" placeholder="{{'ADMIN_SIGNUP.COUNTRY' | translate}}">
-                                    <mat-option *ngFor="let country of _countries | async" value="{{country._id}}" (click)="changeCountry(country)">{{country.name | translate}}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
-                            <mat-form-field style="width: 100%; margin-top: 10px">
-                                <mat-select formControlName="city" [(ngModel)]="_selectedCity" placeholder="{{'ADMIN_SIGNUP.CITY' | translate}}">
-                                    <mat-option *ngFor="let city of _cities | async" value="{{city._id}}" (click)="changeCity()">{{city.name}}</mat-option>
-                                    <mat-option *ngIf="(_cities | async)?.length > 0" (click)="changeOtherCity('0000');" value="0000">{{'OTHER' | translate}}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
-                            <mat-form-field *ngIf="_showOtherCity" style="width: 100%; margin-top: 15px">
-                                <input matInput formControlName="otherCity" placeholder="{{'ADMIN_SIGNUP.WHICH_ONE' | translate}}" required>
-                            </mat-form-field>
-                            <div *ngIf="signupForm.controls['otherCity'].hasError('required') && signupForm.controls['otherCity'].touched && _showOtherCity"
-                                class="error-message">{{'ADMIN_SIGNUP.REQUIRED_OTHER' | translate}}</div>
-                            <div *ngIf="signupForm.controls['otherCity'].hasError('maxlength') && signupForm.controls['otherCity'].touched && _showOtherCity"
-                                class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_OTHER' | translate}}</div>
 
                             <mat-form-field style="width: 100%;">
                                 <input matInput formControlName="username" placeholder="{{'ADMIN_SIGNUP.USERNAME' | translate}}" required>
@@ -95,7 +69,7 @@
                                 class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_PASSWORD' | translate}}</div>
                             <div *ngIf="showConfirmError" class="error-message"> {{'ADMIN_SIGNUP.PASSWORD_NOT_MATCH' | translate}}</div>
 
-                            <button mat-raised-button class="primary-button pb-tr" type="submit" [disabled]="!signupForm.valid">{{'ADMIN_SIGNUP.SIGNUP' | translate}}</button>
+                            <button mat-raised-button class="primary-button pb-tr" style="width: 100%" type="submit" [disabled]="!signupForm.valid">{{'ADMIN_SIGNUP.SIGNUP' | translate}}</button>
                         </form>
                         <div style="text-align: center; padding-top: 10px">
                             {{'ADMIN_SIGNUP.ALREADY_ACCOUNT'| translate}}
@@ -150,33 +124,6 @@
             <span>{{'ADMIN_SIGNUP.GENERAL_INFO' | translate}}</span>
         </div>
         <form [formGroup]="signupForm" (ngSubmit)="register()" novalidate>
-            <mat-form-field style="width: 100%">
-                <mat-select formControlName="gender" placeholder="{{'SIGNUP.GENDER_LBL' | translate}}">
-                    <mat-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field style="width: 100%; margin-top: 10px">
-                <mat-select formControlName="country" [(ngModel)]="_selectedCountry" placeholder="{{'ADMIN_SIGNUP.COUNTRY' | translate}}">
-                    <mat-option *ngFor="let country of _countries | async" value="{{country._id}}" (click)="changeCountry(country)">{{country.name | translate}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field style="width: 100%; margin-top: 10px">
-                <mat-select formControlName="city" [(ngModel)]="_selectedCity" placeholder="{{'ADMIN_SIGNUP.CITY' | translate}}">
-                    <mat-option *ngFor="let city of _cities | async" value="{{city._id}}" (click)="changeCity()">{{city.name}}</mat-option>
-                    <mat-option *ngIf="(_cities | async)?.length > 0" (click)="changeOtherCity('0000');" value="0000">{{'OTHER' | translate}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field *ngIf="_showOtherCity" style="width: 100%; margin-top: 15px">
-                <input matInput formControlName="otherCity" placeholder="{{'ADMIN_SIGNUP.WHICH_ONE' | translate}}" required>
-            </mat-form-field>
-            <div *ngIf="signupForm.controls['otherCity'].hasError('required') && signupForm.controls['otherCity'].touched && _showOtherCity"
-                class="error-message">{{'ADMIN_SIGNUP.REQUIRED_OTHER' | translate}}</div>
-            <div *ngIf="signupForm.controls['otherCity'].hasError('maxlength') && signupForm.controls['otherCity'].touched && _showOtherCity"
-                class="error-message">{{'ADMIN_SIGNUP.MAX_LENGTH_OTHER' | translate}}</div>
-
             <div style="width: 100%; text-align: center; margin-top: 30px">
                 <span>{{'ADMIN_SIGNUP.USER_PASSWD' | translate}}</span>
             </div>

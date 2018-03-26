@@ -43,6 +43,7 @@
                         <ion-label floating>{{'MOBILE.USERNAME' | translate}}</ion-label>
                         <ion-input formControlName="username" type="text"></ion-input>
                     </ion-item>
+
                     <ion-item *ngIf="_userForm.controls['first_name']">
                         <ion-label floating>{{'MOBILE.SETTINGS.FIRST_NAME' | translate}}</ion-label>
                         <ion-input formControlName="first_name" type="text"></ion-input>
@@ -50,6 +51,21 @@
                     <ion-item *ngIf="_userForm.controls['last_name']">
                         <ion-label floating>{{'MOBILE.SETTINGS.LAST_NAME' | translate}}</ion-label>
                         <ion-input formControlName="last_name" type="text"></ion-input>
+                    </ion-item>
+
+                    <ion-item *ngIf="_userForm.controls['full_name']">
+                        <ion-label floating>{{'MOBILE.SETTINGS.FULL_NAME' | translate}}</ion-label>
+                        <ion-input formControlName="full_name" type="text"></ion-input>
+                    </ion-item>
+
+                    <ion-item *ngIf="_userForm.controls['gender']">
+                        <ion-label>
+                            <ion-icon name="gender"></ion-icon>
+                            {{'MOBILE.SETTINGS.GENDER' | translate}}
+                        </ion-label>
+                        <ion-select formControlName="gender" [(ngModel)]="_selectedGender">
+                            <ion-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</ion-option>
+                        </ion-select>
                     </ion-item>
                 </ion-list>
 
