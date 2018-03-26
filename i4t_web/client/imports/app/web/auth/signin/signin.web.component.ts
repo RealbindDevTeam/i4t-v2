@@ -69,6 +69,7 @@ export class SigninWebComponent extends AuthClass implements OnInit {
                                         this.router.navigate(['app/dashboard']);
                                     } else {
                                         this.router.navigate(['go-to-store', 'f'], { skipLocationChange: true });
+                                        Meteor.logout();
                                     }
                                     break;
                                 }
@@ -82,6 +83,7 @@ export class SigninWebComponent extends AuthClass implements OnInit {
                                 }
                                 case '400': {
                                     this.router.navigate(['go-to-store', 't'], { skipLocationChange: true });
+                                    Meteor.logout();
                                     break;
                                 }
                                 case '600': {
