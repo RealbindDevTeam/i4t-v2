@@ -1,4 +1,27 @@
-<mat-card *ngIf="(_establishments | async)?.length > 0">
+<mat-card *ngIf="!_thereAreEstablishments" mat-cell="12" class="demo-card demo-basic">
+    <mat-card-content>
+        <div class="card_initial">
+            <div class="card_initial has-image">
+                <div class="card_initial-image-container">
+                    <img class="card_initial-image" src="/images/tables.png" />
+                </div>
+                <div class="card_initial-copy">
+                    <div class="card_initial-tagline">
+                        {{'SECTIONS.THERE_NOT_RESTAURANTS' | translate}}
+                    </div>
+                    <div class="card_initial-additional-links">
+                        {{'SECTIONS.MESSAGE' | translate}}
+                    </div>
+                </div>
+                <div class="card_initial-button">
+                    <button mat-raised-button (click)="goToAddEstablishment()">{{'SECTIONS.RESTAURANT_REGISTER' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="_thereAreEstablishments">
     <mat-card-title>{{'MONTHLY_CONFIG.TITLE' | translate}}</mat-card-title>
     <mat-card-subtitle>{{'MONTHLY_CONFIG.SUBTITLE' | translate}}</mat-card-subtitle>
     <mat-card-content>
@@ -23,7 +46,7 @@
                         <td *ngIf="establishment.currencyId === currency._id" class="cust-center-align">{{getActiveTables(establishment)}}</td>
                         <td *ngIf="establishment.currencyId === currency._id" class="cust-center-align">{{getEstablishmentStatus(establishment) | translate}}</td>
                         <td *ngIf="establishment.currencyId === currency._id" class="cust-center-align">
-                            <button mat-raised-button [disabled]="validateConditions(establishment)" (click)="goToEnableDisable(establishment._id)">{{'MONTHLY_CONFIG.BTN_EDIT' | translate}}</button>
+                            <button mat-raised-button (click)="goToEnableDisable(establishment._id)">{{'MONTHLY_CONFIG.BTN_EDIT' | translate}}</button>
                         </td>
                     </tr>
                 </tbody>

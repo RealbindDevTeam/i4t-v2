@@ -24,10 +24,8 @@ import { PaymentHistory } from '../../../../../../../../../both/models/payment/p
     templateUrl: './establishment-list.component.html',
     styleUrls: ['./establishment-list.component.scss']
 })
-export class EstablishmentListComponent implements OnInit, OnDestroy {
 
-    @Output('gotoenabledisabled')
-    establishmentId: EventEmitter<any> = new EventEmitter<any>();
+export class EstablishmentListComponent implements OnInit, OnDestroy {
 
     private _tableForm: FormGroup;
     private _establishmentSub: Subscription;
@@ -42,6 +40,7 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
     private _currencies: Observable<Currency[]>;
     private _tables: Observable<Table[]>;
     private _parameters: Observable<Parameter[]>;
+    private _thereAreEstablishments: boolean = true;
 
     private _currentDate: Date;
 
@@ -66,7 +65,11 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
             tables_number: new FormControl('', [Validators.required])
         });
         this._establishmentSub = MeteorObservable.subscribe('establishments', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
-            this._establishments = Establishments.find({}).zone();
+            this._ngZone.run(() => {
+                this._establishments = Establishments.find({}).zone();
+                this.countEstablishments();
+                this._establishments.subscribe(() => { this.countEstablishments(); });
+            });
         });
         this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
             this._tables = this._tables = Tables.find({}).zone();
@@ -75,18 +78,15 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
             this._currencies = Currencies.find({}).zone();
         });
         this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
-        this._parameterSub = MeteorObservable.subscribe('getParameters').takeUntil(this._ngUnsubscribe).subscribe(() => {
-            this._ngZone.run(() => {
-                let is_prod_flag = Parameters.findOne({ name: 'payu_is_prod' }).value;
-                if (is_prod_flag == 'true') {
-                    this._currentDate = new Date();
-                } else {
-                    let test_date = Parameters.findOne({ name: 'date_test_monthly_pay' }).value;
-                    this._currentDate = new Date(test_date);
-                }
-            });
-        });
+
         this._paymentHistorySub = MeteorObservable.subscribe('getHistoryPaymentsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
+    }
+
+    /**
+     * Validate if establishments exists
+     */
+    countEstablishments(): void {
+        Establishments.collection.find({}).count() > 0 ? this._thereAreEstablishments = true : this._thereAreEstablishments = false;
     }
 
     /**
@@ -160,60 +160,8 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
      * @param {string} _establishment
      */
     goToEnableDisable(_establishment: string) {
-        this.establishmentId.emit(_establishment);
+        this._router.navigate(['app/enable-disable', _establishment], { skipLocationChange: true });
     }
-
-    /**
-     * This function validate the current day to return or not the customer payment
-     * @return {boolean}
-     */
-    validatePeriodDays(): boolean {
-        let startDay = Parameters.findOne({ name: 'start_payment_day' });
-        let endDay = Parameters.findOne({ name: 'end_payment_day' });
-        let currentDay = this._currentDate.getDate();
-        let establishments = Establishments.collection.find({ creation_user: Meteor.userId() }).fetch();
-
-        if (startDay && endDay && establishments) {
-            if (currentDay >= Number(startDay.value) && currentDay <= Number(endDay.value) && (establishments.length > 0)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * This function validate the conditions for enable or disable modify button
-     * @param {Establishment} _establishment
-     * @return {string}
-     */
-    validateConditions(_establishment: Establishment): boolean {
-        let periodDays: boolean;
-        let paymentHistory: PaymentHistory;
-        if (_establishment.freeDays) {
-            return false;
-        } else {
-            periodDays = this.validatePeriodDays();
-            if (periodDays) {
-                paymentHistory = PaymentsHistory.findOne({
-                    month: (this._currentDate.getMonth() + 1).toString(),
-                    year: (this._currentDate.getFullYear()).toString(),
-                    establishment_ids: {
-                        $in: [_establishment._id]
-                    },
-                    status: 'TRANSACTION_STATUS.APPROVED'
-                });
-                if (paymentHistory) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return !periodDays;
-            }
-        }
-    }
-
 
     /**
      * ngOnDestroy Implementation

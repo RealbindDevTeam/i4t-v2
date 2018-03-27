@@ -27,8 +27,8 @@
                                     </td>
                                     <td style="width: 30%">
                                         <mat-form-field style="width: 95%">
-                                            <input matInput required formControlName="tables_number" placeholder="{{'MONTHLY_CONFIG.NUMBER_TABLES' | translate}} {{max_table_number}}" minlength="1"
-                                                maxlength="3" [disabled]="!establishment.isActive" #inputTables>
+                                            <input matInput required formControlName="tables_number" placeholder="{{'MONTHLY_CONFIG.NUMBER_TABLES' | translate}} {{_remaining_tables}}"
+                                                minlength="1" maxlength="3" [disabled]="!establishment.isActive" #inputTables>
                                             <mat-hint align="end">{{inputTables.value.length}} / 3</mat-hint>
                                         </mat-form-field>
                                     </td>
@@ -49,7 +49,7 @@
             </div>
         </div>
         <button class="fixed-action-btn" mat-fab (click)="backToList()">
-                <mat-icon style="color: white;">chevron_left</mat-icon>
+            <mat-icon style="color: white;">chevron_left</mat-icon>
         </button>
     </div>
 </div>

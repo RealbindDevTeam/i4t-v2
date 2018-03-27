@@ -1114,7 +1114,7 @@
         "STATUS_INACTIVE": "Inactive",
         "BTN_EDIT": "Configure",
         "ADD_TABLES": "Add tables",
-        "DESC_ADD_TABLES": "Enter number of tables to create",
+        "DESC_ADD_TABLES": "Enter the number of tables to create, only 100 per restaurant",
         "ACTIVE_INACTIVE_REST": "Active/Inactive Restaurant and Tables",
         "ACTIVE_INACTIVE_REST_DESC": "Inactivate the restaurant you don't want to pay",
         "TABLE_ENUM": "Table ",
