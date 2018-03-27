@@ -44,7 +44,6 @@ import { IurestSliderComponent } from './general/slider/slider.component';
 import { CreateConfirmComponent } from './administrator/administration/establishment/register/create-confirm/create-confirm.component';
 import { MonthlyPaymentComponent } from './administrator/payment/monthly-payment/monthly-payment.component';
 import { SupervisorDashboardComponent } from './supervisor/dashboard/supervisor-dashboard.component';
-import { MonthlyConfigComponent } from './administrator/administration/establishment/monthly-config/monthly-config/monthly-config.component';
 import { EstablishmentListComponent } from './administrator/administration/establishment/monthly-config/establishment-list/establishment-list.component';
 import { EnableDisableComponent } from './administrator/administration/establishment/monthly-config/enable-disable/enable-disable.component';
 import { DisableConfirmComponent } from './administrator/administration/establishment//monthly-config/disable-confirm/disable-confirm.component';
@@ -132,7 +131,6 @@ export const WEB_DECLARATIONS = [
     IurestSliderComponent,
     MonthlyPaymentComponent,
     SupervisorDashboardComponent,
-    MonthlyConfigComponent,
     EstablishmentListComponent,
     EnableDisableComponent,
     PayuPaymentFormComponent,

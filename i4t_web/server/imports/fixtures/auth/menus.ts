@@ -66,7 +66,7 @@ export function loadMenus() {
                                         _id: "10013",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.MONTHLY_CONFIG",
-                                        url: "/app/monthly-config",
+                                        url: "/app/establishment-list",
                                         icon_name: "",
                                         order: 10013
                                     }
