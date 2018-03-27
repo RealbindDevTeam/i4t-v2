@@ -96,7 +96,6 @@ Meteor.startup(() => {
     loadCountries();
     loadCities();
     loadLanguages();
-    createdbindexes();
     loadEmailContents();
     loadParameters();
     loadCcPaymentMethods();
@@ -107,4 +106,5 @@ Meteor.startup(() => {
     loadTypesOfFood();
     createCrons();
     loadBagPlans();
+    createdbindexes();
 });
