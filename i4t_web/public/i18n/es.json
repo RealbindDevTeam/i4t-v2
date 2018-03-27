@@ -1114,7 +1114,7 @@
         "STATUS_INACTIVE": "Inactivo",
         "BTN_EDIT": "Configurar",
         "ADD_TABLES": "Agregar mesas",
-        "DESC_ADD_TABLES": "Ingresa el número de mesas a crear",
+        "DESC_ADD_TABLES": "Ingresa el número de mesas a crear, unicamente 100 por restaurante",
         "ACTIVE_INACTIVE_REST": "Activar/Inactivar Restaurante y Mesas",
         "ACTIVE_INACTIVE_REST_DESC": "Inactiva el restaurante si no deseas que se siga realizando cobro",
         "TABLE_ENUM": "Mesa # ",

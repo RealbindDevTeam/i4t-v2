@@ -50,6 +50,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
 
     private _mdDialogRef: MatDialogRef<any>;
     private establishmentId: string;
+    private _remaining_tables: number;
 
     /**
      * EnableDisableComponent Constructor
@@ -90,11 +91,8 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                     this._ngZone.run(() => {
                         let _lEstablishmentCountry: Country = Countries.findOne({ _id: this._establishment.countryId });
                         this.max_table_number = _lEstablishmentCountry.max_number_tables;
-
-                        console.log('---------');
-                        console.log(this.max_table_number - this._establishment.tables_quantity);
-
-                        this._tableForm.controls['tables_number'].setValidators(Validators.max(this.max_table_number));
+                        this._remaining_tables = this.max_table_number - this._establishment.tables_quantity;
+                        this._tableForm.controls['tables_number'].setValidators(Validators.max(this._remaining_tables));
                     });
                 });
             });
@@ -116,74 +114,81 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Get the remaining tables of establishment
+     */
+    getRemainingTables() {
+        this._remaining_tables = this.max_table_number - this._establishment.tables_quantity;
+    }
+
+    /**
      * This function adds the number indicated of tables to the establishment
      */
     addTables() {
+        let snackMsg: string = this.itemNameTraduction('MONTHLY_CONFIG.TABLES_CREATE');
 
-        if (true) {
-            let snackMsg: string = this.itemNameTraduction('MONTHLY_CONFIG.TABLES_CREATE');
+        if (!Meteor.userId()) {
+            this.openDialog(this.titleMsg, '', 'LOGIN_SYSTEM_OPERATIONS_MSG', '', this.btnAcceptLbl, false);
+            return;
+        }
 
-            if (!Meteor.userId()) {
-                this.openDialog(this.titleMsg, '', 'LOGIN_SYSTEM_OPERATIONS_MSG', '', this.btnAcceptLbl, false);
-                return;
-            }
+        if (this._tableForm.valid) {
+            let _lEstablishment: Establishment = Establishments.findOne({ _id: this.establishmentId });
+            let _lTableNumber: number = this._tableForm.value.tables_number;
+            let _lParameterUrl: Parameter = Parameters.collection.findOne({ _id: "50000" });
 
-            if (this._tableForm.valid) {
-                let _lEstablishment: Establishment = Establishments.findOne({ _id: this.establishmentId });
-                let _lTableNumber: number = this._tableForm.value.tables_number;
-                let _lParameterUrl: Parameter = Parameters.collection.findOne({ _id: "50000" });
+            this.establishmentCode = _lEstablishment.establishment_code;
+            this.tables_count = Tables.collection.find({ establishment_id: this.establishmentId }).count();
+            let _lUrl: string = _lParameterUrl.value;
 
-                this.establishmentCode = _lEstablishment.establishment_code;
-                this.tables_count = Tables.collection.find({ establishment_id: this.establishmentId }).count();
-                let _lUrl: string = _lParameterUrl.value;
+            for (let _i = 0; _i < _lTableNumber; _i++) {
+                let _lEstablishmentTableCode: string = '';
+                let _lTableCode: string = '';
 
-                for (let _i = 0; _i < _lTableNumber; _i++) {
-                    let _lEstablishmentTableCode: string = '';
-                    let _lTableCode: string = '';
+                _lTableCode = this.generateTableCode();
 
-                    _lTableCode = this.generateTableCode();
+                _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
+                let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
+                let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode();
 
-                    _lEstablishmentTableCode = this.establishmentCode + _lTableCode;
-                    let _lCodeGenerator = generateQRCode(_lEstablishmentTableCode);
-                    let _lUriRedirect: string = _lUrl + _lCodeGenerator.getQRCode();
-
-                    let _lQrCode = new QRious({
-                        background: 'white',
-                        backgroundAlpha: 1.0,
-                        foreground: 'black',
-                        foregroundAlpha: 1.0,
-                        level: 'H',
-                        mime: 'image/svg',
-                        padding: null,
-                        size: 150,
-                        value: _lUriRedirect
-                    });
-
-                    let _lNewTable: Table = {
-                        creation_user: Meteor.userId(),
-                        creation_date: new Date(),
-                        establishment_id: this.establishmentId,
-                        table_code: _lTableCode,
-                        is_active: true,
-                        QR_code: _lCodeGenerator.getQRCode(),
-                        QR_information: {
-                            significativeBits: _lCodeGenerator.getSignificativeBits(),
-                            bytes: _lCodeGenerator.getFinalBytes()
-                        },
-                        amount_people: 0,
-                        status: 'FREE',
-                        QR_URI: _lQrCode.toDataURL(),
-                        _number: this.tables_count + (_i + 1),
-                        uri_redirect: _lUriRedirect,
-                    };
-                    Tables.insert(_lNewTable);
-                    Establishments.update({ _id: this.establishmentId }, { $set: { tables_quantity: _lEstablishment.tables_quantity + (_i + 1) } })
-                }
-                this._tableForm.reset();
-                this.snackBar.open(snackMsg, '', {
-                    duration: 1500,
+                let _lQrCode = new QRious({
+                    background: 'white',
+                    backgroundAlpha: 1.0,
+                    foreground: 'black',
+                    foregroundAlpha: 1.0,
+                    level: 'H',
+                    mime: 'image/svg',
+                    padding: null,
+                    size: 150,
+                    value: _lUriRedirect
                 });
+
+                let _lNewTable: Table = {
+                    creation_user: Meteor.userId(),
+                    creation_date: new Date(),
+                    establishment_id: this.establishmentId,
+                    table_code: _lTableCode,
+                    is_active: true,
+                    QR_code: _lCodeGenerator.getQRCode(),
+                    QR_information: {
+                        significativeBits: _lCodeGenerator.getSignificativeBits(),
+                        bytes: _lCodeGenerator.getFinalBytes()
+                    },
+                    amount_people: 0,
+                    status: 'FREE',
+                    QR_URI: _lQrCode.toDataURL(),
+                    _number: this.tables_count + (_i + 1),
+                    uri_redirect: _lUriRedirect,
+                };
+                Tables.insert(_lNewTable);
+                Establishments.update({ _id: this.establishmentId }, { $set: { tables_quantity: _lEstablishment.tables_quantity + (_i + 1) } })
             }
+            this._tableForm.reset();
+            let establishment_remaining: Establishment = Establishments.findOne({ _id: this.establishmentId });
+            this._remaining_tables = this.max_table_number - establishment_remaining.tables_quantity;
+            this._tableForm.controls['tables_number'].setValidators(Validators.max(this._remaining_tables));
+            this.snackBar.open(snackMsg, '', {
+                duration: 1500,
+            });
         }
     }
 
