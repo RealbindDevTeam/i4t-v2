@@ -287,7 +287,9 @@
             "PAYMENTS": "Service payment",
             "MONTHLY_PAYMENT": "Monthly Payment",
             "PAYMENT_HISTORY": "Payment History",
-            "REACTIVATE_RESTAURANT": "Reactivate restaurant"
+            "REACTIVATE_RESTAURANT": "Reactivate restaurant",
+            "BAGS": "Bags",
+            "PURCHASE_BAGS": "Purchase of bags"
         },
         "MENU_DEFINITION": {
             "MENU_DEFINITION": "Menu",
@@ -1836,5 +1838,8 @@
         "SMALL": "NORMAL",
         "MEDIUM": "EXECUTIVE",
         "LARGE": "A LA CARTÉ"
+    },
+    "BAGS_PAYMENT": {
+        "TITLE": "Purchase of bags"
     }
 }
