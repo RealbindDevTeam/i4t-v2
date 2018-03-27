@@ -12,6 +12,10 @@ import { Tables } from '../../../collections/establishment/table.collection';
 import { _localeFactory } from '@angular/core/src/application_module';
 import { RewardPoint } from '../../../models/establishment/reward-point.model';
 import { RewardPoints } from '../../../collections/establishment/reward-point.collection';
+import { EstablishmentPoint } from '../../../models/points/establishment-point.model';
+import { EstablishmentPoints } from '../../../collections/points/establishment-points.collection';
+import { NegativePoint } from '../../../models/points/negative-point.model';
+import { NegativePoints } from '../../../collections/points/negative-points.collection';
 
 if (Meteor.isServer) {
 
@@ -251,6 +255,22 @@ if (Meteor.isServer) {
                       }
                     }
                   });
+
+                  let _establishmentPoints: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: _lOrder.establishment_id });
+                  let _negativePoints: NegativePoint = NegativePoints.findOne({ establishment_id: _lOrder.establishment_id, order_id: _lOrder._id, user_id: _lOrder.creation_user });
+
+                  if (_negativePoints) {
+                    NegativePoints.update({ _id: _negativePoints._id }, { $set: { was_cancelled: true } });
+                    let _newPoints: number = Number.parseInt(_establishmentPoints.current_points.toString()) + Number.parseInt(_negativePoints.redeemed_points.toString());
+                    if (_newPoints >= 0) {
+                      EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _newPoints, negative_balance: false } });
+                    } else {
+                      EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _newPoints, negative_balance: true } });
+                    }
+                  } else {
+                    let _pointsResult: number = Number.parseInt(_establishmentPoints.current_points.toString()) + Number.parseInt(it.redeemed_points.toString());
+                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: false } });
+                  }
                 }
               });
 

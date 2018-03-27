@@ -108,19 +108,23 @@ if (Meteor.isServer) {
                 if (_pointsResult >= 0) {
                     EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult } });
                 } else {
-                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: true } });
-
-                    let _negativePoints: number = Number.parseInt(_itemToInsert.redeemed_points.toString()) - Number.parseInt(_establishmentPoints.current_points.toString());
-                    if (_negativePoints < 0) { _negativePoints = (_negativePoints * (-1)); }
+                    let _negativePoints: number;
+                    if (_establishmentPoints.current_points > 0) {
+                        _negativePoints = Number.parseInt(_itemToInsert.redeemed_points.toString()) - Number.parseInt(_establishmentPoints.current_points.toString());
+                        if (_negativePoints < 0) { _negativePoints = (_negativePoints * (-1)); }
+                    } else {
+                        _negativePoints = Number.parseInt(_itemToInsert.redeemed_points.toString());
+                    }
                     NegativePoints.insert({
                         establishment_id: _lEstablishment._id,
                         order_id: _finalOrderId,
                         user_id: _lConsumerDetail.user_id,
-                        redeemed_points: _itemToInsert.redeemed_points,
+                        redeemed_points: Number.parseInt(_itemToInsert.redeemed_points.toString()),
                         points: _negativePoints,
                         was_cancelled: false,
                         paid: false
                     });
+                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: true } });
                 }
             }
         },
@@ -212,19 +216,23 @@ if (Meteor.isServer) {
                 if (_pointsResult >= 0) {
                     EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult } });
                 } else {
-                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: true } });
-
-                    let _negativePoints: number = Number.parseInt(_itemToInsert.redeemed_points.toString()) - Number.parseInt(_establishmentPoints.current_points.toString());
-                    if (_negativePoints < 0) { _negativePoints = (_negativePoints * (-1)); }
+                    let _negativePoints: number;
+                    if (_establishmentPoints.current_points > 0) {
+                        _negativePoints = Number.parseInt(_itemToInsert.redeemed_points.toString()) - Number.parseInt(_establishmentPoints.current_points.toString());
+                        if (_negativePoints < 0) { _negativePoints = (_negativePoints * (-1)); }
+                    } else {
+                        _negativePoints = Number.parseInt(_itemToInsert.redeemed_points.toString());
+                    }
                     NegativePoints.insert({
                         establishment_id: _lEstablishment._id,
                         order_id: _finalOrderId,
                         user_id: _lConsumerDetail.user_id,
-                        redeemed_points: _itemToInsert.redeemed_points,
+                        redeemed_points: Number.parseInt(_itemToInsert.redeemed_points.toString()),
                         points: _negativePoints,
                         was_cancelled: false,
                         paid: false
                     });
+                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: true } });
                 }
             }
         },
