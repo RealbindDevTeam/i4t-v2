@@ -155,7 +155,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                     backgroundAlpha: 1.0,
                     foreground: 'black',
                     foregroundAlpha: 1.0,
-                    level: 'H',
+                    level: 'M',
                     mime: 'image/svg',
                     padding: null,
                     size: 150,
