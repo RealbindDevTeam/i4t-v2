@@ -106,6 +106,24 @@ if (Meteor.isServer) {
                                     }
                                 });
                         }
+                        if (_lUserDetail.grant_start_points !== undefined && _lUserDetail.grant_start_points) {
+                            let _lExpireDate = new Date();
+                            let _lUserStartPoints: Parameter = Parameters.findOne({ name: 'user_start_points' });
+                            RewardPoints.insert({
+                                id_user: _lUserDetail.user_id,
+                                establishment_id: _establishment._id,
+                                points: Number.parseInt(_lUserStartPoints.value.toString()),
+                                days_to_expire: Number.parseInt(_establishment.points_validity.toString()),
+                                gain_date: new Date(),
+                                expire_date: new Date(_lExpireDate.setDate(_lExpireDate.getDate() + Number.parseInt(_establishment.points_validity.toString()))),
+                                is_active: true
+                            });
+                            if (_lUserDetail.reward_points === null || _lUserDetail.reward_points === undefined) {
+                                let _lUserReward: UserRewardPoints = { index: 1, establishment_id: _establishment._id, points: Number.parseInt(_lUserStartPoints.value.toString()) }
+                                UserDetails.update({ _id: _lUserDetail._id }, { $set: { reward_points: [_lUserReward] } });
+                            }
+                            UserDetails.update({ _id: _lUserDetail._id }, { $set: { grant_start_points: false } });
+                        }
                         return _establishment;
                     } else {
                         throw new Meteor.Error('200');

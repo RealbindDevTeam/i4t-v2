@@ -91,6 +91,7 @@ export class SignupComponent implements OnInit {
                                 role_id: '400',
                                 is_active: true,
                                 establishment_work: '',
+                                grant_start_points: true,
                                 penalties: [],
                                 current_establishment: '',
                                 current_table: ''
@@ -159,6 +160,7 @@ export class SignupComponent implements OnInit {
                     is_active: true,
                     establishment_work: '',
                     penalties: [],
+                    grant_start_points: true,
                     current_establishment: '',
                     current_table: ''
                 });
