@@ -61,6 +61,8 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
     private _loading: boolean = false;
     private _itemImageToInsert: UserDetailImage;
 
+    private _genderArray: any[] = [];
+
     /**
      * SettingsWebComponent Constructor
      * @param {TranslateService} _translate 
@@ -122,7 +124,8 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
                     this._userForm = new FormGroup({
                         username: new FormControl({ value: this._user.username, disabled: true }),
                         full_name: new FormControl({ value: this._user.profile.full_name, disabled: false }, [Validators.maxLength(50)]),
-                        language_code: new FormControl({ value: this._user.profile.language_code, disabled: false })
+                        language_code: new FormControl({ value: this._user.profile.language_code, disabled: false }),
+                        gender: new FormControl({ value: this._user.profile.gender, disabled: false }, [Validators.required])
                     });
                     this._validateChangePass = false;
                     if (this._userDetail.role_id === '400') {
@@ -138,12 +141,12 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
                         let shippingAddress: FormControl = new FormControl({ value: this._userDetail.address, disabled: false }, [Validators.maxLength(150)]);
                         this._userForm.addControl('shippingAddress', shippingAddress);
 
-                        let country: FormControl = new FormControl({ value: this._userDetail.country_id, disabled: false }, [Validators.required]);
+                        let country: FormControl = new FormControl({ value: this._userDetail.country_id, disabled: false });
                         this._userForm.addControl('country', country);
 
                         this.changeCountry(this._userDetail.country_id);
 
-                        let city: FormControl = new FormControl({ value: this._userDetail.city_id, disabled: false }, [Validators.required]);
+                        let city: FormControl = new FormControl({ value: this._userDetail.city_id, disabled: false });
                         this._userForm.addControl('city', city);
 
                         let otherCity: FormControl = new FormControl();
@@ -160,6 +163,11 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
                 }
             });
         });
+
+        this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+        { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+        { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
+
     }
 
     /**
@@ -232,7 +240,8 @@ export class SettingsWebComponent implements OnInit, OnDestroy {
                 $set: {
                     profile: {
                         full_name: this._userForm.value.full_name,
-                        language_code: this._userForm.value.language_code
+                        language_code: this._userForm.value.language_code,
+                        gender: this._userForm.value.gender
                     }
                 }
             });

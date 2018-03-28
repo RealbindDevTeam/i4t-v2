@@ -37,7 +37,7 @@ import { EstablishmentPoint } from '../../../../../../../../both/models/points/e
 import { EstablishmentPoints } from '../../../../../../../../both/collections/points/establishment-points.collection';
 import { BagPlan } from '../../../../../../../../both/models/points/bag-plan.model';
 import { BagPlans } from '../../../../../../../../both/collections/points/bag-plans.collection';
-import { BagPlanHistory } from '../../../../../../../../both/models/points/bag-plan-history.model';
+import { BagPlanHistory, BagPlansPoints } from '../../../../../../../../both/models/points/bag-plan-history.model';
 import { BagPlanHistories } from '../../../../../../../../both/collections/points/bag-plans-history.collection';
 import { PricePoints } from '../../../../../../../../both/models/points/bag-plan.model';
 
@@ -344,18 +344,17 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                 }
                 //Insert establishment points
                 let _lBagPlan: BagPlan = BagPlans.findOne({ _id: "100" });
-                if (_lBagPlan) {
-                    _lNewEstablishmentPoint = EstablishmentPoints.collection.insert({
-                        establishments_ids: [_lNewEstablishment],
-                        current_points: _lBagPlan.value_points,
-                        negative_balance: false,
-                        negative_advice_counter: 0,
-                        creation_user: this._user,
-                        creation_date: new Date()
-                    });
-                }
 
-                let pricePoints: PricePoints = {
+                _lNewEstablishmentPoint = EstablishmentPoints.collection.insert({
+                    establishment_id: _lNewEstablishment,
+                    current_points: _lBagPlan.value_points,
+                    negative_balance: false,
+                    negative_advice_counter: 0,
+                    creation_user: this._user,
+                    creation_date: new Date()
+                });
+
+                let pricePoints: BagPlansPoints = {
                     country_id: _lBagPlan.price.country_id,
                     price: _lBagPlan.price.price,
                     currency: _lBagPlan.price.currency
@@ -367,7 +366,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                     plan_label: _lBagPlan.label,
                     value_points: _lBagPlan.value_points,
                     price: pricePoints,
-                    establishments_ids: [_lNewEstablishment],
+                    establishment_id: _lNewEstablishment,
                     creation_user: this._user,
                     creation_date: new Date()
                 });
@@ -394,7 +393,7 @@ export class EstablishmentRegisterComponent implements OnInit, OnDestroy {
                         backgroundAlpha: 1.0,
                         foreground: 'black',
                         foregroundAlpha: 1.0,
-                        level: 'H',
+                        level: 'M',
                         mime: 'image/svg',
                         padding: null,
                         size: 150,

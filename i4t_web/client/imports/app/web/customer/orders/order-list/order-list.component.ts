@@ -28,6 +28,10 @@ import { Option } from '../../../../../../../both/models/menu/option.model';
 import { Options } from '../../../../../../../both/collections/menu/option.collection';
 import { OptionValue } from '../../../../../../../both/models/menu/option-value.model';
 import { OptionValues } from '../../../../../../../both/collections/menu/option-value.collection';
+import { EstablishmentPoint } from '../../../../../../../both/models/points/establishment-point.model';
+import { EstablishmentPoints } from '../../../../../../../both/collections/points/establishment-points.collection';
+import { NegativePoint } from '../../../../../../../both/models/points/negative-point.model';
+import { NegativePoints } from '../../../../../../../both/collections/points/negative-points.collection';
 
 @Component({
     selector: 'order-list',
@@ -53,6 +57,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private _rewardPointsSub: Subscription;
     private _optionSub: Subscription;
     private _optionValuesSub: Subscription;
+    private _establishmentPointsSub: Subscription;
+    private _negativePointsSub: Subscription;
     private _ngUnsubscribe: Subject<void> = new Subject<void>();
     private _mdDialogRef: MatDialogRef<any>;
 
@@ -222,6 +228,8 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                 });
             });
         });
+        this._establishmentPointsSub = MeteorObservable.subscribe('getEstablishmentPointsByIds',[this.establishmentId]).takeUntil(this._ngUnsubscribe).subscribe();
+        this._negativePointsSub = MeteorObservable.subscribe('getNegativePointsByEstablishmentId', this.establishmentId).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
     /**
@@ -926,6 +934,22 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                                     }
                                 }
                             });
+
+                            let _establishmentPoints: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: _pOrder.establishment_id });
+                            let _negativePoints: NegativePoint = NegativePoints.findOne({ establishment_id: _pOrder.establishment_id, order_id: _pOrder._id, user_id: _pOrder.creation_user });
+
+                            if (_negativePoints) {
+                                NegativePoints.update({ _id: _negativePoints._id }, { $set: { was_cancelled: true } });
+                                let _newPoints: number = Number.parseInt(_establishmentPoints.current_points.toString()) + Number.parseInt(_negativePoints.redeemed_points.toString());
+                                if (_newPoints >= 0) {
+                                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _newPoints, negative_balance: false } });
+                                } else {
+                                    EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _newPoints, negative_balance: true } });
+                                }
+                            } else {
+                                let _pointsResult: number = Number.parseInt(_establishmentPoints.current_points.toString()) + Number.parseInt(it.redeemed_points.toString());
+                                EstablishmentPoints.update({ _id: _establishmentPoints._id }, { $set: { current_points: _pointsResult, negative_balance: false } });
+                            }
                         }
                     });
 

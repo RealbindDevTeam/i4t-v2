@@ -41,15 +41,13 @@ export class SettingsPage implements OnInit, OnDestroy {
   private _languageCode: string;
   private _imageProfile: string;
   private _userLang: string;
-
   private _user: any;
   private _userDetail: any;
   private _languages: any;
-
   private _validateChangeEmail: boolean = true;
   private _validateChangePass: boolean = true;
-
   private disconnectSubscription: Subscription;
+  private _genderArray: any[] = [];
 
   /**
    * SettingsPage constructor
@@ -88,7 +86,6 @@ export class SettingsPage implements OnInit, OnDestroy {
    * ionViewWillEnter implementation
    */
   ionViewWillEnter() {
-    this.init();
   }
 
   init() {
@@ -104,6 +101,9 @@ export class SettingsPage implements OnInit, OnDestroy {
       });
     });
 
+    this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+    { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+    { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
 
     this._userDetailSubscription = MeteorObservable.subscribe('getUserDetailsByUser', Meteor.userId()).takeUntil(this.ngUnsubscribe).subscribe(() => {
       this._ngZone.run(() => {
@@ -121,9 +121,10 @@ export class SettingsPage implements OnInit, OnDestroy {
         }
 
         if (this._user && this._user.username) {
-          this._userForm = this.formBuilder.group({
+          this._userForm = new FormGroup({
             username: new FormControl({ value: this._user.username, disabled: !controlsDisabled }),
-            language_code: new FormControl({ value: this._user.profile.language_code, disabled: controlsDisabled })
+            language_code: new FormControl({ value: this._user.profile.language_code, disabled: controlsDisabled }),
+            gender: new FormControl({value: this._user.profile.gender, disabled: controlsDisabled})
           });
 
           this._validateChangePass = false;
@@ -134,11 +135,16 @@ export class SettingsPage implements OnInit, OnDestroy {
             controlsDisabled = true
           }
 
+          /** 
           let first_name: FormControl = new FormControl({ value: this._user.profile.first_name, disabled: controlsDisabled });
           this._userForm.addControl('first_name', first_name);
 
           let last_name: FormControl = new FormControl({ value: this._user.profile.last_name, disabled: controlsDisabled });
           this._userForm.addControl('last_name', last_name);
+          */
+
+          let full_name: FormControl = new FormControl({ value: this._user.profile.full_name, disabled: controlsDisabled });
+          this._userForm.addControl('full_name', full_name);
         }
       });
     });
@@ -180,9 +186,11 @@ export class SettingsPage implements OnInit, OnDestroy {
             $set:
               {
                 profile: {
-                  first_name: this._userForm.value.first_name,
-                  last_name: this._userForm.value.last_name,
-                  language_code: this._userForm.value.language_code
+                  //first_name: this._userForm.value.first_name,
+                  //last_name: this._userForm.value.last_name,
+                  full_name: this._userForm.value.full_name,
+                  language_code: this._userForm.value.language_code,
+                  gender: this._userForm.value.gender
                 }
               }
           });

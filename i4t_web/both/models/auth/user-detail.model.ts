@@ -18,6 +18,7 @@ export interface UserDetail extends CollectionObject {
     establishment_work?: string;
     jobs?: number;
     penalties?: UserDetailPenalty[];
+    grant_start_points?: boolean;
     current_establishment?: string;
     current_table?: string;
     birthdate?: Date;

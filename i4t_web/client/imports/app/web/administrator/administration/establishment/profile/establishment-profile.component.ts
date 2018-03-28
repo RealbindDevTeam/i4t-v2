@@ -227,14 +227,23 @@ export class EstablishmentProfileComponent implements OnInit, OnDestroy {
                     this._schedule = this._establishmentProfile.schedule;
                     this._lat = this._establishmentProfile.location.lat;
                     this._lng = this._establishmentProfile.location.lng;
+                    this._showTypesOfFood = true;
                 } else {
                     this._profileForm.reset();
                     this._scheduleInEditMode = false;
                     this._scheduleToEdit = {};
                     this._lat = 4.5981;
                     this._lng = -74.0758;
+                    TypesOfFood.collection.find({}).fetch().forEach((type_of_food) => {
+                        if (this._typesOfFoodFormGroup.contains(type_of_food._id)) {
+                            this._typesOfFoodFormGroup.controls[type_of_food._id].setValue(false);
+                        } else {
+                            let control: FormControl = new FormControl(false);
+                            this._typesOfFoodFormGroup.addControl(type_of_food._id, control);
+                        }
+                    });
+                    this._showTypesOfFood = true;
                 }
-                this._showTypesOfFood = true;
             });
         });
     }
