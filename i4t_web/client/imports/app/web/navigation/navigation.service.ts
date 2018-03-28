@@ -15,7 +15,7 @@ export class NavigationService {
   private _menuItemsTemp: Subject<MenuItem[]> = new BehaviorSubject(null);
   private _activeMenuItem: Subject<MenuItem> = new BehaviorSubject(null);
   private _pageTitle: Subject<string> = new BehaviorSubject(null);
-  private _appTitle: Subject<string> = new BehaviorSubject('iurest');
+  private _appTitle: Subject<string> = new BehaviorSubject('comeygana');
   private _browserTitle: Subject<string> = new BehaviorSubject(null);
   private _titleSeparator: Subject<string> = new BehaviorSubject('|');
   private _currentRoute: Subject<string> = new BehaviorSubject(null);
@@ -29,7 +29,7 @@ export class NavigationService {
 
   constructor(public dialog: MatDialog) {
     const _coreOptions: AppConfigOptions = {
-      appTitle: 'iurest',
+      appTitle: 'comeygana',
       openSidenavStyle: 'side',
       closedSidenavStyle: 'icon overlay'
     };

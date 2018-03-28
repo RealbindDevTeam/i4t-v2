@@ -129,7 +129,9 @@
                 "ERROR_TITLE": "Error"
             },
             "SIGN_OUT": "Sign Out",
-            "MSG_COMFIRM": "Your data has been updated"
+            "MSG_COMFIRM": "Your data has been updated",
+            "FULL_NAME": "Full name",
+            "GENDER": "Gender"
         },
         "CODE_TYPE_SELECT": {
             "TITTLE": "Type of code",

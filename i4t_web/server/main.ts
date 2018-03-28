@@ -37,7 +37,9 @@ import './imports/publications/establishment/waiter-call';
 import './imports/publications/establishment/reward';
 import './imports/publications/establishment/reward-point';
 import './imports/publications/establishment/order-history';
-import './imports/publications/points/bag_plans'
+import './imports/publications/points/bag_plans';
+import './imports/publications/points/establishment_points';
+import './imports/publications/points/negative-point';
 
 import '../both/methods/menu/item.methods';
 import '../both/methods/auth/collaborators.methods';
@@ -94,7 +96,6 @@ Meteor.startup(() => {
     loadCountries();
     loadCities();
     loadLanguages();
-    createdbindexes();
     loadEmailContents();
     loadParameters();
     loadCcPaymentMethods();
@@ -105,4 +106,5 @@ Meteor.startup(() => {
     loadTypesOfFood();
     createCrons();
     loadBagPlans();
+    createdbindexes();
 });

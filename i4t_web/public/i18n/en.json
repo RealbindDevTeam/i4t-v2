@@ -574,7 +574,8 @@
         "FACEBOOK_LINK": "Link to your page on Facebook",
         "RESTAURANT_INACTIVE": "Inactive Restaurant",
         "RESTAURANT_ACTIVE": "Active Restaurant",
-        "WAITERS_ERROR": "There are restaurants that don't have waiters/waitress. please check the collaborators option"
+        "WAITERS_ERROR": "There are restaurants that don't have waiters/waitress. please check the collaborators option",
+        "AVAILABLE_POINTS": "Available Points"
     },
     "TABLES": {
         "TABLES_CREATION": "Create tables",
@@ -1113,7 +1114,7 @@
         "STATUS_INACTIVE": "Inactive",
         "BTN_EDIT": "Configure",
         "ADD_TABLES": "Add tables",
-        "DESC_ADD_TABLES": "Enter number of tables to create",
+        "DESC_ADD_TABLES": "Enter the number of tables to create, only 100 per restaurant",
         "ACTIVE_INACTIVE_REST": "Active/Inactive Restaurant and Tables",
         "ACTIVE_INACTIVE_REST_DESC": "Inactivate the restaurant you don't want to pay",
         "TABLE_ENUM": "Table ",
@@ -1402,7 +1403,8 @@
         "MESSAGE": "Register one to enable this option",
         "REWARDS": "Rewards redeemed today",
         "ITEMS_HISTORY": "Items ordered historically",
-        "REWARDS_HISTORY": "Rewards redeemed historically"
+        "REWARDS_HISTORY": "Rewards redeemed historically",
+        "AVAILABLE_POINTS": "Available Points"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Today",
@@ -1786,7 +1788,8 @@
         "ALL_ESTABLISHMENT": "All restaurants",
         "NO_RECORDS_FOUND": "No orders found",
         "ACCUMULATED": "accumulated",
-        "REDEEMED": "Redeemed"
+        "REDEEMED": "Redeemed",
+        "AVAILABLE_POINTS": "Available Points"
     },
     "TYPE_OF_FOOD": {
         "GERMAN_FOOD": "German food",

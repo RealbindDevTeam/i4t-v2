@@ -574,7 +574,8 @@
         "FACEBOOK_LINK": "Link de tu página en Facebook",
         "RESTAURANT_INACTIVE": "Restaurante inactivo",
         "RESTAURANT_ACTIVE": "Restaurante activo",
-        "WAITERS_ERROR": "Hay restaurantes que no cuentan con meseros. Por favor verifica en la opción de colaboradores"
+        "WAITERS_ERROR": "Hay restaurantes que no cuentan con meseros. Por favor verifica en la opción de colaboradores",
+        "AVAILABLE_POINTS": "Puntos Disponibles"
     },
     "TABLES": {
         "TABLES_CREATION": "Creación de mesas",
@@ -1113,7 +1114,7 @@
         "STATUS_INACTIVE": "Inactivo",
         "BTN_EDIT": "Configurar",
         "ADD_TABLES": "Agregar mesas",
-        "DESC_ADD_TABLES": "Ingresa el número de mesas a crear",
+        "DESC_ADD_TABLES": "Ingresa el número de mesas a crear, unicamente 100 por restaurante",
         "ACTIVE_INACTIVE_REST": "Activar/Inactivar Restaurante y Mesas",
         "ACTIVE_INACTIVE_REST_DESC": "Inactiva el restaurante si no deseas que se siga realizando cobro",
         "TABLE_ENUM": "Mesa # ",
@@ -1402,7 +1403,8 @@
         "MESSAGE": "Regístra uno para habilitar esta opción",
         "REWARDS": "Recompensas redimidas hoy",
         "ITEMS_HISTORY": "Items ordenados históricamente",
-        "REWARDS_HISTORY": "Recompensas redimidas históricamente"
+        "REWARDS_HISTORY": "Recompensas redimidas históricamente",
+        "AVAILABLE_POINTS": "Puntos Disponibles"
     },
     "ITEM_UNIT_CHART": {
         "TODAY": "Hoy",
@@ -1786,7 +1788,8 @@
         "ALL_ESTABLISHMENT": "Todos los restaurantes",
         "NO_RECORDS_FOUND": "No se encontrarón ordenes",
         "ACCUMULATED": "acumulados",
-        "REDEEMED": "redimidos"
+        "REDEEMED": "redimidos",
+        "AVAILABLE_POINTS": "Puntos Disponibles"
     },
     "TYPE_OF_FOOD": {
         "GERMAN_FOOD": "Comida Alemana",

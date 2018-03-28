@@ -90,8 +90,8 @@
                 </div>
                 <div>
                     <p *ngIf="!_showCurrencies">{{'ITEMS.NO_RESTAURANTS_SELECTED' | translate}}</p>
-                    <p *ngIf="_showCurrencies" class="label">{{'ITEMS.ENTER_PRICE' | translate}}</p>
-                    <p *ngIf="_showTaxes" class="label">{{'ITEMS.ENTER_TAX' | translate}}</p>
+                    <p *ngIf="_showCurrencies">{{'ITEMS.ENTER_PRICE' | translate}}</p>
+                    <p *ngIf="_showTaxes">{{'ITEMS.ENTER_TAX' | translate}}</p>
                     <div *ngFor="let currency of _currencies | async">
                         <div *ngIf="_showCurrencies" formGroupName="editCurrencies" class="currencies">
                             <div *ngFor="let cur of _establishmentCurrencies">

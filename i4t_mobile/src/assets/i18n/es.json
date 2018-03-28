@@ -129,7 +129,9 @@
                 "ERROR_TITLE": "Error"
             },
             "SIGN_OUT": "Cerrar sesión",
-            "MSG_COMFIRM": "Tus datos han sido actualizados"
+            "MSG_COMFIRM": "Tus datos han sido actualizados",
+            "FULL_NAME": "Nombres y apellidos",
+            "GENDER": "Género"
         },
         "CODE_TYPE_SELECT": {
             "TITTLE": "Tipo de código",

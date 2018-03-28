@@ -15,6 +15,8 @@ import { City } from '../../../../../../../../both/models/general/city.model';
 import { Cities } from '../../../../../../../../both/collections/general/city.collection';
 import { UserDetails } from '../../../../../../../../both/collections/auth/user-detail.collection';
 import { UserDetail } from '../../../../../../../../both/models/auth/user-detail.model';
+import { EstablishmentPoint } from '../../../../../../../../both/models/points/establishment-point.model';
+import { EstablishmentPoints } from '../../../../../../../../both/collections/points/establishment-points.collection';
 
 @Component({
     selector: 'establishment',
@@ -31,6 +33,7 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
     private countriesSub: Subscription;
     private citiesSub: Subscription;
     private _usersDetailsSub: Subscription;
+    private _establishmentPointsSub: Subscription;
     private _ngUnsubscribe: Subject<void> = new Subject<void>();
 
     public _dialogRef: MatDialogRef<any>;
@@ -78,6 +81,7 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
 
                     });
                 });
+                this._establishmentPointsSub = MeteorObservable.subscribe('getEstablishmentPointsByIds', _establishmentIds).takeUntil(this._ngUnsubscribe).subscribe();
             });
         });
         this.countriesSub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
@@ -150,6 +154,19 @@ export class EstablishmentComponent implements OnInit, OnDestroy {
             return _lCity.name;
         } else {
             return _pOtherCity;
+        }
+    }
+
+    /**
+     * Get Establishment Points
+     * @param {string} _pEstablishmentId 
+     */
+    getEstablishmentPoints(_pEstablishmentId: string): number {
+        let _establishmentPoint: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: _pEstablishmentId });
+        if (_establishmentPoint) {
+            return _establishmentPoint.current_points;
+        } else {
+            return 0;
         }
     }
 
