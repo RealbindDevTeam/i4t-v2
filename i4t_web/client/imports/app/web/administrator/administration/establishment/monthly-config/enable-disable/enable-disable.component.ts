@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, NgZone } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,11 +29,6 @@ import * as QRious from 'qrious';
 })
 export class EnableDisableComponent implements OnInit, OnDestroy {
 
-    @Input()
-    establishmentId: string;
-
-    @Output('gotoestablishmentlist')
-    establishmentStatus: EventEmitter<any> = new EventEmitter<any>();
 
     private _tableForm: FormGroup;
     private _establishmentSub: Subscription;
@@ -53,6 +49,8 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
     private _establishment: Establishment;
 
     private _mdDialogRef: MatDialogRef<any>;
+    private establishmentId: string;
+    private _remaining_tables: number;
 
     /**
      * EnableDisableComponent Constructor
@@ -66,12 +64,18 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
         public snackBar: MatSnackBar,
         public _mdDialog: MatDialog,
         private _userLanguageService: UserLanguageService,
-        private _ngZone: NgZone) {
+        private _ngZone: NgZone,
+        private _activateRoute: ActivatedRoute,
+        private _router: Router) {
         translate.use(this._userLanguageService.getLanguage(Meteor.user()));
         translate.setDefaultLang('en');
         this.selectedEstablishmentValue = "";
         this.titleMsg = 'SIGNUP.SYSTEM_MSG';
         this.btnAcceptLbl = 'SIGNUP.ACCEPT';
+
+        this._activateRoute.params.forEach((param: Params) => {
+            this.establishmentId = param['param1'];
+        });
     }
 
     ngOnInit() {
@@ -87,7 +91,8 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                     this._ngZone.run(() => {
                         let _lEstablishmentCountry: Country = Countries.findOne({ _id: this._establishment.countryId });
                         this.max_table_number = _lEstablishmentCountry.max_number_tables;
-                        this._tableForm.controls['tables_number'].setValidators(Validators.max(this.max_table_number));
+                        this._remaining_tables = this.max_table_number - this._establishment.tables_quantity;
+                        this._tableForm.controls['tables_number'].setValidators(Validators.max(this._remaining_tables));
                     });
                 });
             });
@@ -106,6 +111,13 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
     removeSubscriptions(): void {
         this._ngUnsubscribe.next();
         this._ngUnsubscribe.complete();
+    }
+
+    /**
+     * Get the remaining tables of establishment
+     */
+    getRemainingTables() {
+        this._remaining_tables = this.max_table_number - this._establishment.tables_quantity;
     }
 
     /**
@@ -143,7 +155,7 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                     backgroundAlpha: 1.0,
                     foreground: 'black',
                     foregroundAlpha: 1.0,
-                    level: 'H',
+                    level: 'M',
                     mime: 'image/svg',
                     padding: null,
                     size: 150,
@@ -171,6 +183,9 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                 Establishments.update({ _id: this.establishmentId }, { $set: { tables_quantity: _lEstablishment.tables_quantity + (_i + 1) } })
             }
             this._tableForm.reset();
+            let establishment_remaining: Establishment = Establishments.findOne({ _id: this.establishmentId });
+            this._remaining_tables = this.max_table_number - establishment_remaining.tables_quantity;
+            this._tableForm.controls['tables_number'].setValidators(Validators.max(this._remaining_tables));
             this.snackBar.open(snackMsg, '', {
                 duration: 1500,
             });
@@ -259,8 +274,6 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
                 Tables.collection.find({ establishment_id: _establishment._id }).forEach(function <Table>(table, index, ar) {
                     Tables.collection.update({ _id: table._id }, { $set: { is_active: !_establishment.isActive } });
                 });
-
-                this.establishmentStatus.emit(true);
                 this.snackBar.open(snackMsg, '', {
                     duration: 1500,
                 });
@@ -282,12 +295,6 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
         return wordTraduced;
     }
 
-    /**
-     * This function back to de establishment list
-     */
-    backToList() {
-        this.establishmentStatus.emit(true);
-    }
     /**
      * This function cleans the tables_number fields form
      */
@@ -324,6 +331,10 @@ export class EnableDisableComponent implements OnInit, OnDestroy {
 
             }
         });
+    }
+
+    backToList() {
+        this._router.navigate(['app/establishment-list']);
     }
 
     /**

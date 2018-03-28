@@ -53,6 +53,8 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
     private _showTablesSelect: boolean = false;
     private _disabledTablesAssignment: boolean = true;
 
+    private _genderArray: any[] = [];
+
     /**
      * CollaboratorsEditionComponent constructor
      * @param {Router} _router 
@@ -97,12 +99,17 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
             table_end: [this.selectUserDetail.table_assignment_end],
             new_password: new FormControl('', [Validators.minLength(8), Validators.maxLength(20)]),
             confirm_new_password: new FormControl('', [Validators.minLength(8), Validators.maxLength(20)]),
+            gender: [this.selectUser.profile.gender, [Validators.required]]
         });
         this._tableInit = this.selectUserDetail.table_assignment_init;
         this._tableEnd = this.selectUserDetail.table_assignment_end;
         this._establishments = Establishments.find({}).zone();
         this._roles = Roles.find({}).zone();
         this._tableSub = MeteorObservable.subscribe('getTablesByEstablishmentWork', this.selectUser._id).takeUntil(this._ngUnsubscribe).subscribe();
+
+        this._genderArray = [{ value: "SIGNUP.MALE_GENDER", label: "SIGNUP.MALE_GENDER" },
+        { value: "SIGNUP.FEMALE_GENDER", label: "SIGNUP.FEMALE_GENDER" },
+        { value: "SIGNUP.OTHER_GENDER", label: "SIGNUP.OTHER_GENDER" }];
     }
 
     /**
@@ -182,7 +189,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
                                 full_name: this._collaboratorEditionForm.value.fullName,
                                 language_code: this.selectUser.profile.language_code,
                                 image: this.selectUser.profile.image,
-                                gender: this.selectUser.profile.gender
+                                gender: this._collaboratorEditionForm.value.gender
                             }
                         }
                     });
@@ -247,6 +254,7 @@ export class CollaboratorsEditionComponent implements OnInit, OnDestroy {
         this._collaboratorEditionForm.controls['email'].reset();
         this._collaboratorEditionForm.controls['password'].reset();
         this._collaboratorEditionForm.controls['confirmPassword'].reset();
+        this._collaboratorEditionForm.controls['gender'].reset();
 
         this._router.navigate(['app/collaborators']);
     }

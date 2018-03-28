@@ -23,10 +23,17 @@
             </table>
             <table style="width: 100%" cellspacing="0">
                 <tr>
-                    <td colspan="3" style="padding-top: 10px;">
+                    <td colspan="1" style="padding-top: 10px;">
                         <mat-form-field style="width: 100%">
                             <input matInput required formControlName="fullName" placeholder="{{'NAME' | translate}}" minlength="1" maxlength="70" #inputName/>
                             <mat-hint align="end">{{inputName.value.length}} / 50</mat-hint>
+                        </mat-form-field>
+                    </td>
+                    <td colspan="2" style="padding-top: 10px; width: 50%">
+                        <mat-form-field style="width: 100%">
+                            <mat-select formControlName="gender" placeholder="{{'SIGNUP.GENDER_LBL' | translate}}" required>
+                                <mat-option *ngFor="let gender of _genderArray" value="{{gender.value}}">{{gender.label | translate}}</mat-option>
+                            </mat-select>
                         </mat-form-field>
                     </td>
                 </tr>
@@ -77,8 +84,8 @@
             <mat-card-subtitle>{{'COLLABORATORS.PASSWORD_MSG' | translate}}</mat-card-subtitle>
             <div>
                 <mat-form-field style="width: 100%">
-                    <input matInput formControlName="new_password" placeholder="{{'SETTINGS.NEW_PASSWORD' | translate}}" #inputNewPassword
-                        type="password" />
+                    <input matInput formControlName="new_password" placeholder="{{'SETTINGS.NEW_PASSWORD' | translate}}" #inputNewPassword type="password"
+                    />
                     <mat-hint align="end">{{inputNewPassword.value.length}} / 40</mat-hint>
                 </mat-form-field>
                 <div *ngIf="_collaboratorEditionForm.controls['new_password'].hasError('required') && _collaboratorEditionForm.controls['new_password'].touched"
@@ -90,8 +97,8 @@
             </div>
             <div>
                 <mat-form-field style="width: 100%">
-                    <input matInput formControlName="confirm_new_password" placeholder="{{'SETTINGS.CONFIRM_NEW_PASSWORD' | translate}}"
-                        #inputConfirmNewPassword type="password" />
+                    <input matInput formControlName="confirm_new_password" placeholder="{{'SETTINGS.CONFIRM_NEW_PASSWORD' | translate}}" #inputConfirmNewPassword
+                        type="password" />
                     <mat-hint align="end">{{inputConfirmNewPassword.value.length}} / 40</mat-hint>
                 </mat-form-field>
                 <div *ngIf="_collaboratorEditionForm.controls['confirm_new_password'].hasError('required') && _collaboratorEditionForm.controls['confirm_new_password'].touched"

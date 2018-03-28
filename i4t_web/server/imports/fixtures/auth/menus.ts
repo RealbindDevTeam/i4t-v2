@@ -66,7 +66,7 @@ export function loadMenus() {
                                         _id: "10013",
                                         is_active: true,
                                         name: "MENUS.ADMINISTRATION.MONTHLY_CONFIG",
-                                        url: "/app/monthly-config",
+                                        url: "/app/establishment-list",
                                         icon_name: "",
                                         order: 10013
                                     }
@@ -170,7 +170,7 @@ export function loadMenus() {
                 is_active: true,
                 name: "MENUS.ADMINISTRATION.ORDERS_TODAY",
                 url: "/app/orders-today",
-                icon_name: "list",
+                icon_name: "assignment",
                 order: 1300
             },
             {
@@ -337,7 +337,7 @@ export function loadMenus() {
                 is_active: true,
                 name: "MENUS.ADMINISTRATION.ORDERS_TODAY",
                 url: "/app/cashier-orders-today",
-                icon_name: "list",
+                icon_name: "assignment",
                 order: 13000
             }
         ];

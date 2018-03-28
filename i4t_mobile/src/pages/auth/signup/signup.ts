@@ -53,8 +53,7 @@ export class SignupComponent implements OnInit {
             username: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]),
             email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(40), CustomValidators.emailValidator]),
             password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]),
-            gender: new FormControl('', [Validators.required])
+            confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(20)])
         });
         this.error = '';
 
@@ -66,11 +65,9 @@ export class SignupComponent implements OnInit {
     register() {
 
         if (this.signupForm.value.password == this.signupForm.value.confirmPassword) {
-
-            this.userProfile.first_name = "";
-            this.userProfile.last_name = "";
+            this.userProfile.full_name = "";
             this.userProfile.language_code = this.userLang;
-            this.userProfile.gender = this.signupForm.value.gender;
+            this.userProfile.gender = "";
 
             if (this.signupForm.valid) {
                 let confirmMsg: string;
@@ -94,6 +91,7 @@ export class SignupComponent implements OnInit {
                                 role_id: '400',
                                 is_active: true,
                                 establishment_work: '',
+                                grant_start_points: true,
                                 penalties: [],
                                 current_establishment: '',
                                 current_table: ''
@@ -162,6 +160,7 @@ export class SignupComponent implements OnInit {
                     is_active: true,
                     establishment_work: '',
                     penalties: [],
+                    grant_start_points: true,
                     current_establishment: '',
                     current_table: ''
                 });

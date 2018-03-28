@@ -12,6 +12,8 @@ import { UserDetails } from '../../../../../both/collections/auth/user-detail.co
 import { Item } from '../../../../../both/models/menu/item.model';
 import { Items } from '../../../../../both/collections/menu/item.collection';
 import { Users } from 'both/collections/auth/user.collection';
+import { EstablishmentPoint } from '../../../../../both/models/points/establishment-point.model';
+import { EstablishmentPoints } from '../../../../../both/collections/points/establishment-points.collection';
 
 @Component({
     selector: 'cashier-orders-today',
@@ -26,6 +28,7 @@ export class CashierOrdersTodayComponent implements OnInit, OnDestroy {
     private _userDetailSubscription: Subscription;
     private _usersSubscription: Subscription;
     private _orderHistorySubscription: Subscription;
+    private _establishmentPointsSub: Subscription;
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     //private _establishments: Observable<Establishment[]>;
@@ -72,6 +75,7 @@ export class CashierOrdersTodayComponent implements OnInit, OnDestroy {
                 this._lEstablishmentId = this._lEstablishment._id;
                 this._establishmentFilter = this._lEstablishment._id;
                 this._orderHistorySubscription = MeteorObservable.subscribe('getOrderHistoryByEstablishment', this._lEstablishmentId).takeUntil(this.ngUnsubscribe).subscribe();
+                this._establishmentPointsSub = MeteorObservable.subscribe('getEstablishmentPointsByIds', [this._lEstablishmentId]).takeUntil(this.ngUnsubscribe).subscribe();
             });
         });
     }
@@ -167,6 +171,18 @@ export class CashierOrdersTodayComponent implements OnInit, OnDestroy {
             }
         });
         return _lPoints;
+    }
+
+    /**
+     * Get Establishment Points
+     */
+    getEstablishmentPoints(): number {
+        let _establishmentPoint: EstablishmentPoint = EstablishmentPoints.findOne({ establishment_id: this._establishmentFilter });
+        if (_establishmentPoint) {
+            return _establishmentPoint.current_points;
+        } else {
+            return 0;
+        }
     }
 
     /**
