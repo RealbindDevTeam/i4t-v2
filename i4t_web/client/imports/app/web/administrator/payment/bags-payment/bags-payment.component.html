@@ -1,0 +1,48 @@
+<mat-card>
+    <mat-card-title>{{'BAGS_PAYMENT.TITLE' | translate }}</mat-card-title>
+    <mat-card-subtitle>{{'BAGS_PAYMENT.SUBTITLE' | translate}}</mat-card-subtitle>
+
+    <mat-card-content>
+        <div class="example-container mat-elevation-z8">
+            <mat-table #table [dataSource]="dataSource">
+                
+                <ng-container matColumnDef="_id">
+                    <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element._id}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="isActive">
+                    <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.isActive}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="code">
+                    <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.code}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="numericCode">
+                    <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.numericCode}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="decimal">
+                    <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.decimal}} </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-button>PAGAR</button>
+    </mat-card-actions>
+</mat-card>
