@@ -63,6 +63,7 @@ import { OrdersTodayComponent } from "./web/administrator/orders-today/orders-to
 import { CashierOrdersTodayComponent } from "./web/cashier/cashier-orders-today.component";
 import { EstablishmentListComponent } from './web/administrator/administration/establishment/monthly-config/establishment-list/establishment-list.component';
 import { EnableDisableComponent } from './web/administrator/administration/establishment/monthly-config/enable-disable/enable-disable.component';
+import { BagsPaymentComponent } from './web/administrator/payment/bags-payment/bags-payment.component';
 
 export const routes: Route[] = [
     {
@@ -119,7 +120,8 @@ export const routes: Route[] = [
             { path: 'options', component: OptionsComponent, canActivate: [AdminGuard] },
             { path: 'option-values', component: OptionValueComponent, canActivate: [AdminGuard] },
             { path: 'reward-history-chart/:param1', component: RewardHistoryChartComponent, canActivate: [AdminGuard] },
-            { path: 'cashier-orders-today', component: CashierOrdersTodayComponent, canActivate: [CashierGuard] }
+            { path: 'cashier-orders-today', component: CashierOrdersTodayComponent, canActivate: [CashierGuard] },
+            { path: 'bags-payment', component: BagsPaymentComponent, canActivate: [AdminGuard] }
         ]
     },
     { path: '', component: SigninWebComponent },
