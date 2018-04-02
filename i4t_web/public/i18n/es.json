@@ -287,7 +287,9 @@
             "PAYMENTS": "Pago del servicio",
             "MONTHLY_PAYMENT": "Pago mensual",
             "PAYMENT_HISTORY": "Historial de Pagos",
-            "REACTIVATE_RESTAURANT": "Reactivar restaurante"
+            "REACTIVATE_RESTAURANT": "Reactivar restaurante",
+            "BAGS": "Bolsas",
+            "PURCHASE_BAGS": "Compra de bolsas"
         },
         "MENU_DEFINITION": {
             "MENU_DEFINITION": "Menú",
@@ -1836,5 +1838,9 @@
         "SMALL": "NORMAL",
         "MEDIUM": "EJECUTIVA",
         "LARGE": "A LA CARTA"
+    },
+    "BAGS_PAYMENT": {
+        "TITLE": "Compra de bolsas",
+        "SUBTITLE": "Aquí puedes comprar la bolsa de puntos por restaurante que desees"
     }
 }

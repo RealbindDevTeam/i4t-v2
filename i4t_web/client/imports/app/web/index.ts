@@ -95,6 +95,7 @@ import { OptionValueEditComponent } from './administrator/menu/options/values/op
 import { RewardHistoryChartComponent } from './administrator/dashboard/reward-history-chart/reward-history-chart.component';
 import { OrdersTodayComponent } from "./administrator/orders-today/orders-today.component";
 import { CashierOrdersTodayComponent } from "./cashier/cashier-orders-today.component";
+import { BagsPaymentComponent } from './administrator/payment/bags-payment/bags-payment.component';
 
 export const WEB_DECLARATIONS = [
     AppComponent,
@@ -160,7 +161,8 @@ export const WEB_DECLARATIONS = [
     OptionsComponent,
     OptionValueComponent,
     RewardHistoryChartComponent,
-    CashierOrdersTodayComponent
+    CashierOrdersTodayComponent,
+    BagsPaymentComponent
 ];
 
 export const MODAL_DIALOG_DECLARATIONS = [

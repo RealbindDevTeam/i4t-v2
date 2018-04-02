@@ -69,16 +69,25 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
                 this._establishments = Establishments.find({}).zone();
                 this.countEstablishments();
                 this._establishments.subscribe(() => { this.countEstablishments(); });
+
+                this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
+                    this._ngZone.run(() => {
+                        let _currenciesIds: string[] = [];
+                        Establishments.collection.find({ creation_user: Meteor.userId() }).forEach(function <Establishment>(establishment, index, args) {
+                            _currenciesIds.push(establishment.currencyId);
+                        });
+                        this._currencies = Currencies.find({ _id: { $in: _currenciesIds } }).zone();
+                    });
+                });
             });
         });
         this._tableSub = MeteorObservable.subscribe('tables', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe(() => {
-            this._tables = this._tables = Tables.find({}).zone();
+            this._ngZone.run(() => {
+                this._tables = this._tables = Tables.find({}).zone();
+            });
         });
-        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').takeUntil(this._ngUnsubscribe).subscribe(() => {
-            this._currencies = Currencies.find({}).zone();
-        });
-        this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
 
+        this._countrySub = MeteorObservable.subscribe('countries').takeUntil(this._ngUnsubscribe).subscribe();
         this._paymentHistorySub = MeteorObservable.subscribe('getHistoryPaymentsByUser', Meteor.userId()).takeUntil(this._ngUnsubscribe).subscribe();
     }
 
@@ -93,8 +102,15 @@ export class EstablishmentListComponent implements OnInit, OnDestroy {
      * Remove all subscriptions
      */
     removeSubscription(): void {
+        /**
         this._ngUnsubscribe.next();
         this._ngUnsubscribe.complete();
+         */
+        if (this._establishmentSub) { this._establishmentSub.unsubscribe(); }
+        if (this._tableSub) { this._tableSub.unsubscribe(); }
+        if (this._currencySub) { this._currencySub.unsubscribe(); }
+        if (this._countrySub) { this._countrySub.unsubscribe(); }
+        if (this._paymentHistorySub) { this._paymentHistorySub.unsubscribe(); }
     }
 
     /**
