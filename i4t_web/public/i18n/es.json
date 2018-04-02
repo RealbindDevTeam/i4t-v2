@@ -1840,6 +1840,7 @@
         "LARGE": "A LA CARTA"
     },
     "BAGS_PAYMENT": {
-        "TITLE": "Compra de bolsas"
+        "TITLE": "Compra de bolsas",
+        "SUBTITLE": "Aquí puedes comprar la bolsa de puntos por restaurante que desees"
     }
 }

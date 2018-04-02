@@ -6,7 +6,10 @@ import { MeteorObservable } from 'meteor-rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { UserLanguageService } from '../../../services/general/user-language.service';
-
+import { Establishment } from '../../../../../../../both/models/establishment/establishment.model';
+import { Establishments } from '../../../../../../../both/collections/establishment/establishment.collection';
+import { Currency } from '../../../../../../../both/models/general/currency.model';
+import { Currencies } from '../../../../../../../both/collections/general/currency.collection';
 
 @Component({
     selector: 'bags-payment',
@@ -16,10 +19,19 @@ import { UserLanguageService } from '../../../services/general/user-language.ser
 
 export class BagsPaymentComponent implements OnInit, OnDestroy {
 
+    private _user = Meteor.userId();
+    private _establishments: Observable<Establishment[]>;
+    private _currencies: Observable<Currency[]>;
+
+    private _establishmentSub: Subscription;
+    private _currencySub: Subscription;
+
+    private _ngUnsubscribe: Subject<void> = new Subject<void>();
+
     /**
      * MonthlyPaymentComponent Constructor
-     * @param {Router} router 
-     * @param {FormBuilder} _formBuilder 
+     * @param {Router} router
+     * @param {NgZone} _ngZone
      * @param {TranslateService} translate 
      * @param {UserLanguageService} _userLanguageService 
      */
@@ -32,6 +44,21 @@ export class BagsPaymentComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        
+        this.removeSubscriptions();
+
+        this._establishmentSub = MeteorObservable.subscribe('establishments', this._user).takeUntil(this._ngUnsubscribe).subscribe(() => {
+            this._establishments = Establishments.find({ creation_user: this._user }).zone();
+        });
+
+        this._currencySub = MeteorObservable.subscribe('getCurrenciesByUserId').takeUntil(this._ngUnsubscribe).subscribe(() => {
+            this._currencies = Currencies.find({}).zone();
+        });
+    }
+
+    /**
+     * Remove all subscriptions
+     */
+    removeSubscriptions(): void {
+
     }
 }

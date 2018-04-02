@@ -23,12 +23,14 @@ Meteor.publish('getCurrenciesByEstablishmentsId', function (_establishmentsId: s
 /**
  * Meteor publication return currencies by  userId
  */
-Meteor.publish('getCurrenciesByUserId', function () {
+Meteor.publish('getCurrenciesByUserId', function (_userId: string) {
     let _currenciesIds: string[] = [];
-    Establishments.collection.find({ creation_user: this.userId }).forEach(function <Establishment>(establishment, index, args) {
+    Establishments.collection.find({ creation_user: _userId }).forEach(function <Establishment>(establishment, index, args) {
         _currenciesIds.push(establishment.currencyId);
     });
 
+    console.log('------------------------------');
+    console.log(_currenciesIds);
     return Currencies.find({ _id: { $in: _currenciesIds } });
 });
 

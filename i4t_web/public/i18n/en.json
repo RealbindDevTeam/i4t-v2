@@ -1840,6 +1840,7 @@
         "LARGE": "A LA CARTÉ"
     },
     "BAGS_PAYMENT": {
-        "TITLE": "Purchase of bags"
+        "TITLE": "Purchase of bags",
+        "SUBTITLE": "Here you can to purchase the bag of points by restaurant that you want"
     }
 }
