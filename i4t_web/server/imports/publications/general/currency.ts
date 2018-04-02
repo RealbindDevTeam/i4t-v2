@@ -29,8 +29,6 @@ Meteor.publish('getCurrenciesByUserId', function (_userId: string) {
         _currenciesIds.push(establishment.currencyId);
     });
 
-    console.log('------------------------------');
-    console.log(_currenciesIds);
     return Currencies.find({ _id: { $in: _currenciesIds } });
 });
 
